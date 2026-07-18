@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Lab</title>
+<meta name="description" content="A small lab for studying English: vocabulary, synonyms and grammar patterns.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="English Lab">
+<meta property="og:description" content="Vocabulary, synonyms and grammar patterns. Study and practise.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .container{max-width:760px;margin:0 auto;padding:96px 26px 90px}
+  .lab-head{text-align:center;margin-bottom:56px}
+  .lab-eyebrow{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  .lab-head h1{font-family:var(--serif);font-size:clamp(2.6rem,7vw,3.7rem);font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.05}
+  .lab-head p{margin:16px auto 0;max-width:46ch;color:var(--text-dim);font-size:1.05rem;line-height:1.6}
+  .cards{display:flex;flex-direction:column;gap:18px}
+  .lab-card{display:block;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:30px 30px;text-decoration:none;color:inherit;transition:border-color .25s ease,transform .25s ease}
+  .lab-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .lab-card .num{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.12em;color:var(--text-muted)}
+  .lab-card h2{font-family:var(--serif);font-size:1.6rem;font-weight:500;line-height:1.25;margin:8px 0 8px;letter-spacing:-.01em}
+  .lab-card p{font-size:.95rem;color:var(--text-dim);line-height:1.6;margin:0;max-width:52ch}
+  .lab-card .arrow{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--text-muted);transition:color .25s ease,transform .25s ease}
+  .lab-card:hover .arrow{color:var(--accent);transform:translateY(-50%) translateX(4px)}
+  @media (max-width:560px){ .container{padding-top:80px} .lab-card .arrow{display:none} }
+</style>
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+<button class="share-toggle" onclick="openShare()" aria-label="Share this page" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+</button>
+
+<div class="container">
+  <header class="lab-head">
+    <p class="lab-eyebrow">English Lab</p>
+    <h1>Learn it. Then use it.</h1>
+    <p>A small workshop for the parts of English that only stick with practice: the words, their neighbours, and the patterns that hold them together.</p>
+  </header>
+
+  <div class="cards">
+    <a class="lab-card" href="vocabulary.html">
+      <span class="num">01</span>
+      <h2>Vocabulary</h2>
+      <p>Words and phrases with IPA, origin, nuance, examples and collocations. List, flashcards, quiz, fill-in-the-blank, reading and progress tracking.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="lab-card" href="synonyms.html">
+      <span class="num">02</span>
+      <h2>Synonym Constellation</h2>
+      <p>Turkish meanings orbited by their English synonyms: the closest sit innermost. Hover to read how each one differs, click to open it in Cambridge.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="lab-card" href="grammar.html">
+      <span class="num">03</span>
+      <h2>Grammar Patterns</h2>
+      <p>Dependent prepositions, verb patterns, subject-verb agreement, tense consistency and adverbial order. Each topic has a Learn tab and a Practice quiz.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>
+
+<div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">English Lab</span><span class="logo-author">by M. Enes Durmuş</span></div>
+</body>
+</html>

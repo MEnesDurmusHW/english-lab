@@ -1,0 +1,1789 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kelime Defteri — NS Articles</title>
+<meta name="description" content="İngilizce kelime ve kalıpların IPA okunuşu (UK/US), kökeni, açıklaması, örnek cümlesi ve Türkçe karşılığı. Açılır kapanır liste ve flash kart çalışması.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS Articles">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Kelime Defteri">
+<meta property="og:description" content="İngilizce kelime ve kalıplar: IPA (UK/US), köken, açıklama, örnek cümle, Türkçe karşılık ve flash kart.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/vocabulary.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS Articles">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mono:"Space Grotesk",ui-monospace,monospace;
+    --paper:#FBF9F5;
+    --accent-soft:rgba(59,91,165,.1);
+    --uk:#3A6EA5;
+    --us:#A8512E;
+  }
+  [data-theme="dark"]{
+    --paper:#191c23;
+    --accent-soft:rgba(138,166,224,.14);
+    --uk:#7FB0DE;
+    --us:#E08158;
+  }
+
+  body{font-family:var(--sans);line-height:1.6}
+  .wrap{max-width:820px;margin:0 auto;padding:44px clamp(16px,5vw,40px) 96px}
+  @media (max-width:900px){ .wrap{padding-top:64px} }
+
+  /* ---- başlık (sade) ---- */
+  header{margin-bottom:10px}
+  .eyebrow{
+    font-family:var(--mono);font-size:10px;font-weight:500;
+    letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin:0 0 4px;
+  }
+  h1{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(1.5rem,4vw,2rem);line-height:1.05;letter-spacing:-.01em;
+    margin:0;color:var(--text);
+  }
+
+  /* ---- sekmeler ---- */
+  .tabs{
+    position:sticky;top:0;z-index:30;margin:14px -8px 6px;padding:12px 8px 12px;
+    background:linear-gradient(var(--bg) 72%,transparent);
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  }
+  .seg{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px}
+  .seg button{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.9rem;
+    padding:9px 22px;border-radius:999px;transition:.18s;
+  }
+  .seg button[aria-selected="true"]{background:var(--accent);color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .count{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;color:var(--text-muted);margin-left:auto}
+
+  /* ---- sağdaki dropdown: Cümle / Öğrendiklerim / Genel ---- */
+  .tabs .count{margin-left:0}
+  .more-menu{position:relative;margin-left:auto}
+  .mm-caret{width:13px !important;height:13px !important;color:var(--text-muted);transition:transform .18s}
+  .more-btn[aria-expanded="true"] .mm-caret{transform:rotate(180deg)}
+  .more-btn{display:inline-flex;align-items:center;gap:7px;appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.82rem;padding:8px 13px;border-radius:999px;transition:.15s}
+  .more-btn:hover,.more-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+  .more-btn svg{width:16px;height:16px;flex:0 0 auto}
+  .more-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:60;min-width:196px;background:var(--paper);border:1px solid var(--border);border-radius:13px;box-shadow:0 14px 36px rgba(0,0,0,.17);padding:6px;display:flex;flex-direction:column;gap:2px}
+  .more-pop[hidden]{display:none}
+  .more-item{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;text-align:left;appearance:none;cursor:pointer;background:transparent;border:0;color:var(--text);font-family:var(--sans);font-weight:600;font-size:.92rem;padding:11px 12px;border-radius:9px;transition:.12s}
+  .more-item:hover{background:var(--surface);color:var(--accent)}
+  .more-item svg{width:17px;height:17px;color:var(--text-muted);flex:0 0 auto}
+  .more-item:hover svg{color:var(--accent)}
+  .more-item[aria-selected="true"]{color:var(--accent)}
+  .more-item[aria-selected="true"] svg{color:var(--accent)}
+  @media (max-width:560px){ .more-btn span{display:none} }
+
+  /* ---- ipucu + filtre çubuğu ---- */
+  .list-hint{margin:2px 0 18px;font-size:.82rem;color:var(--text-muted);line-height:1.7}
+  .list-hint kbd{font-family:var(--mono);font-size:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:var(--text-dim)}
+  .ctlbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:2px 0 18px}
+  .ctlbar-hint{flex:1 1 auto;min-width:0;margin:0;font-size:.82rem;color:var(--text-muted);line-height:1.7}
+  .ctlbar-hint:empty{display:none}
+  .ctlbar-hint kbd{font-family:var(--mono);font-size:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:var(--text-dim)}
+  .ctlbar-right{margin-left:auto;display:inline-flex;align-items:center;gap:12px;flex:0 0 auto}
+  .ctlbar-right .count{margin-left:0}
+  .ctlbar-right .filter-sel{margin-left:0}
+  /* kart/quiz içinde satır içi filtre */
+  .card-topbar #filterHost,#view-quiz .dir-row #filterHost{margin-left:0}
+  .card-topbar #filterHost .count{display:none}
+  #view-quiz .dir-row{justify-content:space-between;align-items:center;gap:10px 14px;flex-wrap:wrap}
+  #view-quiz .dir-row #filterHost{margin-left:auto}
+
+  /* ---- mobil kaydırma butonları ---- */
+  .list-nav{position:fixed;right:14px;bottom:92px;z-index:40;display:none;flex-direction:column;gap:12px}
+  .list-nav button{
+    width:48px;height:48px;border-radius:50%;border:1px solid var(--border);
+    background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.16);transition:.16s;
+  }
+  .list-nav button:active{transform:scale(.92)}
+  .list-nav button svg{width:22px;height:22px}
+  @media (max-width:768px){ body.list-active .list-nav,body.browse-active .list-nav{display:flex} }
+
+  /* ---- liste / akordeon ---- */
+  .entry.focused{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .entry{border:1px solid var(--border);border-radius:16px;background:var(--surface);overflow:hidden}
+  .entry-row{display:flex;align-items:stretch}
+  .entry-head{
+    flex:1 1 auto;min-width:0;box-sizing:border-box;display:flex;align-items:center;gap:14px;
+    background:transparent;border:0;cursor:pointer;text-align:left;
+    padding:16px 6px 16px clamp(14px,3vw,20px);font-family:inherit;color:var(--text);
+  }
+  .entry-actions{display:flex;align-items:center;gap:4px;flex:0 0 auto;padding:0 10px 0 2px}
+  .row-btn{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0;transition:.14s}
+  .row-btn:hover{border-color:var(--border);color:var(--accent);background:var(--bg)}
+  .row-btn svg{width:15px;height:15px}
+  .row-flag.on{color:var(--accent);border-color:var(--border);background:var(--bg)}
+  .row-hide.on{color:var(--ok);border-color:var(--border);background:var(--bg)}
+  .entry-head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:16px}
+  .eh-idx{font-family:var(--mono);font-size:.72rem;color:var(--text-muted);width:26px;flex:0 0 auto}
+  .eh-main{flex:1 1 auto;min-width:0}
+  .eh-term{display:block;font-family:var(--serif);font-weight:600;font-size:1.24rem;letter-spacing:-.01em;line-height:1.2;color:var(--text)}
+  .eh-tr{display:block;font-size:.9rem;color:var(--text-dim);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .eh-type{
+    flex:0 0 auto;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:4px 9px;
+  }
+  .eh-chev{flex:0 0 auto;width:18px;height:18px;color:var(--text-muted);transition:transform .22s ease}
+  .entry.open .eh-chev{transform:rotate(90deg)}
+  .entry.open{border-color:rgba(59,91,165,.28)}
+  [data-theme="dark"] .entry.open{border-color:rgba(138,166,224,.3)}
+
+  .panel{display:none;padding:0 clamp(14px,3vw,20px) 20px;border-top:1px solid var(--border)}
+  .entry.open .panel{display:block}
+  .panel-inner{padding-top:16px}
+
+  .ipa{display:flex;flex-wrap:wrap;gap:10px 20px;margin-bottom:14px}
+  .ipa span{font-family:var(--mono);font-size:.95rem;color:var(--text)}
+  .ipa b{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-right:6px;vertical-align:.08em}
+  .ipa .uk b{color:var(--uk)}
+  .ipa .us b{color:var(--us)}
+
+  .field{margin:0 0 16px}
+  .field:last-child{margin-bottom:0}
+  .field .lbl{
+    display:block;font-family:var(--mono);font-size:.66rem;font-weight:600;
+    letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;
+  }
+  .field p{margin:0;color:var(--text-dim);text-align:left;line-height:1.62;max-width:60ch;text-wrap:pretty}
+  .field.tr-main p{color:var(--text);font-weight:500;font-style:normal;line-height:1.5}
+  .field .en-ex{color:var(--text);font-style:italic;line-height:1.55}
+  .field .tr-ex{color:var(--text-dim);margin-top:3px;line-height:1.55}
+  .field .tr-ex + .en-ex{margin-top:14px}
+  /* öğrenilecek asıl yük: İngilizce eş/zıt kelimeler öne çıksın */
+  .field .syn,.field .ant{color:var(--accent);font-weight:600}
+  .field.antonyms p{letter-spacing:.005em}
+  /* Benzer kelimeler: liste + "Fark" açıklamasını ayır */
+  .field .diff{display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:var(--text-dim);line-height:1.62}
+  .field .diff::before{content:"Fark";display:block;font-family:var(--mono);font-size:.58rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);opacity:.9;margin-bottom:3px}
+  /* çekirdek alanlar ile meta (açıklama/köken) arasına ince ayraç */
+  .field.explanation{margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+  /* collocations */
+  .field .coll-desc{color:var(--text-muted);font-size:.8rem;line-height:1.5;margin:0 0 8px}
+  .field .coll{display:flex;flex-wrap:wrap;gap:8px;text-align:left}
+  .coll-chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:6px 11px;font-size:.92rem;color:var(--text-dim);line-height:1.45}
+  .coll-chip .cw-key{color:var(--accent);font-weight:700}
+
+  /* ---- collocation sekmesi ---- */
+  .coll-view{max-width:600px;margin:0 auto}
+  .coll-progress{margin:2px 0 20px}
+  .coll-progress .cp-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+  .coll-progress .cp-label{font-size:.85rem;color:var(--text-dim)}
+  .coll-progress .cp-num{font-family:var(--mono);font-size:.8rem;color:var(--text-muted);white-space:nowrap}
+  .coll-progress .stat-bar{margin:0}
+  .coll-progress .cp-note{font-size:.78rem;color:var(--text-muted);margin-top:8px}
+  .coll-sub{display:flex;justify-content:center;margin-bottom:20px}
+
+  /* çalış: kelime kartı */
+  /* collocation liste görünümü (açılır/kapanır) */
+  .cb-list{display:flex;flex-direction:column;gap:12px}
+  .cb-row{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:16px clamp(14px,3vw,20px)}
+  .cb-row.focused{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .cb-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 11px;width:100%;background:none;border:0;cursor:pointer;text-align:left;padding:0;color:inherit;font:inherit;margin-bottom:12px}
+  .cb-head:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .cb-w{font-family:var(--serif);font-weight:600;font-size:1.22rem;letter-spacing:-.01em;color:var(--accent);line-height:1.15}
+  .cb-type{font-family:var(--mono);font-size:.54rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+  .cb-tr{font-size:.9rem;color:var(--text-dim);line-height:1.4}
+  .cb-chev{width:18px;height:18px;flex:0 0 auto;margin-left:auto;color:var(--text-muted);transition:transform .18s;align-self:center}
+  .cb-row.cb-open .cb-chev{transform:rotate(90deg)}
+  .cb-coll{display:flex;flex-wrap:wrap;gap:8px;text-align:left}
+  .cb-panel{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .cb-row.cb-open .cb-panel{display:block}
+  .cb-panel .field{margin-top:0}
+  .cb-panel .field+.field{margin-top:14px}
+  .coll-card{border:1px solid var(--border);border-radius:18px;background:var(--surface);padding:20px clamp(16px,3.5vw,24px)}
+  .coll-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px;margin-bottom:4px}
+  .coll-w-term{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;color:var(--accent);line-height:1.15}
+  .coll-w-type{font-family:var(--mono);font-size:.56rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+  .coll-w-tr{width:100%;font-size:.92rem;color:var(--text-dim);line-height:1.4}
+  .coll-items{margin-top:16px;display:flex;flex-direction:column;gap:14px}
+  .coll-item{padding-top:14px;border-top:1px solid var(--border)}
+  .coll-item:first-child{padding-top:0;border-top:0}
+  .coll-phrase{font-size:1rem;color:var(--text-dim);line-height:1.5;margin-bottom:8px}
+  .coll-phrase .cw-key{color:var(--accent);font-weight:700}
+  .coll-mine{
+    width:100%;box-sizing:border-box;resize:none;overflow:hidden;
+    font-family:var(--sans);font-size:.92rem;line-height:1.5;color:var(--text);
+    background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px;transition:border-color .15s;
+  }
+  .coll-mine:focus{outline:none;border-color:var(--accent)}
+  .coll-mine.saved{border-color:var(--ok)}
+  .coll-controls{margin-top:20px}
+  .coll-controls .done-btn.is-done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .coll-controls .done-btn.is-done:hover{opacity:.9;color:#fff}
+  .coll-nav-idx{text-align:center;font-family:var(--mono);font-size:.72rem;color:var(--text-muted);margin-top:12px}
+
+  /* alıştırma */
+  .coll-q-prompt{word-break:break-word}
+  #cexBody .f-sentence .cw-key,#cexBody .q-prompt .cw-key{color:var(--accent);font-weight:700}
+  .cex-blank{color:var(--accent);font-weight:700;letter-spacing:.04em}
+
+  /* ---- flash kart ---- */
+  .cards-view{display:none;flex-direction:column;align-items:center}
+  .cards-view.active{display:flex}
+  .list-view.hidden{display:none}
+
+  .dir-row{display:flex;justify-content:center;margin:4px 0 22px}
+  .card{
+    width:100%;max-width:560px;min-height:172px;border:1px solid var(--border);border-radius:18px;
+    background:var(--paper);cursor:pointer;position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:30px 22px 34px;box-sizing:border-box;text-align:center;transition:border-color .2s;
+  }
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .card .side-tag{
+    position:absolute;top:13px;left:16px;font-family:var(--mono);font-size:.58rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);
+  }
+  .card .idx-tag{position:absolute;top:13px;right:16px;font-family:var(--mono);font-size:.68rem;color:var(--text-muted)}
+  .card .prompt{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,5vw,1.95rem);line-height:1.15;color:var(--text);letter-spacing:-.01em}
+  .card .prompt.small{font-size:clamp(1.1rem,3.8vw,1.5rem)}
+  .card .type-note{margin-top:10px;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .card .prompt-hint{margin-top:14px;max-width:34ch;font-size:.82rem;font-style:italic;line-height:1.5;color:var(--text-dim)}
+  .card .flip-hint{position:absolute;bottom:12px;font-size:.68rem;color:var(--text-muted)}
+
+  /* iki yüz aynı hücrede: kart yüksekliği çevrilince değişmez */
+  .faces{display:grid;width:100%}
+  .faces > .face{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .16s ease}
+  .face-back{opacity:0;visibility:hidden}
+  .card.flipped .face-front{opacity:0;visibility:hidden}
+  .card.flipped .face-back{opacity:1;visibility:visible}
+  .card.flipped .flip-hint{display:none}
+  .answer{width:100%}
+  .answer .a-term{font-family:var(--serif);font-weight:600;font-size:clamp(1.3rem,4.5vw,1.8rem);line-height:1.15;color:var(--accent);letter-spacing:-.01em}
+  .answer .a-tr{font-size:.95rem;color:var(--text);margin-top:9px}
+  .card-ipa{margin-top:16px;font-family:var(--mono);font-size:.85rem;color:var(--text-dim);text-align:center;letter-spacing:.01em;visibility:hidden}
+  .card.dir-en .card-ipa{visibility:visible}
+  .card.dir-tr.flipped .card-ipa{visibility:visible}
+  .card-ipa:empty{display:none}
+
+  /* animasyonlar: sonraki/önceki = kaydırma, çevirme = flip (birbirinden farklı) */
+  .faces.enter-right{animation:cardEnterRight .24s cubic-bezier(.22,.61,.36,1)}
+  .faces.enter-left{animation:cardEnterLeft .24s cubic-bezier(.22,.61,.36,1)}
+  @keyframes cardEnterRight{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes cardEnterLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
+  .card.flip-anim{animation:cardFlip .3s ease}
+  @keyframes cardFlip{0%{transform:perspective(700px) rotateX(0)}45%{transform:perspective(700px) rotateX(12deg)}100%{transform:perspective(700px) rotateX(0)}}
+  @media (prefers-reduced-motion:reduce){ .faces.enter-right,.faces.enter-left,.card.flip-anim{animation:none} }
+
+  .card-controls{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+  .card-controls button{
+    appearance:none;font-family:var(--sans);font-weight:600;font-size:.9rem;cursor:pointer;
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    border-radius:12px;padding:11px 18px;transition:.16s;
+  }
+  .card-controls button:hover{border-color:var(--accent);color:var(--accent)}
+  .card-controls button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .card-controls .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .card-controls .primary:hover{opacity:.9;color:#fff}
+  .card-controls .primary[aria-pressed="true"]{background:var(--text);border-color:var(--text)}
+
+  .card-details{display:none;width:100%;max-width:560px;margin:16px auto 0;border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:18px clamp(16px,3vw,20px);text-align:left}
+  .card-details.show{display:block}
+  .cd-word{font-family:var(--serif);font-weight:600;font-size:1.35rem;line-height:1.2;color:var(--accent);letter-spacing:-.01em;margin:0 0 12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .cd-word .cd-type{font-family:var(--mono);font-size:.56rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);vertical-align:middle;margin-left:8px}
+  .kbd-hint{margin-top:16px;font-size:.76rem;color:var(--text-muted);text-align:center;line-height:1.7}
+  .kbd-hint kbd{font-family:var(--mono);font-size:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:var(--text-dim)}
+
+  .empty{text-align:center;color:var(--text-muted);padding:50px 0;font-size:.95rem}
+
+  @media (max-width:480px){
+    .eh-type{display:none}
+    .eh-term{font-size:1.12rem}
+  }
+
+  /* ---- durum renkleri ---- */
+  :root{ --ok:#3f8f5f; --mid:#b8892e; --bad:#b4472e; }
+  [data-theme="dark"]{ --ok:#5bbd83; --mid:#d8ac5c; --bad:#e0765a; }
+
+  /* filtre + sekme kaydırma */
+  .filter-sel{
+    font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--text-dim);
+    background:var(--surface);border:1px solid var(--border);border-radius:999px;
+    padding:8px 14px;cursor:pointer;margin-left:auto;
+  }
+  .filter-sel:focus-visible{outline:2px solid var(--accent)}
+  .tabs .count{margin-left:0}
+  .tabs .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs .seg::-webkit-scrollbar{display:none}
+  .tabs .seg button{white-space:nowrap;padding:9px 15px}
+
+  /* genel buton */
+  .btn{
+    appearance:none;font-family:var(--sans);font-weight:600;font-size:.9rem;cursor:pointer;
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    border-radius:12px;padding:11px 20px;transition:.16s;
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{opacity:.9;color:#fff}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* durum rozeti (skordan türer) */
+  .assess-badge{
+    font-family:var(--sans);font-weight:600;font-size:.72rem;white-space:nowrap;
+    border:1px solid var(--border);border-radius:999px;padding:5px 11px;color:var(--text-dim);
+  }
+  .assess-badge.st-known{background:var(--ok);border-color:var(--ok);color:#fff}
+  .assess-badge.st-shaky{background:var(--mid);border-color:var(--mid);color:#fff}
+  .assess-badge.st-weak{background:var(--bad);border-color:var(--bad);color:#fff}
+  .entry[data-st="known"]{box-shadow:inset 4px 0 0 var(--ok)}
+  .entry[data-st="weak"]{box-shadow:inset 4px 0 0 var(--bad)}
+
+  /* kart üst şeridi */
+  .card-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;margin:4px 0 18px}
+  .card-topbar .topbar-right{flex-wrap:nowrap}
+  .card-topbar .seg{flex:0 0 auto}
+  .card-topbar .assess-badge{flex:0 0 auto}
+
+  /* bildim / bilemedim */
+  .assess-actions{display:flex;gap:12px;justify-content:center;margin-top:18px}
+  .assess-actions .btn{min-width:150px}
+  .btn.assess-hit{border-color:var(--ok);color:var(--ok)}
+  .btn.assess-hit:hover{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn.assess-miss{border-color:var(--bad);color:var(--bad)}
+  .btn.assess-miss:hover{background:var(--bad);border-color:var(--bad);color:#fff}
+  /* masaüstünde (fare) kart butonları gizli, klavye yeterli */
+  @media (hover:hover) and (pointer:fine){
+    #view-cards .assess-actions,
+    #view-cards .card-controls{display:none}
+  }
+  /* dokunmatik/mobilde klavye ipucunu gizle */
+  @media (pointer:coarse){
+    #view-cards .kbd-hint{display:none}
+  }
+
+  /* liste içi skor satırı */
+  .assess-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+  .assess-score{font-size:.82rem;color:var(--text-dim)}
+  .assess-score b{color:var(--text)}
+  .assess-btns{display:flex;gap:8px}
+  .assess-btn{appearance:none;cursor:pointer;font-family:var(--sans);font-weight:600;font-size:.74rem;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:7px 13px;transition:.15s;color:var(--text-dim)}
+  .assess-btn.hit{color:var(--ok)}
+  .assess-btn.hit:hover{background:var(--ok);border-color:var(--ok);color:#fff}
+  .assess-btn.miss{color:var(--bad)}
+  .assess-btn.miss:hover{background:var(--bad);border-color:var(--bad);color:#fff}
+
+  .stat-note{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:16px 0 0}
+
+  /* mod görünümleri */
+  .mode-view{display:none}
+
+  /* quiz */
+  .q-wrap,.f-wrap,.stats-wrap{max-width:560px;margin:0 auto}
+  .q-score{font-family:var(--mono);font-size:.8rem;letter-spacing:.04em;color:var(--text-muted);text-align:center;margin-bottom:14px}
+  .q-prompt{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,5.5vw,2.2rem);line-height:1.15;text-align:center;color:var(--text);margin:4px 0 6px;letter-spacing:-.01em}
+  .q-sub{text-align:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:22px}
+  .q-options{display:flex;flex-direction:column;gap:10px}
+  .q-opt{
+    appearance:none;text-align:left;cursor:pointer;font-family:var(--sans);font-size:1rem;color:var(--text);
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;
+    transition:.14s;display:flex;gap:12px;align-items:center;
+  }
+  .q-opt:hover:not(:disabled){border-color:var(--accent)}
+  .q-opt:disabled{cursor:default;opacity:.85}
+  .q-opt .q-key{font-family:var(--mono);font-size:.72rem;color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:2px 8px;flex:0 0 auto}
+  .q-opt.correct{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+  .q-opt.correct .q-key{border-color:var(--ok);color:var(--ok)}
+  .q-opt.wrong{border-color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+  .q-next{text-align:center;margin-top:18px}
+
+  /* boşluk doldurma */
+  .f-sentence{font-family:var(--serif);font-size:clamp(1.2rem,3.6vw,1.6rem);line-height:1.5;color:var(--text);text-align:center;margin:8px 0 8px}
+  .f-hint{text-align:center;color:var(--text-dim);font-size:.95rem;margin-bottom:20px}
+  .f-input{width:100%;box-sizing:border-box;font-family:var(--sans);font-size:1.05rem;text-align:center;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}
+  .f-input:focus{outline:none;border-color:var(--accent)}
+  .f-feedback{text-align:center;min-height:24px;margin-top:14px;font-weight:600;font-size:.95rem}
+  .f-feedback.ok{color:var(--ok)}
+  .f-feedback.no{color:var(--bad)}
+  .f-row{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+
+  /* okuma */
+  .rd-controls{display:flex;justify-content:flex-end;margin-bottom:16px}
+  .rd-item{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:15px clamp(14px,3vw,18px);margin-bottom:12px}
+  .rd-word{font-family:var(--serif);font-weight:600;font-size:1.12rem;color:var(--accent)}
+  .rd-type{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-left:8px}
+  .rd-en{margin:10px 0 0;color:var(--text);line-height:1.6;text-align:justify}
+  .rd-tr{margin:4px 0 0;color:var(--text-dim);line-height:1.6;text-align:justify}
+  .rd-en + .rd-en{margin-top:12px}
+  mark.rd-hl{background:var(--accent-soft);color:var(--accent);font-weight:600;padding:0 3px;border-radius:4px}
+  .reading-view.hide-tr .rd-tr{display:none}
+  /* okuma hikâyeleri */
+  .art{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:18px clamp(16px,3vw,22px);margin-bottom:16px}
+  .art-title{font-family:var(--serif);font-weight:600;font-size:1.25rem;color:var(--text);margin:0 0 12px;letter-spacing:-.01em}
+  .art-en p{color:var(--text);line-height:1.75;margin:0 0 10px}
+  .art-en p:last-child{margin-bottom:0}
+  .art-tr{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .art-tr p{color:var(--text-dim);line-height:1.7;margin:0 0 8px}
+  .art-tr p:last-child{margin-bottom:0}
+  .artword{color:var(--accent);font-weight:600}
+  .reading-view.hide-tr .art-tr{display:none}
+
+  /* istatistik */
+  .stat-bar{display:flex;height:16px;border-radius:999px;overflow:hidden;border:1px solid var(--border);margin:16px 0}
+  .stat-bar i{display:block;height:100%}
+  .stat-bar .s-known{background:var(--ok)}
+  .stat-bar .s-shaky{background:var(--mid)}
+  .stat-bar .s-weak{background:var(--bad)}
+  .stat-bar .s-none{background:var(--surface)}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px}
+  .stat-cell{border:1px solid var(--border);border-radius:14px;padding:16px;background:var(--surface)}
+  .stat-num{font-family:var(--serif);font-weight:600;font-size:1.8rem;color:var(--text);line-height:1}
+  .stat-cap{font-size:.82rem;color:var(--text-dim);margin-top:6px}
+  .stat-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+  /* cümle pratiği + yer imi (flag) */
+  .topbar-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+  .flag-btn{appearance:none;cursor:pointer;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);display:flex;align-items:center;justify-content:center;padding:0;transition:.15s}
+  .flag-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .flag-btn svg{width:16px;height:16px}
+  #flagBtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  #flagBtn.on svg{fill:none}
+  #hideBtn.on{background:var(--ok);border-color:var(--ok);color:#fff}
+  #hideBtn.on svg{fill:none}
+
+  .sent-wrap,.sent-intro,.sent-bar{max-width:620px;margin-left:auto;margin-right:auto}
+  .sent-intro{margin-top:0;margin-bottom:16px;color:var(--text-dim);font-size:.9rem;line-height:1.55}
+  .sent-bar{display:flex;justify-content:flex-end;margin-bottom:12px}
+  .sent-copy{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:999px;padding:7px 14px;font-family:var(--sans);font-size:.82rem;font-weight:600;transition:.15s}
+  .sent-copy svg{width:15px;height:15px}
+  .sent-copy:hover{border-color:var(--accent);color:var(--accent)}
+  .sent-copy.done{border-color:var(--ok);color:var(--ok)}
+  .sent-item{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:12px 14px;margin-bottom:10px}
+  .sent-head{display:flex;align-items:center;gap:8px}
+  .sent-word{font-family:var(--serif);font-weight:600;font-size:1.1rem;color:var(--accent);line-height:1.2}
+  .sent-type{font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+  .sent-actions{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .sent-detail,.sent-remove{appearance:none;cursor:pointer;width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);display:flex;align-items:center;justify-content:center;padding:0;transition:.15s;font-size:1.15rem;line-height:1}
+  .sent-detail svg{width:15px;height:15px}
+  .sent-detail:hover{border-color:var(--accent);color:var(--accent)}
+  .sent-remove:hover{border-color:var(--bad);color:var(--bad)}
+  .sent-ex{margin:7px 0 0;color:var(--text);font-style:italic;line-height:1.5;font-size:.95rem}
+  .sent-ex + .sent-ex{margin-top:4px}
+
+  /* tıklanabilir İngilizce kelimeler + popover + modal */
+  .wordref{cursor:help;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1px;text-underline-offset:2px}
+  .wordref:hover{text-decoration-style:solid}
+  .wordpop{position:fixed;z-index:300;min-width:150px;max-width:230px;background:var(--paper);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:10px;display:flex;flex-direction:column;gap:8px}
+  .wordpop[hidden]{display:none}
+  .wp-title{font-family:var(--serif);font-weight:600;font-size:1rem;color:var(--text);line-height:1.15}
+  .wp-btn{appearance:none;cursor:pointer;text-decoration:none;text-align:center;font-family:var(--sans);font-weight:600;font-size:.82rem;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:9px;padding:8px 10px;transition:.15s;display:block}
+  .wp-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .wp-detail{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .wp-detail:hover{background:var(--accent);color:#fff;opacity:.9}
+  .wp-note{font-size:.72rem;color:var(--text-muted);text-align:center}
+
+  .wordmodal-backdrop{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow:auto}
+  .wordmodal-backdrop[hidden]{display:none}
+  .wordmodal{position:relative;width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px clamp(16px,4vw,26px);box-shadow:0 24px 60px rgba(0,0,0,.32)}
+  .wordmodal .cd-word{padding-right:40px}
+  .wordmodal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .wordmodal-close:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="grain"></div>
+<a class="home-toggle" href="index.html" aria-label="Ana sayfaya dön">NS</a>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Tema değiştir">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+<button class="share-toggle" onclick="openShare()" aria-label="Bu sayfayı paylaş" type="button">
+  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+</button>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">İngilizce</p>
+    <h1>Kelime Defteri</h1>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Görünüm">
+    <div class="seg" id="tabSeg">
+      <button id="tab-list" role="tab" aria-selected="true">Liste</button>
+      <button id="tab-cards" role="tab" aria-selected="false">Kartlar</button>
+      <button id="tab-quiz" role="tab" aria-selected="false">Quiz</button>
+      <button id="tab-fill" role="tab" aria-selected="false">Boşluk</button>
+      <button id="tab-reading" role="tab" aria-selected="false">Okuma</button>
+      <button id="tab-coll" role="tab" aria-selected="false">Collocation</button>
+    </div>
+    <div class="more-menu">
+      <button class="more-btn" id="moreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="İstatistik: Cümle, Öğrendiklerim, Genel" title="Cümle · Öğrendiklerim · Genel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>İstatistik</span>
+        <svg class="mm-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="more-pop" id="morePop" role="menu" hidden>
+        <button id="tab-sentence" class="more-item" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Cümle</span>
+        </button>
+        <button id="go-mastered" class="more-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Öğrendiklerim</span>
+        </button>
+        <button id="tab-stats" class="more-item" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Genel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctlbar">
+    <p class="ctlbar-hint" id="ctlHint"></p>
+    <div class="ctlbar-right" id="filterHost">
+      <select class="filter-sel" id="filterSel" aria-label="Kelimeleri filtrele">
+        <option value="all">Tümü</option>
+        <option value="weak">Zayıf</option>
+        <option value="shaky">Sağlam değil</option>
+        <option value="known">Biliyorum</option>
+        <option value="hidden">Öğrendiklerim</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <!-- LİSTE -->
+  <div class="list-view" id="view-list" role="tabpanel" aria-labelledby="tab-list">
+    <div class="list" id="list"></div>
+  </div>
+
+  <!-- KARTLAR -->
+  <div class="cards-view" id="view-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
+    <div class="card-topbar">
+      <div class="seg" role="group" aria-label="Yön">
+        <button id="dir-en" aria-selected="true">EN → TR</button>
+        <button id="dir-tr" aria-selected="false">TR → EN</button>
+      </div>
+      <div class="topbar-right">
+        <span class="assess-badge" id="cardBadge"></span>
+        <button class="flag-btn" id="flagBtn" type="button" aria-pressed="false" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım (L)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+        <button class="flag-btn" id="hideBtn" type="button" aria-pressed="false" aria-label="Öğrendim olarak işaretle" title="Öğrendim, kaldır (G)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" id="card" tabindex="0" role="button" aria-label="Kartı çevir">
+      <span class="side-tag" id="sideTag">İngilizce</span>
+      <span class="idx-tag" id="idxTag"></span>
+      <div class="faces">
+        <div class="face face-front">
+          <div class="prompt" id="prompt"></div>
+          <div class="type-note" id="promptType"></div>
+          <div class="prompt-hint" id="promptHint"></div>
+        </div>
+        <div class="face face-back">
+          <div class="answer" id="answer">
+            <div class="a-term" id="aTerm"></div>
+            <div class="a-tr" id="aTr"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-ipa" id="cardIpa"></div>
+      <span class="flip-hint">çevirmek için dokun</span>
+    </div>
+
+    <div class="assess-actions">
+      <button class="btn assess-miss" id="missBtn" type="button">Bilemedim</button>
+      <button class="btn assess-hit" id="hitBtn" type="button">Bildim</button>
+    </div>
+
+    <div class="card-controls">
+      <button id="prevBtn" aria-label="Önceki">← Önceki</button>
+      <button id="detailBtn" class="primary" aria-pressed="false">Açıklama</button>
+      <button id="shuffleBtn" aria-label="Karıştır">Karıştır</button>
+      <button id="nextBtn" aria-label="Sonraki">Sonraki →</button>
+    </div>
+
+    <div class="card-details" id="cardDetails"></div>
+
+    <p class="kbd-hint">
+      <kbd>Boşluk</kbd> çevir · <kbd>←</kbd> <kbd>→</kbd> gez · <kbd>N</kbd> bilemedim · <kbd>M</kbd> bildim · <kbd>B</kbd> açıklama · <kbd>L</kbd> cümle · <kbd>G</kbd> öğrendim · <kbd>S</kbd> karıştır
+    </p>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="mode-view" id="view-quiz" role="tabpanel" aria-labelledby="tab-quiz">
+    <div class="q-wrap">
+      <div class="dir-row">
+        <div class="seg" role="group" aria-label="Yön">
+          <button id="qdir-en" aria-selected="true">EN → TR</button>
+          <button id="qdir-tr" aria-selected="false">TR → EN</button>
+        </div>
+      </div>
+      <div class="q-score" id="qScore"></div>
+      <div class="q-prompt" id="qPrompt"></div>
+      <div class="q-sub" id="qSub"></div>
+      <div class="q-options" id="qOptions"></div>
+      <div class="q-next"><button class="btn primary" id="qNext" disabled>Sonraki →</button></div>
+      <p class="kbd-hint"><kbd>1</kbd>–<kbd>4</kbd> seç · <kbd>Enter</kbd> sonraki soru</p>
+    </div>
+  </div>
+
+  <!-- BOŞLUK DOLDURMA -->
+  <div class="mode-view" id="view-fill" role="tabpanel" aria-labelledby="tab-fill">
+    <div class="f-wrap">
+      <div class="q-score" id="fScore"></div>
+      <div class="f-sentence" id="fSentence"></div>
+      <div class="f-hint" id="fHint"></div>
+      <input class="f-input" id="fInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Eksik kelimeyi yaz...">
+      <div class="f-feedback" id="fFeedback"></div>
+      <div class="f-row">
+        <button class="btn" id="fReveal">Göster</button>
+        <button class="btn primary" id="fCheck">Kontrol et</button>
+        <button class="btn" id="fNext">Sonraki →</button>
+      </div>
+      <p class="kbd-hint"><kbd>Enter</kbd> kontrol et / sonraki</p>
+    </div>
+  </div>
+
+  <!-- OKUMA -->
+  <div class="mode-view reading-view" id="view-reading" role="tabpanel" aria-labelledby="tab-reading">
+    <div class="rd-controls">
+      <button class="btn" id="rdToggle" aria-pressed="false">Türkçeyi gizle</button>
+    </div>
+    <div id="rdList"></div>
+  </div>
+
+  <!-- CÜMLE PRATİĞİ -->
+  <div class="mode-view" id="view-sentence" role="tabpanel" aria-labelledby="tab-sentence">
+    <p class="sent-intro">Cümlede zorlandığın kelimeler ve örnek cümleleri. Tam içerik için sağ üstteki düğmeye bas.</p>
+    <div class="sent-wrap" id="sentenceList"></div>
+  </div>
+
+  <!-- COLLOCATION -->
+  <div class="mode-view" id="view-coll" role="tabpanel" aria-labelledby="tab-coll">
+    <div class="coll-view">
+      <div class="coll-progress" id="collProgress"></div>
+      <div class="coll-sub">
+        <div class="seg" role="group" aria-label="Collocation mode">
+          <button id="coll-list" aria-selected="true">List</button>
+          <button id="coll-study" aria-selected="false">Write</button>
+          <button id="coll-match" aria-selected="false">Match</button>
+          <button id="coll-fill" aria-selected="false">Fill</button>
+        </div>
+      </div>
+
+      <!-- LİSTE: tüm kelimeler + collocation'ları -->
+      <div id="collBrowse"></div>
+
+      <!-- ÇALIŞ: tek kelime navigatörü -->
+      <div id="collStudy" hidden></div>
+
+      <!-- ALIŞTIRMA -->
+      <div id="collEx" hidden>
+        <div class="q-score" id="cexScore"></div>
+        <div id="cexBody"></div>
+        <p class="kbd-hint" id="cexHint"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- İSTATİSTİK -->
+  <div class="mode-view" id="view-stats" role="tabpanel" aria-labelledby="tab-stats">
+    <div class="stats-wrap" id="statsWrap"></div>
+  </div>
+
+</div>
+
+<div class="wordpop" id="wordpop" role="menu" hidden></div>
+<div class="wordmodal-backdrop" id="wordModalBack" hidden>
+  <div class="wordmodal" role="dialog" aria-modal="true">
+    <button class="wordmodal-close" id="wordModalClose" type="button" aria-label="Kapat">&times;</button>
+    <div class="wordmodal-body" id="wordModalBody"></div>
+  </div>
+</div>
+
+<div class="list-nav" id="listNav">
+  <button id="navUp" type="button" aria-label="Önceki kelimeye git">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <button id="navDown" type="button" aria-label="Sonraki kelimeye git">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+</div>
+
+<div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">NS Articles</span><span class="logo-author">by M. Enes Durmuş</span></div>
+
+<script>
+/* ============ VERİ ============ */
+const WORDS = [
+  {en:`slit`, tr:`yarık, ince kesik`, type:`kelime`, uk:`/slɪt/`, us:`/slɪt/`, note:`Eski İngilizce "slitan" (yarmak, yırtmak) fiilinden gelir; "split" ile akrabadır.`, detail:`Uzun, ince bir kesik ya da aralık. Hem "yarık açmak" fiili hem de "ince aralık" ismi olarak kullanılır.`, ex:`She peered through a slit in the curtains.`, exTr:`Perdedeki ince bir yarıktan dışarıyı gözetledi.`, ex2:`He made a small slit in the envelope with a knife.`, exTr2:`Zarfta bıçakla küçük bir yarık açtı.`, similar:`slot, crack, gap. Fark: slit uzun ve incedir; slot belli bir amaç için açılmış düzgün yuvadır (ör. para yuvası); crack çatlaktır; gap genel bir boşluktur.`, coll:`a slit IN sth (curtain, envelope) · peer/look THROUGH a slit · MAKE a slit`},
+  {en:`gill`, tr:`solungaç`, type:`kelime`, uk:`/ɡɪl/`, us:`/ɡɪl/`, note:`Muhtemelen İskandinav kökenli (Eski Norsça). Mantar şapkasının altındaki ince lamellere de "gills" denir.`, detail:`Balıkların sudan oksijen aldığı solunum organı.`, ex:`Fish extract oxygen from water through their gills.`, exTr:`Balıklar sudan oksijeni solungaçları aracılığıyla alır.`, ex2:`The shark's gills flared as it swam.`, exTr2:`Köpekbalığı yüzerken solungaçları açıldı.`, coll:`breathe/extract oxygen THROUGH the gills · a fish's gills · gills flared`},
+  {en:`eerie`, tr:`ürkütücü, tekinsiz`, type:`sıfat`, uk:`/ˈɪəri/`, us:`/ˈɪri/`, note:`Kuzey İngiltere ve İskoç lehçesinden; ilk anlamı "korku dolu" idi.`, detail:`Tuhaf ve gizemli bir biçimde korkutucu; insanın tüylerini ürperten.`, ex:`An eerie silence filled the abandoned house.`, exTr:`Terk edilmiş evi tekinsiz bir sessizlik kapladı.`, ex2:`There was something eerie about the old doll.`, exTr2:`Eski oyuncak bebekte tekinsiz bir şey vardı.`, similar:`creepy, spooky, uncanny. Fark: eerie sessiz ve gizemli bir ürperti verir; creepy tüyler ürperticidir; spooky hayaletimsidir; uncanny tuhaf biçimde tanıdıktır.`, opposite:`ordinary, reassuring.`, coll:`an eerie silence/feeling/glow · there was something eerie ABOUT sth`},
+  {en:`hiccough`, tr:`hıçkırık; (mecazi) ufak aksaklık`, type:`kelime`, uk:`/ˈhɪkʌp/`, us:`/ˈhɪkʌp/`, note:`Sesi taklit eden bir sözcüktür.`, detail:`Diyaframın istemsiz kasılması; mecazi olarak küçük, geçici bir aksaklık.`, ex:`The launch went smoothly apart from one small hiccough.`, exTr:`Lansman, küçük bir aksaklık dışında sorunsuz geçti.`, ex2:`I got the hiccoughs after eating too fast.`, exTr2:`Çok hızlı yiyince hıçkırık tuttu.`, extra:`"hiccup" ile aynı kelimedir; bu eski yazım, "cough" (öksürük) sözcüğüne yanlış benzetmeyle oluşmuştur ama okunuşu değişmez.`, coll:`GET/HAVE the hiccoughs · a small/minor hiccough (aksaklık için)`},
+  {en:`burden`, tr:`yük, külfet`, type:`kelime`, uk:`/ˈbɜːdn/`, us:`/ˈbɜːrdn/`, note:`Eski İngilizce "byrþen"; "bear" (taşımak) fiiliyle akrabadır.`, detail:`Ağır bir yük; kişiyi kaygılandıran bir görev ya da sorumluluk.`, ex:`The cost of care placed a huge burden on the family.`, exTr:`Bakım masrafı aileye büyük bir yük bindirdi.`, ex2:`She didn't want to be a burden to anyone.`, exTr2:`Kimseye yük olmak istemiyordu.`, similar:`load, weight, onus. Fark: burden hem fiziksel hem manevi ağırlıktır; load somut yüktür; onus resmi dilde sorumluluk yüküdür.`, opposite:`relief, boon.`, coll:`PLACE/PUT a burden ON sb · a burden TO sb · CARRY/EASE the burden`},
+  {en:`greedy`, tr:`açgözlü`, type:`sıfat`, uk:`/ˈɡriːdi/`, us:`/ˈɡriːdi/`, note:`Eski İngilizce "grædig" sözcüğünden.`, detail:`İhtiyacından fazla yemek, para ya da güç isteyen.`, ex:`He was too greedy to share the prize.`, exTr:`Ödülü paylaşamayacak kadar açgözlüydü.`, ex2:`Don't be greedy; leave some cake for the others.`, exTr2:`Açgözlülük etme, başkalarına da biraz pasta bırak.`, similar:`avaricious, gluttonous, grasping. Fark: greedy geneldir; gluttonous özellikle yemekte oburluktur; avaricious ve grasping parada aşırılıktır.`, opposite:`generous, unselfish.`, coll:`greedy FOR sth · too greedy TO do sth · don't be greedy`},
+  {en:`curbside`, tr:`kaldırım kenarı, yol kenarı`, type:`kelime`, uk:`/ˈkɜːbsaɪd/`, us:`/ˈkɜːrbsaɪd/`, note:`"curb" (kaldırım kenarı, İngiliz yazımıyla "kerb") + "side". Özellikle araçtan inmeden teslim almada kullanılır.`, detail:`Yolun ya da kaldırımın kenarı; "curbside pickup" araçtan inmeden teslim alma demektir.`, ex:`You can collect your order at curbside.`, exTr:`Siparişini yol kenarından, arabandan inmeden alabilirsin.`, ex2:`The taxi waited at the curbside.`, exTr2:`Taksi yol kenarında bekledi.`, coll:`AT the curbside · curbside pickup/collection · wait at the curbside`},
+  {en:`detached house`, tr:`müstakil ev`, type:`kalıp`, uk:`/dɪˌtætʃt ˈhaʊs/`, us:`/dɪˌtætʃt ˈhaʊs/`, note:`"detached" Fransızca "détacher" (ayırmak) fiilinden. Karşıtı "semi-detached" (ikiz/bitişik) evdir.`, detail:`Başka hiçbir binaya bitişik olmayan, tek başına duran ev.`, ex:`They bought a detached house with a large garden.`, exTr:`Büyük bahçeli, müstakil bir ev aldılar.`, ex2:`Detached houses are more expensive than flats here.`, exTr2:`Burada müstakil evler dairelerden daha pahalı.`, coll:`a detached house WITH a garden · BUY/LIVE IN a detached house`},
+  {en:`eyelid`, tr:`göz kapağı`, type:`kelime`, uk:`/ˈaɪlɪd/`, us:`/ˈaɪlɪd/`, note:`"eye" (göz) + "lid" (kapak, Eski İngilizce "hlid").`, detail:`Gözü örten, açılıp kapanan ince deri kıvrımı.`, ex:`Her eyelids grew heavy as she read.`, exTr:`Okurken göz kapakları ağırlaştı.`, ex2:`A tiny insect landed on his eyelid.`, exTr2:`Minik bir böcek göz kapağına kondu.`, coll:`eyelids grew heavy · sth landed ON one's eyelid · droopy/heavy eyelids`},
+  {en:`nod`, tr:`baş sallamak (onaylama)`, type:`kelime`, uk:`/nɒd/`, us:`/nɑːd/`, note:`Orta İngilizce kökenli, kesin kaynağı belirsiz.`, detail:`Onaylamak ya da selamlamak için başı aşağı yukarı hareket ettirmek.`, ex:`She gave a slight nod to show she understood.`, exTr:`Anladığını göstermek için hafifçe başını salladı.`, ex2:`He nodded off during the lecture.`, exTr2:`Ders sırasında uyuyakaldı.`, extra:`"nod off" kalıbı, oturduğun yerde uyuyakalmak demektir.`, coll:`GIVE a nod · nod (one's head) TO/AT sb · nod OFF (uyuyakalmak)`},
+  {en:`absence`, tr:`yokluk; (bir yerde) bulunmama`, type:`kelime`, uk:`/ˈæbsəns/`, us:`/ˈæbsəns/`, note:`Latince "absentia" sözcüğünden.`, detail:`Bir yerde bulunmama hali; bir şeyin eksikliği.`, ex:`In the absence of evidence, the case was dropped.`, exTr:`Kanıt yokluğunda dava düştü.`, ex2:`Her absence from the meeting was noticed.`, exTr2:`Toplantıdaki yokluğu fark edildi.`, similar:`lack, dearth, want. Fark: absence bir şeyin ya da kişinin hiç olmamasıdır; lack yetersizliktir; dearth kıtlık derecesinde azlıktır.`, opposite:`presence.`, coll:`IN the absence OF sth · absence FROM (a meeting) · in sb's absence`},
+  {en:`valuable`, tr:`değerli, kıymetli`, type:`sıfat`, uk:`/ˈvæljuəbl/`, us:`/ˈvæljəbl/`, note:`"value" (değer) sözcüğünden; Latince "valere" (değmek, güçlü olmak) fiilinden.`, detail:`Çok para eden ya da çok işe yarayan.`, ex:`Your feedback has been extremely valuable.`, exTr:`Geri bildirimin son derece değerliydi.`, ex2:`The museum houses many valuable paintings.`, exTr2:`Müze pek çok değerli tabloya ev sahipliği yapıyor.`, similar:`precious, priceless, worthwhile. Fark: valuable değerlidir; precious duygusal ya da nadir değeri vurgular; priceless paha biçilmezdir; worthwhile çabaya değerdir.`, opposite:`worthless, valueless.`, coll:`extremely/highly valuable · valuable TO sb · a valuable lesson/asset`},
+  {en:`irreplaceable`, tr:`yeri doldurulamaz, eşsiz`, type:`sıfat`, uk:`/ˌɪrɪˈpleɪsəbl/`, us:`/ˌɪrɪˈpleɪsəbl/`, note:`"ir-" (olumsuzluk) + "replace" (değiştirmek) + "-able".`, detail:`Yerine bir başkası konulamayacak kadar özel ya da benzersiz.`, ex:`These old photographs are irreplaceable.`, exTr:`Bu eski fotoğrafların yeri doldurulamaz.`, ex2:`A good mentor is irreplaceable.`, exTr2:`İyi bir mentorun yeri doldurulamaz.`, similar:`unique, one-of-a-kind. Fark: irreplaceable yeri doldurulamaz olandır; unique benzersizdir ama illa değerli değildir.`, opposite:`replaceable, expendable.`, coll:`utterly/truly irreplaceable · an irreplaceable asset/part of the team`},
+  {en:`clandestine`, tr:`gizli, el altından`, type:`sıfat`, uk:`/klænˈdestɪn/`, us:`/klænˈdestən/`, note:`Latince "clandestinus"; "clam" (gizlice) kökünden.`, detail:`Özellikle izin verilmediği için gizli tutulan.`, ex:`They held clandestine meetings after dark.`, exTr:`Hava karardıktan sonra gizli toplantılar yaptılar.`, ex2:`The spy led a clandestine life for years.`, exTr2:`Casus yıllarca gizli bir hayat sürdü.`, similar:`covert, secret, surreptitious. Fark: clandestine ve covert gizli, izinsiz eylemler içindir (askeri, siyasi); secret geneldir; surreptitious sinsi, el çabukluğuyla yapılanı anlatır.`, opposite:`open, overt, aboveboard.`, coll:`HOLD clandestine meetings · a clandestine affair/operation/life`},
+  {en:`pseudonym / pen name`, tr:`takma ad, müstear isim`, type:`kelime`, uk:`/ˈsjuːdənɪm/`, us:`/ˈsuːdənɪm/`, note:`Yunanca "pseudes" (sahte) + "onoma" (isim) sözcüklerinden.`, detail:`Bir yazarın gerçek adı yerine kullandığı uydurma isim.`, ex:`She wrote her thrillers under a pseudonym.`, exTr:`Gerilim romanlarını takma bir adla yazdı.`, ex2:`George Orwell was a pseudonym for Eric Blair.`, exTr2:`George Orwell, Eric Blair'in takma adıydı.`, extra:`"pen name" birebir "kalem adı" demektir.`, coll:`write UNDER a pseudonym/pen name · a pseudonym FOR sb`},
+  {en:`bunker`, tr:`sığınak; (golf) kum çukuru`, type:`kelime`, uk:`/ˈbʌŋkə/`, us:`/ˈbʌŋkər/`, note:`İskoççada "bonker" (oturak, sandık); sonra kömürlük, ardından yeraltı sığınağı anlamını kazandı.`, detail:`Yeraltındaki korunaklı sığınak; golfte engel olarak konan kum çukuru.`, ex:`The troops took cover in an underground bunker.`, exTr:`Askerler yeraltındaki bir sığınağa saklandı.`, ex2:`His ball landed in the bunker beside the green.`, exTr2:`Topu, sahanın yanındaki kum çukuruna düştü.`, coll:`an underground bunker · TAKE cover/hide IN a bunker · land IN a bunker (golf)`},
+  {en:`exasperated`, tr:`bıkkın, çileden çıkmış`, type:`sıfat`, uk:`/ɪɡˈzæspəreɪtɪd/`, us:`/ɪɡˈzæspəreɪtɪd/`, note:`Latince "exasperare" (pürüzlendirmek, kızdırmak); "asper" (pürüzlü) kökünden.`, detail:`Bir şeyden dolayı iyice sinirlenmiş ve bunalmış.`, ex:`She let out an exasperated sigh.`, exTr:`Bezgin bir iç çekiş saldı.`, ex2:`The teacher was exasperated by the constant noise.`, exTr2:`Öğretmen bitmeyen gürültüden bunalmıştı.`, hint:`Vurgu: bitmeyen bir şeyden bıkıp çileden çıkma.`, similar:`frustrated, irritated, aggravated. Fark: exasperated bıkkınlık ve çaresizliktir; frustrated engellenmişlik hissidir; irritated hafif sinirdir.`, opposite:`calm, content, unruffled.`, coll:`exasperated BY/WITH sb/sth · an exasperated sigh · GET exasperated`},
+  {en:`commiserating`, tr:`(biriyle) dert ortağı olma, acısını paylaşma`, type:`kelime`, uk:`/kəˈmɪzəreɪtɪŋ/`, us:`/kəˈmɪzəreɪtɪŋ/`, note:`Latince "commiserari"; "com-" (birlikte) + "miser" (zavallı).`, detail:`Birinin talihsizliği karşısında ona acıyıp üzüntüsünü paylaşma.`, ex:`Friends gathered, commiserating with him over the loss.`, exTr:`Arkadaşları toplanıp kaybı için onunla dertleşti.`, ex2:`They spent the evening commiserating over lost jobs.`, exTr2:`Akşamı, kaybettikleri işler üzerine dertleşerek geçirdiler.`, coll:`commiserate WITH sb · commiserate OVER (a loss) · offer commiserations`},
+  {en:`agitated`, tr:`tedirgin, huzursuz, telaşlı`, type:`sıfat`, uk:`/ˈædʒɪteɪtɪd/`, us:`/ˈædʒɪteɪtɪd/`, note:`Latince "agitare" (sürmek, hareket ettirmek) fiilinden.`, detail:`Sinirli, tedirgin, sakin duramayan.`, ex:`He became agitated when asked about the money.`, exTr:`Para sorulunca huzursuzlandı.`, ex2:`Don't get so agitated; we'll fix it.`, exTr2:`Bu kadar telaşlanma, hallederiz.`, hint:`Vurgu: tedirginlik ve telaşla yerinde duramama.`, similar:`anxious, restless, flustered. Fark: agitated dıştan görünen huzursuzluk ve hareketliliktir; anxious içsel kaygıdır; flustered şaşkın telaştır.`, opposite:`calm, composed, relaxed.`, coll:`GET/BECOME agitated · agitated ABOUT/BY sth · don't get so agitated`},
+  {en:`perturbed`, tr:`tedirgin, huzuru kaçmış`, type:`sıfat`, uk:`/pəˈtɜːbd/`, us:`/pərˈtɜːrbd/`, note:`Latince "perturbare" (altüst etmek, karıştırmak) fiilinden.`, detail:`Kaygılı, kafası karışmış, huzuru kaçmış.`, ex:`She seemed perturbed by the sudden change of plan.`, exTr:`Ani plan değişikliğinden rahatsız olmuş görünüyordu.`, ex2:`He seemed deeply perturbed by the news.`, exTr2:`Haberden derin biçimde rahatsız olmuş görünüyordu.`, extra:`Karşıtı "unperturbed" (istifini bozmayan, sakin) de çok yaygındır.`, hint:`Vurgu: bir şeyin huzurunu kaçırması, kafasının karışması.`, similar:`unsettled, troubled, disconcerted. Fark: perturbed hafif, nazik bir rahatsızlıktır; troubled daha derin bir derttir; disconcerted afallamadır.`, opposite:`unperturbed, untroubled, calm.`, coll:`perturbed BY sth · deeply perturbed · seem perturbed (karşıtı unperturbed)`},
+  {en:`ruthless`, tr:`acımasız, merhametsiz`, type:`sıfat`, uk:`/ˈruːθləs/`, us:`/ˈruːθləs/`, note:`Bugün tek başına kullanılmayan "ruth" (acıma, merhamet) + "-less". "ruth" artık eskimiş bir sözcüktür.`, detail:`Hiç merhamet göstermeyen.`, ex:`A ruthless dictator crushed all opposition.`, exTr:`Acımasız bir diktatör tüm muhalefeti ezdi.`, ex2:`She is ruthless in business negotiations.`, exTr2:`İş görüşmelerinde acımasızdır.`, hint:`Vurgu: acıma/merhamet yokluğu; hedefe giderken kimseyi kayırmama.`, similar:`cruel, merciless, heartless. Fark: ruthless hedefe giderken acımasızlıktır; merciless hiç af tanımaz; cruel acı çektirmeyi ister; heartless duygusuzdur.`, opposite:`merciful, compassionate.`, coll:`ruthless IN (business) · a ruthless dictator/pursuit · utterly ruthless`},
+  {en:`cruel`, tr:`zalim, gaddar`, type:`sıfat`, uk:`/ˈkruːəl/`, us:`/ˈkruːəl/`, note:`Latince "crudelis"; "crudus" (çiğ, ham) ile akrabadır.`, detail:`Bilerek acı ya da ıstırap veren.`, ex:`It was cruel to leave the dog out in the cold.`, exTr:`Köpeği soğukta dışarıda bırakmak zalimceydi.`, ex2:`Fate can be cruel.`, exTr2:`Kader bazen zalim olabilir.`, hint:`Vurgu: kasten acı ve ıstırap çektirme; zalimlik.`, similar:`brutal, vicious, savage. Fark: cruel kasten acı verir; brutal kaba ve şiddetlidir; vicious kötücül saldırganlıktır; savage vahşidir.`, opposite:`kind, humane, gentle.`, coll:`cruel TO sb · it was cruel TO do sth · a cruel twist of fate`},
+  {en:`blunt`, tr:`(bıçak) kör; (konuşma) dobra`, type:`sıfat`, uk:`/blʌnt/`, us:`/blʌnt/`, note:`Orta İngilizce; muhtemelen İskandinav kökenli.`, detail:`Keskin olmayan; ya da lafı yumuşatmadan, doğrudan söyleyen.`, ex:`To be blunt, your plan won't work.`, exTr:`Açık konuşayım, planın yürümez.`, ex2:`The knife was too blunt to cut the bread.`, exTr2:`Bıçak, ekmeği kesemeyecek kadar kördü.`, similar:`frank, curt, brusque. Fark: blunt lafı yumuşatmadan söyler (kırıcı olabilir); frank içten ve açıktır (nötr); curt ve brusque kısa, ters ve kabadır.`, opposite:`(söz) tactful, diplomatic; (bıçak) sharp.`, coll:`TO BE blunt · a blunt knife/instrument · blunt WITH sb · blunt ABOUT sth`},
+  {en:`blunder`, tr:`gaf, büyük hata`, type:`kelime`, uk:`/ˈblʌndə/`, us:`/ˈblʌndər/`, note:`Orta İngilizce; "blind" (kör) sözcüğüyle akrabadır, "körü körüne davranmak" fikrini taşır.`, detail:`Dikkatsizce yapılan aptalca, büyük bir hata.`, ex:`Forgetting the client's name was a real blunder.`, exTr:`Müşterinin adını unutmak tam bir gaftı.`, ex2:`The general's blunder cost many lives.`, exTr2:`Generalin gafı birçok cana mal oldu.`, similar:`mistake, gaffe, slip-up. Fark: blunder dikkatsizce yapılan büyük hatadır; gaffe utandıran sosyal hatadır; slip-up küçük bir sürçmedir.`, coll:`MAKE a blunder · a costly/serious blunder · a tactical blunder`},
+  {en:`hypocrite / hypocritical`, tr:`ikiyüzlü (kişi); ikiyüzlüce`, type:`kelime`, uk:`/ˈhɪpəkrɪt/ · /ˌhɪpəˈkrɪtɪkl/`, us:`/ˈhɪpəkrɪt/ · /ˌhɪpəˈkrɪtɪkl/`, note:`Yunanca "hypokrites" (oyuncu, rol yapan) sözcüğünden gelir. İkiyüzlü kişi de bir tür rol yapar.`, detail:`Sahip olmadığı ahlaki değerlere sahipmiş gibi davranan kişi ("hypocrite"); bu davranışın sıfatı "hypocritical".`, ex:`It's hypocritical to preach honesty while lying.`, exTr:`Yalan söylerken dürüstlük vaazı vermek ikiyüzlülüktür.`, ex2:`He called her a hypocrite for breaking her own rules.`, exTr2:`Kendi kurallarını çiğnediği için ona ikiyüzlü dedi.`, similar:`two-faced, phoney, sanctimonious. Fark: hypocrite savunduğu değerlere kendi uymayandır; two-faced yüze başka arkaya başka davranandır; sanctimonious sahte bir erdem gösterisidir.`, opposite:`sincere, genuine.`, coll:`CALL sb a hypocrite · it's hypocritical TO do sth · hypocritical ABOUT sth`},
+  {en:`contradicting`, tr:`çelişen, ters düşen`, type:`kelime`, uk:`/ˌkɒntrəˈdɪktɪŋ/`, us:`/ˌkɑːntrəˈdɪktɪŋ/`, note:`Latince "contra" (karşı) + "dicere" (söylemek).`, detail:`Tam tersini söyleyen; kendisiyle ya da başka bir ifadeyle tutarsız.`, ex:`His statement kept contradicting the earlier report.`, exTr:`İfadesi, önceki raporla sürekli çelişiyordu.`, ex2:`You're contradicting yourself.`, exTr2:`Kendinle çelişiyorsun.`, opposite:`agreeing, corroborating, confirming.`, coll:`contradict yourself · keep contradicting (a report/statement) · directly contradict`},
+  {en:`accountable`, tr:`hesap verebilir, sorumlu`, type:`sıfat`, uk:`/əˈkaʊntəbl/`, us:`/əˈkaʊntəbl/`, note:`"account" (hesap) sözcüğünden.`, detail:`Yaptıklarından sorumlu ve bunları açıklamakla yükümlü olan.`, ex:`Leaders must be held accountable for their decisions.`, exTr:`Liderler kararlarından dolayı hesap verebilir olmalıdır.`, ex2:`We hold ourselves accountable to our customers.`, exTr2:`Kendimizi müşterilerimize karşı sorumlu tutarız.`, similar:`responsible, liable, answerable. Fark: accountable hesap verme yükümlülüğüdür; responsible görev sahibidir; liable yasal olarak sorumludur.`, opposite:`unaccountable, unanswerable.`, coll:`HOLD sb accountable · accountable FOR sth · accountable TO sb`},
+  {en:`rigged`, tr:`hileli, danışıklı, ayarlanmış`, type:`sıfat`, uk:`/rɪɡd/`, us:`/rɪɡd/`, note:`"rig" fiili önce "gemiyi donatmak" demekti; "hile ile ayarlamak" anlamı 19. yüzyılda çıktı.`, detail:`Belli bir sonucu vermek üzere hileyle düzenlenmiş.`, ex:`The protesters claimed the election was rigged.`, exTr:`Protestocular seçimin hileli olduğunu iddia etti.`, ex2:`He felt the whole system was rigged against him.`, exTr2:`Bütün sistemin ona karşı hileli kurulduğunu hissediyordu.`, opposite:`fair, aboveboard.`, coll:`a rigged election/game/system · rigged AGAINST sb · claim sth was rigged`},
+  {en:`fake claims`, tr:`asılsız / sahte iddialar`, type:`kalıp`, uk:`/feɪk kleɪmz/`, us:`/feɪk kleɪmz/`, note:`"fake" 18. yüzyıl argosu; "claim" Latince "clamare" (haykırmak) fiilinden.`, detail:`Doğruymuş gibi sunulan yanlış iddialar.`, ex:`The ad was banned for making fake claims.`, exTr:`Reklam, asılsız iddialar öne sürdüğü için yasaklandı.`, ex2:`Beware of products with fake health claims.`, exTr2:`Sahte sağlık iddiaları taşıyan ürünlere dikkat et.`, coll:`MAKE fake claims · banned FOR making fake claims · fake health claims`},
+  {en:`hoodwink`, tr:`kandırmak, aldatmak, göz boyamak`, type:`kelime`, uk:`/ˈhʊdwɪŋk/`, us:`/ˈhʊdwɪŋk/`, note:`Aslen "gözlerini bağlamak" demekti: "hood" (başlık) + "wink" (gözleri kapamak).`, detail:`Birini aldatmak, kandırmak.`, ex:`Investors were hoodwinked into a worthless scheme.`, exTr:`Yatırımcılar değersiz bir düzenle kandırıldı.`, ex2:`Don't let them hoodwink you with the fine print.`, exTr2:`Küçük puntolu yazılarla seni kandırmalarına izin verme.`, similar:`deceive, dupe, con, trick. Fark: hoodwink göz boyayarak kandırır; con çıkar için dolandırır; dupe saf birini kandırır; trick oyun oynar.`, coll:`hoodwink sb INTO (doing) sth · be hoodwinked BY sb · hoodwink sb WITH sth`},
+  {en:`take a leaf out of someone's book`, tr:`birini örnek almak`, type:`deyim`, uk:``, us:``, note:`Buradaki "leaf", kitabın bir "yaprağı" (sayfası) demektir; yani "birinin sayfasından bir yaprak almak".`, detail:`Birinin iyi bir davranışını ya da yöntemini örnek alıp benzerini yapmak.`, ex:`You should take a leaf out of her book and start saving.`, exTr:`Onu örnek alıp sen de para biriktirmeye başlamalısın.`, ex2:`I took a leaf out of my mentor's book and started early.`, exTr2:`Mentorumu örnek alıp erken başladım.`, coll:`take a leaf OUT OF sb's book · you should take a leaf out of her book`},
+  {en:`get someone back for something`, tr:`birinden acısını çıkarmak, öcünü almak`, type:`kalıp`, uk:``, us:``, note:`Günlük konuşmada intikam için kullanılan yaygın bir kalıptır.`, detail:`Birine yaptığı bir şeyin öcünü almak, misilleme yapmak.`, ex:`He keyed my car to get me back for the argument.`, exTr:`Tartışmanın acısını çıkarmak için arabamı çizdi.`, ex2:`She's just trying to get you back for last week.`, exTr2:`Sadece geçen haftanın acısını senden çıkarmaya çalışıyor.`, coll:`get sb back FOR sth · try to get sb back · just to get you back`},
+  {en:`start a vendetta against`, tr:`birine karşı husumet / kan davası başlatmak`, type:`kalıp`, uk:``, us:``, note:`"vendetta" İtalyanca; Latince "vindicta" (öç) kökünden. Aslen aileler arası kan davasını anlatır.`, detail:`Birine karşı uzun süreli, hırslı bir intikam kampanyası başlatmak.`, ex:`The columnist started a vendetta against the mayor.`, exTr:`Köşe yazarı belediye başkanına karşı adeta husumet başlattı.`, ex2:`He seemed to start a vendetta against his old boss.`, exTr2:`Eski patronuna karşı adeta husumet başlatmış gibiydi.`, coll:`start/wage a vendetta AGAINST sb · a personal vendetta`},
+  {en:`way below the belt`, tr:`(söz) çok ayıp, alçakça`, type:`deyim`, uk:``, us:``, note:`Boks kurallarından gelir: kemerin altına vurmak faul sayılır. "way" burada "çok, fazlasıyla" demektir.`, detail:`Bir sözün ya da davranışın haksız ve incitici derecede aşağılık olması.`, ex:`Mocking his stutter was way below the belt.`, exTr:`Kekemeliğiyle dalga geçmesi çok ayıptı, resmen kemerin altına vurmaktı.`, ex2:`Bringing up his divorce was way below the belt.`, exTr2:`Boşanmasını gündeme getirmesi çok ayıptı.`, coll:`way below the belt · hit/go below the belt · that was below the belt`},
+  {en:`think it through`, tr:`iyice düşünüp taşınmak`, type:`kalıp`, uk:``, us:``, note:`"through" (baştan sona) burada işi eksiksiz düşünmeyi vurgular.`, detail:`Bir şeyi harekete geçmeden önce dikkatlice, tüm yönleriyle düşünmek.`, ex:`Don't rush; think it through first.`, exTr:`Acele etme; önce enine boyuna bir düşün.`, ex2:`Take a day and think it through before deciding.`, exTr2:`Karar vermeden önce bir gün ayır ve iyice düşün.`, coll:`think it through (FIRST) · take time to think it through · think sth through`},
+  {en:`how is that news`, tr:`bunun neresi haber (bunda şaşılacak ne var)`, type:`kalıp`, uk:``, us:``, note:`Alaycı bir kalıptır: söylenen şeyin zaten bilindiğini, yeni bir şey olmadığını ima eder.`, detail:`"Bunu zaten herkes biliyor" demenin iğneleyici bir yolu.`, ex:`Traffic is bad on Mondays? How is that news?`, exTr:`Pazartesileri trafik kötüymüş, bunun neresi haber?`, ex2:`Politicians make promises? How is that news?`, exTr2:`Siyasetçiler söz mü veriyormuş, bunun neresi haber?`, coll:`How is that news? (alaycı, cümle sonunda soru olarak)`},
+  {en:`deal with it`, tr:`idare et, başa çık; kabullen`, type:`kalıp`, uk:``, us:``, note:`Bağlama göre sert ("katlanacaksın") ya da nötr ("halledeceksin") tınlayabilir.`, detail:`Zorlu bir durumu kabullenip onunla baş etmek.`, ex:`The decision is final, so deal with it.`, exTr:`Karar kesin, o yüzden idare etmeye bak.`, ex2:`Life isn't fair; you just have to deal with it.`, exTr2:`Hayat adil değil, sadece idare etmek zorundasın.`, coll:`just deal with it · you'll have to deal with it · so deal with it`},
+  {en:`preamble`, tr:`giriş, önsöz`, type:`kelime`, uk:`/ˈpriːæmbl/`, us:`/ˈpriːæmbl/`, note:`Latince "praeambulus" (önden yürüyen); "önden yürüme" fikrini taşır.`, detail:`Asıl konuya geçmeden önce yapılan giriş konuşması ya da metni.`, ex:`After a long preamble, she finally got to the point.`, exTr:`Uzun bir girişin ardından sonunda sadede geldi.`, ex2:`The contract's preamble states its purpose.`, exTr2:`Sözleşmenin girişi amacını belirtir.`, coll:`AFTER a long preamble · WITHOUT preamble · the preamble TO (a contract)`},
+  {en:`indulgence`, tr:`kendini şımartma; hoşgörü, göz yumma`, type:`kelime`, uk:`/ɪnˈdʌldʒəns/`, us:`/ɪnˈdʌldʒəns/`, note:`Latince "indulgere" (hoş görmek, göz yummak) fiilinden.`, detail:`Kendine bir zevki fazlasıyla tanıma; ya da birine gösterilen hoşgörü, müsamaha.`, ex:`Chocolate is my one indulgence.`, exTr:`Çikolata, kendime tanıdığım tek keyiftir.`, ex2:`A weekend away was a rare indulgence for them.`, exTr2:`Bir hafta sonu kaçamağı onlar için nadir bir keyifti.`, similar:`treat, luxury, extravagance. Fark: indulgence kendine tanınan keyiftir; treat küçük bir ödüldür; luxury lükstür; extravagance savurganlıktır.`, opposite:`restraint, abstinence, moderation.`, coll:`my one indulgence · a rare/little indulgence · self-indulgence`},
+  {en:`stagnant`, tr:`durgun; gelişmeyen, kımıldamayan`, type:`sıfat`, uk:`/ˈstæɡnənt/`, us:`/ˈstæɡnənt/`, note:`Latince "stagnare"; "stagnum" (durgun su birikintisi) kökünden.`, detail:`Akmayan, hareket etmeyen; ya da gelişmeyen, ilerlemeyen.`, ex:`Wages have been stagnant for a decade.`, exTr:`Maaşlar on yıldır durgun, hiç kıpırdamadı.`, ex2:`Mosquitoes breed in stagnant water.`, exTr2:`Sivrisinekler durgun suda ürer.`, similar:`stale, static, sluggish. Fark: stagnant akmayan ya da gelişmeyendir; stale bayat, tazeliğini yitirmiştir; static hiç değişmeyendir; sluggish ağır işleyendir.`, opposite:`flowing, dynamic, thriving.`, coll:`stagnant water · wages/growth remain stagnant · become stagnant`},
+  {en:`detrimental`, tr:`zararlı, olumsuz`, type:`sıfat`, uk:`/ˌdetrɪˈmentl/`, us:`/ˌdetrɪˈmentl/`, note:`Latince "detrimentum" (kayıp, hasar) sözcüğünden.`, detail:`Bir şeye zarar veren, olumsuz etki eden.`, ex:`Smoking is detrimental to your health.`, exTr:`Sigara sağlığına zararlıdır.`, ex2:`Stress can be detrimental to sleep.`, exTr2:`Stres, uykuya zararlı olabilir.`, similar:`harmful, damaging, adverse. Fark: detrimental resmi dilde zararlıdır; harmful geneldir; adverse olumsuz etki ya da koşuldur.`, opposite:`beneficial, advantageous.`, coll:`detrimental TO (health/sleep) · have a detrimental effect ON sth`},
+  {en:`moral fibre and merits`, tr:`ahlaki değerler ve erdemler`, type:`kalıp`, uk:``, us:``, note:`"moral fibre" karakterin iç gücü/dokusudur; "merits" ise değerli, takdire şayan yönler demektir.`, detail:`Bir kişinin ahlaki duruşu ile değerli, takdire değer yönleri.`, ex:`The role demands real moral fibre and clear merits.`, exTr:`Bu görev gerçek ahlaki değerler ve erdemler ister.`, ex2:`They judged him on his moral fibre and merits, not his wealth.`, exTr2:`Onu serveti üzerinden değil, ahlaki değerleri ve erdemleri üzerinden değerlendirdiler.`, coll:`moral fibre AND merits · judge sb ON their moral fibre and merits`},
+  {en:`limelight`, tr:`ilgi odağı, gözler önünde olma`, type:`kelime`, uk:`/ˈlaɪmlaɪt/`, us:`/ˈlaɪmlaɪt/`, note:`19. yüzyıl tiyatrolarında sahne, kirecin (kalsiyum oksit) kızdırılmasıyla elde edilen parlak "lime light" ile aydınlatılırdı.`, detail:`Halkın ilgisinin, dikkatinin üzerinde toplandığı yer.`, ex:`After the win she enjoyed her time in the limelight.`, exTr:`Zaferden sonra ilgi odağı olmanın tadını çıkardı.`, ex2:`He shunned the limelight after retiring.`, exTr2:`Emekli olduktan sonra ilgi odağı olmaktan kaçındı.`, similar:`spotlight, fame, attention. Fark: limelight ve spotlight kamu ilgisinin odağıdır; fame ünün kendisidir; attention geneldir.`, opposite:`obscurity, anonymity.`, coll:`IN the limelight · STEAL/SHUN/HOG the limelight · step into the limelight`},
+  {en:`share the limelight`, tr:`ilgiyi başkalarıyla paylaşmak`, type:`kalıp`, uk:``, us:``, note:`"limelight" (ilgi odağı) deyiminden türeyen bir kalıptır.`, detail:`Dikkatin, övgünün yalnız kendine kalmasına izin vermeyip başkalarına da pay bırakmak.`, ex:`A good captain shares the limelight with the team.`, exTr:`İyi bir kaptan, parlayan anı takımıyla paylaşır.`, ex2:`The star refused to share the limelight.`, exTr2:`Yıldız, ilgiyi paylaşmayı reddetti.`, coll:`share the limelight WITH sb · refuse to share the limelight`},
+  {en:`tangled love lives`, tr:`karmakarışık aşk hayatları`, type:`kalıp`, uk:``, us:``, note:`"tangled" (düğüm olmuş, karışmış) sıfatı ilişkilerin içinden çıkılmaz haline gönderme yapar.`, detail:`İçinden çıkılmaz derecede karmaşık, dolaşık romantik ilişkiler.`, ex:`The show follows the tangled love lives of six friends.`, exTr:`Dizi, altı arkadaşın karmakarışık aşk hayatlarını konu alır.`, ex2:`Gossip columns thrive on celebrities' tangled love lives.`, exTr2:`Dedikodu köşeleri ünlülerin karmakarışık aşk hayatlarıyla beslenir.`, coll:`the tangled love lives OF (people) · follow their tangled love lives`},
+  {en:`common ground`, tr:`ortak nokta, uzlaşma zemini`, type:`kalıp`, uk:``, us:``, note:`Birebir "ortak zemin"; iki tarafın da üzerinde durabileceği zemin imgesi.`, detail:`Anlaşmayı mümkün kılan paylaşılan ilgi ya da görüşler.`, ex:`The two parties finally found common ground.`, exTr:`İki taraf sonunda ortak bir nokta buldu.`, ex2:`Despite their differences, they found common ground.`, exTr2:`Farklılıklarına rağmen ortak bir zemin buldular.`, coll:`FIND common ground · common ground WITH/BETWEEN · seek common ground`},
+  {en:`break even`, tr:`başa baş noktasına gelmek`, type:`kalıp`, uk:``, us:``, note:`"even" burada "eşit, denk" demektir: gelir ile gider birbirine eşitlenir.`, detail:`Gelirin gidere tam denk gelmesi; ne kâr ne zarar.`, ex:`The café took a year to break even.`, exTr:`Kafenin başa baş noktasına gelmesi bir yıl sürdü.`, ex2:`We hope to break even by next quarter.`, exTr2:`Gelecek çeyrekte başa baş noktasına gelmeyi umuyoruz.`, coll:`break even (ON sth) · TAKE a year to break even · break even BY (a date)`},
+  {en:`backward compatible`, tr:`geriye dönük uyumlu (eski sürümlerle çalışan)`, type:`kalıp`, uk:``, us:``, note:`Teknoloji terimidir; yeni bir sürümün eski sürümlerle çalışabilmesini anlatır.`, detail:`Yeni bir sistemin ya da cihazın, eski sürümlerle sorunsuz çalışabilmesi.`, ex:`The new console is backward compatible with old games.`, exTr:`Yeni konsol, eski oyunlarla geriye dönük uyumludur.`, ex2:`Make sure the update is backward compatible.`, exTr2:`Güncellemenin geriye dönük uyumlu olduğundan emin ol.`, coll:`backward compatible WITH (old games/versions) · make sth backward compatible`},
+  {en:`blend in`, tr:`ortama karışmak, göze batmamak`, type:`phrasal fiil`, uk:``, us:``, note:`"blend" (karışmak, harmanlanmak) + "in". Çevresine karışıp fark edilmemeyi anlatır.`, detail:`Etrafına uyum sağlayıp dikkat çekmemek.`, ex:`He wore grey to blend in with the crowd.`, exTr:`Kalabalığa karışıp göze batmamak için gri giydi.`, ex2:`Chameleons blend in with their surroundings.`, exTr2:`Bukalemunlar çevrelerine karışır.`, opposite:`stand out.`, coll:`blend in WITH (the crowd/surroundings) · wear sth TO blend in (karşıtı stand out)`},
+  {en:`stir`, tr:`karıştırmak; kıpırdamak; (duygu) uyandırmak`, type:`kelime`, uk:`/stɜː/`, us:`/stɜːr/`, note:`Eski İngilizce "styrian" (hareket ettirmek) fiilinden.`, detail:`Kaşıkla karıştırmak; hafifçe kıpırdamak; ya da bir duyguyu harekete geçirmek.`, ex:`Her speech stirred the crowd.`, exTr:`Konuşması kalabalığı coşturdu.`, ex2:`Stir the soup so it doesn't stick.`, exTr2:`Çorbayı dibi tutmasın diye karıştır.`, coll:`stir the soup/mixture · stir the crowd · not stir (kıpırdamamak)`},
+  {en:`pacemaker`, tr:`kalp pili; tempo belirleyici`, type:`kelime`, uk:`/ˈpeɪsmeɪkə/`, us:`/ˈpeɪsmeɪkər/`, note:`"pace" (tempo) + "maker" (yapan). Tıbbi anlamı 20. yüzyıl başında çıktı.`, detail:`Kalp atışını düzenleyen cihaz; ayrıca yarışta tempoyu belirleyen koşucu.`, ex:`A pacemaker keeps his heart beating steadily.`, exTr:`Kalp pili, kalbinin düzenli atmasını sağlıyor.`, ex2:`Doctors fitted him with a pacemaker last year.`, exTr2:`Doktorlar geçen yıl ona kalp pili taktı.`, coll:`FIT/FIT sb WITH a pacemaker · a pacemaker keeps the heart beating · HAVE a pacemaker`},
+  {en:`Heimlich maneuver`, tr:`Heimlich manevrası`, type:`kalıp`, uk:`/ˈhaɪmlɪk məˈnuːvə/`, us:`/ˈhaɪmlɪk məˈnuːvər/`, note:`Tekniği 1974'te tarif eden Dr. Henry Heimlich'in adını taşır.`, detail:`Boğazına bir şey kaçan kişinin hava yolunu açmak için karnına yapılan itme hareketi.`, ex:`She performed the Heimlich maneuver and dislodged the food.`, exTr:`Heimlich manevrasını uygulayıp boğaza kaçan yemeği çıkardı.`, ex2:`Every lifeguard is trained in the Heimlich maneuver.`, exTr2:`Her cankurtaran Heimlich manevrası konusunda eğitimlidir.`, coll:`PERFORM/DO the Heimlich maneuver · be trained IN the Heimlich maneuver`},
+  {en:`charley horse`, tr:`(bacakta) kas krampı`, type:`kalıp`, uk:`/ˈtʃɑːli hɔːs/`, us:`/ˈtʃɑːrli hɔːrs/`, note:`ABD beysbol argosundan gelen 19. yüzyıl deyimidir; kökeni tam olarak bilinmez.`, detail:`Genellikle bacakta olan, ani ve ağrılı kas krampı.`, ex:`I woke up with a charley horse in my calf.`, exTr:`Baldırımda bir kas krampıyla uyandım.`, ex2:`Stretching before bed helps prevent a charley horse.`, exTr2:`Yatmadan önce esnemek, kas krampını önlemeye yardımcı olur.`, coll:`GET/HAVE a charley horse · WAKE UP WITH a charley horse · a charley horse IN one's calf`},
+  {en:`suck out`, tr:`emerek çekmek / çıkarmak`, type:`phrasal fiil`, uk:``, us:``, note:`"suck" (emmek) + "out". Sıvı ya da havanın vakumla çekilmesini anlatır.`, detail:`Bir sıvıyı ya da havayı emme yoluyla dışarı çekmek.`, ex:`The machine sucks out the excess moisture.`, exTr:`Makine, fazla nemi emerek dışarı çeker.`, ex2:`The dentist sucked out the saliva with a small tube.`, exTr2:`Diş hekimi tükürüğü küçük bir hortumla emerek çekti.`, coll:`suck OUT (moisture/air/saliva) · suck sth out WITH (a tube)`},
+  {en:`casualties`, tr:`zayiat, kayıplar (ölü/yaralı)`, type:`kelime`, uk:`/ˈkæʒuəltiz/`, us:`/ˈkæʒuəltiz/`, note:`Latince "casus" (rastlantı, düşüş) kökünden.`, detail:`Savaşta ya da kazada ölen veya yaralanan kişiler.`, ex:`The earthquake caused heavy casualties.`, exTr:`Deprem ağır kayıplara yol açtı.`, ex2:`Fortunately, there were no casualties in the fire.`, exTr2:`Neyse ki yangında can kaybı olmadı.`, coll:`HEAVY/CIVILIAN casualties · CAUSE/SUFFER casualties · no casualties`},
+  {en:`death toll`, tr:`ölü sayısı, can kaybı`, type:`kalıp`, uk:`/ˈdeθ təʊl/`, us:`/ˈdeθ toʊl/`, note:`"toll" burada "bedel, alınan sayı" demektir; bir olayın aldığı canların sayısını anlatır.`, detail:`Bir olayda hayatını kaybeden kişilerin toplam sayısı.`, ex:`The death toll from the flood rose to fifty.`, exTr:`Selde ölü sayısı elliye yükseldi.`, ex2:`Officials fear the death toll will rise.`, exTr2:`Yetkililer, ölü sayısının artmasından korkuyor.`, coll:`the death toll ROSE/RISES TO (a number) · the death toll FROM sth · a rising death toll`},
+  {en:`indiscriminate`, tr:`ayrım gözetmeyen, gelişigüzel`, type:`sıfat`, uk:`/ˌɪndɪˈskrɪmɪnət/`, us:`/ˌɪndɪˈskrɪmɪnət/`, note:`"in-" (olumsuzluk) + "discriminate" (ayırt etmek, Latince "discriminare").`, detail:`Dikkatli bir seçim yapmadan, herkesi ya da her şeyi hedef alan.`, ex:`Indiscriminate bombing hit civilian areas.`, exTr:`Ayrım gözetmeyen bombardıman sivil bölgeleri vurdu.`, ex2:`The virus is indiscriminate; it infects everyone.`, exTr2:`Virüs ayrım gözetmez, herkese bulaşır.`, similar:`random, haphazard, wholesale. Fark: indiscriminate ayrım gözetmeden herkese ya da her şeye zarar verir; random rastgeledir; haphazard plansızdır.`, opposite:`selective, targeted, discriminating.`, coll:`indiscriminate bombing/killing/use · indiscriminate IN (its targets)`},
+  {en:`crippled`, tr:`felç olmuş, işlemez hale gelmiş`, type:`sıfat`, uk:`/ˈkrɪpld/`, us:`/ˈkrɪpld/`, note:`Eski İngilizce "crypel" sözcüğünden.`, detail:`Ağır hasar görmüş, işleyemez hale gelmiş.`, ex:`The strike crippled the country's ports.`, exTr:`Grev, ülkenin limanlarını felç etti.`, ex2:`The war crippled the nation's economy.`, exTr2:`Savaş, ülkenin ekonomisini felç etti.`, extra:`İnsanlar için kullanımı bugün incitici sayılır; "disabled" tercih edilir. Sistem ya da ekonomi için mecazi kullanımı nötrdür.`, similar:`paralysed, incapacitated, disabled. Fark: (mecazi) crippled işlemez hale gelmedir; paralysed felçtir; incapacitated iş göremez kılınmadır. İnsanlar için "disabled" tercih edilir.`, opposite:`(mecazi) functioning, thriving.`, coll:`crippled BY (debt/strikes) · crippled the economy/ports · be left crippled`},
+  {en:`arsonist`, tr:`kundakçı`, type:`kelime`, uk:`/ˈɑːsənɪst/`, us:`/ˈɑːrsənɪst/`, note:`Latince "ardere / arson-" (yanmak) kökünden.`, detail:`Kasten yangın çıkaran kişi.`, ex:`An arsonist set the warehouse ablaze.`, exTr:`Bir kundakçı depoyu ateşe verdi.`, ex2:`Police are hunting the arsonist responsible.`, exTr2:`Polis, sorumlu kundakçıyı arıyor.`, coll:`a suspected arsonist · HUNT/CATCH the arsonist · an arsonist SET sth ablaze`},
+  {en:`cancel culture`, tr:`boykot / dışlama kültürü`, type:`kalıp`, uk:``, us:``, note:`Sosyal medya çağında ortaya çıkan bir terimdir: "cancel" burada birine desteği tamamen çekmek demektir.`, detail:`Bir kişiyi, kırıcı bulunan söz ya da davranışları nedeniyle toplu biçimde dışlama, desteği kesme pratiği.`, ex:`Critics say cancel culture stifles debate.`, exTr:`Eleştirmenler, dışlama kültürünün tartışmayı boğduğunu söyler.`, ex2:`The debate over cancel culture divides opinion.`, exTr2:`Dışlama kültürü tartışması, görüşleri ikiye bölüyor.`, coll:`the debate OVER cancel culture · cancel culture stifles/silences · a victim of cancel culture`},
+  {en:`the cost of living continued to soar`, tr:`hayat pahalılığı fırlamaya devam etti`, type:`cümle`, uk:``, us:``, note:`Anahtar sözcük "soar": hızla, çok yükseğe çıkmak. "cost of living" ise geçim maliyeti, hayat pahalılığıdır.`, detail:`Yaşam masraflarının hızla ve durmadan yükselmesini anlatan bir kalıp.`, ex:`The cost of living continued to soar throughout the year.`, exTr:`Hayat pahalılığı yıl boyunca fırlamaya devam etti.`, ex2:`As the cost of living continued to soar, families cut back.`, exTr2:`Hayat pahalılığı fırlamaya devam ederken aileler harcamalarını kıstı.`, coll:`the cost of living continued to soar · AS the cost of living soared, ...`},
+  {en:`come across`, tr:`rastlamak; (izlenim) bırakmak`, type:`phrasal fiil`, uk:``, us:``, note:`İki temel anlamı vardır: tesadüfen bulmak ve belli bir izlenim vermek.`, detail:`Bir şeye tesadüfen rastlamak; ya da karşıdakinde belli bir izlenim uyandırmak.`, ex:`I came across an old letter in the attic.`, exTr:`Tavan arasında eski bir mektuba rastladım.`, ex2:`He comes across as shy, but he isn't.`, exTr2:`Utangaç gibi görünüyor, ama değil.`, similar:`stumble upon, encounter; seem, appear. Fark: come across tesadüfen bulmak ya da bir izlenim vermektir; stumble upon şans eseri bulmaktır; encounter karşılaşmaktır.`, coll:`come ACROSS sth (rastlamak) · come across AS (shy) (izlenim vermek)`},
+  {en:`put off`, tr:`ertelemek; soğutmak, isteğini kaçırmak`, type:`phrasal fiil`, uk:``, us:``, note:`İki ayrı anlamı vardır: bir işi ileri atmak, ya da birini bir şeyden tiksindirip vazgeçirmek.`, detail:`Bir şeyi sonraya bırakmak; ya da birinin ilgisini, iştahını kaçırmak.`, ex:`They put off the meeting until Friday.`, exTr:`Toplantıyı cumaya ertelediler.`, ex2:`The smell put me off my food.`, exTr2:`Koku iştahımı kaçırdı.`, similar:`postpone, delay, defer; deter, discourage. Fark: put off ertelemek ya da birinin isteğini kaçırmaktır; postpone ve defer resmi ertelemedir; deter caydırır.`, opposite:`bring forward, expedite; (çekim) attract, appeal.`, coll:`put OFF (a meeting) UNTIL · put sb off (sth) · be put off BY sth`},
+  {en:`wind up`, tr:`sonunda (bir durumda) bulmak kendini; bitirmek`, type:`phrasal fiil`, uk:`/waɪnd ʌp/`, us:`/waɪnd ʌp/`, note:`Okunuşu /waɪnd/ (saati kurmak) gibidir.`, detail:`Sonunda beklenmedik bir durumda bulmak kendini; bir şeyi bitirmek; (İng.) takılıp sinirlendirmek.`, ex:`We wound up lost in the old town.`, exTr:`Sonunda kendimizi eski şehirde kaybolmuş halde bulduk.`, ex2:`Stop winding your brother up!`, exTr2:`Kardeşini kızdırmayı bırak!`, extra:`İngiliz İngilizcesinde ayrıca "birini takılarak kızdırmak" anlamı taşır.`, coll:`wind up (lost/in a situation) · wind sb up (kızdırmak) · wind up doing sth`},
+  {en:`fall back on`, tr:`sıkışınca başvurmak, güvence olarak dayanmak`, type:`phrasal fiil`, uk:``, us:``, note:`"geriye düşüp bir şeyin üstüne yaslanmak" imgesini taşır: bir güvence, yedek plan.`, detail:`Diğer planlar tutmadığında güvenebileceğin bir şeye başvurmak.`, ex:`If the business fails, she can fall back on teaching.`, exTr:`İş batarsa öğretmenliğe geri dönüp ona tutunabilir.`, ex2:`It's good to have savings to fall back on.`, exTr2:`İhtiyaç anında başvurabileceğin bir birikimin olması iyidir.`, coll:`fall back ON sth (teaching/savings) · have sth to fall back on`},
+  {en:`get around to`, tr:`(nihayet) fırsat bulup yapmak`, type:`phrasal fiil`, uk:``, us:``, note:`Sürekli ertelenen bir işe sonunda sıra gelmesini anlatır.`, detail:`Ertelediğin bir şeyi nihayet yapacak vakti ya da fırsatı bulmak.`, ex:`I never got around to fixing the fence.`, exTr:`Çiti tamir etmeye bir türlü sıra gelmedi.`, ex2:`I'll get around to it this weekend.`, exTr2:`Bu hafta sonu sıra gelince yaparım.`, coll:`get around TO (doing) sth · never get around to it · finally get around to sth`},
+  {en:`figure out`, tr:`çözmek, anlamak`, type:`phrasal fiil`, uk:``, us:``, note:`"figure" burada "hesaplamak, akıl yürütmek" anlamındadır.`, detail:`Bir şeyi düşünüp çözmek ya da anlamak.`, ex:`I can't figure out how this works.`, exTr:`Bunun nasıl çalıştığını bir türlü çözemiyorum.`, ex2:`We need to figure out what went wrong.`, exTr2:`Neyin ters gittiğini çözmemiz gerek.`, similar:`work out, solve, make sense of. Fark: hepsi çözmek ya da anlamaktır; figure out ve work out günlük dildir; solve daha resmidir.`, coll:`figure OUT how/what/why · figure out a problem · can't figure sth out`},
+  {en:`point out`, tr:`dikkat çekmek, belirtmek`, type:`phrasal fiil`, uk:``, us:``, note:`Birebir "parmakla göstermek"; bir gerçeğe dikkat çekmeyi anlatır.`, detail:`Bir olguya dikkat çekmek, işaret etmek.`, ex:`She pointed out a mistake in my essay.`, exTr:`Denememdeki bir hataya dikkat çekti.`, ex2:`It's worth pointing out the risks.`, exTr2:`Riskleri belirtmekte fayda var.`, coll:`point OUT (a mistake) · point out THAT ... · it's worth pointing out`},
+  {en:`bring up`, tr:`(konu) açmak; (çocuk) yetiştirmek`, type:`phrasal fiil`, uk:``, us:``, note:`İki temel anlamı vardır: bir konuyu gündeme getirmek ve bir çocuğu büyütmek.`, detail:`Bir konuyu söz konusu etmek; ya da bir çocuğu büyütüp yetiştirmek.`, ex:`Don't bring up politics at dinner.`, exTr:`Yemekte siyaset konusunu açma.`, ex2:`She was brought up by her grandparents.`, exTr2:`Onu, dedesiyle büyükannesi büyüttü.`, similar:`raise, mention; rear. Fark: bring up ya konu açmaktır ya da çocuk büyütmektir; raise ikisini de karşılar; mention yalnızca anmaktır; rear çocuk ya da hayvan yetiştirmektir.`, coll:`bring UP (a topic/politics) · be brought up BY (grandparents) · bring up a child`},
+  {en:`turn out`, tr:`(sonunda) öyle çıkmak, olmak`, type:`phrasal fiil`, uk:``, us:``, note:`Bir şeyin sonunda nasıl sonuçlandığını ya da aslında öyle olduğunu anlatır.`, detail:`Sonunda belli bir şekilde gelişmek ya da öyle olduğu anlaşılmak.`, ex:`Everything turned out fine.`, exTr:`Sonunda her şey yoluna girdi.`, ex2:`It turned out that he was right all along.`, exTr2:`Baştan beri haklı olduğu ortaya çıktı.`, similar:`end up, transpire, prove to be. Fark: turn out sonunda öyle çıkmaktır; end up bir durumda son bulmaktır; transpire resmi dilde ortaya çıkmaktır.`, coll:`turn out (fine/well) · it turned out THAT ... · turn out TO BE sth`},
+  {en:`carry out`, tr:`yürütmek, gerçekleştirmek, yerine getirmek`, type:`phrasal fiil`, uk:``, us:``, note:`Bir görevi ya da planı fiilen uygulamayı anlatır.`, detail:`Bir görevi ya da işi yerine getirmek, tamamlamak.`, ex:`Scientists carried out several tests.`, exTr:`Bilim insanları birkaç test gerçekleştirdi.`, ex2:`The soldiers carried out their orders.`, exTr2:`Askerler emirleri yerine getirdi.`, coll:`carry OUT (tests/orders/a plan) · carry out research/an attack`},
+  {en:`back up`, tr:`desteklemek; yedeklemek; geri gitmek`, type:`phrasal fiil`, uk:``, us:``, note:`Üç anlamı yaygındır: destek olmak, kopya almak ve geri geri gitmek.`, detail:`Birini ya da bir iddiayı desteklemek; veriyi yedeklemek; aracı geri sürmek.`, ex:`Can you back up your claim with data?`, exTr:`İddianı verilerle destekleyebilir misin?`, ex2:`Always back up your files before an update.`, exTr2:`Güncellemeden önce dosyalarını her zaman yedekle.`, coll:`back UP (a claim) WITH (data) · back up your files · back sb up`},
+  {en:`narrow down`, tr:`(seçenekleri) daraltmak`, type:`phrasal fiil`, uk:``, us:``, note:`"narrow" (dar) + "down". Geniş bir listeyi azaltmayı anlatır.`, detail:`Seçenek ya da olasılıkların sayısını azaltmak.`, ex:`We narrowed down the list to three names.`, exTr:`Listeyi üç isme kadar daralttık.`, ex2:`Can you narrow it down to a single cause?`, exTr2:`Bunu tek bir sebebe indirebilir misin?`, similar:`whittle down, reduce. Fark: narrow down seçenekleri daraltır; whittle down azalta azalta indirir; reduce geneldir.`, opposite:`broaden, widen.`, coll:`narrow DOWN (the list) TO (three) · narrow it down to a single cause`},
+  {en:`the elephant in the room`, tr:`herkesin gördüğü ama konuşulmayan sorun`, type:`deyim`, uk:``, us:``, note:`Odadaki bir fil kadar apaçık, ama kimsenin dile getirmediği bir mesele imgesi.`, detail:`Ortada bariz duran ama kimsenin konuşmak istemediği rahatsız edici sorun.`, ex:`Let's address the elephant in the room: the budget.`, exTr:`Şu herkesin bildiği ama kimsenin açmadığı konuya girelim: bütçe.`, ex2:`Nobody mentioned the elephant in the room: he was leaving.`, exTr2:`Kimse ortadaki o bariz gerçeği dile getirmedi: gidiyordu.`, coll:`ADDRESS/IGNORE the elephant in the room · the elephant in the room IS ...`},
+  {en:`cut corners`, tr:`işi baştan savmak, kestirmeden yapmak`, type:`deyim`, uk:``, us:``, note:`Birebir "köşeleri kesmek"; yolun köşelerini keserek kısa yoldan, ama özensizce gitmek.`, detail:`Bir işi ucuza ya da hızlıca yapmak için gerekli adımları atlamak.`, ex:`They cut corners on safety to save money.`, exTr:`Para kısmak için güvenlikten ödün verip işi baştan savdılar.`, ex2:`You can't cut corners when it comes to health.`, exTr2:`İş sağlığa gelince baştan savma yapılmaz.`, similar:`take shortcuts, skimp. Fark: cut corners kalite ya da kuraldan ödün vererek kestirmeden gitmektir; take shortcuts nötr olabilir; skimp cimrilik ederek eksik yapmaktır.`, coll:`cut corners ON (safety/quality) · can't cut corners WHEN it comes to sth`},
+  {en:`on the fence`, tr:`kararsız, arada kalmış`, type:`deyim`, uk:``, us:``, note:`İki tarafın ortasındaki çitin üstünde oturup hangi tarafa ineceğine karar verememe imgesi.`, detail:`İki seçenek arasında bir türlü karar verememek.`, ex:`I'm still on the fence about the job offer.`, exTr:`İş teklifi konusunda hâlâ kararsızım.`, ex2:`Voters are still on the fence.`, exTr2:`Seçmenler hâlâ kararsız.`, similar:`undecided, torn, in two minds. Fark: hepsi kararsızlıktır; on the fence taraf tutmamayı, torn iki istek arasında yırtılmayı, in two minds ikilemi vurgular.`, opposite:`decided, resolute.`, coll:`BE/SIT on the fence ABOUT sth · still on the fence`},
+  {en:`a double-edged sword`, tr:`iki ucu keskin kılıç`, type:`deyim`, uk:``, us:``, note:`İki yüzü de kesen bir kılıç: hem işine yarar hem seni de keser.`, detail:`Hem olumlu hem olumsuz sonuçları olan bir şey.`, ex:`Fame is a double-edged sword.`, exTr:`Şöhret, iki ucu keskin bir kılıçtır.`, ex2:`Social media is a double-edged sword.`, exTr2:`Sosyal medya, iki ucu keskin bir kılıçtır.`, coll:`sth IS a double-edged sword · fame/technology is a double-edged sword`},
+  {en:`hit the nail on the head`, tr:`tam üstüne basmak, taşı gediğine koymak`, type:`deyim`, uk:``, us:``, note:`Çiviyi tam kafasından vurmak: tam isabet ettirmek.`, detail:`Bir durumun asıl sebebini ya da özünü tam olarak isabetle söylemek.`, ex:`You hit the nail on the head with that comment.`, exTr:`O yorumunla tam üstüne bastın.`, ex2:`Her analysis hit the nail on the head.`, exTr2:`Analizi tam üstüne bastı.`, coll:`hit the nail on the head (WITH a comment) · you've hit the nail on the head`},
+  {en:`the tip of the iceberg`, tr:`buzdağının görünen ucu`, type:`deyim`, uk:``, us:``, note:`Buzdağının yalnızca küçük bir kısmı su üstünde görünür; asıl büyük kısım altta gizlidir.`, detail:`Çok daha büyük bir sorunun yalnızca küçük, görünen parçası.`, ex:`These complaints are just the tip of the iceberg.`, exTr:`Bu şikâyetler, buzdağının yalnızca görünen ucu.`, ex2:`The scandal was only the tip of the iceberg.`, exTr2:`Skandal, buzdağının yalnızca görünen ucuydu.`, coll:`sth is (just/only) the tip of the iceberg · the tip of the iceberg`},
+  {en:`play devil's advocate`, tr:`bilerek karşı tarafı savunmak`, type:`deyim`, uk:``, us:``, note:`Katolik Kilisesi'nde azizlik ilanına karşı argüman üretmekle görevli kişinin ("advocatus diaboli") rolünden gelir.`, detail:`Tartışmayı sınamak için, aslında katılmadığın karşı görüşü kasıtlı olarak savunmak.`, ex:`Let me play devil's advocate for a moment.`, exTr:`Bir an için bilerek karşı tarafı savunayım.`, ex2:`I don't disagree; I'm just playing devil's advocate.`, exTr2:`Karşı çıkmıyorum, sadece bilerek karşı tarafı savunuyorum.`, coll:`PLAY devil's advocate · just playing devil's advocate · let me play devil's advocate`},
+  {en:`in the long run`, tr:`uzun vadede`, type:`deyim`, uk:``, us:``, note:`"run" burada bir zaman aralığını, gidişatı anlatır: uzun koşuda, uzun vadede.`, detail:`Uzun bir süre boyunca, nihayetinde.`, ex:`Eating well pays off in the long run.`, exTr:`İyi beslenmek uzun vadede karşılığını verir.`, ex2:`It may cost more now but saves money in the long run.`, exTr2:`Şimdi daha pahalı olabilir ama uzun vadede para kazandırır.`, similar:`in the end, ultimately, over time. Fark: in the long run uzun vadeyi; in the end nihai sonucu; ultimately en sonunda; over time zamanla anlamını verir.`, opposite:`in the short term.`, coll:`IN the long run · pay off/save money in the long run (karşıtı in the short term)`},
+  {en:`take something with a grain of salt`, tr:`şüpheyle karşılamak, ihtiyatla yaklaşmak`, type:`deyim`, uk:``, us:``, note:`Latince "cum grano salis" deyiminden gelir: "bir tutam tuzla", yani körü körüne yutmadan.`, detail:`Bir bilgiye tam güvenmemek, temkinli yaklaşmak.`, ex:`Take online reviews with a grain of salt.`, exTr:`İnternetteki yorumları ihtiyatla karşıla.`, ex2:`He tends to exaggerate, so take his stories with a grain of salt.`, exTr2:`Abartma eğilimi var, o yüzden anlattıklarını ihtiyatla karşıla.`, coll:`take sth WITH a grain of salt · take (reviews/stories) with a grain of salt`},
+  {en:`get the hang of`, tr:`(bir işin) püf noktasını kapmak, alışmak`, type:`deyim`, uk:``, us:``, note:`Bir işin "asılış, tutuş" biçimini kavramak imgesinden gelir.`, detail:`Bir şeyi biraz pratikle yapmayı öğrenmek, işin ustalığını kazanmak.`, ex:`It's tricky at first, but you'll get the hang of it.`, exTr:`Başta çetrefil, ama zamanla püf noktasını kaparsın.`, ex2:`Once you get the hang of cycling, you never forget.`, exTr2:`Bisiklete binmenin tekniğini bir kez kaptın mı, asla unutmazsın.`, coll:`get the hang OF sth · you'll get the hang of it · once you get the hang of it`},
+  {en:`reckon`, tr:`sanmak, düşünmek; hesaplamak`, type:`kelime`, uk:`/ˈrekən/`, us:`/ˈrekən/`, note:`Eski İngilizce "gerecenian" (saymak, anlatmak) fiilinden.`, detail:`Bir şeyi düşünmek ya da tahmin etmek; ayrıca hesaplamak.`, ex:`I reckon it'll rain later.`, exTr:`Bence sonra yağmur yağar.`, ex2:`How much do you reckon it'll cost?`, exTr2:`Sence ne kadar tutar?`, extra:`Günlük İngiliz İngilizcesinde "bence, sanırım" yerine çok sık kullanılır.`, similar:`think, suppose, guess. Fark: reckon günlük ve İngiliz İngilizcesinde "bence" der; suppose bir çıkarımdır; guess tahmindir.`, coll:`I reckon (THAT) ... · how much do you reckon ...? · reckon sth to be sth`},
+  {en:`subtle`, tr:`ince, sezilmesi güç, incelikli`, type:`sıfat`, uk:`/ˈsʌtl/`, us:`/ˈsʌtl/`, note:`Latince "subtilis" (ince, narin) sözcüğünden.`, detail:`Hemen fark edilmeyen, narin, zekice ayarlanmış.`, ex:`There was a subtle change in her tone.`, exTr:`Ses tonunda güç fark edilen bir değişim vardı.`, ex2:`The wine has subtle notes of cherry.`, exTr2:`Şarapta hafif, güç sezilen kiraz notaları var.`, extra:`Yazımdaki "b" harfi okunmaz.`, similar:`delicate, understated, nuanced. Fark: subtle fark edilmesi güç bir incelliktir; understated abartısız, gösterişsizdir; nuanced ince ayrımlar taşır.`, opposite:`obvious, blatant, overt.`, coll:`a subtle change/difference/hint · subtle notes OF sth · so subtle`},
+  {en:`crucial`, tr:`çok önemli, kritik, hayati`, type:`sıfat`, uk:`/ˈkruːʃl/`, us:`/ˈkruːʃl/`, note:`Latince "crux / cruc-" (haç, yol ayrımı) kökünden: belirleyici bir kavşak.`, detail:`Son derece önemli, sonucu belirleyici.`, ex:`Timing is crucial in comedy.`, exTr:`Komedide zamanlama çok önemlidir.`, ex2:`The next few days are crucial for the patient.`, exTr2:`Önümüzdeki birkaç gün, hasta için hayati önemde.`, similar:`vital, essential, pivotal. Fark: crucial ve vital hayati derecede önemlidir; essential olmazsa olmazdır; pivotal her şeyin döndüğü belirleyici noktadır.`, opposite:`trivial, minor, negligible.`, coll:`crucial TO/FOR sth · crucial IN (doing) sth · play a crucial role · absolutely crucial`},
+  {en:`considerable`, tr:`hatırı sayılır, epeyce`, type:`sıfat`, uk:`/kənˈsɪdərəbl/`, us:`/kənˈsɪdərəbl/`, note:`"consider" (göz önünde bulundurmak, Latince "considerare") fiilinden.`, detail:`Boyut, miktar ya da önem bakımından büyük, dikkate değer.`, ex:`The project took a considerable amount of time.`, exTr:`Proje hatırı sayılır bir zaman aldı.`, ex2:`She has considerable experience in the field.`, exTr2:`Alanında hatırı sayılır bir deneyime sahip.`, similar:`substantial, significant, sizeable. Fark: considerable ve substantial miktarca büyüktür; significant anlamca önemlidir; sizeable gözle görülür büyüklüktedir.`, opposite:`negligible, slight, trifling.`, coll:`a considerable amount/number OF sth · considerable experience/time/effort`},
+  {en:`compelling`, tr:`ikna edici, sürükleyici`, type:`sıfat`, uk:`/kəmˈpelɪŋ/`, us:`/kəmˈpelɪŋ/`, note:`Latince "compellere" (zorlamak, sürüklemek) fiilinden: insanı adeta kabule zorlayan.`, detail:`Görmezden gelinemeyecek kadar inandırıcı ya da ilgi çekici.`, ex:`She made a compelling argument.`, exTr:`Çok ikna edici bir argüman sundu.`, ex2:`There is compelling evidence for the theory.`, exTr2:`Teoriyi destekleyen ikna edici kanıtlar var.`, similar:`convincing, persuasive, cogent. Fark: compelling karşı konulamaz derecede ilgi çeker ya da ikna eder; persuasive ikna etmeye çalışır; cogent mantıkça sağlamdır.`, opposite:`unconvincing, weak, feeble.`, coll:`MAKE a compelling argument/case · compelling evidence/reason · a compelling story`},
+  {en:`deliberate`, tr:`kasıtlı, bilerek yapılan; ölçülü`, type:`sıfat`, uk:`/dɪˈlɪbərət/`, us:`/dɪˈlɪbərət/`, note:`Latince "deliberare" (tartıp değerlendirmek) fiilinden.`, detail:`Bilerek, kasten yapılan; ayrıca aceleye getirmeden, ölçülü.`, ex:`It was a deliberate attempt to mislead.`, exTr:`Bu, kasıtlı bir yanıltma girişimiydi.`, ex2:`He spoke in a slow, deliberate manner.`, exTr2:`Yavaş ve ölçülü bir tavırla konuştu.`, extra:`Sıfat hali /dɪˈlɪbərət/, fiil hali ise /dɪˈlɪbəreɪt/ olarak farklı okunur.`, similar:`intentional, calculated, premeditated. Fark: deliberate hem kasıtlı hem ölçülüdür; intentional yalnızca kasıtlıdır; calculated çıkar hesabıyladır; premeditated önceden tasarlanmıştır.`, opposite:`accidental, unintentional, impulsive.`, coll:`a deliberate attempt TO do sth · a slow, deliberate manner · deliberate act`},
+  {en:`inevitable`, tr:`kaçınılmaz`, type:`sıfat`, uk:`/ɪnˈevɪtəbl/`, us:`/ɪnˈevɪtəbl/`, note:`Latince "inevitabilis" (kaçınılamaz); "e-vitare" (kaçınmak) kökünden.`, detail:`Olması kesin, önüne geçilemez.`, ex:`With such spending, debt was inevitable.`, exTr:`Bu kadar harcamayla borç kaçınılmazdı.`, ex2:`Change is inevitable.`, exTr2:`Değişim kaçınılmazdır.`, similar:`unavoidable, inescapable, certain. Fark: inevitable ve unavoidable kaçınılmazdır; inescapable kurtuluşu olmayandır; certain kesindir ama illa istenmeyen değildir.`, opposite:`avoidable, preventable.`, coll:`sth was/is inevitable · it was inevitable THAT ... · the inevitable outcome`},
+  {en:`tendency`, tr:`eğilim, yatkınlık`, type:`kelime`, uk:`/ˈtendənsi/`, us:`/ˈtendənsi/`, note:`Latince "tendere" (uzanmak, yönelmek) kökünden.`, detail:`Belli bir biçimde davranma ya da gelişme meyli.`, ex:`He has a tendency to interrupt.`, exTr:`Sözü kesme eğilimi var.`, ex2:`Prices show an upward tendency.`, exTr2:`Fiyatlar yukarı yönlü bir eğilim gösteriyor.`, similar:`inclination, propensity, penchant. Fark: tendency genel bir eğilimdir; inclination kişisel meyildir; propensity çoğu olumsuz, güçlü bir eğilimdir; penchant hoşlanılan bir düşkünlüktür.`, opposite:`aversion, disinclination.`, coll:`HAVE a tendency TO do sth · a tendency TOWARDS sth · a natural/upward tendency`},
+  {en:`not bat an eyelid`, tr:`istifini bozmamak, gözünü kırpmamak`, type:`deyim`, uk:``, us:``, note:`"bat" burada gözü kırpmak/oynatmak demektir; birebir "gözünü bile kırpmamak".`, detail:`Şaşırtıcı, sarsıcı ya da olağandışı bir şey karşısında hiç tepki vermemek, hiç etkilenmemiş görünmek.`, ex:`She didn't bat an eyelid when he told her the price.`, exTr:`Fiyatı söylediğinde gözünü bile kırpmadı.`, ex2:`He handed over a fortune without batting an eyelid.`, exTr2:`Bir servet öderken gözünü bile kırpmadı.`, coll:`not bat an eyelid (WHEN/AT sth) · WITHOUT batting an eyelid`},
+  {en:`by all accounts`, tr:`herkesin dediğine göre, anlaşılan`, type:`kalıp`, uk:``, us:``, note:`Buradaki "account" "anlatı, ifade" demektir; yani "bütün anlatılara göre".`, detail:`Duyulan, okunan tüm kaynaklara ve genel kanıya göre; söylenenlere bakılırsa.`, ex:`By all accounts, the party was a huge success.`, exTr:`Herkesin dediğine göre parti büyük bir başarıydı.`, ex2:`By all accounts, she is an excellent teacher.`, exTr2:`Anlaşılan, o mükemmel bir öğretmen.`, coll:`BY all accounts, ... (cümle başında) · by all accounts a success`}
+];
+
+/* ============ KURULUM ============ */
+WORDS.forEach((w,i)=>{ w._i = i; });
+
+// kelime arama tablosu: her İngilizce biçim -> kelime kaydı
+const LOOKUP = {};
+WORDS.forEach(w=>{ w.en.split('/').map(x=>x.trim()).filter(Boolean).forEach(f=>{ LOOKUP[f.toLowerCase()] = w; }); });
+
+// İngilizce sözcükleri (parantez dışı) tıklanabilir yap
+function linkifyWords(str){
+  let out='', word='', depth=0;
+  function flush(){
+    if(!word) return;
+    if(depth===0 && word.length>1 && /^[A-Za-z][A-Za-z'-]*$/.test(word))
+      out += '<span class="wordref" data-w="'+word.toLowerCase()+'">'+word+'</span>';
+    else out += word;
+    word='';
+  }
+  for(const ch of str){
+    if(/[A-Za-z'-]/.test(ch)){ word+=ch; continue; }
+    flush();
+    if(ch==='(') depth++;
+    else if(ch===')') depth=Math.max(0,depth-1);
+    out += ch;
+  }
+  flush();
+  return out;
+}
+
+const TYPE_EN = {'kelime':'Word','sıfat':'Adjective','kalıp':'Phrase','deyim':'Idiom','phrasal fiil':'Phrasal verb','cümle':'Sentence'};
+function typeLabel(t){ return TYPE_EN[t] || t; }
+function ipaBlock(w){
+  if(!w.uk && !w.us) return '';
+  let out = '<div class="ipa">';
+  if(w.uk) out += '<span class="uk"><b>UK</b>'+w.uk+'</span>';
+  if(w.us) out += '<span class="us"><b>US</b>'+w.us+'</span>';
+  return out + '</div>';
+}
+function collFormat(str){
+  return str.split(' · ').map(function(p){
+    return '<span class="coll-chip">'+p.replace(/\b[A-Z][A-Z\/'\-]*(?:\s+[A-Z][A-Z\/'\-]*)*\b/g, function(m){ return '<b class="cw-key">'+m.toLowerCase()+'</b>'; })+'</span>';
+  }).join('');
+}
+function detailFields(w){
+  let h = ipaBlock(w);
+  h += '<div class="field tr-main"><span class="lbl">Meaning</span><p>'+w.tr+'</p></div>';
+  if(w.hint) h += '<div class="field"><span class="lbl">Nüans</span><p>'+w.hint+'</p></div>';
+  if(w.similar){
+    const m = w.similar.split(/\.\s*Fark:\s*/);
+    const sh = m.length>1 ? '<b class="syn">'+linkifyWords(m[0])+'.</b><span class="diff">'+m[1]+'</span>' : '<b class="syn">'+linkifyWords(w.similar)+'</b>';
+    h += '<div class="field"><span class="lbl">Benzer kelimeler</span><p>'+sh+'</p></div>';
+  }
+  if(w.opposite) h += '<div class="field antonyms"><span class="lbl">Zıt kelimeler</span><p><b class="ant">'+linkifyWords(w.opposite)+'</b></p></div>';
+  let ex = '<p class="en-ex">'+w.ex+'</p><p class="tr-ex">'+w.exTr+'</p>';
+  if(w.ex2) ex += '<p class="en-ex">'+w.ex2+'</p><p class="tr-ex">'+w.exTr2+'</p>';
+  h += '<div class="field"><span class="lbl">Examples</span>'+ex+'</div>';
+  if(w.coll) h += '<div class="field"><span class="lbl">Collocations</span><p class="coll-desc">En sık birlikte kullanıldığı kelimeler (fiil, edat, artikel):</p><div class="coll">'+collFormat(w.coll)+'</div></div>';
+  if(w.detail) h += '<div class="field explanation"><span class="lbl">Explanation</span><p>'+w.detail+'</p></div>';
+  if(w.note)   h += '<div class="field"><span class="lbl">Origin</span><p>'+w.note+'</p></div>';
+  if(w.extra)  h += '<div class="field"><span class="lbl">Good to know</span><p>'+w.extra+'</p></div>';
+  return h;
+}
+function cardDetailFields(w){
+  return '<div class="cd-word">'+w.en+' <span class="cd-type">'+typeLabel(w.type)+'</span></div>'+detailFields(w);
+}
+
+/* ============ SKOR / DURUM (localStorage) ============ */
+const SCORE_KEY = 'ns-vocab-score';
+const KNOWN_AT = 2;            // skor >= 2  -> Biliyorum (sağlam)
+let SCORES = {};
+try{ SCORES = JSON.parse(localStorage.getItem(SCORE_KEY)) || {}; }catch(e){ SCORES = {}; }
+const STATUS_LABEL = {known:'Biliyorum', shaky:'Sağlam değil', weak:'Zayıf'};
+function saveScores(){ try{ localStorage.setItem(SCORE_KEY, JSON.stringify(SCORES)); }catch(e){} }
+function getScore(en){ return SCORES[en] || 0; }
+function addScore(en, d){ let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; saveScores(); }
+function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
+function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
+
+/* cümle pratiği listesi + kullanıcının yazdığı cümleler */
+const FLAG_KEY='ns-vocab-flag', SENT_KEY='ns-vocab-sentences';
+let FLAGS={}, SENTS={};
+try{ FLAGS=JSON.parse(localStorage.getItem(FLAG_KEY))||{}; }catch(e){ FLAGS={}; }
+try{ SENTS=JSON.parse(localStorage.getItem(SENT_KEY))||{}; }catch(e){ SENTS={}; }
+function saveFlags(){ try{ localStorage.setItem(FLAG_KEY,JSON.stringify(FLAGS)); }catch(e){} }
+function saveSents(){ try{ localStorage.setItem(SENT_KEY,JSON.stringify(SENTS)); }catch(e){} }
+function isFlagged(en){ return !!FLAGS[en]; }
+function toggleFlag(en){ if(FLAGS[en]) delete FLAGS[en]; else FLAGS[en]=1; saveFlags(); }
+function getSent(en){ return SENTS[en]||''; }
+function setSent(en,txt){ txt=txt.trim(); if(txt) SENTS[en]=txt; else delete SENTS[en]; saveSents(); }
+function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* gizlenen (öğrenilmiş, rotasyondan çıkarılan) kelimeler */
+const HIDE_KEY='ns-vocab-hidden';
+let HIDDEN={};
+try{ HIDDEN=JSON.parse(localStorage.getItem(HIDE_KEY))||{}; }catch(e){ HIDDEN={}; }
+function saveHidden(){ try{ localStorage.setItem(HIDE_KEY,JSON.stringify(HIDDEN)); }catch(e){} }
+function isHidden(en){ return !!HIDDEN[en]; }
+function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; saveHidden(); }
+
+function assessRowHTML(w){
+  const st=statusOf(w.en), sc=getScore(w.en);
+  return '<div class="assess-row" data-i="'+w._i+'">'+
+    '<span class="assess-score">Skor <b>'+scoreText(sc)+'</b> · <span class="assess-badge st-'+st+'">'+STATUS_LABEL[st]+'</span></span>'+
+    '<span class="assess-btns">'+
+      '<button type="button" class="assess-btn miss" data-a="miss">Bilemedim</button>'+
+      '<button type="button" class="assess-btn hit" data-a="hit">Bildim</button>'+
+    '</span></div>';
+}
+function updateAssessRow(row){
+  const i=+row.dataset.i, en=WORDS[i].en, st=statusOf(en), sc=getScore(en);
+  const b=row.querySelector('.assess-badge'); b.className='assess-badge st-'+st; b.textContent=STATUS_LABEL[st];
+  row.querySelector('.assess-score b').textContent=scoreText(sc);
+}
+function paintEntryStripe(i){
+  const entry=listEl.querySelector('.entry[data-i="'+i+'"]'); if(!entry) return;
+  const st=statusOf(WORDS[i].en);
+  if(st==='known'||st==='weak') entry.dataset.st=st; else entry.removeAttribute('data-st');
+}
+
+/* ============ FİLTRE ============ */
+let filterVal = 'all';
+function matchesFilter(w){
+  if(filterVal==='hidden') return isHidden(w.en);          // yalnızca gizlenenler
+  if(isHidden(w.en)) return false;                         // gizlenenler diğer görünümlerde çıkmaz
+  if(filterVal==='all') return true;
+  if(filterVal==='shaky') return statusOf(w.en)!=='known';  // Sağlam değil = sağlam olmayan her şey (zayıf dahil)
+  return statusOf(w.en)===filterVal;
+}
+function activeWords(){ return WORDS.filter(matchesFilter); }
+
+/* ============ LİSTE ============ */
+const listEl = document.getElementById('list');
+const countEl = document.getElementById('count');
+
+function renderList(){
+  const aw = activeWords();
+  listEl.innerHTML = '';
+  if(!aw.length){ listEl.innerHTML = '<div class="empty">Bu filtrede kelime yok.</div>'; return; }
+  aw.forEach(w=>{
+    const idx = String(w._i+1).padStart(2,'0');
+    const st = statusOf(w.en);
+    const entry = document.createElement('div');
+    entry.className = 'entry'; entry.dataset.i = w._i;
+    if(st==='known'||st==='weak') entry.dataset.st = st;
+    entry.innerHTML =
+      '<div class="entry-row">'+
+        '<button class="entry-head" type="button" aria-expanded="false">'+
+          '<span class="eh-idx">'+idx+'</span>'+
+          '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
+          '<span class="eh-type">'+typeLabel(w.type)+'</span>'+
+          '<svg class="eh-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'+
+        '</button>'+
+        '<span class="entry-actions">'+
+          '<button type="button" class="row-btn row-flag'+(isFlagged(w.en)?' on':'')+'" data-a="flag" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'+
+          '<button type="button" class="row-btn row-hide'+(isHidden(w.en)?' on':'')+'" data-a="hide" aria-label="Öğrendim olarak işaretle" title="Öğrendim, kaldır"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></button>'+
+        '</span>'+
+      '</div>'+
+      '<div class="panel"><div class="panel-inner">'+detailFields(w)+assessRowHTML(w)+'</div></div>';
+    listEl.appendChild(entry);
+  });
+  wireHeads();
+}
+listEl.addEventListener('click', e=>{
+  const rb = e.target.closest('.row-btn');
+  if(rb){
+    const entry = rb.closest('.entry'); const i = +entry.dataset.i;
+    if(rb.dataset.a==='flag'){ toggleFlag(WORDS[i].en); rb.classList.toggle('on', isFlagged(WORDS[i].en)); }
+    else if(rb.dataset.a==='hide'){ toggleHidden(WORDS[i].en); renderList(); updateCount(); }
+    return;
+  }
+  const b = e.target.closest('.assess-btn'); if(!b) return;
+  const row = b.closest('.assess-row'); if(!row) return;
+  const i = +row.dataset.i;
+  addScore(WORDS[i].en, b.dataset.a==='hit' ? 1 : -1);
+  updateAssessRow(row); paintEntryStripe(i);
+});
+function heads(){ return Array.from(listEl.querySelectorAll('.entry-head')); }
+function wireHeads(){
+  heads().forEach((btn,i)=>{
+    btn.tabIndex = i===0 ? 0 : -1;
+    btn.addEventListener('click', ()=>{
+      const entry = btn.closest('.entry');
+      const open = entry.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true':'false');
+      if(open) scrollEntryToTop(entry);
+    });
+    btn.addEventListener('focus', ()=>markFocused(i));
+  });
+}
+function scrollEntryToTop(entry){
+  requestAnimationFrame(()=>{
+    const tabs = document.querySelector('.tabs');
+    const offset = (tabs ? tabs.offsetHeight : 0) + 16;
+    const y = entry.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({top: Math.max(0, y), behavior:'smooth'});
+  });
+}
+function markFocused(i){
+  const all = heads();
+  all.forEach((b,j)=>{ b.tabIndex = j===i ? 0 : -1; b.closest('.entry').classList.toggle('focused', j===i); });
+}
+function currentHeads(){
+  if(currentTab==='coll' && typeof collMode!=='undefined' && collMode==='list') return collHeads();
+  return heads();
+}
+function moveFocus(delta){
+  const all = currentHeads(); if(!all.length) return;
+  let cur = all.indexOf(document.activeElement);
+  if(cur<0) all.forEach((b,j)=>{ if(b.closest('.entry,.cb-row').classList.contains('focused')) cur=j; });
+  let ni = cur<0 ? (delta>0?0:all.length-1) : Math.min(Math.max(cur+delta,0), all.length-1);
+  all[ni].focus();
+  all[ni].scrollIntoView({block:'center', behavior:'smooth'});
+}
+function updateBrowseActive(){
+  document.body.classList.toggle('browse-active', currentTab==='coll' && collMode==='list');
+}
+
+/* ============ SEKME SİSTEMİ ============ */
+const TABS = ['list','cards','quiz','fill','reading','sentence','coll','stats'];
+const tabBtn = {}, view = {};
+TABS.forEach(t=>{ tabBtn[t]=document.getElementById('tab-'+t); view[t]=document.getElementById('view-'+t); });
+let currentTab = 'list';
+const ctlHint = document.getElementById('ctlHint');
+const CTL_HINTS = {
+  list: '<kbd>↑</kbd> <kbd>↓</kbd> ile gez, <kbd>Enter</kbd> ile aç. Mobilde sağdaki oklarla ilerle.'
+};
+
+function updateCount(){
+  if(currentTab==='cards') countEl.textContent = (order.length ? (cardPos+1) : 0)+' / '+order.length;
+  else if(currentTab==='quiz') countEl.textContent = 'Doğru '+quiz.correct+' / '+quiz.total;
+  else if(currentTab==='fill') countEl.textContent = 'Doğru '+fill.correct+' / '+fill.total;
+  else if(currentTab==='sentence') countEl.textContent = WORDS.filter(w=>isFlagged(w.en)).length+' kelime';
+  else if(currentTab==='coll') countEl.textContent = WORDS.filter(w=>isHidden(w.en)).length+' / '+WORDS.length+' solid';
+  else if(currentTab==='reading') countEl.textContent = ARTICLES.length+' hikâye';
+  else countEl.textContent = activeWords().length+' kelime';
+}
+function selectTab(t){
+  currentTab = t;
+  try{ localStorage.setItem('ns-vocab-tab', t); }catch(e){}
+  TABS.forEach(k=>{
+    tabBtn[k].setAttribute('aria-selected', k===t ? 'true':'false');
+    view[k].style.display = (k===t) ? (k==='cards' ? 'flex' : 'block') : 'none';
+  });
+  document.body.classList.toggle('list-active', t==='list');
+  if(ctlHint) ctlHint.innerHTML = CTL_HINTS[t] || '';
+  placeFilter(t);
+  if(t==='list') renderList();
+  else if(t==='cards'){ buildOrder(); renderCard(); }
+  else if(t==='quiz') startQuiz();
+  else if(t==='fill') startFill();
+  else if(t==='reading') renderReading();
+  else if(t==='sentence') renderSentence();
+  else if(t==='coll') renderColl();
+  else if(t==='stats') renderStats();
+  updateCount();
+  updateBrowseActive();
+}
+TABS.forEach(t=> tabBtn[t].addEventListener('click', ()=>selectTab(t)));
+
+/* sağdaki dropdown: Cümle / Öğrendiklerim / İstatistik */
+(function(){
+  const moreBtn=document.getElementById('moreBtn'), morePop=document.getElementById('morePop');
+  if(!moreBtn||!morePop) return;
+  function closeMore(){ morePop.hidden=true; moreBtn.setAttribute('aria-expanded','false'); }
+  function openMore(){ morePop.hidden=false; moreBtn.setAttribute('aria-expanded','true'); }
+  moreBtn.addEventListener('click', function(e){ e.stopPropagation(); morePop.hidden ? openMore() : closeMore(); });
+  morePop.addEventListener('click', closeMore);
+  document.addEventListener('click', function(e){ if(!e.target.closest('.more-menu')) closeMore(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMore(); });
+  const gm=document.getElementById('go-mastered');
+  if(gm) gm.addEventListener('click', function(){ filterVal='hidden'; if(filterSel) filterSel.value='hidden'; selectTab('list'); });
+})();
+
+const filterSel = document.getElementById('filterSel');
+filterSel.addEventListener('change', ()=>{ filterVal = filterSel.value; refreshCurrent(); });
+
+/* filtre dropdown'ını sekmeye göre yerleştir: kart/quiz'de üst satıra, diğerlerinde çubuğa */
+const filterHost = document.getElementById('filterHost');
+const ctlbarEl = document.querySelector('.ctlbar');
+function placeFilter(t){
+  if(t==='cards'){
+    const tr = document.querySelector('#view-cards .topbar-right');
+    if(tr && filterHost.parentNode!==tr) tr.insertBefore(filterHost, tr.firstChild);
+    ctlbarEl.style.display='none';
+  } else if(t==='quiz'){
+    const dr = document.querySelector('#view-quiz .dir-row');
+    if(dr && filterHost.parentNode!==dr) dr.appendChild(filterHost);
+    ctlbarEl.style.display='none';
+  } else {
+    if(filterHost.parentNode!==ctlbarEl) ctlbarEl.appendChild(filterHost);
+    ctlbarEl.style.display='';
+  }
+}
+function refreshCurrent(){
+  if(currentTab==='list') renderList();
+  else if(currentTab==='cards'){ buildOrder(); renderCard(); }
+  else if(currentTab==='quiz') startQuiz();
+  else if(currentTab==='fill') startFill();
+  else if(currentTab==='reading') renderReading();
+  else if(currentTab==='sentence') renderSentence();
+  else if(currentTab==='coll') renderColl();
+  else if(currentTab==='stats') renderStats();
+  updateCount();
+}
+
+/* ============ ORTAK ARAÇLAR ============ */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function coreForms(en){ return en.split('/').map(x=>x.trim()).filter(Boolean); }
+function normalize(s){ return (s||'').toLowerCase().trim().replace(/\s+/g,' ').replace(/[.,!?;:'"]/g,''); }
+function reEscape(f){ return f.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function wordRegex(f){ return new RegExp('\\b'+reEscape(f)+'[a-z]*', 'i'); }
+
+/* ============ FLASH KART ============ */
+const cardEl=document.getElementById('card'), sideTag=document.getElementById('sideTag'), idxTag=document.getElementById('idxTag'),
+  promptEl=document.getElementById('prompt'), promptType=document.getElementById('promptType'), promptHint=document.getElementById('promptHint'),
+  aTerm=document.getElementById('aTerm'), cardIpa=document.getElementById('cardIpa'), aTr=document.getElementById('aTr'),
+  cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), facesEl=document.querySelector('.faces'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
+  detailBtn=document.getElementById('detailBtn'), dirEnBtn=document.getElementById('dir-en'), dirTrBtn=document.getElementById('dir-tr');
+let order=[], cardPos=0, flipped=false, dirEN=true;
+function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
+function curCard(){ return WORDS[order[cardPos]]; }
+function renderCardBadge(){
+  if(!order.length){ cardBadge.className='assess-badge'; cardBadge.textContent=''; return; }
+  const w=curCard(), st=statusOf(w.en);
+  cardBadge.className='assess-badge st-'+st;
+  cardBadge.textContent=STATUS_LABEL[st]+' · '+scoreText(getScore(w.en));
+}
+function renderCard(){
+  if(!order.length){ promptEl.textContent='…'; promptEl.classList.remove('small'); promptType.textContent=''; promptHint.textContent=''; promptHint.style.display='none'; cardIpa.textContent=''; idxTag.textContent='0 / 0'; sideTag.textContent=''; cardDetails.innerHTML=''; cardEl.classList.remove('flipped'); renderCardBadge(); updateFlagBtn(); updateCount(); return; }
+  const w=curCard(); flipped=false; cardEl.classList.remove('flipped'); cardEl.classList.toggle('dir-en',dirEN); cardEl.classList.toggle('dir-tr',!dirEN); cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false');
+  cardDetails.innerHTML=cardDetailFields(w); renderCardBadge(); updateFlagBtn(); updateHideBtn();
+  idxTag.textContent=(cardPos+1)+' / '+order.length;
+  const ipa=[w.uk&&'UK '+w.uk, w.us&&'US '+w.us].filter(Boolean).join('   ');
+  cardIpa.textContent=ipa;
+  if(dirEN){ sideTag.textContent='İngilizce'; promptEl.textContent=w.en; promptEl.classList.toggle('small',w.en.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.tr; aTr.textContent=w.en; }
+  else { sideTag.textContent='Türkçe'; promptEl.textContent=w.tr; promptEl.classList.toggle('small',w.tr.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.en; aTr.textContent=w.tr; }
+  const showHint = (!dirEN && w.hint);
+  promptHint.textContent = showHint ? w.hint : '';
+  promptHint.style.display = showHint ? '' : 'none';
+  updateCount();
+}
+function replayAnim(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function playEnter(dir){ if(facesEl) replayAnim(facesEl, dir>0?'enter-right':'enter-left'); }
+function flipCard(){ if(!order.length) return; flipped=!flipped; cardEl.classList.toggle('flipped',flipped); replayAnim(cardEl,'flip-anim'); }
+function nextCard(){ if(!order.length) return; cardPos=(cardPos+1)%order.length; renderCard(); playEnter(1); }
+function prevCard(){ if(!order.length) return; cardPos=(cardPos-1+order.length)%order.length; renderCard(); playEnter(-1); }
+function shuffleCards(){ buildOrder(); renderCard(); playEnter(1); }
+function toggleCardDetails(){ const on=cardDetails.classList.toggle('show'); detailBtn.setAttribute('aria-pressed',on?'true':'false'); }
+function updateFlagBtn(){ const on=!!(order.length && isFlagged(curCard().en)); flagBtn.classList.toggle('on',on); flagBtn.setAttribute('aria-pressed',on?'true':'false'); }
+function toggleCardFlag(){ if(!order.length) return; toggleFlag(curCard().en); updateFlagBtn(); }
+function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.classList.toggle('on',on); hideBtn.setAttribute('aria-pressed',on?'true':'false'); hideBtn.title = on?'Geri getir':'Öğrendim, kaldır'; }
+function hideCurrentCard(){ if(!order.length) return; toggleHidden(curCard().en); order.splice(cardPos,1); if(cardPos>=order.length) cardPos=0; renderCard(); updateCount(); }
+function rate(delta){ if(!order.length) return; addScore(curCard().en, delta); nextCard(); }
+cardEl.addEventListener('click', flipCard);
+cardEl.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flipCard(); } });
+document.getElementById('nextBtn').addEventListener('click', nextCard);
+document.getElementById('prevBtn').addEventListener('click', prevCard);
+document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
+document.getElementById('hitBtn').addEventListener('click', ()=>rate(1));
+document.getElementById('missBtn').addEventListener('click', ()=>rate(-1));
+detailBtn.addEventListener('click', toggleCardDetails);
+flagBtn.addEventListener('click', toggleCardFlag);
+hideBtn.addEventListener('click', hideCurrentCard);
+dirEnBtn.addEventListener('click', ()=>{ dirEN=true; dirEnBtn.setAttribute('aria-selected','true'); dirTrBtn.setAttribute('aria-selected','false'); renderCard(); });
+dirTrBtn.addEventListener('click', ()=>{ dirEN=false; dirTrBtn.setAttribute('aria-selected','true'); dirEnBtn.setAttribute('aria-selected','false'); renderCard(); });
+
+/* ============ QUIZ ============ */
+const qPrompt=document.getElementById('qPrompt'), qSub=document.getElementById('qSub'), qOptions=document.getElementById('qOptions'),
+  qScore=document.getElementById('qScore'), qNext=document.getElementById('qNext'),
+  qdirEn=document.getElementById('qdir-en'), qdirTr=document.getElementById('qdir-tr');
+let quiz={dir:'en2tr', queue:[], cur:null, answered:false, correct:0, total:0};
+function sideText(w,side){ return side==='en' ? w.en : w.tr; }
+function startQuiz(){ quiz.correct=0; quiz.total=0; quiz.queue=shuffle(activeWords()); newQuestion(); }
+function newQuestion(){
+  const pool=activeWords();
+  if(!pool.length){ qPrompt.textContent='…'; qSub.textContent=''; qOptions.innerHTML='<p class="empty">Bu filtrede kelime yok.</p>'; qScore.textContent=''; qNext.disabled=true; updateCount(); return; }
+  if(!quiz.queue.length) quiz.queue=shuffle(pool);
+  const w=quiz.queue.shift(); quiz.cur=w; quiz.answered=false;
+  const answerSide=quiz.dir==='en2tr'?'tr':'en';
+  const promptSide=quiz.dir==='en2tr'?'en':'tr';
+  qPrompt.textContent=sideText(w,promptSide);
+  qSub.textContent=(quiz.dir==='en2tr'?'Türkçe karşılığı?':'İngilizce karşılığı?')+' · '+typeLabel(w.type);
+  const distract=shuffle(WORDS.filter(x=>x._i!==w._i)).slice(0,3);
+  const opts=shuffle([w].concat(distract));
+  qOptions.innerHTML='';
+  opts.forEach((o,idx)=>{
+    const b=document.createElement('button'); b.className='q-opt'; b.type='button'; b.dataset.i=o._i;
+    b.innerHTML='<span class="q-key">'+(idx+1)+'</span><span>'+sideText(o,answerSide)+'</span>';
+    b.addEventListener('click', ()=>answerQuiz(b,o));
+    qOptions.appendChild(b);
+  });
+  qNext.disabled=true;
+  qScore.textContent='Doğru '+quiz.correct+' / '+quiz.total;
+  updateCount();
+}
+function answerQuiz(btn,opt){
+  if(quiz.answered) return; quiz.answered=true;
+  const w=quiz.cur; const correct=opt._i===w._i;
+  quiz.total++; if(correct){ quiz.correct++; addScore(w.en,1); } else { addScore(w.en,-1); }
+  Array.from(qOptions.children).forEach(b=>{ b.disabled=true; if(+b.dataset.i===w._i) b.classList.add('correct'); });
+  if(!correct) btn.classList.add('wrong');
+  qScore.textContent='Doğru '+quiz.correct+' / '+quiz.total;
+  qNext.disabled=false; qNext.focus();
+  updateCount();
+}
+qNext.addEventListener('click', newQuestion);
+qdirEn.addEventListener('click', ()=>{ quiz.dir='en2tr'; qdirEn.setAttribute('aria-selected','true'); qdirTr.setAttribute('aria-selected','false'); startQuiz(); });
+qdirTr.addEventListener('click', ()=>{ quiz.dir='tr2en'; qdirTr.setAttribute('aria-selected','true'); qdirEn.setAttribute('aria-selected','false'); startQuiz(); });
+
+/* ============ BOŞLUK DOLDURMA ============ */
+const fSentence=document.getElementById('fSentence'), fHint=document.getElementById('fHint'), fInput=document.getElementById('fInput'),
+  fFeedback=document.getElementById('fFeedback'), fScore=document.getElementById('fScore'),
+  fCheck=document.getElementById('fCheck'), fReveal=document.getElementById('fReveal'), fNext=document.getElementById('fNext');
+let fill={queue:[], cur:null, answered:false, correct:0, total:0};
+function blankExample(w){
+  const forms=coreForms(w.en);
+  const sents=[w.ex, w.ex2];
+  for(let s=0;s<sents.length;s++){ const sent=sents[s]; if(!sent) continue;
+    for(let f=0;f<forms.length;f++){ const re=wordRegex(forms[f]); const mm=sent.match(re); if(mm) return {display:sent.replace(re,'_____'), answer:forms[f], shown:mm[0]}; }
+  }
+  return null;
+}
+function fillPool(){ return activeWords().map(w=>({w:w, b:blankExample(w)})).filter(x=>x.b); }
+function startFill(){ fill.correct=0; fill.total=0; fill.queue=shuffle(fillPool()); newFill(); }
+function newFill(){
+  const pool=fillPool();
+  if(!pool.length){ fSentence.textContent='…'; fHint.textContent='Bu filtrede uygun cümle yok.'; fInput.style.display='none'; fFeedback.textContent=''; updateCount(); return; }
+  fInput.style.display='';
+  if(!fill.queue.length) fill.queue=shuffle(pool);
+  const item=fill.queue.shift(); fill.cur=item; fill.answered=false;
+  fSentence.textContent=item.b.display;
+  fHint.textContent='İpucu: '+item.w.tr;
+  fInput.value=''; fInput.disabled=false; fFeedback.textContent=''; fFeedback.className='f-feedback';
+  fScore.textContent='Doğru '+fill.correct+' / '+fill.total;
+  fInput.focus();
+  updateCount();
+}
+function checkFill(){
+  if(!fill.cur || fill.answered) return;
+  const w=fill.cur.w, b=fill.cur.b; const val=normalize(fInput.value); if(!val) return;
+  const ok = val===normalize(b.answer) || val===normalize(b.shown) || coreForms(w.en).some(f=>normalize(f)===val);
+  fill.answered=true; fill.total++; fInput.disabled=true;
+  if(ok){ fill.correct++; addScore(w.en,1); fFeedback.textContent='Doğru! ('+b.shown+')'; fFeedback.className='f-feedback ok'; }
+  else { addScore(w.en,-1); fFeedback.textContent='Doğru cevap: '+b.shown; fFeedback.className='f-feedback no'; }
+  fScore.textContent='Doğru '+fill.correct+' / '+fill.total;
+  updateCount();
+}
+function revealFill(){
+  if(!fill.cur || fill.answered) return;
+  fill.answered=true; fill.total++; addScore(fill.cur.w.en,-1); fInput.disabled=true;
+  fFeedback.textContent='Cevap: '+fill.cur.b.shown; fFeedback.className='f-feedback no';
+  fScore.textContent='Doğru '+fill.correct+' / '+fill.total; updateCount();
+}
+fCheck.addEventListener('click', checkFill);
+fReveal.addEventListener('click', revealFill);
+fNext.addEventListener('click', newFill);
+fInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); if(fill.answered) newFill(); else checkFill(); } });
+
+/* ============ OKUMA (hikâyeler) ============ */
+const rdList=document.getElementById('rdList'), rdToggle=document.getElementById('rdToggle');
+const ARTICLES = [
+{ title:`The Takeover`,
+  en:`Nadia ran the company with a {{ruthless}} focus on profit. She was {{blunt}} in every meeting: "Cut costs or leave." Last year a single {{blunder}} nearly sank the firm, so now she held every manager {{accountable}}.
+
+Then a scandal broke. A rival claimed the last contract was {{rigged}}, won through bribes and {{fake claims}}. Nadia said the numbers were clean, but the two reports kept {{contradicting}} each other. The board was {{on the fence}}: some wanted her gone, others said she had the {{moral fibre and merits}} to survive.
+
+"We can't ignore {{the elephant in the room}}," a director said. "If we {{cut corners}} on safety, someone gets hurt." Nadia refused to {{hoodwink}} anyone. "We barely {{break even}} as it is," she snapped. "Hiding a fault would make me a {{hypocrite}}. So we tell the truth and {{deal with it}}."`,
+  tr:`Nadia şirketi kâra acımasız bir odakla yönetiyordu. Her toplantıda dobraydı: "Ya masrafları kısın ya da gidin." Geçen yıl tek bir gaf firmayı neredeyse batırmıştı, bu yüzden artık her yöneticiyi sorumlu tutuyordu.
+
+Derken bir skandal patladı. Bir rakip, son ihalenin hileli olduğunu, rüşvet ve sahte iddialarla kazanıldığını öne sürdü. Nadia rakamların temiz olduğunu söyledi ama iki rapor sürekli birbiriyle çelişiyordu. Yönetim kurulu kararsızdı: kimisi onun gitmesini istiyor, kimisi ayakta kalacak ahlaki değerler ve erdemlere sahip olduğunu söylüyordu.
+
+"Şu herkesin gördüğü ama konuşmadığı sorunu görmezden gelemeyiz," dedi bir üye. "Güvenlikte işi baştan savarsak biri zarar görür." Nadia kimseyi kandırmaya yanaşmadı. "Zaten zar zor başa baş noktasındayız," diye çıkıştı. "Bir kusuru gizlemek beni ikiyüzlü yapar. O yüzden gerçeği söyler ve idare ederiz."`
+},
+{ title:`The Fire on Elm Street`,
+  en:`The blaze started just after midnight. {{By all accounts|by all accounts}} it was no accident: an {{arsonist}} had poured fuel down the stairwell, and the flames spread in an {{indiscriminate}} rush, sparing nothing.
+
+Neighbours fled to the {{curbside}} in an {{eerie}} silence. An old, damp {{bunker}} from the war filled with families. Firefighters worked to {{suck out}} the smoke and {{stir}} the trapped air.
+
+By dawn the {{death toll}} stood at four, with dozens more among the {{casualties}}. The fire had {{crippled}} half the district; shops that were already {{stagnant}} would never reopen. As {{the cost of living continued to soar}}, few could rebuild. Police suspected a {{clandestine}} feud. It seemed almost {{cruel}} that one match could undo so many lives.`,
+  tr:`Yangın gece yarısını biraz geçe başladı. Herkesin dediğine göre kaza değildi: bir kundakçı merdiven boşluğuna yakıt dökmüştü ve alevler ayrım gözetmeyen bir hızla yayıldı, hiçbir şeyi esirgemedi.
+
+Komşular tekinsiz bir sessizlik içinde yol kenarına kaçtı. Savaştan kalma nemli, eski bir sığınak ailelerle doldu. İtfaiyeciler dumanı emerek çekmeye ve sıkışan havayı karıştırmaya çalıştı.
+
+Şafakta ölü sayısı dörde ulaştı, onlarca kişi de yaralılar arasındaydı. Yangın ilçenin yarısını felç etmişti; zaten durgun olan dükkânlar bir daha açılmayacaktı. Hayat pahalılığı fırlamaya devam ederken çok azı yeniden inşa edebildi. Polis gizli bir husumetten şüphelendi. Tek bir kibritin bunca hayatı yıkması neredeyse zalimceydi.`
+},
+{ title:`Mara and the Clip`,
+  en:`The show followed the {{tangled love lives}} of five roommates, and the public loved it. Its star, Mara, adored the {{limelight}} but rarely agreed to {{share the limelight}} with the cast.
+
+When an old clip surfaced, {{cancel culture}} came for her overnight. Fans were {{exasperated}}; one co-star grew {{agitated}}, another {{perturbed}}. On camera Mara did not {{bat an eyelid|not bat an eyelid}}, though inside she was afraid. Her friends spent nights {{commiserating}} with her.
+
+Instead of trying to {{get someone back|get someone back for something}} or {{start a vendetta against}} her critics, she {{came across|come across}} as humble. A {{greedy}} agent urged a lawsuit, but attacking a teenager online would be {{way below the belt}}. "I should {{take a leaf out of|take a leaf out of someone's book}} my grandmother," she said. In the end the two sides found {{common ground}}, and a quiet {{indulgence}} replaced the noise. Mara slowly learned to {{blend in}} again.`,
+  tr:`Dizi, beş ev arkadaşının karmakarışık aşk hayatlarını anlatıyordu ve halk buna bayılıyordu. Yıldızı Mara ilgi odağı olmaya bayılırdı ama parlayan anı oyuncularla paylaşmaya pek yanaşmazdı.
+
+Eski bir video ortaya çıkınca dışlama kültürü bir gecede peşine düştü. Hayranlar bezmişti; bir oyuncu arkadaşı telaşlandı, bir diğeri huzursuz oldu. Mara kamera önünde gözünü bile kırpmadı, içten içe korksa da. Arkadaşları geceleri onunla dertleşerek geçirdi.
+
+Eleştirenlerden acısını çıkarmaya ya da onlara karşı husumet başlatmaya çalışmak yerine alçakgönüllü göründü. Açgözlü bir menajer dava açmaya itti ama internette bir gence saldırmak çok ayıp olurdu. "Büyükannemi örnek almalıyım," dedi. Sonunda iki taraf ortak bir zemin buldu; gürültünün yerini sakin bir keyif aldı. Mara yavaş yavaş yeniden ortama karışmayı öğrendi.`
+},
+{ title:`Dinner Scare`,
+  en:`At the family dinner, Grandpa suddenly went pale and could not breathe. A fish bone had lodged in his throat. Aunt Lena, a nurse, rushed over and performed the {{Heimlich maneuver|heimlich maneuver}}, thrusting hard until the bone shot out.
+
+Grandpa's {{pacemaker}} kept his heart steady through the shock. Once he could speak, he gave a weak {{nod}}. His {{eyelids|eyelid}} were heavy, and a loud {{hiccough}} made everyone laugh with relief.
+
+"That was no small thing," Mum said, cutting the rest of the fish along a clean {{slit}}. Earlier that day Grandpa had pulled a muscle, a painful {{charley horse}}, and joked that old age was a {{burden}}. But moments like this reminded us how {{valuable}}, even {{irreplaceable}}, his presence was. In the tank nearby, a goldfish opened its {{gills|gill}}, calm as ever.`,
+  tr:`Aile yemeğinde dede birden bembeyaz oldu ve nefes alamadı. Boğazına bir kılçık takılmıştı. Hemşire olan Lena teyze koşup Heimlich manevrasını uyguladı; kılçık fırlayana dek sert sert bastırdı.
+
+Dedenin kalp pili, şok boyunca kalbini düzenli tuttu. Konuşabilince hafifçe başını salladı. Göz kapakları ağırlaşmıştı ve yüksek bir hıçkırık herkesi rahatlamayla güldürdü.
+
+"Az buz iş değildi," dedi annem, kalan balığı düzgün bir yarık boyunca keserken. O gün erken saatte dede bir kasını incitmiş, acı veren bir kramp yaşamış ve yaşlılığın bir yük olduğuna şaka yapmıştı. Ama böyle anlar bize onun varlığının ne kadar değerli, hatta yeri doldurulamaz olduğunu hatırlattı. Yanındaki akvaryumda bir japon balığı, her zamanki kadar sakin, solungaçlarını açıp kapadı.`
+},
+{ title:`Launch Week`,
+  en:`Our team had a week to {{carry out}} the new launch, and nobody could {{figure out}} where to start. After a short {{preamble}}, the manager began to {{narrow down}} the tasks. The new system also had to stay {{backward compatible}} with the old one.
+
+"Let me {{point out}} one risk," said Omar. "If the server fails, what do we {{fall back on}}?" Someone had forgotten to {{back up}} the files, a job we kept meaning to {{get around to}}. We could not {{put off}} the launch again.
+
+I had {{come across}} a similar plan online and, {{by all accounts|by all accounts}}, it had {{turned out|turn out}} well. "Before we decide, let's {{think it through}}," Omar said. "I {{reckon}} we can recover our costs in a month." It took a while to {{get the hang of}} the tools, but if we {{bring up}} problems early, the project might not {{wind up}} a disaster.`,
+  tr:`Ekibimizin yeni lansmanı gerçekleştirmek için bir haftası vardı ve kimse nereden başlayacağını çözemiyordu. Kısa bir girişin ardından yönetici görevleri daraltmaya başladı. Yeni sistemin ayrıca eskisiyle geriye dönük uyumlu kalması gerekiyordu.
+
+"Bir riske dikkat çekeyim," dedi Omar. "Sunucu çökerse neye başvuracağız?" Biri dosyaları yedeklemeyi unutmuştu; sürekli "sıra gelince yaparız" dediğimiz bir işti. Lansmanı yine erteleyemezdik.
+
+İnternette benzer bir plana rastlamıştım ve herkesin dediğine göre iyi sonuç vermişti. "Karar vermeden önce iyice düşünelim," dedi Omar. "Bence bir ayda masrafımızı çıkarırız." Araçların tekniğini kapmak biraz sürdü ama sorunları erken açarsak proje bir felakete dönüşmeyebilir.`
+},
+{ title:`On Advice and Fame`,
+  en:`Good advice is often {{subtle}}, and its worth only shows {{in the long run}}. A single tip can be {{crucial}}, yet we ignore what is quietly {{considerable}} and chase what is loud.
+
+Fame is {{a double-edged sword}}: it opens doors but invites judgement. When a critic said success is mostly luck, he {{hit the nail on the head}}, though that was only {{the tip of the iceberg}}. Treat bold promises with care; {{take them with a grain of salt|take something with a grain of salt}}. A {{compelling}} argument can still be false. It helps to {{play devil's advocate}} and raise the opposite view in a {{deliberate}} test of your own idea.
+
+Ambition has a {{tendency}} to blind us, so burnout feels almost {{inevitable}} and is {{detrimental}} to work and health. In a quiet {{detached house}} far from the city, a novelist known only by her {{pen name}} understood this. Her {{absence}} from the spotlight was chosen on purpose. "A star envies a newer star. {{How is that news|how is that news}}?" she wrote.`,
+  tr:`İyi tavsiye çoğu zaman inceliklidir ve değeri ancak uzun vadede belli olur. Tek bir öneri hayati olabilir; oysa sessizce hatırı sayılır olanı görmezden gelip gürültülü olanın peşine düşeriz.
+
+Şöhret iki ucu keskin bir kılıçtır: kapılar açar ama yargılanmayı davet eder. Bir eleştirmen başarının çoğunlukla şans olduğunu söylediğinde tam üstüne bastı, ama bu buzdağının yalnızca görünen ucuydu. İddialı vaatlere temkinli yaklaş; onları şüpheyle karşıla. İkna edici bir argüman bile yanlış olabilir. Kendi fikrini sınamak için bilerek karşı tarafı savunmak ve zıt görüşü ortaya atmak işe yarar.
+
+Hırsın gözümüzü karartma eğilimi vardır; bu yüzden tükenmişlik neredeyse kaçınılmazdır ve hem işe hem sağlığa zararlıdır. Şehirden uzak, sessiz bir müstakil evde, yalnızca takma adıyla tanınan bir romancı bunu anlamıştı. Onun ilgi odağından uzak kalışı bilinçliydi. "Bir yıldız daha yeni bir yıldızı kıskanıyor. Bunun neresi haber?" diye yazdı.`
+}
+];
+function renderArticleEN(text){
+  return text.trim().split(/\n\s*\n/).map(p=>
+    '<p>'+p.trim().replace(/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g,(m,a,b)=>{
+      const base=(b||a).trim().toLowerCase();
+      return '<b class="artword wordref" data-w="'+base+'">'+a.trim()+'</b>';
+    })+'</p>'
+  ).join('');
+}
+function renderArticleTR(text){
+  return text.trim().split(/\n\s*\n/).map(p=>'<p>'+p.trim()+'</p>').join('');
+}
+function renderReading(){
+  rdList.innerHTML = ARTICLES.map(a=>
+    '<article class="art">'+
+      '<h3 class="art-title">'+a.title+'</h3>'+
+      '<div class="art-en">'+renderArticleEN(a.en)+'</div>'+
+      '<div class="art-tr">'+renderArticleTR(a.tr)+'</div>'+
+    '</article>'
+  ).join('');
+}
+rdToggle.addEventListener('click', ()=>{
+  const hidden=view.reading.classList.toggle('hide-tr');
+  rdToggle.setAttribute('aria-pressed', hidden?'true':'false');
+  rdToggle.textContent = hidden ? 'Türkçeyi göster' : 'Türkçeyi gizle';
+});
+
+/* ============ CÜMLE PRATİĞİ ============ */
+const sentenceList=document.getElementById('sentenceList');
+function renderSentence(){
+  const flagged=WORDS.filter(w=>isFlagged(w.en) && !isHidden(w.en));
+  if(!flagged.length){ sentenceList.innerHTML='<div class="empty">Cümle listen boş. Karttaki yer imi düğmesiyle (klavyede L) ya da listedeki "Cümle" düğmesiyle kelime ekle.</div>'; return; }
+  sentenceList.innerHTML='<div class="sent-bar"><button type="button" class="sent-copy" id="sentCopyBtn" title="Kelimeleri panoya kopyala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Kelimeleri kopyala</span></button></div>'+
+  flagged.map(w=>{
+    let ex='<p class="sent-ex">'+w.ex+'</p>';
+    if(w.ex2) ex+='<p class="sent-ex">'+w.ex2+'</p>';
+    return '<div class="sent-item" data-i="'+w._i+'">'+
+      '<div class="sent-head">'+
+        '<span class="sent-word">'+w.en+'</span>'+
+        '<span class="sent-type">'+typeLabel(w.type)+'</span>'+
+        '<span class="sent-actions">'+
+          '<button type="button" class="sent-detail" aria-label="Detayı aç" title="Detay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></button>'+
+          '<button type="button" class="sent-remove" aria-label="Listeden çıkar" title="Çıkar">&times;</button>'+
+        '</span>'+
+      '</div>'+ex+
+    '</div>';
+  }).join('');
+}
+sentenceList.addEventListener('click', e=>{
+  const copyBtn=e.target.closest('#sentCopyBtn');
+  if(copyBtn){ copySentenceWords(copyBtn); return; }
+  const item=e.target.closest('.sent-item'); if(!item) return;
+  const i=+item.dataset.i;
+  if(e.target.closest('.sent-detail')){ openWordModal(WORDS[i]); return; }
+  if(e.target.closest('.sent-remove')){ toggleFlag(WORDS[i].en); renderSentence(); updateCount(); }
+});
+function copySentenceWords(btn){
+  const flagged=WORDS.filter(w=>isFlagged(w.en) && !isHidden(w.en));
+  const text=flagged.map(w=>w.en).join('\n');
+  const label=btn.querySelector('span');
+  const done=()=>{ btn.classList.add('done'); label.textContent='Kopyalandı'; setTimeout(()=>{ btn.classList.remove('done'); label.textContent='Kelimeleri kopyala'; },1600); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  } else { fallbackCopy(text,done); }
+}
+function fallbackCopy(text,cb){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){} document.body.removeChild(ta);
+}
+
+/* ============ COLLOCATION ============ */
+const COLL_SENT_KEY='ns-vocab-coll-sent';
+let COLL_SENTS={};
+try{ COLL_SENTS=JSON.parse(localStorage.getItem(COLL_SENT_KEY))||{}; }catch(e){ COLL_SENTS={}; }
+function saveCollSents(){ try{ localStorage.setItem(COLL_SENT_KEY,JSON.stringify(COLL_SENTS)); }catch(e){} }
+function getCollSent(en,idx){ return (COLL_SENTS[en]&&COLL_SENTS[en][idx])||''; }
+function setCollSent(en,idx,txt){
+  txt=(txt||'').trim();
+  if(txt){ if(!COLL_SENTS[en]) COLL_SENTS[en]={}; COLL_SENTS[en][idx]=txt; }
+  else if(COLL_SENTS[en]){ delete COLL_SENTS[en][idx]; if(!Object.keys(COLL_SENTS[en]).length) delete COLL_SENTS[en]; }
+  saveCollSents();
+}
+
+const UPPER_RE=/\b[A-Z][A-Z\/'\-]*(?:\s+[A-Z][A-Z\/'\-]*)*\b/;
+function collList(w){ return (w.coll||'').split(' · ').map(s=>s.trim()).filter(Boolean); }
+function collPhraseHTML(p){ return escapeHTML(p).replace(new RegExp(UPPER_RE.source,'g'), function(m){ return '<b class="cw-key">'+m.toLowerCase()+'</b>'; }); }
+function blankAt(phrase,start,len){ return phrase.slice(0,start)+'____'+phrase.slice(start+len); }
+function collBlankHTML(phrase,start,len){ return escapeHTML(phrase.slice(0,start))+'<span class="cex-blank">____</span>'+collPhraseHTML(phrase.slice(start+len)); }
+function findHeadword(w,phrase){
+  const low=phrase.toLowerCase();
+  const forms=coreForms(w.en);
+  for(const f of forms){ const fl=f.toLowerCase(); const i=low.indexOf(fl); if(i>=0) return {start:i,len:f.length}; }
+  return null;
+}
+
+/* ---- ilerleme ---- */
+const collProgress=document.getElementById('collProgress');
+function renderCollProgress(){
+  const total=WORDS.length;
+  const done=WORDS.filter(w=>isHidden(w.en)).length;
+  const withSent=WORDS.filter(w=>COLL_SENTS[w.en]&&Object.keys(COLL_SENTS[w.en]).length).length;
+  const pct=total?Math.round(done/total*100):0;
+  collProgress.innerHTML=
+    '<div class="cp-top"><span class="cp-label">Words consolidated</span><span class="cp-num">'+done+' / '+total+' · '+pct+'%</span></div>'+
+    '<div class="stat-bar"><i class="s-known" style="width:'+(total?done/total*100:0)+'%"></i></div>'+
+    '<div class="cp-note">Your own example in '+withSent+' word'+(withSent===1?'':'s')+'.</div>';
+}
+
+/* ---- çalış: tek kelime navigatörü ---- */
+let collMode='list', collOrder=[], collPos=0;
+function buildCollOrder(){ collOrder=activeWords().map(w=>w._i); if(collPos>=collOrder.length) collPos=Math.max(0,collOrder.length-1); }
+function curColl(){ return WORDS[collOrder[collPos]]; }
+const collStudyEl=document.getElementById('collStudy');
+function autosize(ta){ ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; }
+function renderCollStudy(){
+  if(!collOrder.length){ collStudyEl.innerHTML='<div class="empty">No words to show in this filter. Change the filter above.</div>'; return; }
+  const w=curColl(), done=isHidden(w.en);
+  const rows=collList(w).map(function(p,idx){
+    const val=getCollSent(w.en,idx);
+    return '<div class="coll-item">'+
+      '<div class="coll-phrase">'+collPhraseHTML(p)+'</div>'+
+      '<textarea class="coll-mine'+(val?' saved':'')+'" data-idx="'+idx+'" rows="1" placeholder="Write your own sentence with this…">'+escapeHTML(val)+'</textarea>'+
+    '</div>';
+  }).join('');
+  collStudyEl.innerHTML=
+    '<div class="coll-card">'+
+      '<div class="coll-head"><span class="coll-w-term">'+w.en+'</span><span class="coll-w-type">'+typeLabel(w.type)+'</span><span class="coll-w-tr">'+w.tr+'</span></div>'+
+      '<div class="coll-items">'+rows+'</div>'+
+    '</div>'+
+    '<div class="card-controls coll-controls">'+
+      '<button data-act="prev" aria-label="Previous">← Prev</button>'+
+      '<button data-act="done" class="done-btn'+(done?' is-done':'')+'">'+(done?'Solid ✓':'Consolidate')+'</button>'+
+      '<button data-act="shuffle" aria-label="Shuffle">Shuffle</button>'+
+      '<button data-act="next" aria-label="Next">Next →</button>'+
+    '</div>'+
+    '<div class="coll-nav-idx">'+(collPos+1)+' / '+collOrder.length+'</div>';
+  collStudyEl.querySelectorAll('.coll-mine').forEach(autosize);
+}
+function collNext(){ if(!collOrder.length) return; collPos=(collPos+1)%collOrder.length; renderCollStudy(); }
+function collPrev(){ if(!collOrder.length) return; collPos=(collPos-1+collOrder.length)%collOrder.length; renderCollStudy(); }
+function collShuffle(){ collOrder=shuffle(collOrder); collPos=0; renderCollStudy(); }
+function collMarkDone(){
+  if(!collOrder.length) return;
+  toggleHidden(curColl().en);
+  buildCollOrder();
+  renderCollStudy(); renderCollProgress(); updateCount();
+}
+collStudyEl.addEventListener('input', function(e){
+  const ta=e.target.closest('.coll-mine'); if(!ta) return;
+  setCollSent(curColl().en, +ta.dataset.idx, ta.value);
+  ta.classList.toggle('saved', !!ta.value.trim());
+  autosize(ta);
+});
+collStudyEl.addEventListener('click', function(e){
+  const b=e.target.closest('button[data-act]'); if(!b) return;
+  const a=b.dataset.act;
+  if(a==='next') collNext();
+  else if(a==='prev') collPrev();
+  else if(a==='shuffle') collShuffle();
+  else if(a==='done'){ collMarkDone(); renderCollProgress(); }
+});
+
+/* ---- alıştırma ---- */
+let collEx={type:'match', correct:0, total:0, answer:null, done:false};
+const cexScore=document.getElementById('cexScore'), cexBody=document.getElementById('cexBody'), cexHint=document.getElementById('cexHint');
+function cexScoreText(){ cexScore.textContent = collEx.total ? ('Correct '+collEx.correct+' / '+collEx.total) : ''; }
+function collMatchPool(){
+  const pool=[];
+  activeWords().forEach(function(w){ collList(w).forEach(function(p){ const h=findHeadword(w,p); if(h && p.length-h.len>3) pool.push({w:w,phrase:p,h:h}); }); });
+  return pool;
+}
+function collFillPool(){
+  const pool=[];
+  activeWords().forEach(function(w){ collList(w).forEach(function(p){ const m=p.match(UPPER_RE); if(m) pool.push({w:w,phrase:p,m:m}); }); });
+  return pool;
+}
+function startCollEx(){
+  collEx.correct=0; collEx.total=0;
+  if(collEx.type==='match'){ cexHint.innerHTML='<kbd>1</kbd>–<kbd>4</kbd> select · <kbd>Enter</kbd> next'; newCollMatch(); }
+  else{ cexHint.innerHTML='<kbd>Enter</kbd> check / next'; newCollFill(); }
+}
+function newCollMatch(){
+  collEx.done=false;
+  const pool=collMatchPool();
+  if(pool.length<1 || WORDS.length<4){ cexBody.innerHTML='<div class="empty">Not enough collocations in this filter.</div>'; cexScoreText(); return; }
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  collEx.answer=q.w.en;
+  const others=shuffle(WORDS.filter(function(w){ return w.en!==q.w.en; })).slice(0,3).map(function(w){ return w.en; });
+  const opts=shuffle([q.w.en].concat(others));
+  cexBody.innerHTML=
+    '<div class="q-sub">Which word fills the blank?</div>'+
+    '<div class="q-prompt coll-q-prompt">'+collBlankHTML(q.phrase,q.h.start,q.h.len)+'</div>'+
+    '<div class="q-options" id="cexOptions"></div>'+
+    '<div class="q-next"><button class="btn primary" id="cexNext" disabled>Next →</button></div>';
+  const wrap=document.getElementById('cexOptions');
+  opts.forEach(function(o,i){
+    const b=document.createElement('button'); b.className='q-opt';
+    b.innerHTML='<span class="q-key">'+(i+1)+'</span><span>'+escapeHTML(o)+'</span>';
+    b.addEventListener('click', function(){ answerCollMatch(b,o); });
+    wrap.appendChild(b);
+  });
+  document.getElementById('cexNext').addEventListener('click', newCollMatch);
+  cexScoreText();
+}
+function answerCollMatch(btn,opt){
+  if(collEx.done) return;
+  collEx.done=true; collEx.total++;
+  const wrap=document.getElementById('cexOptions');
+  Array.prototype.forEach.call(wrap.children, function(b){
+    b.disabled=true;
+    const label=b.querySelector('span:last-child').textContent;
+    if(label===collEx.answer) b.classList.add('correct');
+  });
+  if(opt===collEx.answer) collEx.correct++;
+  else btn.classList.add('wrong');
+  const nb=document.getElementById('cexNext'); nb.disabled=false; nb.focus();
+  cexScoreText();
+}
+function newCollFill(){
+  collEx.done=false;
+  const pool=collFillPool();
+  if(!pool.length){ cexBody.innerHTML='<div class="empty">No fill-in collocations in this filter.</div>'; cexScoreText(); return; }
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  const raw=q.m[0];
+  collEx.answer=raw.toLowerCase().split('/').map(function(s){ return s.trim(); }).filter(Boolean);
+  cexBody.innerHTML=
+    '<div class="q-sub">'+escapeHTML(q.w.en)+' · fill the blank</div>'+
+    '<div class="f-sentence">'+collBlankHTML(q.phrase,q.m.index,raw.length)+'</div>'+
+    '<div class="f-hint">'+escapeHTML(q.w.tr)+'</div>'+
+    '<input class="f-input" id="cexInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the missing word…">'+
+    '<div class="f-feedback" id="cexFb"></div>'+
+    '<div class="f-row">'+
+      '<button class="btn" id="cexReveal">Reveal</button>'+
+      '<button class="btn primary" id="cexCheck">Check</button>'+
+      '<button class="btn" id="cexFillNext">Next →</button>'+
+    '</div>';
+  const inp=document.getElementById('cexInput');
+  document.getElementById('cexCheck').addEventListener('click', checkCollFill);
+  document.getElementById('cexReveal').addEventListener('click', revealCollFill);
+  document.getElementById('cexFillNext').addEventListener('click', newCollFill);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); if(collEx.done) newCollFill(); else checkCollFill(); } });
+  inp.focus();
+  cexScoreText();
+}
+function checkCollFill(){
+  if(collEx.done) return;
+  const inp=document.getElementById('cexInput'), fb=document.getElementById('cexFb');
+  const val=normalize(inp.value); if(!val) return;
+  collEx.done=true; collEx.total++;
+  const ok=collEx.answer.indexOf(val)>=0;
+  if(ok){ collEx.correct++; fb.textContent='Correct'; fb.className='f-feedback ok'; }
+  else{ fb.textContent='Answer: '+collEx.answer.join(' / '); fb.className='f-feedback no'; }
+  inp.disabled=true;
+  cexScoreText();
+}
+function revealCollFill(){
+  if(collEx.done) return;
+  const fb=document.getElementById('cexFb');
+  fb.textContent='Answer: '+collEx.answer.join(' / '); fb.className='f-feedback';
+  collEx.done=true; collEx.total++;
+  document.getElementById('cexInput').disabled=true;
+  cexScoreText();
+}
+
+/* ---- liste: tüm kelimeler + collocation'ları (açılınca örnek cümle + nüans) ---- */
+const collBrowseEl=document.getElementById('collBrowse');
+function collPanelHTML(w){
+  let ex='<p class="en-ex">'+w.ex+'</p><p class="tr-ex">'+w.exTr+'</p>';
+  if(w.ex2) ex+='<p class="en-ex">'+w.ex2+'</p><p class="tr-ex">'+w.exTr2+'</p>';
+  let h='<div class="field"><span class="lbl">Examples</span>'+ex+'</div>';
+  if(w.hint) h+='<div class="field"><span class="lbl">Nuance</span><p>'+w.hint+'</p></div>';
+  return h;
+}
+function renderCollBrowse(){
+  const list=activeWords().filter(w=>w.coll);
+  if(!list.length){ collBrowseEl.innerHTML='<div class="empty">Bu filtrede collocation yok. Filtreyi değiştir.</div>'; return; }
+  collBrowseEl.innerHTML='<div class="cb-list">'+list.map(function(w){
+    return '<div class="cb-row" data-i="'+w._i+'">'+
+      '<button class="cb-head" type="button" aria-expanded="false" tabindex="-1">'+
+        '<span class="cb-w">'+escapeHTML(w.en)+'</span>'+
+        '<span class="cb-type">'+typeLabel(w.type)+'</span>'+
+        '<span class="cb-tr">'+escapeHTML(w.tr)+'</span>'+
+        '<svg class="cb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'+
+      '</button>'+
+      '<div class="coll cb-coll">'+collFormat(w.coll)+'</div>'+
+      '<div class="cb-panel"><div class="cb-panel-inner">'+collPanelHTML(w)+'</div></div>'+
+    '</div>';
+  }).join('')+'</div>';
+  wireCollBrowse();
+}
+function collHeads(){ return Array.from(collBrowseEl.querySelectorAll('.cb-head')); }
+function wireCollBrowse(){
+  const hs=collHeads();
+  hs.forEach(function(btn,i){
+    btn.tabIndex=i===0?0:-1;
+    btn.addEventListener('click', function(){
+      const row=btn.closest('.cb-row');
+      const open=row.classList.toggle('cb-open');
+      btn.setAttribute('aria-expanded', open?'true':'false');
+    });
+    btn.addEventListener('focus', function(){
+      hs.forEach(function(b,j){ b.tabIndex=j===i?0:-1; b.closest('.cb-row').classList.toggle('focused', j===i); });
+    });
+  });
+}
+
+/* ---- mod anahtarı (tek seviye: List / Write / Match / Fill) ---- */
+const COLL_MODES=['list','study','match','fill'];
+function showCollMode(){
+  const isEx = collMode==='match' || collMode==='fill';
+  document.getElementById('coll-list').setAttribute('aria-selected', collMode==='list'?'true':'false');
+  document.getElementById('coll-study').setAttribute('aria-selected', collMode==='study'?'true':'false');
+  document.getElementById('coll-match').setAttribute('aria-selected', collMode==='match'?'true':'false');
+  document.getElementById('coll-fill').setAttribute('aria-selected', collMode==='fill'?'true':'false');
+  collBrowseEl.hidden = collMode!=='list';
+  collStudyEl.hidden  = collMode!=='study';
+  document.getElementById('collEx').hidden = !isEx;
+  if(collMode==='list') renderCollBrowse();
+  else if(collMode==='study') renderCollStudy();
+  else { collEx.type=collMode; startCollEx(); }
+  updateBrowseActive();
+}
+document.getElementById('coll-list').addEventListener('click', function(){ collMode='list'; showCollMode(); });
+document.getElementById('coll-study').addEventListener('click', function(){ collMode='study'; showCollMode(); });
+document.getElementById('coll-match').addEventListener('click', function(){ collMode='match'; showCollMode(); });
+document.getElementById('coll-fill').addEventListener('click', function(){ collMode='fill'; showCollMode(); });
+function renderColl(){ renderCollProgress(); buildCollOrder(); showCollMode(); }
+
+/* ============ İSTATİSTİK ============ */
+const statsWrap=document.getElementById('statsWrap');
+function renderStats(){
+  const total=WORDS.length; let known=0, shaky=0, weak=0, studied=0;
+  WORDS.forEach(w=>{ const st=statusOf(w.en); if(st==='known')known++; else if(st==='weak')weak++; else shaky++; if(w.en in SCORES) studied++; });
+  const hid=WORDS.filter(w=>isHidden(w.en)).length;
+  const pct=function(n){ return total ? Math.round(n/total*100) : 0; };
+  const seg=function(cls,n){ return n ? '<i class="'+cls+'" style="width:'+(n/total*100)+'%"></i>' : ''; };
+  const dot={known:'var(--ok)', shaky:'var(--mid)', weak:'var(--bad)'};
+  const cell=function(k,label,n){ return '<div class="stat-cell"><div class="stat-num">'+n+'</div><div class="stat-cap"><span class="stat-dot" style="background:'+dot[k]+'"></span>'+label+' · %'+pct(n)+'</div></div>'; };
+  statsWrap.innerHTML=
+    '<p class="q-score">'+total+' kelime · '+studied+' çalışıldı · %'+pct(known)+' biliniyor'+(hid?' · '+hid+' öğrenildi':'')+'</p>'+
+    '<div class="stat-bar">'+seg('s-known',known)+seg('s-shaky',shaky)+seg('s-weak',weak)+'</div>'+
+    '<div class="stat-grid">'+cell('known','Biliyorum',known)+cell('shaky','Sağlam değil',shaky)+cell('weak','Zayıf',weak)+'</div>'+
+    '<p class="stat-note">Kartlarda ve testlerde her doğru skoru +1, her yanlış -1 değiştirir. Skor '+KNOWN_AT+' ve üzeri: Biliyorum. Eksi: Zayıf.</p>'+
+    '<div class="f-row" style="margin-top:18px"><button class="btn" id="statsReset">İlerlemeyi sıfırla</button></div>';
+  const rb=document.getElementById('statsReset');
+  if(rb) rb.addEventListener('click', ()=>{ if(confirm('Tüm skorlar silinecek. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
+}
+
+/* ============ KLAVYE ============ */
+document.addEventListener('keydown', e=>{
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
+  if(currentTab==='list'){
+    if(e.key==='ArrowDown'){ e.preventDefault(); moveFocus(1); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); moveFocus(-1); }
+    else if(e.key==='Home'){ e.preventDefault(); const h=heads(); if(h.length){ h[0].focus(); h[0].scrollIntoView({block:'center',behavior:'smooth'}); } }
+    else if(e.key==='End'){ e.preventDefault(); const h=heads(); if(h.length){ h[h.length-1].focus(); h[h.length-1].scrollIntoView({block:'center',behavior:'smooth'}); } }
+  } else if(currentTab==='coll' && collMode==='list'){
+    if(e.key==='ArrowDown'){ e.preventDefault(); moveFocus(1); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); moveFocus(-1); }
+  } else if(currentTab==='cards'){
+    if(e.key==='ArrowRight'){ e.preventDefault(); nextCard(); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); prevCard(); }
+    else if(e.key===' '){ e.preventDefault(); flipCard(); }
+    else if(e.key.toLowerCase()==='n'){ e.preventDefault(); rate(-1); }
+    else if(e.key.toLowerCase()==='m'){ e.preventDefault(); rate(1); }
+    else if(e.key.toLowerCase()==='b'){ e.preventDefault(); toggleCardDetails(); }
+    else if(e.key.toLowerCase()==='l'){ e.preventDefault(); toggleCardFlag(); }
+    else if(e.key.toLowerCase()==='g'){ e.preventDefault(); hideCurrentCard(); }
+    else if(e.key.toLowerCase()==='s'){ e.preventDefault(); shuffleCards(); }
+  } else if(currentTab==='quiz'){
+    if(['1','2','3','4'].indexOf(e.key)>=0){ const b=qOptions.children[+e.key-1]; if(b && !b.disabled) b.click(); }
+    else if(e.key==='Enter'){ if(!qNext.disabled){ e.preventDefault(); newQuestion(); } }
+  }
+});
+
+/* mobil yukarı/aşağı */
+document.getElementById('navUp').addEventListener('click', ()=>moveFocus(-1));
+document.getElementById('navDown').addEventListener('click', ()=>moveFocus(1));
+
+/* ============ KELİME POPOVER + MODAL ============ */
+const wordpop=document.getElementById('wordpop');
+const modalBack=document.getElementById('wordModalBack'), modalBody=document.getElementById('wordModalBody'), modalClose=document.getElementById('wordModalClose');
+let popTimer=null;
+function cambridgeURL(w){ return 'https://dictionary.cambridge.org/dictionary/english/'+encodeURIComponent(w.trim().toLowerCase().replace(/\s+/g,'-')); }
+function showWordPop(target){
+  const wtext=target.dataset.w; if(!wtext) return;
+  const entry=LOOKUP[wtext.toLowerCase()];
+  let html='<div class="wp-title">'+wtext+'</div>';
+  html+='<a class="wp-btn" href="'+cambridgeURL(wtext)+'" target="_blank" rel="noopener">Cambridge <span aria-hidden="true">&#8599;</span></a>';
+  if(entry) html+='<button class="wp-btn wp-detail" type="button" data-en="'+entry._i+'">İçeriği göster</button>';
+  else html+='<div class="wp-note">Kelime listesinde yok</div>';
+  wordpop.innerHTML=html; wordpop.hidden=false;
+  const r=target.getBoundingClientRect(), pw=wordpop.offsetWidth, ph=wordpop.offsetHeight;
+  const vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+  let left=r.left, top=r.bottom+6;
+  if(left+pw>vw-8) left=vw-pw-8;
+  if(left<8) left=8;
+  if(top+ph>vh-8) top=r.top-ph-6;
+  wordpop.style.left=left+'px'; wordpop.style.top=Math.max(8,top)+'px';
+}
+function hideWordPop(){ wordpop.hidden=true; }
+function scheduleHide(){ clearTimeout(popTimer); popTimer=setTimeout(hideWordPop, 260); }
+function cancelHide(){ clearTimeout(popTimer); }
+document.addEventListener('mouseover', e=>{ const t=e.target.closest('.wordref'); if(t){ cancelHide(); showWordPop(t); } });
+document.addEventListener('mouseout', e=>{ if(e.target.closest('.wordref')) scheduleHide(); });
+wordpop.addEventListener('mouseenter', cancelHide);
+wordpop.addEventListener('mouseleave', scheduleHide);
+document.addEventListener('click', e=>{
+  const t=e.target.closest('.wordref');
+  if(t){ e.preventDefault(); cancelHide(); showWordPop(t); return; }
+  const d=e.target.closest('.wp-detail');
+  if(d){ openWordModal(WORDS[+d.dataset.en]); hideWordPop(); return; }
+  if(!e.target.closest('#wordpop') && !e.target.closest('.wp-btn')) hideWordPop();
+});
+function openWordModal(w){ modalBody.innerHTML=cardDetailFields(w); modalBack.hidden=false; document.body.style.overflow='hidden'; }
+function closeWordModal(){ modalBack.hidden=true; document.body.style.overflow=''; }
+modalClose.addEventListener('click', closeWordModal);
+modalBack.addEventListener('click', e=>{ if(e.target===modalBack) closeWordModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ if(!modalBack.hidden) closeWordModal(); hideWordPop(); } });
+
+/* ============ BAŞLAT ============ */
+document.body.classList.add('list-active');
+let startTab = 'list';
+try{ const saved = localStorage.getItem('ns-vocab-tab'); if(saved && TABS.indexOf(saved)>=0) startTab = saved; }catch(e){}
+selectTab(startTab);
+
+</script>
+
+</body>
+</html>

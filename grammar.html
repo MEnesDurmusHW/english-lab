@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>English Grammar — NS Articles</title>
+<meta name="description" content="Interactive English grammar patterns: dependent prepositions, verb patterns, subject-verb agreement, tense consistency and adverbial order. Learn and practise.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS Articles">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="English Grammar">
+<meta property="og:description" content="Interactive grammar patterns: prepositions, verb patterns, agreement, tense, adverb order.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/grammar.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS Articles">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --mono:'Space Grotesk',monospace; --accent-soft:rgba(59,91,165,.16); --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
+  [data-theme="dark"]{ --accent-soft:rgba(138,166,224,.2); --ok:#6fbf7f; --mid:#d8ac5c; --bad:#e0765a; }
+  *{box-sizing:border-box}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg)}
+  .wrap{max-width:900px;margin:0 auto;padding:74px 22px 120px}
+  header.g-head{margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin:0 0 8px}
+  header.g-head h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.9rem);letter-spacing:-.02em;margin:0;line-height:1.1}
+  header.g-head p.sub{margin:14px 0 0;color:var(--text-dim);font-size:1.02rem;line-height:1.6;max-width:60ch}
+
+  /* topic tabs */
+  .topics{position:sticky;top:0;z-index:30;margin:26px -8px 6px;padding:12px 8px;background:linear-gradient(var(--bg) 72%,transparent)}
+  .topics .seg{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .topics .seg::-webkit-scrollbar{display:none}
+  .topics .seg button{white-space:nowrap;appearance:none;border:0;background:transparent;cursor:pointer;color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.9rem;padding:9px 18px;border-radius:999px;transition:.18s}
+  .topics .seg button[aria-selected="true"]{background:var(--accent);color:#fff}
+  .topics .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .topic-title{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:20px 0 2px;letter-spacing:-.01em}
+  .sub-tabs{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;margin:12px 0 20px}
+  .sub-tabs button{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.84rem;padding:8px 20px;border-radius:999px;transition:.18s}
+  .sub-tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+
+  /* learn */
+  .intro{font-size:1rem;color:var(--text-dim);line-height:1.7;text-align:justify;margin-bottom:8px}
+  .intro p{margin:0 0 12px;text-align:justify}
+  .intro b{color:var(--text);font-weight:600}
+  .g-group{margin-top:26px}
+  .g-group-label{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .g-item{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:13px 16px;margin-bottom:9px}
+  .gi-term{font-size:1.02rem;color:var(--text);font-weight:600;line-height:1.4}
+  .gi-key{color:var(--accent);font-weight:700;text-transform:uppercase;font-size:.82em;letter-spacing:.04em}
+  .gi-ex{margin-top:5px;font-size:.95rem;color:var(--text-dim);line-height:1.55}
+  .gi-ex b{color:var(--accent);font-weight:700}
+  .gi-note{margin-top:6px;font-size:.86rem;color:var(--text-dim);line-height:1.5;font-style:italic;border-left:2px solid var(--accent-soft);padding-left:11px}
+  .g-callout{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;background:var(--surface);padding:14px 17px;margin:20px 0;font-size:.94rem;line-height:1.6;color:var(--text-dim)}
+  .g-callout b{color:var(--text)}
+  .right{color:var(--ok);font-weight:700}
+  .wrong{color:var(--bad);font-weight:700;text-decoration:line-through}
+
+  /* practice */
+  .p-wrap{max-width:620px;margin:0 auto;text-align:center}
+  .p-score{font-family:var(--mono);font-size:.78rem;letter-spacing:.05em;color:var(--text-muted);margin-bottom:20px}
+  .p-q{font-size:1.28rem;line-height:1.6;color:var(--text);margin-bottom:6px;font-family:var(--serif);font-weight:500}
+  .p-q .blank{color:var(--accent);border-bottom:2px dashed var(--accent);padding:0 22px}
+  .p-hint{font-size:.86rem;color:var(--text-muted);margin-bottom:22px;min-height:1.1em}
+  .p-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+  .p-opt{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 12px;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--text);transition:.14s}
+  .p-opt:hover:not(:disabled){border-color:var(--accent)}
+  .p-opt:disabled{cursor:default}
+  .p-opt.correct{background:var(--ok);border-color:var(--ok);color:#fff}
+  .p-opt.incorrect{background:var(--bad);border-color:var(--bad);color:#fff}
+  .p-explain{font-size:.92rem;color:var(--text-dim);line-height:1.6;margin:6px auto 20px;max-width:52ch;min-height:1.2em}
+  .p-explain b{color:var(--accent)}
+  .p-row{display:flex;justify-content:center;gap:12px}
+  .p-btn{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:11px 26px;font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--text-dim);transition:.15s}
+  .p-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .p-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .p-btn:disabled{opacity:.4;cursor:default}
+  .p-done{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:8px}
+
+  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} }
+</style>
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+
+<a class="home-toggle" href="index.html" aria-label="Back to home">NS</a>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+<button class="share-toggle" onclick="openShare()" aria-label="Share this page" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+</button>
+
+<div class="wrap">
+  <header class="g-head">
+    <p class="eyebrow">English</p>
+    <h1>Grammar Patterns</h1>
+    <p class="sub">The rules that decide which word follows which. Read the pattern, then practise it. Each topic has a <b>Learn</b> tab and a <b>Practice</b> quiz.</p>
+  </header>
+
+  <div class="topics">
+    <div class="seg" id="topicSeg" role="tablist" aria-label="Grammar topics"></div>
+  </div>
+
+  <h2 class="topic-title" id="topicTitle"></h2>
+  <div class="sub-tabs" role="tablist" aria-label="Mode">
+    <button id="mode-learn" role="tab" aria-selected="true">Learn</button>
+    <button id="mode-practice" role="tab" aria-selected="false">Practice</button>
+  </div>
+
+  <div id="learnView"></div>
+  <div id="practiceView" hidden></div>
+</div>
+
+<div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">NS Articles</span><span class="logo-author">by M. Enes Durmuş</span></div>
+
+<script>
+/* ============ DATA ============ */
+const GRAMMAR = [
+{
+  key:'prep', tab:'Prepositions', title:'Dependent Prepositions',
+  intro:`<p>Many adjectives, verbs and nouns are followed by a fixed preposition. There is rarely a logical reason, so the safest way is to learn the word and its preposition together as one chunk: not just <b>afraid</b>, but <b>afraid of</b>.</p><p>The same base word can take different prepositions with different meanings (<b>good at</b> a skill, <b>good for</b> your health, <b>good with</b> people), so pay attention to the whole pattern.</p>`,
+  groups:[
+    {label:'Adjective + preposition', items:[
+      {term:'afraid', key:'of', ex:'She is afraid <b>of</b> spiders.'},
+      {term:'good / bad', key:'at', ex:"He's very good <b>at</b> chess.", note:'A skill or activity. Compare: good <b>for</b> your health, good <b>with</b> people.'},
+      {term:'interested', key:'in', ex:'I am interested <b>in</b> history.'},
+      {term:'keen', key:'on', ex:"They're keen <b>on</b> hiking."},
+      {term:'proud', key:'of', ex:'We are proud <b>of</b> you.'},
+      {term:'aware', key:'of', ex:'Are you aware <b>of</b> the risks?'},
+      {term:'capable', key:'of', ex:"She's capable <b>of</b> much more."},
+      {term:'fond', key:'of', ex:"He's fond <b>of</b> old films."},
+      {term:'jealous', key:'of', ex:'He was jealous <b>of</b> his brother.'},
+      {term:'responsible', key:'for', ex:'You are responsible <b>for</b> the budget.'},
+      {term:'famous', key:'for', ex:'Italy is famous <b>for</b> its food.'},
+      {term:'similar', key:'to', ex:'This is similar <b>to</b> the old model.'},
+      {term:'different', key:'from', ex:'Mine is different <b>from</b> yours.', note:'"different than" (US) and "different to" (UK) are also heard, but "from" is the safe choice.'},
+      {term:'married', key:'to', ex:"She's married <b>to</b> a doctor."},
+      {term:'worried', key:'about', ex:"I'm worried <b>about</b> the exam."},
+      {term:'excited', key:'about', ex:"We're excited <b>about</b> the trip."},
+      {term:'angry', key:'with / about', ex:"She was angry <b>with</b> me <b>about</b> the delay.", note:'Angry <b>with</b> a person, angry <b>about</b> a thing.'},
+      {term:'satisfied', key:'with', ex:'Are you satisfied <b>with</b> the result?'},
+      {term:'full', key:'of', ex:'The box was full <b>of</b> books.'},
+      {term:'tired', key:'of', ex:"I'm tired <b>of</b> waiting.", note:'"Tired of" = bored/fed up. "Tired from" = exhausted by effort.'},
+      {term:'used', key:'to', ex:"I'm used <b>to</b> the noise now.", note:'"Be used to + noun / -ing" = accustomed. Different from "used to + verb" (past habit).'},
+      {term:'allergic', key:'to', ex:"He's allergic <b>to</b> nuts."},
+    ]},
+    {label:'Verb + preposition', items:[
+      {term:'depend / rely', key:'on', ex:'It depends <b>on</b> the weather.'},
+      {term:'insist', key:'on', ex:'She insisted <b>on</b> paying.'},
+      {term:'concentrate / focus', key:'on', ex:'Concentrate <b>on</b> your work.'},
+      {term:'believe', key:'in', ex:'They believe <b>in</b> hard work.'},
+      {term:'succeed', key:'in', ex:'He succeeded <b>in</b> passing.'},
+      {term:'consist', key:'of', ex:'Water consists <b>of</b> hydrogen and oxygen.'},
+      {term:'approve', key:'of', ex:"They didn't approve <b>of</b> the plan."},
+      {term:'apologize', key:'for', ex:'She apologized <b>for</b> the mistake.', note:'apologize <b>to</b> someone <b>for</b> something.'},
+      {term:'apply', key:'for', ex:'I applied <b>for</b> the job.'},
+      {term:'wait / search / look', key:'for', ex:"We're waiting <b>for</b> the bus."},
+      {term:'belong', key:'to', ex:'This book belongs <b>to</b> me.'},
+      {term:'refer', key:'to', ex:'He referred <b>to</b> the report.'},
+      {term:'listen', key:'to', ex:'Listen <b>to</b> me.'},
+      {term:'object', key:'to', ex:'They objected <b>to</b> the noise.'},
+      {term:'deal / cope', key:'with', ex:'How do you deal <b>with</b> stress?'},
+      {term:'agree', key:'with', ex:'I agree <b>with</b> you.', note:'agree <b>with</b> a person, agree <b>on</b> a plan, agree <b>to</b> a request.'},
+      {term:'suffer', key:'from', ex:'She suffers <b>from</b> migraines.'},
+      {term:'benefit', key:'from', ex:'Everyone benefits <b>from</b> exercise.'},
+      {term:'think', key:'about / of', ex:"I'm thinking <b>about</b> moving."},
+    ]},
+    {label:'Noun + preposition', items:[
+      {term:'reason', key:'for', ex:"What's the reason <b>for</b> the delay?"},
+      {term:'need / demand', key:'for', ex:'There is a need <b>for</b> change.'},
+      {term:'solution / answer', key:'to', ex:'A solution <b>to</b> the problem.'},
+      {term:'increase / rise / fall', key:'in', ex:'A sharp rise <b>in</b> prices.'},
+      {term:'damage', key:'to', ex:'Damage <b>to</b> the engine.'},
+      {term:'cause', key:'of', ex:'The cause <b>of</b> the fire.'},
+      {term:'example', key:'of', ex:'A good example <b>of</b> teamwork.'},
+      {term:'lack', key:'of', ex:'A lack <b>of</b> sleep.'},
+      {term:'effect / influence', key:'on', ex:'The effect <b>on</b> children.'},
+      {term:'attitude', key:'to / towards', ex:'Her attitude <b>towards</b> work.'},
+      {term:'relationship', key:'with / between', ex:'A good relationship <b>with</b> clients.'},
+    ]},
+  ],
+  quiz:[
+    {q:"I'm not very good ___ maths.", a:'at', opts:['at','in','on','for']},
+    {q:'It depends ___ the weather.', a:'on', opts:['on','of','from','to']},
+    {q:'She apologized ___ being late.', a:'for', opts:['for','of','about','to']},
+    {q:'This car is similar ___ mine.', a:'to', opts:['to','with','from','as']},
+    {q:'They are afraid ___ the dark.', a:'of', opts:['of','from','with','to']},
+    {q:'He suffers ___ terrible headaches.', a:'from', opts:['from','of','with','by']},
+    {q:'I applied ___ a new job.', a:'for', opts:['for','to','on','at']},
+    {q:'What is the reason ___ the change?', a:'for', opts:['for','of','to','behind']},
+    {q:"We're worried ___ the results.", a:'about', opts:['about','for','with','of']},
+    {q:'This book belongs ___ the library.', a:'to', opts:['to','with','for','of']},
+    {q:'Please concentrate ___ your work.', a:'on', opts:['on','at','in','to']},
+    {q:'Water consists ___ two elements.', a:'of', opts:['of','from','in','with']},
+  ],
+},
+{
+  key:'verb', tab:'Verb Patterns', title:'Verb Patterns: Gerund vs Infinitive',
+  intro:`<p>When one verb follows another, the first verb decides the form of the second: the <b>-ing</b> form (gerund) or <b>to + verb</b> (infinitive). There is no rule you can hear, so the verbs are grouped by the pattern they force.</p><p>A small set of verbs take both forms with a real change in meaning, and those are worth learning carefully.</p>`,
+  groups:[
+    {label:'Verb + gerund (-ing)', items:[
+      {term:'enjoy', key:'+ing', ex:'I enjoy <b>reading</b>.'},
+      {term:'avoid', key:'+ing', ex:'He avoids <b>driving</b> at night.'},
+      {term:'finish', key:'+ing', ex:'She finished <b>eating</b>.'},
+      {term:'mind', key:'+ing', ex:"Do you mind <b>waiting</b>?"},
+      {term:'suggest', key:'+ing', ex:'I suggest <b>leaving</b> early.'},
+      {term:'consider', key:'+ing', ex:"We're considering <b>moving</b>."},
+      {term:'imagine', key:'+ing', ex:'Imagine <b>living</b> there.'},
+      {term:'admit / deny', key:'+ing', ex:'He admitted <b>stealing</b> it.'},
+      {term:'miss', key:'+ing', ex:'I miss <b>seeing</b> them.'},
+      {term:'practise', key:'+ing', ex:'Practise <b>speaking</b> daily.'},
+      {term:'risk', key:'+ing', ex:"Don't risk <b>losing</b> it."},
+      {term:'postpone / put off', key:'+ing', ex:'They postponed <b>meeting</b>.'},
+      {term:"can't stand / can't help", key:'+ing', ex:"I can't stand <b>waiting</b>."},
+      {term:'look forward to', key:'+ing', ex:'I look forward to <b>seeing</b> you.', note:'Here "to" is a preposition, so it takes -ing. Same with "be used to" and "object to".'},
+    ]},
+    {label:'Verb + infinitive (to + verb)', items:[
+      {term:'want', key:'to', ex:'I want <b>to go</b>.'},
+      {term:'decide', key:'to', ex:'They decided <b>to stay</b>.'},
+      {term:'hope / plan', key:'to', ex:'We hope <b>to win</b>.'},
+      {term:'promise / agree', key:'to', ex:'He promised <b>to help</b>.'},
+      {term:'offer / refuse', key:'to', ex:'She offered <b>to pay</b>.'},
+      {term:'manage', key:'to', ex:'I managed <b>to finish</b>.'},
+      {term:'afford', key:'to', ex:"We can't afford <b>to wait</b>."},
+      {term:'learn', key:'to', ex:'She learned <b>to swim</b>.'},
+      {term:'expect', key:'to', ex:'I expect <b>to arrive</b> late.'},
+      {term:'seem / appear', key:'to', ex:'He seems <b>to know</b>.'},
+      {term:'pretend', key:'to', ex:'She pretended <b>to sleep</b>.'},
+      {term:'tend', key:'to', ex:'It tends <b>to rain</b> here.'},
+    ]},
+    {label:'Verb + object + infinitive', items:[
+      {term:'want / ask / tell sb', key:'to', ex:'I want <b>you to stay</b>.'},
+      {term:'advise / encourage sb', key:'to', ex:'She advised <b>me to rest</b>.'},
+      {term:'allow / permit sb', key:'to', ex:'They allowed <b>him to leave</b>.'},
+      {term:'remind / warn sb', key:'to', ex:'Remind <b>me to call</b>.'},
+      {term:'persuade / force sb', key:'to', ex:'He persuaded <b>them to agree</b>.'},
+    ]},
+    {label:'Verb + bare infinitive (no "to")', items:[
+      {term:'make sb', key:'do', ex:'It made <b>me laugh</b>.', note:'But in the passive: "I was made <b>to</b> laugh."'},
+      {term:'let sb', key:'do', ex:'Let <b>me go</b>.'},
+      {term:'had better / would rather', key:'do', ex:"You'd better <b>leave</b>. I'd rather <b>stay</b>."},
+    ]},
+    {label:'Both forms, different meaning', items:[
+      {term:'stop', key:'to / -ing', ex:'He stopped <b>to smoke</b> vs. He stopped <b>smoking</b>.', note:'stop to do = pause in order to do it. stop doing = quit the activity.'},
+      {term:'remember / forget', key:'to / -ing', ex:'I remembered <b>to lock</b> vs. I remember <b>locking</b>.', note:'remember to do = a task ahead. remember doing = a past memory.'},
+      {term:'try', key:'to / -ing', ex:'Try <b>to open</b> it vs. Try <b>opening</b> it.', note:'try to do = attempt something hard. try doing = experiment to see if it helps.'},
+      {term:'regret', key:'to / -ing', ex:'I regret <b>to inform</b> you vs. I regret <b>saying</b> that.', note:'regret to do = be sorry about bad news you are giving now. regret doing = be sorry about the past.'},
+      {term:'go on', key:'to / -ing', ex:'She went on <b>to become</b> CEO vs. He went on <b>talking</b>.', note:'go on to do = move to a next stage. go on doing = continue the same thing.'},
+    ]},
+  ],
+  quiz:[
+    {q:'I really enjoy ___ to music.', a:'listening', opts:['listening','to listen','listen','listened']},
+    {q:'They decided ___ at home.', a:'to stay', opts:['to stay','staying','stay','stayed']},
+    {q:"Would you mind ___ the door?", a:'closing', opts:['closing','to close','close','to closing']},
+    {q:'He promised ___ me later.', a:'to call', opts:['to call','calling','call','called']},
+    {q:'She avoids ___ junk food.', a:'eating', opts:['eating','to eat','eat','to eating']},
+    {q:'My parents let me ___ out late.', a:'stay', opts:['stay','to stay','staying','stayed']},
+    {q:'I want ___ the truth.', a:'to know', opts:['to know','knowing','know','known']},
+    {q:'On the way home he stopped ___ some milk.', a:'to buy', opts:['to buy','buying','buy','bought'], note:'"stop to do" = pause in order to do it.'},
+    {q:'Remember ___ the lights before you leave.', a:'to turn off', opts:['to turn off','turning off','turn off','turned off'], note:'A task still ahead, so infinitive.'},
+    {q:'The film made everyone ___.', a:'cry', opts:['cry','to cry','crying','cried'], note:'"make sb do" takes the bare infinitive.'},
+    {q:"I'm looking forward to ___ you again.", a:'seeing', opts:['seeing','see','to see','saw'], note:'"to" here is a preposition, so -ing.'},
+    {q:'We can\'t afford ___ a new car.', a:'to buy', opts:['to buy','buying','buy','bought']},
+  ],
+},
+{
+  key:'agree', tab:'Agreement', title:'Subject-Verb Agreement',
+  intro:`<p>A verb must match its subject in number: a singular subject takes a singular verb, a plural subject takes a plural verb. The traps are almost always about spotting the <b>real</b> subject, especially when other words sit between it and the verb.</p>`,
+  groups:[
+    {label:'Core rules', items:[
+      {term:'Words between subject and verb do not change agreement', ex:'The box of chocolates <b>is</b> on the table.', note:'The subject is "box" (singular), not "chocolates". Ignore the phrase in between.'},
+      {term:'Two subjects joined by "and" are plural', ex:'Tom and Anna <b>are</b> here.', note:'Exception: a fixed single idea stays singular, e.g. "Fish and chips <b>is</b> my favourite."'},
+      {term:'With "or / nor", the verb agrees with the nearer subject', ex:'Neither the manager nor the workers <b>were</b> happy.', note:'Reverse them and it changes: "Neither the workers nor the manager <b>was</b> happy."'},
+      {term:'Each, every, either, neither + noun are singular', ex:'Every student <b>has</b> a book. Each of them <b>knows</b> the answer.'},
+      {term:'Indefinite pronouns are singular', ex:'Everyone <b>is</b> ready. Somebody <b>has</b> left a bag.', note:'everyone, someone, anybody, nobody, each, one.'},
+    ]},
+    {label:'Quantifiers and "of" phrases', items:[
+      {term:'"a number of" is plural, "the number of" is singular', ex:'A number of people <b>are</b> waiting. The number of visitors <b>has</b> risen.'},
+      {term:'some / all / most / half of + noun agree with that noun', ex:'Most of the cake <b>is</b> gone. Most of the guests <b>have</b> arrived.'},
+      {term:'One of + plural noun is singular', ex:'One of my friends <b>lives</b> abroad.', note:'The subject is "one", not "friends".'},
+      {term:'Neither of / either of + plural noun is (formally) singular', ex:'Neither of the answers <b>is</b> correct.'},
+    ]},
+    {label:'Tricky nouns', items:[
+      {term:'Uncountable nouns are singular', ex:'The news <b>is</b> good. This information <b>is</b> useful.', note:'news, information, advice, furniture, luggage, progress.'},
+      {term:'Subjects ending in -ics are usually singular', ex:'Mathematics <b>is</b> hard. Economics <b>was</b> my major.'},
+      {term:'Collective nouns: singular as a unit, plural as members', ex:'The team <b>is</b> strong. The team <b>are</b> arguing among themselves.', note:'British English allows the plural more freely than American English.'},
+      {term:'"There is / are" agrees with what follows', ex:'There <b>is</b> a problem. There <b>are</b> two problems.'},
+    ]},
+  ],
+  quiz:[
+    {q:'The list of items ___ on your desk.', a:'is', opts:['is','are'], note:'Subject = "list" (singular). Ignore "of items".'},
+    {q:'Each of the players ___ a number.', a:'has', opts:['has','have'], note:'"Each of" is singular.'},
+    {q:'A number of students ___ absent today.', a:'are', opts:['is','are'], note:'"a number of" = many, plural.'},
+    {q:'Neither the CEO nor the managers ___ available.', a:'are', opts:['is','are'], note:'The verb agrees with the nearer subject, "managers".'},
+    {q:'Economics ___ a difficult subject.', a:'is', opts:['is','are'], note:'-ics subjects are singular.'},
+    {q:'Everyone ___ done the homework.', a:'has', opts:['has','have'], note:'"Everyone" is singular.'},
+    {q:'The news about the floods ___ worrying.', a:'is', opts:['is','are'], note:'"News" is uncountable, singular.'},
+    {q:'One of my keys ___ missing.', a:'is', opts:['is','are'], note:'Subject = "one".'},
+    {q:'Most of the water ___ gone.', a:'is', opts:['is','are'], note:'"Most of + uncountable" is singular.'},
+    {q:'There ___ several reasons for this.', a:'are', opts:['is','are'], note:'Agrees with "reasons" (plural).'},
+    {q:'Mathematics ___ my favourite subject.', a:'is', opts:['is','are']},
+    {q:'Tom and his brother ___ coming tonight.', a:'are', opts:['is','are'], note:'Two subjects with "and" = plural.'},
+  ],
+},
+{
+  key:'tense', tab:'Tense', title:'Tense Consistency',
+  intro:`<p>Within a single passage, keep your verbs in the same time frame. Shift tense only when the time itself genuinely changes. Random jumps between past and present are the most common writing error and they make a text feel careless.</p>`,
+  groups:[
+    {label:'Core rules', items:[
+      {term:'Stay in one main tense', ex:'She <b>opened</b> the door and <b>walked</b> in.', note:'Not: She opened the door and <span class="wrong">walks</span> in.'},
+      {term:'Use the past perfect for an earlier past event', ex:'By the time we <b>arrived</b>, the train <b>had left</b>.', note:'"had left" happened before "arrived". The order of events is shown by the tense, not by the word order.'},
+      {term:'Backshift in reported speech', ex:'He said he <b>was</b> tired.', note:'Direct: "I am tired." present becomes past when reported after a past verb.'},
+      {term:'Keep conditional patterns consistent', ex:'If I <b>had</b> more time, I <b>would</b> travel.', note:'Do not mix: "If I had more time, I <span class="wrong">will</span> travel."'},
+      {term:'Present tense for general truths, even inside past narration', ex:'The teacher explained that water <b>boils</b> at 100C.', note:'A permanent fact can stay in the present.'},
+    ]},
+    {label:'Common shifts to fix', items:[
+      {term:'Narrative drift', ex:'We <b>were</b> hiking when suddenly it <b>started</b> to rain.', note:'Both past. A shift to "starts" would be wrong.'},
+      {term:'Time clauses match the main clause', ex:'When she <b>calls</b>, I <b>will tell</b> her.', note:'Future time is shown by "will" in the main clause; the time clause stays present.'},
+      {term:'Do not jump to the present for drama by accident', ex:'Yesterday I <b>met</b> an old friend and we <b>talked</b> for hours.', note:'"talk" would break the past frame.'},
+    ]},
+  ],
+  quiz:[
+    {q:'She finished her coffee and ___ the house.', a:'left', opts:['left','leaves','will leave','leave'], note:'Stay in the past to match "finished".'},
+    {q:'By the time we got there, the show ___.', a:'had started', opts:['had started','starts','starts','has started'], note:'An earlier past event needs the past perfect.'},
+    {q:'If I were rich, I ___ a boat.', a:'would buy', opts:['would buy','will buy','buy','bought'], note:'Second conditional: "were" + "would".'},
+    {q:'He told me he ___ busy that week.', a:'was', opts:['was','is','will be','has been'], note:'Backshift after "told".'},
+    {q:'We were watching TV when the phone ___.', a:'rang', opts:['rang','rings','will ring','ring'], note:'Both actions in the past.'},
+    {q:'When the bus ___, we will get on.', a:'arrives', opts:['arrives','will arrive','arrived','arrive'], note:'Time clause stays present for a future meaning.'},
+    {q:'The guide explained that the river ___ through three countries.', a:'flows', opts:['flows','flowed','will flow','flow'], note:'A general truth can stay present.'},
+    {q:'Last summer we visited Rome and ___ amazing food.', a:'ate', opts:['ate','eat','eats','will eat'], note:'Keep the past frame.'},
+    {q:'I had already eaten when she ___.', a:'arrived', opts:['arrived','arrives','had arrived','arrive'], note:'The later event is simple past; the earlier one was past perfect.'},
+    {q:'She said she ___ finish it the next day.', a:'would', opts:['would','will','would have','had'], note:'"will" backshifts to "would".'},
+  ],
+},
+{
+  key:'adverb', tab:'Adverb Order', title:'Adverbial Order',
+  intro:`<p>When several adverbials land at the end of a clause, English prefers a set order: <b>Manner, Place, Time</b> (how, where, when). Frequency adverbs behave differently and usually sit in mid-position, next to the verb.</p><p>One firm rule underlies all of this: never put an adverb between a verb and its direct object.</p>`,
+  groups:[
+    {label:'End-position order: Manner, Place, Time', items:[
+      {term:'Manner before Place before Time', ex:'She sang <b>beautifully</b> (manner) <b>at the hall</b> (place) <b>last night</b> (time).'},
+      {term:'Place before Time when only two appear', ex:'We met <b>in the park</b> <b>yesterday</b>.', note:'Not: "yesterday in the park" in neutral style.'},
+      {term:'Direction/movement verbs: place can lead', ex:'They walked <b>home</b> <b>slowly</b>.', note:'With verbs of movement, the destination often comes right after the verb.'},
+      {term:'Time can move to the front for emphasis', ex:'<b>Last night</b>, she sang beautifully at the hall.', note:'Fronting the time expression is fine and common.'},
+    ]},
+    {label:'Frequency and mid-position', items:[
+      {term:'Frequency adverbs go before the main verb', ex:'I <b>always</b> drink coffee.', note:'always, usually, often, sometimes, rarely, never.'},
+      {term:'But after the verb "be"', ex:'She <b>is often</b> late.'},
+      {term:'And between the auxiliary and the main verb', ex:'They have <b>never</b> been abroad.'},
+    ]},
+    {label:'Firm rules', items:[
+      {term:'Never split a verb and its object', ex:'She speaks English <b>fluently</b>.', note:'Not: She speaks <span class="wrong">fluently</span> English.'},
+      {term:'Comment/viewpoint adverbs go to the front', ex:'<b>Honestly</b>, I disagree. <b>Fortunately</b>, no one was hurt.'},
+      {term:'Time expressions: smaller unit before larger', ex:'The meeting is <b>at 3 pm on Monday</b>.', note:'Not: "on Monday at 3 pm" in neutral style.'},
+    ]},
+  ],
+  quiz:[
+    {q:'She sang ___.', a:'beautifully at the party last night', opts:['beautifully at the party last night','at the party beautifully last night','last night beautifully at the party','at the party last night beautifully'], note:'Manner, Place, Time.'},
+    {q:'I ___ coffee in the morning.', a:'always drink', opts:['always drink','drink always'], note:'Frequency adverb before the main verb.'},
+    {q:'He speaks ___.', a:'French fluently', opts:['French fluently','fluently French'], note:'Never put the adverb between the verb and its object.'},
+    {q:'They ___ to Japan.', a:'have never been', opts:['have never been','have been never'], note:'Frequency adverb sits between the auxiliary and the main verb.'},
+    {q:'We walked ___.', a:'home slowly', opts:['home slowly','slowly home'], note:'With movement verbs, the destination often comes first.'},
+    {q:'She ___ late for meetings.', a:'is usually', opts:['is usually','usually is'], note:'Frequency adverb after the verb "be".'},
+    {q:'The train leaves ___.', a:'at 6 pm on Friday', opts:['at 6 pm on Friday','on Friday at 6 pm'], note:'Smaller time unit before the larger one.'},
+    {q:'Which order is natural?', a:'Fortunately, no one was injured', opts:['Fortunately, no one was injured','No one was injured, fortunately, at all'], note:'Comment adverbs sit most naturally at the front.'},
+    {q:'I met her ___.', a:'in Paris last summer', opts:['in Paris last summer','last summer in Paris'], note:'Place before Time.'},
+    {q:'He drove ___.', a:'carefully through the town this morning', opts:['carefully through the town this morning','through the town carefully this morning','this morning carefully through the town','through the town this morning carefully'], note:'Manner, Place, Time.'},
+  ],
+},
+];
+
+/* ============ HELPERS ============ */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* allow the small set of formatting tags we author inside data */
+function fmt(s){ return String(s); }
+
+let topicKey = GRAMMAR[0].key;
+let mode = 'learn';
+function curTopic(){ return GRAMMAR.find(t=>t.key===topicKey); }
+
+/* ---- topic tabs ---- */
+const topicSeg = document.getElementById('topicSeg');
+GRAMMAR.forEach(t=>{
+  const b=document.createElement('button');
+  b.id='topic-'+t.key; b.type='button'; b.setAttribute('role','tab');
+  b.setAttribute('aria-selected', t.key===topicKey?'true':'false');
+  b.textContent=t.tab;
+  b.addEventListener('click', ()=>{ topicKey=t.key; mode='learn'; render(); });
+  topicSeg.appendChild(b);
+});
+
+document.getElementById('mode-learn').addEventListener('click', ()=>{ mode='learn'; render(); });
+document.getElementById('mode-practice').addEventListener('click', ()=>{ mode='practice'; startPractice(); render(); });
+
+/* ---- learn ---- */
+const learnView=document.getElementById('learnView');
+function renderLearn(t){
+  let h = '<div class="intro">'+fmt(t.intro)+'</div>';
+  t.groups.forEach(g=>{
+    h += '<div class="g-group"><div class="g-group-label">'+esc(g.label)+'</div>';
+    g.items.forEach(it=>{
+      h += '<div class="g-item">'+
+        '<div class="gi-term">'+fmt(it.term)+(it.key?' <span class="gi-key">'+esc(it.key)+'</span>':'')+'</div>'+
+        (it.ex?'<div class="gi-ex">'+fmt(it.ex)+'</div>':'')+
+        (it.note?'<div class="gi-note">'+fmt(it.note)+'</div>':'')+
+      '</div>';
+    });
+    h += '</div>';
+  });
+  learnView.innerHTML=h;
+}
+
+/* ---- practice ---- */
+const practiceView=document.getElementById('practiceView');
+let quiz={items:[], i:0, correct:0, total:0, answered:false, optOrder:[]};
+function startPractice(){
+  const t=curTopic();
+  quiz.items=shuffle(t.quiz);
+  quiz.i=0; quiz.correct=0; quiz.total=0; quiz.answered=false;
+  prepQuestion();
+}
+function prepQuestion(){
+  const q=quiz.items[quiz.i];
+  quiz.answered=false;
+  quiz.optOrder = q.single ? q.opts.slice() : shuffle(q.opts);
+}
+function renderPractice(){
+  if(quiz.i>=quiz.items.length){
+    const pct=quiz.total?Math.round(quiz.correct/quiz.total*100):0;
+    practiceView.innerHTML='<div class="p-wrap">'+
+      '<div class="p-done">'+quiz.correct+' / '+quiz.total+' &middot; '+pct+'%</div>'+
+      '<p class="p-explain">Nicely done. Practice again to lock it in.</p>'+
+      '<div class="p-row"><button class="p-btn primary" id="pRestart">Restart</button></div></div>';
+    document.getElementById('pRestart').addEventListener('click', ()=>{ startPractice(); render(); });
+    return;
+  }
+  const q=quiz.items[quiz.i];
+  const qhtml = esc(q.q).replace('___','<span class="blank">?</span>');
+  let opts='';
+  quiz.optOrder.forEach(o=>{
+    opts += '<button class="p-opt" data-o="'+esc(o)+'">'+esc(o)+'</button>';
+  });
+  practiceView.innerHTML='<div class="p-wrap">'+
+    '<div class="p-score">'+(quiz.i+1)+' / '+quiz.items.length+' &nbsp;&middot;&nbsp; '+quiz.correct+' correct</div>'+
+    '<div class="p-q">'+qhtml+'</div>'+
+    '<div class="p-hint" id="pHint"></div>'+
+    '<div class="p-opts" id="pOpts">'+opts+'</div>'+
+    '<div class="p-explain" id="pExplain"></div>'+
+    '<div class="p-row"><button class="p-btn" id="pReveal">Show answer</button><button class="p-btn primary" id="pNext" disabled>Next &rarr;</button></div>'+
+  '</div>';
+  document.getElementById('pOpts').addEventListener('click', onAnswer);
+  document.getElementById('pReveal').addEventListener('click', revealAnswer);
+  document.getElementById('pNext').addEventListener('click', nextQuestion);
+}
+function markOptions(){
+  const q=quiz.items[quiz.i];
+  Array.from(document.querySelectorAll('.p-opt')).forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.o===q.a) b.classList.add('correct');
+  });
+  const ex=document.getElementById('pExplain');
+  ex.innerHTML='<b>'+esc(q.a)+'</b>'+(q.note?' &middot; '+fmt(q.note):'');
+  document.getElementById('pNext').disabled=false;
+  document.getElementById('pReveal').disabled=true;
+}
+function onAnswer(e){
+  const b=e.target.closest('.p-opt'); if(!b || quiz.answered) return;
+  quiz.answered=true; quiz.total++;
+  const q=quiz.items[quiz.i];
+  if(b.dataset.o===q.a) quiz.correct++;
+  else b.classList.add('incorrect');
+  markOptions();
+}
+function revealAnswer(){
+  if(quiz.answered) return;
+  quiz.answered=true; quiz.total++;
+  markOptions();
+}
+function nextQuestion(){ quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); render(); }
+
+/* ---- render orchestrator ---- */
+function render(){
+  const t=curTopic();
+  GRAMMAR.forEach(x=>{ const b=document.getElementById('topic-'+x.key); if(b) b.setAttribute('aria-selected', x.key===topicKey?'true':'false'); });
+  document.getElementById('topicTitle').textContent=t.title;
+  document.getElementById('mode-learn').setAttribute('aria-selected', mode==='learn'?'true':'false');
+  document.getElementById('mode-practice').setAttribute('aria-selected', mode==='practice'?'true':'false');
+  learnView.hidden = mode!=='learn';
+  practiceView.hidden = mode!=='practice';
+  if(mode==='learn') renderLearn(t); else renderPractice();
+  window.scrollTo({top:0, behavior:'auto'});
+}
+render();
+</script>
+</body>
+</html>
