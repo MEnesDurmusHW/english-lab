@@ -51,6 +51,9 @@ function collExShow(chip){
   const txt=arr[+chip.getAttribute('data-i')]||'';
   if(exEl){ if(txt){ exEl.textContent=txt; exEl.hidden=false; } else { exEl.hidden=true; } }
   Array.prototype.forEach.call(group.querySelectorAll('.coll-chip'), function(c){ const on=c===chip; c.tabIndex=on?0:-1; c.classList.toggle('active',on); });
+  /* odaklı/aktif collocation ve örneği her zaman görünür kalsın */
+  const seen=(exEl && !exEl.hidden) ? exEl : chip;
+  if(seen && seen.scrollIntoView) seen.scrollIntoView({block:'nearest'});
 }
 /* bir satırdaki collocation'lar arasında ilerle: odağı satırda bırakır, sadece aktif kalıbı ve örnek cümleyi değiştirir */
 function stepRowColl(row,dir){
@@ -142,6 +145,7 @@ let filterVal = 'all';
 function matchesFilter(w){
   if(filterVal==='hidden') return isHidden(w.en);          // yalnızca gizlenenler
   if(isHidden(w.en)) return false;                         // gizlenenler diğer görünümlerde çıkmaz
+  if(filterVal==='flagged') return isFlagged(w.en);        // cümlede çalışmak için işaretlediklerin
   if(filterVal==='all') return true;
   if(filterVal==='shaky') return statusOf(w.en)!=='known';  // Sağlam değil = sağlam olmayan her şey (zayıf dahil)
   return statusOf(w.en)===filterVal;

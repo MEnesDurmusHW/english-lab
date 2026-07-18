@@ -7,7 +7,6 @@
   'use strict';
 
   var modal = null;
-  var qrRendered = false;
   var activeInfo = null;
   var refCode = '';
 
@@ -82,8 +81,6 @@
       ? '"' + quote + '"\n— ' + info.title + '\n' + url
       : info.title + ' — ' + url;
     if (wa) wa.href = 'https://wa.me/?text=' + encodeURIComponent(waText);
-    qrRendered = false;
-    renderQR();
   }
 
   function copyToClipboard(text) {
@@ -144,10 +141,6 @@
             '<span>WhatsApp</span>' +
           '</a>' +
         '</div>' +
-        '<div class="share-qr">' +
-          '<div class="share-qr-frame"></div>' +
-          '<p class="share-qr-hint">Telefon kameranızla okutun</p>' +
-        '</div>' +
         '<p class="share-status" aria-live="polite"></p>' +
       '</div>';
     document.body.appendChild(modal);
@@ -202,22 +195,6 @@
     flash._t = setTimeout(function () { el.textContent = ''; }, 2400);
   }
 
-  function renderQR() {
-    if (!window.QRCode) return;
-    var urlInput = $('.share-url', modal);
-    var url = (urlInput && urlInput.value) || applyRef(currentInfo().url, refCode);
-    var frame = $('.share-qr-frame', modal);
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    var svg = window.QRCode.toSVG(url, {
-      ecLevel: 'M',
-      quietZone: 2,
-      color: isDark ? '#e8e6e1' : '#1A1A1E',
-      background: 'transparent'
-    });
-    frame.innerHTML = svg;
-    qrRendered = true;
-  }
-
   function open() {
     var info = currentInfo();
     ensureModal();
@@ -225,7 +202,6 @@
     var nativeBtn = $('[data-action="native"]', modal);
     nativeBtn.hidden = !navigator.share;
     $('.share-ref', modal).value = refCode;
-    qrRendered = false;
     applyShareState();
     $('.share-status', modal).textContent = '';
     modal.hidden = false;

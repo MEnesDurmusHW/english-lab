@@ -327,6 +327,8 @@
   .cb-list{display:flex;flex-direction:column;gap:12px}
   .cb-row{border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-sm);padding:16px clamp(14px,3vw,20px)}
   .cb-row.focused{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  /* klavye ile gezerken odaklanan öğe sabit üst barın altında kalmasın */
+  .cb-row,.cb-head,.coll-chip,.coll-ex{scroll-margin-top:80px;scroll-margin-bottom:24px}
   .cb-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 11px;width:100%;background:none;border:0;cursor:default;text-align:left;padding:0;color:inherit;font:inherit;margin-bottom:12px}
   .cb-head:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
   .cb-w{font-family:var(--display);font-weight:600;font-size:1.18rem;letter-spacing:-.02em;color:var(--accent);line-height:1.15}

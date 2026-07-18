@@ -91,6 +91,12 @@
 </head>
 <body>
 <div class="grain"></div>
+<span id="syncHost" class="lab-synchost"></span>
+<style>
+  .lab-synchost{position:fixed;top:20px;right:120px;z-index:999;display:inline-flex;align-items:center}
+  .lab-synchost .sync-pill{position:static!important;left:auto!important;bottom:auto!important}
+  @media (max-width:640px){ .lab-synchost{right:104px} .lab-synchost .sync-pill-text{display:none} }
+</style>
 
 <a class="home-toggle" href="index.html" aria-label="Back to home">NS</a>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">

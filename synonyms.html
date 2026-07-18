@@ -93,6 +93,12 @@
 <body>
 
 <div class="grain"></div>
+<span id="syncHost" class="lab-synchost"></span>
+<style>
+  .lab-synchost{position:fixed;top:20px;right:70px;z-index:999;display:inline-flex;align-items:center}
+  .lab-synchost .sync-pill{position:static!important;left:auto!important;bottom:auto!important}
+  @media (max-width:640px){ .lab-synchost .sync-pill-text{display:none} }
+</style>
 <a class="home-toggle" href="index.html" aria-label="Ana sayfaya dön">NS</a>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Tema değiştir">
   <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>

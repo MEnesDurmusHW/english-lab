@@ -142,15 +142,6 @@ body {
 }
 .home-logo:hover .logo-text { color: var(--accent); }
 
-/* --- Share modal (created by share.js) baseline --- */
-.share-backdrop {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,0.45);
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px;
-}
-[data-theme="dark"] .share-backdrop { background: rgba(0,0,0,0.6); }
-
 /* --- Share modal (ported from article system) --- */
 .share-open { overflow: hidden; }
 
@@ -184,6 +175,7 @@ body {
 
 .share-panel {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 440px;
   max-height: calc(100vh - 40px);
@@ -384,6 +376,7 @@ body {
   font-size: 12px;
   color: var(--accent);
   text-align: center;
+}
 .share-quote {
   margin: -8px 0 16px;
   padding: 10px 14px;
