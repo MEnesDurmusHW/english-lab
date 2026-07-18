@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress — NS's English Lab</title>
+<meta name="description" content="Genel ilerleme: bilinen/zayıf kelime dağılımı, çalışma istatistikleri ve öğrenilmiş kelimeler.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Progress — NS's English Lab">
+<meta property="og:description" content="Genel ilerleme ve öğrenilmiş kelimeler.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/progress.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='progress';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap">
+
+  <div class="subbar">
+    <div class="seg" role="tablist" aria-label="Progress">
+      <button id="tab-overview" role="tab" aria-selected="true">Overview</button>
+      <button id="tab-learned" role="tab" aria-selected="false">Learned</button>
+    </div>
+  </div>
+
+  <div id="view-overview" role="tabpanel">
+    <div class="stats-wrap" id="statsWrap"></div>
+  </div>
+
+  <div id="view-learned" role="tabpanel" hidden>
+    <div id="learnedList"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="lab-core.js"></script>
+<script>
+/* ============ OVERVIEW (istatistik) ============ */
+const statsWrap=document.getElementById('statsWrap');
+function renderStats(){
+  const total=WORDS.length; let known=0, shaky=0, weak=0, studied=0;
+  WORDS.forEach(w=>{ const st=statusOf(w.en); if(st==='known')known++; else if(st==='weak')weak++; else shaky++; if(w.en in SCORES) studied++; });
+  const hid=WORDS.filter(w=>isHidden(w.en)).length;
+  const pct=function(n){ return total ? Math.round(n/total*100) : 0; };
+  const seg=function(cls,n){ return n ? '<i class="'+cls+'" style="width:'+(n/total*100)+'%"></i>' : ''; };
+  const dot={known:'var(--ok)', shaky:'var(--mid)', weak:'var(--bad)'};
+  const cell=function(k,label,n){ return '<div class="stat-cell"><div class="stat-num">'+n+'</div><div class="stat-cap"><span class="stat-dot" style="background:'+dot[k]+'"></span>'+label+' · %'+pct(n)+'</div></div>'; };
+  statsWrap.innerHTML=
+    '<p class="q-score">'+total+' kelime · '+studied+' çalışıldı · %'+pct(known)+' biliniyor'+(hid?' · '+hid+' öğrenildi':'')+'</p>'+
+    '<div class="stat-bar">'+seg('s-known',known)+seg('s-shaky',shaky)+seg('s-weak',weak)+'</div>'+
+    '<div class="stat-grid">'+cell('known','Biliyorum',known)+cell('shaky','Sağlam değil',shaky)+cell('weak','Zayıf',weak)+'</div>'+
+    '<p class="stat-note">Kartlarda ve testlerde her doğru skoru +1, her yanlış -1 değiştirir. Skor '+KNOWN_AT+' ve üzeri: Biliyorum. Eksi: Zayıf.</p>'+
+    '<div class="f-row" style="margin-top:18px"><button class="btn" id="statsReset">İlerlemeyi sıfırla</button></div>';
+  const rb=document.getElementById('statsReset');
+  if(rb) rb.addEventListener('click', ()=>{ if(confirm('Tüm skorlar silinecek. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
+}
+
+/* ============ LEARNED (öğrendiklerim) ============ */
+const learnedEl=document.getElementById('learnedList');
+const RESTORE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>';
+function renderLearned(){
+  const list=WORDS.filter(w=>isHidden(w.en));
+  if(!list.length){ learnedEl.innerHTML='<div class="empty">Henüz “öğrendim” olarak işaretlenen kelime yok. Liste ve kartlarda ✓ ile ekleyebilirsin.</div>'; return; }
+  learnedEl.innerHTML='<div class="list">'+list.map(function(w){
+    return '<div class="entry" data-type="'+w.type+'" data-i="'+w._i+'"><div class="entry-row">'+
+      '<div class="entry-head" style="cursor:default">'+
+        '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
+        '<span class="eh-type">'+typeLabel(w.type)+'</span>'+
+      '</div>'+
+      '<span class="entry-actions"><button type="button" class="row-btn row-hide on" data-a="restore" title="Rotasyona geri getir" aria-label="Geri getir">'+RESTORE_SVG+'</button></span>'+
+    '</div></div>';
+  }).join('')+'</div>';
+}
+learnedEl.addEventListener('click', function(e){
+  const b=e.target.closest('[data-a="restore"]'); if(!b) return;
+  const i=+b.closest('.entry').dataset.i;
+  toggleHidden(WORDS[i].en); renderLearned(); renderStats();
+});
+
+/* ============ sub-tab controller ============ */
+const P_TABS=['overview','learned'];
+function selectTab(t){
+  if(P_TABS.indexOf(t)<0) t='overview';
+  P_TABS.forEach(function(x){
+    const v=document.getElementById('view-'+x), b=document.getElementById('tab-'+x);
+    if(v) v.hidden = x!==t;
+    if(b) b.setAttribute('aria-selected', x===t?'true':'false');
+  });
+  if(t==='overview') renderStats(); else renderLearned();
+  try{ localStorage.setItem('ns-progress-tab', t); }catch(e){}
+}
+P_TABS.forEach(function(t){ const b=document.getElementById('tab-'+t); if(b) b.addEventListener('click', function(){ selectTab(t); }); });
+
+let startTab='overview';
+try{ const s=localStorage.getItem('ns-progress-tab'); if(s && P_TABS.indexOf(s)>=0) startTab=s; }catch(e){}
+selectTab(startTab);
+</script>
+</body>
+</html>

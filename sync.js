@@ -106,7 +106,10 @@
     pill.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span class="sync-pill-text">Sign in to sync</span>';
     pillText = pill.querySelector('.sync-pill-text');
     pill.addEventListener('click', onPillClick);
-    document.body.appendChild(pill);
+    // Prefer an in-page host (e.g. the app bar); fall back to the floating corner.
+    var host = document.getElementById('syncHost');
+    if (host) { pill.classList.add('sync-pill--bar'); host.appendChild(pill); }
+    else document.body.appendChild(pill);
   }
   function setPill(state) {
     if (!pill) return;

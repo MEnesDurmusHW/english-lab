@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collocations — NS's English Lab</title>
+<meta name="description" content="Kelimelerin en sık birlikte kullanıldığı kalıplar: gözat, kendi cümleni yaz, eşleştir ve boşluk doldur.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Collocations — NS's English Lab">
+<meta property="og:description" content="Kelimelerin en sık birlikte kullanıldığı kalıplar.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/collocations.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='collocations';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap">
+
+  <div class="subbar">
+    <div class="seg" role="tablist" aria-label="Collocation modes">
+      <button id="coll-list" aria-selected="true">List</button>
+      <button id="coll-study" aria-selected="false">Write</button>
+      <button id="coll-match" aria-selected="false">Match</button>
+      <button id="coll-fill" aria-selected="false">Fill</button>
+    </div>
+  </div>
+
+  <div class="ctlbar">
+    <div class="ctlbar-right">
+      <select class="filter-sel" id="filterSel" aria-label="Kelimeleri filtrele">
+        <option value="all">Tümü</option>
+        <option value="weak">Zayıf</option>
+        <option value="shaky">Sağlam değil</option>
+        <option value="known">Biliyorum</option>
+        <option value="hidden">Öğrendiklerim</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="coll-view">
+    <div class="coll-progress" id="collProgress"></div>
+    <div id="collBrowse"></div>
+    <div id="collStudy" hidden></div>
+    <div id="collEx" hidden>
+      <div class="q-score" id="cexScore"></div>
+      <div id="cexBody"></div>
+      <p class="kbd-hint" id="cexHint"></p>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="lab-core.js"></script>
+<script>
+/* stubs for helpers that only exist on the vocabulary page */
+function updateCount(){}
+function updateBrowseActive(){}
+
+const COLL_SENT_KEY='ns-vocab-coll-sent';
+let COLL_SENTS={};
+try{ COLL_SENTS=JSON.parse(localStorage.getItem(COLL_SENT_KEY))||{}; }catch(e){ COLL_SENTS={}; }
+function saveCollSents(){ try{ localStorage.setItem(COLL_SENT_KEY,JSON.stringify(COLL_SENTS)); }catch(e){} }
+function getCollSent(en,idx){ return (COLL_SENTS[en]&&COLL_SENTS[en][idx])||''; }
+function setCollSent(en,idx,txt){
+  txt=(txt||'').trim();
+  if(txt){ if(!COLL_SENTS[en]) COLL_SENTS[en]={}; COLL_SENTS[en][idx]=txt; }
+  else if(COLL_SENTS[en]){ delete COLL_SENTS[en][idx]; if(!Object.keys(COLL_SENTS[en]).length) delete COLL_SENTS[en]; }
+  saveCollSents();
+}
+
+function blankAt(phrase,start,len){ return phrase.slice(0,start)+'____'+phrase.slice(start+len); }
+function collBlankHTML(phrase,start,len){ return escapeHTML(phrase.slice(0,start))+'<span class="cex-blank">____</span>'+collPhraseHTML(phrase.slice(start+len)); }
+function findHeadword(w,phrase){
+  const low=phrase.toLowerCase();
+  const forms=coreForms(w.en);
+  for(const f of forms){ const fl=f.toLowerCase(); const i=low.indexOf(fl); if(i>=0) return {start:i,len:f.length}; }
+  return null;
+}
+
+/* ---- ilerleme ---- */
+const collProgress=document.getElementById('collProgress');
+function renderCollProgress(){
+  const total=WORDS.length;
+  const done=WORDS.filter(w=>isHidden(w.en)).length;
+  const withSent=WORDS.filter(w=>COLL_SENTS[w.en]&&Object.keys(COLL_SENTS[w.en]).length).length;
+  const pct=total?Math.round(done/total*100):0;
+  collProgress.innerHTML=
+    '<div class="cp-top"><span class="cp-label">Words consolidated</span><span class="cp-num">'+done+' / '+total+' · '+pct+'%</span></div>'+
+    '<div class="stat-bar"><i class="s-known" style="width:'+(total?done/total*100:0)+'%"></i></div>'+
+    '<div class="cp-note">Your own example in '+withSent+' word'+(withSent===1?'':'s')+'.</div>';
+}
+
+/* ---- çalış: tek kelime navigatörü ---- */
+let collMode='list', collOrder=[], collPos=0;
+function buildCollOrder(){ collOrder=activeWords().map(w=>w._i); if(collPos>=collOrder.length) collPos=Math.max(0,collOrder.length-1); }
+function curColl(){ return WORDS[collOrder[collPos]]; }
+const collStudyEl=document.getElementById('collStudy');
+function autosize(ta){ ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; }
+function renderCollStudy(){
+  if(!collOrder.length){ collStudyEl.innerHTML='<div class="empty">No words to show in this filter. Change the filter above.</div>'; return; }
+  const w=curColl(), done=isHidden(w.en);
+  const rows=collList(w).map(function(p,idx){
+    const val=getCollSent(w.en,idx);
+    return '<div class="coll-item">'+
+      '<div class="coll-phrase">'+collPhraseHTML(p)+'</div>'+
+      '<textarea class="coll-mine'+(val?' saved':'')+'" data-idx="'+idx+'" rows="1" placeholder="Write your own sentence with this…">'+escapeHTML(val)+'</textarea>'+
+    '</div>';
+  }).join('');
+  collStudyEl.innerHTML=
+    '<div class="coll-card">'+
+      '<div class="coll-head"><span class="coll-w-term">'+w.en+'</span><span class="coll-w-type">'+typeLabel(w.type)+'</span><span class="coll-w-tr">'+w.tr+'</span></div>'+
+      '<div class="coll-items">'+rows+'</div>'+
+    '</div>'+
+    '<div class="card-controls coll-controls">'+
+      '<button data-act="prev" aria-label="Previous">← Prev</button>'+
+      '<button data-act="done" class="done-btn'+(done?' is-done':'')+'">'+(done?'Solid ✓':'Consolidate')+'</button>'+
+      '<button data-act="shuffle" aria-label="Shuffle">Shuffle</button>'+
+      '<button data-act="next" aria-label="Next">Next →</button>'+
+    '</div>'+
+    '<div class="coll-nav-idx">'+(collPos+1)+' / '+collOrder.length+'</div>';
+  collStudyEl.querySelectorAll('.coll-mine').forEach(autosize);
+}
+function collNext(){ if(!collOrder.length) return; collPos=(collPos+1)%collOrder.length; renderCollStudy(); }
+function collPrev(){ if(!collOrder.length) return; collPos=(collPos-1+collOrder.length)%collOrder.length; renderCollStudy(); }
+function collShuffle(){ collOrder=shuffle(collOrder); collPos=0; renderCollStudy(); }
+function collMarkDone(){
+  if(!collOrder.length) return;
+  toggleHidden(curColl().en);
+  buildCollOrder();
+  renderCollStudy(); renderCollProgress(); updateCount();
+}
+collStudyEl.addEventListener('input', function(e){
+  const ta=e.target.closest('.coll-mine'); if(!ta) return;
+  setCollSent(curColl().en, +ta.dataset.idx, ta.value);
+  ta.classList.toggle('saved', !!ta.value.trim());
+  autosize(ta);
+});
+collStudyEl.addEventListener('click', function(e){
+  const b=e.target.closest('button[data-act]'); if(!b) return;
+  const a=b.dataset.act;
+  if(a==='next') collNext();
+  else if(a==='prev') collPrev();
+  else if(a==='shuffle') collShuffle();
+  else if(a==='done'){ collMarkDone(); renderCollProgress(); }
+});
+
+/* ---- alıştırma ---- */
+let collEx={type:'match', correct:0, total:0, answer:null, done:false};
+const cexScore=document.getElementById('cexScore'), cexBody=document.getElementById('cexBody'), cexHint=document.getElementById('cexHint');
+function cexScoreText(){ cexScore.textContent = collEx.total ? ('Correct '+collEx.correct+' / '+collEx.total) : ''; }
+function collMatchPool(){
+  const pool=[];
+  activeWords().forEach(function(w){ collList(w).forEach(function(p){ const h=findHeadword(w,p); if(h && p.length-h.len>3) pool.push({w:w,phrase:p,h:h}); }); });
+  return pool;
+}
+function collFillPool(){
+  const pool=[];
+  activeWords().forEach(function(w){ collList(w).forEach(function(p){ const m=p.match(UPPER_RE); if(m) pool.push({w:w,phrase:p,m:m}); }); });
+  return pool;
+}
+function startCollEx(){
+  collEx.correct=0; collEx.total=0;
+  if(collEx.type==='match'){ cexHint.innerHTML='<kbd>1</kbd>–<kbd>4</kbd> select · <kbd>Enter</kbd> next'; newCollMatch(); }
+  else{ cexHint.innerHTML='<kbd>Enter</kbd> check / next'; newCollFill(); }
+}
+function newCollMatch(){
+  collEx.done=false;
+  const pool=collMatchPool();
+  if(pool.length<1 || WORDS.length<4){ cexBody.innerHTML='<div class="empty">Not enough collocations in this filter.</div>'; cexScoreText(); return; }
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  collEx.answer=q.w.en;
+  const others=shuffle(WORDS.filter(function(w){ return w.en!==q.w.en; })).slice(0,3).map(function(w){ return w.en; });
+  const opts=shuffle([q.w.en].concat(others));
+  cexBody.innerHTML=
+    '<div class="q-sub">Which word fills the blank?</div>'+
+    '<div class="q-prompt coll-q-prompt">'+collBlankHTML(q.phrase,q.h.start,q.h.len)+'</div>'+
+    '<div class="q-options" id="cexOptions"></div>'+
+    '<div class="q-next"><button class="btn primary" id="cexNext" disabled>Next →</button></div>';
+  const wrap=document.getElementById('cexOptions');
+  opts.forEach(function(o,i){
+    const b=document.createElement('button'); b.className='q-opt';
+    b.innerHTML='<span class="q-key">'+(i+1)+'</span><span>'+escapeHTML(o)+'</span>';
+    b.addEventListener('click', function(){ answerCollMatch(b,o); });
+    wrap.appendChild(b);
+  });
+  document.getElementById('cexNext').addEventListener('click', newCollMatch);
+  cexScoreText();
+}
+function answerCollMatch(btn,opt){
+  if(collEx.done) return;
+  collEx.done=true; collEx.total++;
+  const wrap=document.getElementById('cexOptions');
+  Array.prototype.forEach.call(wrap.children, function(b){
+    b.disabled=true;
+    const label=b.querySelector('span:last-child').textContent;
+    if(label===collEx.answer) b.classList.add('correct');
+  });
+  if(opt===collEx.answer) collEx.correct++;
+  else btn.classList.add('wrong');
+  const nb=document.getElementById('cexNext'); nb.disabled=false; nb.focus();
+  cexScoreText();
+}
+function newCollFill(){
+  collEx.done=false;
+  const pool=collFillPool();
+  if(!pool.length){ cexBody.innerHTML='<div class="empty">No fill-in collocations in this filter.</div>'; cexScoreText(); return; }
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  const raw=q.m[0];
+  collEx.answer=raw.toLowerCase().split('/').map(function(s){ return s.trim(); }).filter(Boolean);
+  cexBody.innerHTML=
+    '<div class="q-sub">'+escapeHTML(q.w.en)+' · fill the blank</div>'+
+    '<div class="f-sentence">'+collBlankHTML(q.phrase,q.m.index,raw.length)+'</div>'+
+    '<div class="f-hint">'+escapeHTML(q.w.tr)+'</div>'+
+    '<input class="f-input" id="cexInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the missing word…">'+
+    '<div class="f-feedback" id="cexFb"></div>'+
+    '<div class="f-row">'+
+      '<button class="btn" id="cexReveal">Reveal</button>'+
+      '<button class="btn primary" id="cexCheck">Check</button>'+
+      '<button class="btn" id="cexFillNext">Next →</button>'+
+    '</div>';
+  const inp=document.getElementById('cexInput');
+  document.getElementById('cexCheck').addEventListener('click', checkCollFill);
+  document.getElementById('cexReveal').addEventListener('click', revealCollFill);
+  document.getElementById('cexFillNext').addEventListener('click', newCollFill);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); if(collEx.done) newCollFill(); else checkCollFill(); } });
+  inp.focus();
+  cexScoreText();
+}
+function checkCollFill(){
+  if(collEx.done) return;
+  const inp=document.getElementById('cexInput'), fb=document.getElementById('cexFb');
+  const val=normalize(inp.value); if(!val) return;
+  collEx.done=true; collEx.total++;
+  const ok=collEx.answer.indexOf(val)>=0;
+  if(ok){ collEx.correct++; fb.textContent='Correct'; fb.className='f-feedback ok'; }
+  else{ fb.textContent='Answer: '+collEx.answer.join(' / '); fb.className='f-feedback no'; }
+  inp.disabled=true;
+  cexScoreText();
+}
+function revealCollFill(){
+  if(collEx.done) return;
+  const fb=document.getElementById('cexFb');
+  fb.textContent='Answer: '+collEx.answer.join(' / '); fb.className='f-feedback';
+  collEx.done=true; collEx.total++;
+  document.getElementById('cexInput').disabled=true;
+  cexScoreText();
+}
+
+/* ---- liste: tüm kelimeler + collocation'ları (açılınca örnek cümle + nüans) ---- */
+const collBrowseEl=document.getElementById('collBrowse');
+function renderCollBrowse(){
+  const list=activeWords().filter(w=>w.coll);
+  if(!list.length){ collBrowseEl.innerHTML='<div class="empty">Bu filtrede collocation yok. Filtreyi değiştir.</div>'; return; }
+  collBrowseEl.innerHTML='<p class="list-hint" style="margin:0 0 14px"><kbd>↑</kbd><kbd>↓</kbd> kelimeler · <kbd>←</kbd><kbd>→</kbd> collocation’lar (örnek cümle açılır)</p><div class="cb-list">'+list.map(function(w){
+    return '<div class="cb-row" data-i="'+w._i+'">'+
+      '<button class="cb-head" type="button" tabindex="-1">'+
+        '<span class="cb-w">'+escapeHTML(w.en)+'</span>'+
+        '<span class="cb-type">'+typeLabel(w.type)+'</span>'+
+      '</button>'+
+      '<div class="coll cb-coll">'+collFormat(w)+'</div>'+
+    '</div>';
+  }).join('')+'</div>';
+  wireCollBrowse();
+}
+/* ↑/↓ kelimeler arası, ←/→ o kelimenin collocation'ları arası (örnek cümleyi değiştirir) */
+function focusCollHead(idx){
+  const hs=collHeads(); if(!hs.length) return;
+  idx=Math.max(0,Math.min(hs.length-1,idx));
+  hs[idx].focus(); hs[idx].scrollIntoView({block:'nearest'});
+}
+document.addEventListener('keydown', function(e){
+  if(collMode!=='list') return;
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
+  if(e.target.closest && e.target.closest('.coll-chip')) return; /* chip'ler kendi ok navigasyonunu yönetir */
+  const hs=collHeads(); if(!hs.length) return;
+  const frow=collBrowseEl.querySelector('.cb-row.focused');
+  const idx=frow?hs.indexOf(frow.querySelector('.cb-head')):-1;
+  if(e.key==='ArrowDown'){ e.preventDefault(); focusCollHead(idx<0?0:idx+1); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); focusCollHead(idx<0?0:idx-1); }
+  else if(e.key==='Home'){ e.preventDefault(); focusCollHead(0); }
+  else if(e.key==='End'){ e.preventDefault(); focusCollHead(hs.length-1); }
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    e.preventDefault();
+    if(idx<0){ focusCollHead(0); return; }
+    stepRowColl(frow, e.key==='ArrowRight'?1:-1);
+  }
+});
+function collHeads(){ return Array.from(collBrowseEl.querySelectorAll('.cb-head')); }
+function wireCollBrowse(){
+  const hs=collHeads();
+  hs.forEach(function(btn,i){
+    btn.tabIndex=i===0?0:-1;
+    btn.addEventListener('focus', function(){
+      hs.forEach(function(b,j){ b.tabIndex=j===i?0:-1; b.closest('.cb-row').classList.toggle('focused', j===i); });
+    });
+  });
+}
+
+/* ---- mod anahtarı (tek seviye: List / Write / Match / Fill) ---- */
+const COLL_MODES=['list','study','match','fill'];
+function showCollMode(){
+  const isEx = collMode==='match' || collMode==='fill';
+  document.getElementById('coll-list').setAttribute('aria-selected', collMode==='list'?'true':'false');
+  document.getElementById('coll-study').setAttribute('aria-selected', collMode==='study'?'true':'false');
+  document.getElementById('coll-match').setAttribute('aria-selected', collMode==='match'?'true':'false');
+  document.getElementById('coll-fill').setAttribute('aria-selected', collMode==='fill'?'true':'false');
+  collBrowseEl.hidden = collMode!=='list';
+  collStudyEl.hidden  = collMode!=='study';
+  document.getElementById('collEx').hidden = !isEx;
+  if(collMode==='list') renderCollBrowse();
+  else if(collMode==='study') renderCollStudy();
+  else { collEx.type=collMode; startCollEx(); }
+  updateBrowseActive();
+}
+document.getElementById('coll-list').addEventListener('click', function(){ collMode='list'; showCollMode(); });
+document.getElementById('coll-study').addEventListener('click', function(){ collMode='study'; showCollMode(); });
+document.getElementById('coll-match').addEventListener('click', function(){ collMode='match'; showCollMode(); });
+document.getElementById('coll-fill').addEventListener('click', function(){ collMode='fill'; showCollMode(); });
+function renderColl(){ renderCollProgress(); buildCollOrder(); showCollMode(); }
+
+/* filter + init */
+const filterSel=document.getElementById('filterSel');
+if(filterSel) filterSel.addEventListener('change', function(){ filterVal=filterSel.value; collPos=0; renderColl(); });
+renderColl();
+</script>
+</body>
+</html>

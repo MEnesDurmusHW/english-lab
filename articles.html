@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Articles — NS's English Lab</title>
+<meta name="description" content="Kısa İngilizce okuma parçaları; öğrenilen kelimeler bağlam içinde vurgulanır, üzerine gelince Türkçesi açılır.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Articles — NS's English Lab">
+<meta property="og:description" content="Kısa İngilizce okuma parçaları; kelimeler bağlam içinde.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/articles.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='articles';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap">
+
+  <div class="reading-view" id="view-reading">
+    <div class="rd-controls">
+      <span class="count" id="count"></span>
+      <button class="btn" id="rdToggle" aria-pressed="false" style="margin-left:auto">Türkçeyi gizle</button>
+    </div>
+    <div id="rdList"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="lab-core.js"></script>
+<script>
+/* ============ OKUMA (hikâyeler) ============ */
+const readingView=document.getElementById('view-reading');
+const rdList=document.getElementById('rdList'), rdToggle=document.getElementById('rdToggle');
+const countEl=document.getElementById('count');
+function renderArticleEN(text){
+  return text.trim().split(/\n\s*\n/).map(p=>
+    '<p>'+p.trim().replace(/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g,(m,a,b)=>{
+      const base=(b||a).trim().toLowerCase();
+      return '<b class="artword wordref" data-w="'+base+'">'+a.trim()+'</b>';
+    })+'</p>'
+  ).join('');
+}
+function renderArticleTR(text){
+  return text.trim().split(/\n\s*\n/).map(p=>'<p>'+p.trim()+'</p>').join('');
+}
+function renderReading(){
+  rdList.innerHTML = ARTICLES.map(a=>
+    '<article class="art">'+
+      '<h3 class="art-title">'+a.title+'</h3>'+
+      '<div class="art-en">'+renderArticleEN(a.en)+'</div>'+
+      '<div class="art-tr">'+renderArticleTR(a.tr)+'</div>'+
+    '</article>'
+  ).join('');
+  if(countEl) countEl.textContent = ARTICLES.length+' hikâye';
+}
+rdToggle.addEventListener('click', ()=>{
+  const hidden=readingView.classList.toggle('hide-tr');
+  rdToggle.setAttribute('aria-pressed', hidden?'true':'false');
+  rdToggle.textContent = hidden ? 'Türkçeyi göster' : 'Türkçeyi gizle';
+});
+renderReading();
+</script>
+</body>
+</html>
