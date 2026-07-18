@@ -129,7 +129,7 @@ function renderCollStudy(){
   }).join('');
   collStudyEl.innerHTML=
     '<div class="coll-card">'+
-      '<div class="coll-head"><span class="coll-w-term">'+w.en+'</span><span class="coll-w-type">'+typeLabel(w.type)+'</span><span class="coll-w-tr">'+w.tr+'</span></div>'+
+      '<div class="coll-head"><span class="coll-w-term">'+w.en+'</span><span class="coll-w-type">'+typeLabel(w.type)+'</span></div>'+
       '<div class="coll-items">'+rows+'</div>'+
     '</div>'+
     '<div class="card-controls coll-controls">'+
@@ -231,7 +231,6 @@ function newCollFill(){
   cexBody.innerHTML=
     '<div class="q-sub">'+escapeHTML(q.w.en)+' · fill the blank</div>'+
     '<div class="f-sentence">'+collBlankHTML(q.phrase,q.m.index,raw.length)+'</div>'+
-    '<div class="f-hint">'+escapeHTML(q.w.tr)+'</div>'+
     '<input class="f-input" id="cexInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the missing word…">'+
     '<div class="f-feedback" id="cexFb"></div>'+
     '<div class="f-row">'+
@@ -287,7 +286,9 @@ function renderCollBrowse(){
 function focusCollHead(idx){
   const hs=collHeads(); if(!hs.length) return;
   idx=Math.max(0,Math.min(hs.length-1,idx));
-  hs[idx].focus(); hs[idx].scrollIntoView({block:'nearest'});
+  try{ hs[idx].focus({preventScroll:true}); }catch(e){ hs[idx].focus(); }
+  /* tüm kartı (örnek cümle satırı dahil) görünür alana getir, sadece başlığı değil */
+  (hs[idx].closest('.cb-row')||hs[idx]).scrollIntoView({block:'nearest'});
 }
 document.addEventListener('keydown', function(e){
   if(collMode!=='list') return;

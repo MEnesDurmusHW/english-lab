@@ -4,3 +4,6 @@ serviceAccount*.json
 .firebase/
 firebase-debug.log
 node_modules/
+
+# copyrighted source material — do not publish
+*.pdf

@@ -1,0 +1,73 @@
+{
+  // Opens the English Lab pages in Chrome. The "serve" task (tasks.json)
+  // starts a local server at http://127.0.0.1:5500 first, so relative
+  // paths and the Firebase module imports work like on the real host.
+  //
+  // Press F5 and pick a config, or use the Run and Debug dropdown.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Home (index.html)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/index.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Vocabulary",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/vocabulary.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Collocations",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/collocations.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Articles",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/articles.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Progress",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/progress.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Synonyms",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/synonyms.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Grammar",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5500/grammar.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve"
+    },
+    {
+      "name": "Current file (no server)",
+      "type": "chrome",
+      "request": "launch",
+      "file": "${file}",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}

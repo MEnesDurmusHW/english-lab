@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Collocations in Use — NS's English Lab</title>
+<meta name="description" content="Units 1-10 of English Collocations in Use Advanced: what collocations are, how they're categorised, and the first themed sets — metaphor, adverbs, make-verbs, communicating, phrasal verbs. Learn and practise.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="Collocations in Use">
+<meta property="og:description" content="Units 1-10: collocation basics plus the first themed sets, with Learn and Practice.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/book.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --mono:'Space Grotesk',monospace; --accent-soft:rgba(59,91,165,.16); --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
+  [data-theme="dark"]{ --accent-soft:rgba(138,166,224,.2); --ok:#6fbf7f; --mid:#d8ac5c; --bad:#e0765a; }
+  *{box-sizing:border-box}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg)}
+  .wrap{max-width:900px;margin:0 auto;padding:74px 22px 120px}
+  header.g-head{margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin:0 0 8px}
+  header.g-head h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.9rem);letter-spacing:-.02em;margin:0;line-height:1.1}
+  header.g-head p.sub{margin:14px 0 0;color:var(--text-dim);font-size:1.02rem;line-height:1.6;max-width:60ch}
+  header.g-head p.src{margin:10px 0 0;color:var(--text-muted);font-size:.82rem;line-height:1.5}
+
+  /* topic tabs */
+  .topics{position:sticky;top:0;z-index:30;margin:26px -8px 6px;padding:12px 8px;background:linear-gradient(var(--bg) 72%,transparent)}
+  .topics .seg{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .topics .seg::-webkit-scrollbar{display:none}
+  .topics .seg button{white-space:nowrap;appearance:none;border:0;background:transparent;cursor:pointer;color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.9rem;padding:9px 18px;border-radius:999px;transition:.18s}
+  .topics .seg button[aria-selected="true"]{background:var(--accent);color:#fff}
+  .topics .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .topic-title{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:20px 0 2px;letter-spacing:-.01em}
+  .sub-tabs{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;margin:12px 0 20px}
+  .sub-tabs button{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.84rem;padding:8px 20px;border-radius:999px;transition:.18s}
+  .sub-tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+
+  /* learn */
+  .intro{font-size:1rem;color:var(--text-dim);line-height:1.7;text-align:justify;margin-bottom:8px}
+  .intro p{margin:0 0 12px;text-align:justify}
+  .intro b{color:var(--text);font-weight:600}
+  .g-group{margin-top:26px}
+  .g-group-label{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .g-item{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:13px 16px;margin-bottom:9px}
+  .gi-term{font-size:1.02rem;color:var(--text);font-weight:600;line-height:1.4}
+  .gi-key{color:var(--accent);font-weight:700;text-transform:uppercase;font-size:.82em;letter-spacing:.04em}
+  .gi-ex{margin-top:5px;font-size:.95rem;color:var(--text-dim);line-height:1.55}
+  .gi-ex b{color:var(--accent);font-weight:700}
+  .gi-note{margin-top:6px;font-size:.86rem;color:var(--text-dim);line-height:1.5;font-style:italic;border-left:2px solid var(--accent-soft);padding-left:11px}
+  .g-callout{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;background:var(--surface);padding:14px 17px;margin:20px 0;font-size:.94rem;line-height:1.6;color:var(--text-dim)}
+  .g-callout b{color:var(--text)}
+  .right{color:var(--ok);font-weight:700}
+  .wrong{color:var(--bad);font-weight:700;text-decoration:line-through}
+
+  /* practice */
+  .p-wrap{max-width:620px;margin:0 auto;text-align:center}
+  .p-score{font-family:var(--mono);font-size:.78rem;letter-spacing:.05em;color:var(--text-muted);margin-bottom:20px}
+  .p-q{font-size:1.28rem;line-height:1.6;color:var(--text);margin-bottom:6px;font-family:var(--serif);font-weight:500}
+  .p-q .blank{color:var(--accent);border-bottom:2px dashed var(--accent);padding:0 22px}
+  .p-hint{font-size:.86rem;color:var(--text-muted);margin-bottom:22px;min-height:1.1em}
+  .p-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+  .p-opt{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 12px;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--text);transition:.14s}
+  .p-opt:hover:not(:disabled){border-color:var(--accent)}
+  .p-opt:disabled{cursor:default}
+  .p-opt.correct{background:var(--ok);border-color:var(--ok);color:#fff}
+  .p-opt.incorrect{background:var(--bad);border-color:var(--bad);color:#fff}
+  .p-explain{font-size:.92rem;color:var(--text-dim);line-height:1.6;margin:6px auto 20px;max-width:52ch;min-height:1.2em}
+  .p-explain b{color:var(--accent)}
+  .p-row{display:flex;justify-content:center;gap:12px}
+  .p-btn{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:11px 26px;font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--text-dim);transition:.15s}
+  .p-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .p-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .p-btn:disabled{opacity:.4;cursor:default}
+  .p-done{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:8px}
+
+  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} }
+</style>
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<span id="syncHost" class="lab-synchost"></span>
+<style>
+  .lab-synchost{position:fixed;top:20px;right:120px;z-index:999;display:inline-flex;align-items:center}
+  .lab-synchost .sync-pill{position:static!important;left:auto!important;bottom:auto!important}
+  @media (max-width:640px){ .lab-synchost{right:104px} .lab-synchost .sync-pill-text{display:none} }
+</style>
+
+<a class="home-toggle" href="index.html" aria-label="Back to home">NS</a>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+<button class="share-toggle" onclick="openShare()" aria-label="Share this page" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+</button>
+
+<div class="wrap">
+  <header class="g-head">
+    <p class="eyebrow">Collocations</p>
+    <h1>Collocations in Use</h1>
+    <p class="sub">Units 1&ndash;10: what a collocation actually is, how it's classified, and the first five themed sets &mdash; metaphor, intensifying/softening adverbs, <b>make</b>-verbs, communicating and phrasal-verb collocations. Each unit has a <b>Learn</b> tab and a <b>Practice</b> quiz.</p>
+    <p class="src">Based on <i>English Collocations in Use &ndash; Advanced</i> (2nd edition) by Felicity O'Dell &amp; Michael McCarthy, Cambridge University Press. Explanations and examples below are rewritten for this app, not reproduced from the book.</p>
+  </header>
+
+  <div class="topics">
+    <div class="seg" id="topicSeg" role="tablist" aria-label="Book units"></div>
+  </div>
+
+  <h2 class="topic-title" id="topicTitle"></h2>
+  <div class="sub-tabs" role="tablist" aria-label="Mode">
+    <button id="mode-learn" role="tab" aria-selected="true">Learn</button>
+    <button id="mode-practice" role="tab" aria-selected="false">Practice</button>
+  </div>
+
+  <div id="learnView"></div>
+  <div id="practiceView" hidden></div>
+</div>
+
+<div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">NS's English Lab</span><span class="logo-author">by M. Enes Durmuş</span></div>
+
+<script>
+/* ============ DATA ============ */
+const BOOK = [
+{
+  key:'u1', tab:'Unit 1', title:'Unit 1 · What is a collocation?',
+  intro:`<p>A <b>collocation</b> is a pair (or small group) of words that native speakers habitually put together, even though nothing in the grammar forces that particular choice. Hair isn't <i>yellow</i>, it's <b>blond</b>. Rain isn't <i>strong</i>, it's <b>heavy</b>. You don't <i>do</i> a mistake, you <b>make</b> a mistake. There's rarely a logical reason &mdash; it's simply the combination that sounds natural.</p><p>Collocations show up in every grammatical shape: verb + noun (<b>arouse</b> interest), adverb + adjective (<b>fundamentally</b> different), adverb + verb (<b>flatly</b> contradict), noun + noun (a <b>lick</b> of paint), and phrasal verb + noun (<b>come up with</b> a suggestion). Learning them as fixed chunks &mdash; not as separate words you combine on the fly &mdash; is what makes advanced English sound fluent rather than merely correct.</p><p>Collocations also carry <b>register</b>: <i>alight from a bus</i> is the formal, notice-board version of the everyday <i>get off a bus</i>. Picking the right partner word is as much about the situation as about meaning.</p>`,
+  groups:[
+    {label:'The basic idea: only one partner sounds right', items:[
+      {term:'blond hair', key:'not yellow hair', ex:'She dyed her hair a pale <b>blond</b>.', note:'The colour word that pairs with hair is blond(e), never yellow.'},
+      {term:'heavy rain', key:'not strong rain', ex:'<b>Heavy</b> rain flooded the car park within an hour.'},
+      {term:'make a mistake', key:'not do a mistake', ex:"Everyone <b>makes</b> mistakes when they're learning a language."},
+      {term:'of great importance', key:'not of big importance', ex:'This decision is of great importance to the whole department.'},
+    ]},
+    {label:'Grammatical shapes a collocation can take', items:[
+      {term:'arouse someone’s interest', key:'verb + noun', ex:'The trailer alone <b>aroused</b> a lot of interest in the film.'},
+      {term:'lead a seminar', key:'verb + noun', ex:'Dr Owusu will <b>lead</b> tomorrow’s seminar on climate policy.'},
+      {term:'fundamentally different', key:'adverb + adjective', ex:'The two proposals are <b>fundamentally</b> different in scope.'},
+      {term:'flatly contradict', key:'adverb + verb', ex:'His account <b>flatly</b> contradicts what the witness said.'},
+      {term:'a lick of paint', key:'noun + noun', ex:'This old fence just needs a <b>lick of paint</b>.'},
+      {term:'a team of experts', key:'noun + noun', ex:'A <b>team of experts</b> was flown in to assess the damage.'},
+      {term:'words of wisdom', key:'noun + noun', ex:'My grandmother always had some <b>words of wisdom</b> for us.'},
+      {term:'come up with a suggestion', key:'phrasal verb + noun', ex:'Can anyone <b>come up with</b> a better suggestion?'},
+    ]},
+    {label:'Register: the same idea, a different partner', items:[
+      {term:'alight from a bus', key:'formal / notices', ex:'Passengers must <b>alight</b> only when the bus has stopped.', note:'Never used in ordinary speech &mdash; there you’d say get off a bus.'},
+      {term:'get off a bus', key:'neutral / everyday', ex:'I usually <b>get off</b> the bus two stops early.'},
+    ]},
+  ],
+  quiz:[
+    {q:'She’s got ___ hair, almost silver in the sunlight.', opts:['yellow','blond','gold','pale'], a:'blond'},
+    {q:'___ rain is forecast for the whole weekend.', opts:['Strong','Thick','Heavy','Hard'], a:'Heavy'},
+    {q:'I’m sorry, I didn’t mean to ___ a mistake.', opts:['do','make','have','take'], a:'make', note:'"do a mistake" is one of the most common collocation errors in learner English.'},
+    {q:'The strange lights in the sky ___ everyone’s curiosity.', opts:['aroused','raised','lifted','grew'], a:'aroused'},
+    {q:'His statement ___ contradicted the police report.', opts:['flatly','hardly','deeply','strongly'], a:'flatly'},
+    {q:'This wall really just needs a ___ of paint.', opts:['lick','touch','coat','drop'], a:'lick', note:'"a lick of paint" = a quick, light repainting.'},
+    {q:'Passengers must not ___ from the vehicle while it is moving.', opts:['get off','alight','descend','exit'], a:'alight', note:'Formal, notice-board register &mdash; get off is the everyday equivalent.'},
+    {q:'This matter is of great ___ to the whole team.', opts:['importance','size','bigness','note'], a:'importance'},
+  ]
+},
+{
+  key:'u2', tab:'Unit 2', title:'Unit 2 · Strong, fixed and weak collocations',
+  intro:`<p>Collocations sit on a scale from <b>strong</b> to <b>weak</b>. A strong collocation has very few possible partners &mdash; <i>mitigating</i> almost only ever goes with <i>circumstances</i> or <i>factors</i>. A weak collocation has many possible partners &mdash; <i>broad</i> combines happily with hint, accent, smile, shoulders, avenue and dozens more, so no single pairing feels special.</p><p>A <b>fixed</b> collocation is a strong collocation frozen solid: nothing in it can be swapped or reordered, as in <i>to and fro</i>. Some fixed expressions are also idioms, where the meaning can't be worked out from the individual words at all.</p><p>Most collocations sit somewhere in the middle of the scale. <i>Picturesque</i>, for instance, pairs naturally with village, location or town &mdash; more restricted than <i>broad</i>, but far less restricted than <i>mitigating</i>.</p>`,
+  groups:[
+    {label:'Strong collocations (very few partners)', items:[
+      {term:'mitigating circumstances / factors', key:'strong', ex:'The court accepted there were <b>mitigating circumstances</b> and reduced the sentence.'},
+      {term:'inclement weather', key:'strong, formal', ex:'The outdoor ceremony was cancelled owing to <b>inclement weather</b>.'},
+      {term:'auburn hair', key:'strong', ex:'Her <b>auburn</b> hair caught the afternoon light.'},
+      {term:'deliriously happy', key:'strong', ex:'They looked <b>deliriously happy</b> as they left the register office.'},
+      {term:'adjourn a meeting / trial', key:'strong', ex:'The judge decided to <b>adjourn</b> the trial until Monday morning.'},
+    ]},
+    {label:'Fixed collocations (nothing can be changed)', items:[
+      {term:'to and fro', key:'fixed', ex:'The old rocking chair creaked <b>to and fro</b> on the porch.', note:'Completely frozen &mdash; you can’t say “fro and to” or replace either word.'},
+    ]},
+    {label:'Weak collocations (many possible partners)', items:[
+      {term:'a broad hint / accent / smile', key:'weak', ex:'He gave a <b>broad</b> hint that he wanted the job.'},
+      {term:'in broad agreement', key:'weak', ex:'The two committees are in <b>broad agreement</b> about the budget.'},
+    ]},
+    {label:'Somewhere in the middle', items:[
+      {term:'a picturesque village / location / town', key:'mid-scale', ex:'We stopped for lunch in a <b>picturesque</b> little village in the hills.'},
+    ]},
+  ],
+  quiz:[
+    {q:'The jury found ___ circumstances and recommended leniency.', opts:['mitigating','lightening','softening','reducing'], a:'mitigating'},
+    {q:'Grandma has beautiful ___ hair, a deep reddish-brown.', opts:['auburn','golden','broad','blond'], a:'auburn'},
+    {q:'We felt ___ happy the moment the exam results came through.', opts:['deliriously','broadly','mitigatingly','markedly'], a:'deliriously'},
+    {q:'The judge decided to ___ the hearing until the following week.', opts:['adjourn','cancel','pause','end'], a:'adjourn'},
+    {q:'He dropped such a ___ hint about his birthday that nobody could miss it.', opts:['broad','wide','big','full'], a:'broad'},
+    {q:'The flight was delayed because of ___ weather over the Atlantic.', opts:['inclement','broad','mitigating','auburn'], a:'inclement'},
+    {q:'The pendulum swung ___ , ticking steadily.', opts:['to and fro','here and there','up and down','round and round'], a:'to and fro', note:'A fixed collocation &mdash; no word in it can be swapped.'},
+  ]
+},
+{
+  key:'u3', tab:'Unit 3', title:'Unit 3 · Grammatical categories of collocation',
+  intro:`<p>It helps to notice which grammatical slot a collocation fills, because the same slot tends to attract the same kind of vocabulary. This unit sorts collocations by pattern: verb + noun, noun + verb, noun + noun, adjective + noun, adverb + adjective, and verb + adverb/prepositional phrase.</p><p>Noun + noun collocations are especially useful for describing amounts: a <b>spate</b> of thefts or a <b>barrage</b> of questions both mean an unusually large number arriving in a rush, while a <b>stroke</b> of luck and a <b>snippet</b> of information describe a single, small unit of something uncountable.</p>`,
+  groups:[
+    {label:'Verb + noun', items:[
+      {term:'draw up a list / a contract', key:'prepare officially', ex:'Our lawyer will <b>draw up</b> the contract this afternoon.'},
+      {term:'pass up a chance / an opportunity', key:'fail to take it', ex:'I couldn’t <b>pass up</b> the chance to work abroad for a year.'},
+      {term:'withstand pressure / the impact', key:'bear it', ex:'The hull is built to <b>withstand</b> the pressure of deep water.'},
+    ]},
+    {label:'Noun + verb', items:[
+      {term:'an opportunity arises', key:'', ex:'An opportunity <b>arose</b> for me to transfer to the Tokyo office.'},
+      {term:'standards slip', key:'', ex:'Parents worry that classroom standards have <b>slipped</b> in recent years.'},
+    ]},
+    {label:'Noun + noun: unusually large numbers', items:[
+      {term:'a spate of attacks / thefts', key:'', ex:'There’s been a <b>spate</b> of bike thefts on this street lately.'},
+      {term:'a barrage of questions / insults', key:'', ex:'The minister faced a <b>barrage</b> of questions from journalists.'},
+    ]},
+    {label:'Noun + noun: a small, single unit', items:[
+      {term:'a stroke of luck', key:'', ex:'By a <b>stroke of luck</b>, the lost ring turned up in the sofa.'},
+      {term:'a snippet of information', key:'', ex:'She let slip a <b>snippet of information</b> about the merger.'},
+    ]},
+    {label:'Adjective + noun', items:[
+      {term:'an idle threat', key:'', ex:'His resignation threat turned out to be nothing more than an <b>idle threat</b>.'},
+      {term:'in the vain hope of', key:'', ex:'He waited outside all night in the <b>vain hope</b> of seeing her.'},
+      {term:'mounting concern / criticism / fury', key:'', ex:'There’s <b>mounting concern</b> over the safety of the old bridge.'},
+      {term:'the plain truth', key:'', ex:'The <b>plain truth</b> is that nobody checked the figures.'},
+    ]},
+    {label:'Adverb + adjective / verb + adverb', items:[
+      {term:'intensely personal', key:'', ex:'The memoir is an <b>intensely personal</b> account of grief.'},
+      {term:'stunningly attractive', key:'', ex:'The bride looked <b>stunningly attractive</b> in her mother’s dress.'},
+      {term:'fail miserably', key:'', ex:'My first attempt at sourdough <b>failed miserably</b>.'},
+      {term:'drive recklessly', key:'', ex:'He was banned for six months for <b>driving recklessly</b>.'},
+      {term:'burst into song / tears', key:'', ex:'The whole choir suddenly <b>burst into song</b>.'},
+    ]},
+  ],
+  quiz:[
+    {q:'Our lawyer will ___ a contract for you to sign tomorrow.', opts:['draw up','pull up','pick up','set up'], a:'draw up'},
+    {q:'I didn’t want to ___ the chance of seeing Rome, so I said yes.', opts:['pass up','pass by','pass over','give up'], a:'pass up'},
+    {q:'This vest is designed to ___ the impact of a bullet.', opts:['withstand','overcome','resist','hold'], a:'withstand'},
+    {q:'There’s been a ___ of burglaries in our street this month.', opts:['spate','barrage','stroke','snippet'], a:'spate'},
+    {q:'By a ___ of luck, I found my keys in the recycling bin.', opts:['stroke','spate','snippet','barrage'], a:'stroke'},
+    {q:'He said he’d fire us all, but it was just an ___ threat.', opts:['idle','vain','lazy','mounting'], a:'idle'},
+    {q:'There’s ___ concern about the new road scheme among residents.', opts:['mounting','raising','climbing','vain'], a:'mounting'},
+    {q:'She failed the interview ___ ; she barely answered a question.', opts:['miserably','recklessly','intensely','stunningly'], a:'miserably'},
+  ]
+},
+{
+  key:'u4', tab:'Unit 4', title:'Unit 4 · Finding and working on collocations in texts',
+  intro:`<p>The fastest way to grow your collocation vocabulary is to notice it in real texts &mdash; newspaper features, film reviews, tourist websites &mdash; rather than only in wordlists. Once you spot one, it helps to record it in a way that shows how strong or weak it is.</p><p>A <b>collocation fork</b> is useful for a strong collocation: one word in the middle, and its few real partners branching off it (<i>pending</i> &rarr; the results / the outcome / the response). A <b>collocation bubble</b> suits a weak collocation with many partners, such as all the different kinds of <i>value</i> something can have (practical, sentimental, novelty&hellip;).</p>`,
+  groups:[
+    {label:'Collocation fork: pending', items:[
+      {term:'pending the results', key:'', ex:'The suspension is <b>pending the results</b> of the investigation.'},
+      {term:'pending the outcome', key:'', ex:'She’s staying with us <b>pending the outcome</b> of her visa application.'},
+      {term:'pending the response', key:'', ex:'We’ve put the launch on hold <b>pending the response</b> from head office.'},
+    ]},
+    {label:'Collocation bubble: value', items:[
+      {term:'practical value', key:'', ex:'The course has a lot of <b>practical value</b> for anyone starting a business.'},
+      {term:'sentimental value', key:'', ex:'The watch isn’t expensive, but it has huge <b>sentimental value</b>.'},
+      {term:'novelty value', key:'', ex:'The gadget has some <b>novelty value</b> but I doubt I’ll use it much.'},
+      {term:'place great value on', key:'', ex:'Our family has always <b>placed great value on</b> education.'},
+    ]},
+    {label:'Collocation bubble: source', items:[
+      {term:'source of income', key:'', ex:'Tourism is the island’s main <b>source of income</b>.'},
+      {term:'source of funding', key:'', ex:'The charity is looking for a new <b>source of funding</b>.'},
+      {term:'a reliable / rich source', key:'', ex:'Local farmers are a <b>rich source</b> of weather lore.'},
+    ]},
+    {label:'Other useful collocations spotted in texts', items:[
+      {term:'have a gift for languages', key:'', ex:'Marek has a real <b>gift for languages</b> &mdash; he picked up Dutch in months.'},
+      {term:'face a challenge', key:'', ex:'Every new teacher has to <b>face the challenge</b> of a noisy classroom.'},
+      {term:'pass a milestone', key:'', ex:'The company has just <b>passed the milestone</b> of a million users.'},
+      {term:'financial stability', key:'', ex:'The new contract finally gave them some <b>financial stability</b>.'},
+      {term:'hard to pin down', key:'', ex:'There’s something about her accent that’s <b>hard to pin down</b>.'},
+      {term:'get into the habit of', key:'', ex:'Try to <b>get into the habit of</b> noting new collocations as you read.'},
+    ]},
+  ],
+  quiz:[
+    {q:'We won’t announce anything; the decision is still ___ .', opts:['pending','holding','waiting','delaying'], a:'pending'},
+    {q:'Tania has always had a real ___ for languages.', opts:['gift','talent','present','skill'], a:'gift'},
+    {q:'Every new teacher has to ___ the challenge of a difficult class.', opts:['face','meet','fight','hold'], a:'face'},
+    {q:'These old photos have huge ___ value for me, though they’re worth nothing.', opts:['sentimental','novelty','practical','reliable'], a:'sentimental'},
+    {q:'Tourism is the country’s main ___ of income.', opts:['source','root','spring','base'], a:'source'},
+    {q:'It’s hard to ___ down exactly why the plan failed.', opts:['pin','hold','pull','set'], a:'pin'},
+    {q:'The company has just passed an important ___ : ten years in business.', opts:['milestone','landmark','stepping stone','marker'], a:'milestone'},
+  ]
+},
+{
+  key:'u5', tab:'Unit 5', title:'Unit 5 · Register',
+  intro:`<p><b>Register</b> is the level of formality a collocation belongs to. Most everyday vocabulary is <b>neutral</b> &mdash; safe in almost any situation. But some collocations are clearly <b>formal</b> (official documents, legal or bureaucratic language), some are <b>informal</b> (conversation, texts, casual writing), and some belong to a specific field such as journalism.</p><p>The same idea can be expressed at every level: a student <b>submits</b> an assignment in formal, official English, but simply <b>hands in</b> the assignment in neutral, spoken English. Knowing both halves of the pair &mdash; and which situation each belongs in &mdash; is what register is really about.</p>`,
+  groups:[
+    {label:'Formal vs. neutral', items:[
+      {term:'submit an assignment', key:'formal', ex:'Students must <b>submit</b> their assignments online by 5 p.m.'},
+      {term:'hand in an assignment', key:'neutral', ex:'Don’t forget to <b>hand in</b> your assignment before Friday.'},
+      {term:'request an extension', key:'formal', ex:'You may <b>request an extension</b> in writing before the deadline.'},
+      {term:'ask for an extension', key:'neutral', ex:'I emailed my tutor to <b>ask for an extension</b>.'},
+      {term:'conduct an investigation', key:'formal', ex:'Police are <b>conducting an investigation</b> into the incident.'},
+      {term:'look into something', key:'neutral', ex:'We’ll <b>look into</b> what happened and get back to you.'},
+    ]},
+    {label:'Informal vs. neutral', items:[
+      {term:'haven’t the foggiest idea', key:'informal, UK', ex:'I haven’t got the <b>foggiest idea</b> what he’s talking about.'},
+      {term:'have no idea', key:'neutral', ex:'I have <b>no idea</b> what he’s talking about.'},
+      {term:'grab a snack', key:'informal', ex:'Let’s <b>grab a snack</b> before the film starts.'},
+      {term:'have a snack', key:'neutral', ex:'We had a <b>snack</b> at the airport while we waited.'},
+      {term:'feel dead tired', key:'informal', ex:'I feel <b>dead tired</b> after that flight.'},
+      {term:'feel extremely tired', key:'neutral', ex:'I feel <b>extremely tired</b> after that flight.'},
+    ]},
+    {label:'A register of its own: journalism', items:[
+      {term:'probe (v.) a scandal / deal', key:'headline style', ex:'POLICE TO <b>PROBE</b> ARMS DEAL', note:'Short, punchy words like probe are typical of newspaper headlines rather than speech.'},
+    ]},
+  ],
+  quiz:[
+    {q:'(formal) Students must ___ their assignments by Friday.', opts:['submit','hand in','give in','pass in'], a:'submit'},
+    {q:'(neutral) Can you ___ your homework by Friday?', opts:['hand in','submit','lodge','file'], a:'hand in'},
+    {q:'(informal) I haven’t got the ___ idea what she means.', opts:['foggiest','faintest','slightest','vaguest'], a:'foggiest'},
+    {q:'Let’s ___ a snack before the film starts.', opts:['grab','take','catch','get'], a:'grab'},
+    {q:'The minister avoided the question, so the reporter decided to ___ further.', opts:['probe','dig','dive','dip'], a:'probe'},
+    {q:'(formal) Police are ___ an investigation into the fire.', opts:['conducting','doing','making','looking'], a:'conducting'},
+  ]
+},
+{
+  key:'u6', tab:'Unit 6', title:'Unit 6 · Metaphor',
+  intro:`<p>Many collocations use ordinary words &mdash; body parts, weight, movement &mdash; in a non-literal, metaphorical sense. When a writer <i>casts light on</i> a situation, nobody is holding a lamp: the phrase just means the writer helps us understand it better.</p><p><b>Weight</b> metaphors are especially productive: <i>heavy</i> can mean either physically heavy or serious/difficult (a heavy burden), while <i>light</i> can mean carefree rather than literally weightless (a light heart). <b>Movement</b> metaphors describe how easily or suddenly something happens: you can <i>walk into</i> a job effortlessly, or <i>run into</i> trouble unexpectedly.</p>`,
+  groups:[
+    {label:'Metaphors based on the body', items:[
+      {term:'face (up to) the facts', key:'accept reality', ex:'It’s time you <b>faced up to the facts</b>: the project has failed.'},
+      {term:'shoulder the blame', key:'take responsibility', ex:'Although others were at fault too, Alice decided to <b>shoulder the blame</b>.'},
+      {term:'foot the bill', key:'pay', ex:'Order whatever you like &mdash; the company is <b>footing the bill</b>.'},
+      {term:'head a team', key:'lead it', ex:'Priya now <b>heads</b> the product design team.'},
+      {term:'keep someone on their toes', key:'keep them alert', ex:'Three young kids under five <b>keep</b> her constantly <b>on her toes</b>.'},
+      {term:'have an eye for detail', key:'notice things well', ex:'Ask Gina to check the report &mdash; she has a great <b>eye for detail</b>.'},
+      {term:'go hand in hand with', key:'happen together', ex:'Rising rents <b>go hand in hand with</b> gentrification.'},
+    ]},
+    {label:'Metaphors based on weight', items:[
+      {term:'a heavy burden / responsibility', key:'', ex:'Caring for both parents became a <b>heavy burden</b> for her.'},
+      {term:'a weighty tome / matter', key:'serious content', ex:'His new book on tax law is a <b>weighty tome</b> &mdash; nearly 900 pages.'},
+      {term:'light reading', key:'not serious', ex:'I just want some <b>light reading</b> for the beach, nothing heavy.'},
+      {term:'a slim chance', key:'a small chance', ex:'There’s only a <b>slim chance</b> he’ll agree to the deal.'},
+      {term:'fat chance', key:'informal: almost none', ex:'Fat chance of that ever happening!'},
+    ]},
+    {label:'Metaphors based on movement', items:[
+      {term:'run into difficulties / trouble', key:'', ex:'The bridge project <b>ran into difficulties</b> almost immediately.'},
+      {term:'walk into a job', key:'get one easily', ex:'With that CV, she <b>walked into a job</b> straight after graduating.'},
+      {term:'jump to conclusions', key:'', ex:'Don’t <b>jump to conclusions</b> before you’ve heard the whole story.'},
+      {term:'hit the rocks', key:'a relationship ends', ex:'Their marriage <b>hit the rocks</b> after just two years.'},
+      {term:'hopping mad', key:'informal: furious', ex:'Dad was <b>hopping mad</b> when he saw the dented car.'},
+    ]},
+  ],
+  quiz:[
+    {q:'Even though others were responsible too, Alice decided to ___ the blame.', opts:['shoulder','head','foot','face'], a:'shoulder'},
+    {q:'Don’t worry about the bill &mdash; the company is ___ it.', opts:['footing','heading','shouldering','facing'], a:'footing'},
+    {q:'Looking after three toddlers keeps her constantly on her ___ .', opts:['toes','feet','hands','eyes'], a:'toes'},
+    {q:'It’s time you ___ up to the facts: the plan failed.', opts:['faced','shouldered','footed','headed'], a:'faced'},
+    {q:'Gina has a real eye ___ detail; nothing gets past her.', opts:['for','on','to','with'], a:'for'},
+    {q:'That’s a really ___ book &mdash; 900 pages on maritime law.', opts:['weighty','light','slim','fat'], a:'weighty'},
+    {q:'There’s only a ___ chance he’ll turn up on time.', opts:['slim','fat','light','heavy'], a:'slim'},
+    {q:'James ___ straight into a great job right after university.', opts:['walked','ran','jumped','hit'], a:'walked'},
+    {q:'Don’t ___ to conclusions before you’ve heard both sides.', opts:['jump','run','walk','hit'], a:'jump'},
+  ]
+},
+{
+  key:'u7', tab:'Unit 7', title:'Unit 7 · Intensifying and softening adverbs',
+  intro:`<p>Adverbs placed before an adjective either strengthen it (<b>intensifying</b>: deeply offensive) or weaken it (<b>softening</b>: slightly offensive). Which intensifier collocates with which adjective isn’t free choice: you say <b>spotlessly</b> clean and <b>wildly</b> inaccurate, not the other way round.</p><p>Beyond the generic <i>very</i>, a set of stronger alternatives each pair with their own adjectives: <b>highly</b> unlikely/educated/recommended, <b>strongly</b> influence, <b>greatly</b> appreciate, <b>utterly</b> absurd/ridiculous, <b>thoroughly</b> enjoy. A common mistake is <i>absolutely</i>, which only collocates with adjectives that already carry an extreme meaning (absolutely delighted, not absolutely happy).</p>`,
+  groups:[
+    {label:'Intensifying adverbs', items:[
+      {term:'spotlessly clean', key:'', ex:'Her flat is always <b>spotlessly clean</b>, not a speck of dust anywhere.'},
+      {term:'downright rude', key:'', ex:'It was <b>downright rude</b> of him to walk out mid-sentence.'},
+      {term:'thoroughly ashamed', key:'', ex:'He looked <b>thoroughly ashamed</b> once he realised what he’d done.'},
+      {term:'blatantly obvious', key:'', ex:'It was <b>blatantly obvious</b> she hadn’t read the report.'},
+      {term:'wildly inaccurate / exaggerated', key:'', ex:'That gossip site is fun, but most of it is <b>wildly inaccurate</b>.'},
+      {term:'dead easy', key:'informal', ex:'Once you know the trick, the puzzle is <b>dead easy</b>.'},
+    ]},
+    {label:'Softening adverbs', items:[
+      {term:'slightly different', key:'weak, wide use', ex:'The new model is only <b>slightly different</b> from the old one.'},
+      {term:'mildly surprised / amusing / irritating', key:'', ex:'I was <b>mildly surprised</b> he showed up at all.'},
+      {term:'loosely based / structured / connected', key:'', ex:'The film is <b>loosely based</b> on a true story.'},
+      {term:'faintly ridiculous / absurd', key:'fairly formal', ex:'The whole scheme struck us as <b>faintly ridiculous</b>.'},
+    ]},
+    {label:'Alternatives to very', items:[
+      {term:'highly unlikely / educated / recommended', key:'not: appreciate, interesting', ex:'It’s <b>highly unlikely</b> anyone will notice the change.'},
+      {term:'strongly influence', key:'not: appreciate', ex:'Her early years in Kyoto <b>strongly influenced</b> her cooking.'},
+      {term:'greatly appreciate', key:'', ex:'We’d <b>greatly appreciate</b> your help with the move.'},
+      {term:'utterly absurd / ridiculous', key:'not: sorry, busy, glad', ex:'The claim that the earth is flat is <b>utterly absurd</b>.'},
+      {term:'thoroughly enjoy', key:'', ex:'I <b>thoroughly enjoyed</b> every minute of the trip.'},
+      {term:'completely / totally / entirely different', key:'', ex:'The sequel is <b>entirely different</b> in tone from the original.'},
+    ]},
+  ],
+  quiz:[
+    {q:'Olivia’s flat is always ___ clean &mdash; not a speck of dust.', opts:['spotlessly','thoroughly','blatantly','wildly'], a:'spotlessly'},
+    {q:'It was ___ rude of him to ignore her completely.', opts:['downright','slightly','mildly','loosely'], a:'downright'},
+    {q:'That gossip site is fun, but the stories are ___ inaccurate.', opts:['wildly','mildly','slightly','faintly'], a:'wildly'},
+    {q:'The film is only ___ based on the true story.', opts:['loosely','thoroughly','utterly','highly'], a:'loosely'},
+    {q:'I was ___ surprised he turned up at all &mdash; nothing more.', opts:['mildly','utterly','thoroughly','downright'], a:'mildly'},
+    {q:'I would ___ appreciate any help you can offer.', opts:['greatly','highly','strongly','utterly'], a:'greatly', note:'highly doesn’t collocate with appreciate.'},
+    {q:'His accent is so strong it’s ___ unlikely anyone will follow him.', opts:['highly','greatly','utterly','thoroughly'], a:'highly'},
+    {q:'I ___ enjoyed the concert last night.', opts:['thoroughly','highly','greatly','utterly'], a:'thoroughly'},
+    {q:'The whole idea is ___ ridiculous &mdash; it could never work.', opts:['utterly','highly','greatly','mildly'], a:'utterly'},
+  ]
+},
+{
+  key:'u8', tab:'Unit 8', title:'Unit 8 · Make and verbs that mean make',
+  intro:`<p><b>Make</b> is one of the most over- and under-used verbs in learner English. You <b>make</b> a suggestion, a contribution, a formal apology and arrangements &mdash; not do or give them. But make isn’t right everywhere either: you <b>have</b> a party and you <b>do</b> research, you don’t make either.</p><p>Beyond the basic errors, make also appears in a long list of set expressions (make a habit of, make enemies, make an early escape), and several more formal or specific verbs can replace it: <b>create</b> an impression, <b>stage</b> a protest, <b>lodge</b> a complaint, <b>rustle up</b> a meal (informal), <b>turn</b> a profit, <b>coin</b> a phrase.</p>`,
+  groups:[
+    {label:'Common make errors', items:[
+      {term:'make a suggestion', key:'not do/give', ex:'Can I <b>make a suggestion</b> before we vote?'},
+      {term:'make a contribution', key:'not have/give', ex:'Everyone on the team <b>made a contribution</b> to the final report.'},
+      {term:'make a formal apology', key:'not give', ex:'The airline was forced to <b>make a formal apology</b> to passengers.'},
+      {term:'improvements to make', key:'not to do', ex:'There are still several <b>improvements to make</b> before launch.'},
+      {term:'make arrangements', key:'not do', ex:'My sister <b>made</b> all the <b>arrangements</b> for the wedding.'},
+      {term:'have a party / do research', key:'make is wrong here', ex:'We’re going to <b>have a party</b> on Saturday, not “make” one.'},
+    ]},
+    {label:'Other expressions with make', items:[
+      {term:'make a habit of', key:'', ex:'Try to <b>make a habit of</b> reviewing your notes every evening.'},
+      {term:'make enemies', key:'', ex:'His blunt management style <b>made</b> him a lot of <b>enemies</b>.'},
+      {term:'make an attempt', key:'', ex:'The team <b>made several attempts</b> to reach the summit.'},
+      {term:'make a success of', key:'', ex:'They’ve really <b>made a success of</b> the new restaurant.'},
+      {term:'make an early escape', key:'', ex:'I’ll try to <b>make an early escape</b> from the office party.'},
+      {term:'make room for', key:'', ex:'Push the sofa back to <b>make room for</b> the piano.'},
+      {term:'make someone’s acquaintance', key:'formal', ex:'I first <b>made his acquaintance</b> at a conference in Lyon.'},
+    ]},
+    {label:'Other verbs that mean make', items:[
+      {term:'create a good impression / atmosphere', key:'slightly formal', ex:'Wear the grey suit if you want to <b>create a good impression</b>.'},
+      {term:'stage a protest', key:'= make a formal protest', ex:'Students <b>staged a protest</b> outside the ministry.'},
+      {term:'lodge a complaint', key:'= make a formal complaint', ex:'Several guests <b>lodged a complaint</b> about the noise.'},
+      {term:'rustle up a meal', key:'informal, quickly', ex:'She <b>rustled up a meal</b> for six of us in twenty minutes.'},
+      {term:'turn a profit', key:'slightly informal', ex:'The café finally started to <b>turn a profit</b> this spring.'},
+      {term:'coin a phrase', key:'invent an expression', ex:'Nobody really knows who <b>coined the phrase</b> “road rage”.'},
+    ]},
+  ],
+  quiz:[
+    {q:'I’d like to ___ a suggestion, if I may.', opts:['make','do','give','have'], a:'make'},
+    {q:'Could you please ___ the arrangements for the trip?', opts:['make','do','give','have'], a:'make'},
+    {q:'If we push the sofa back, it’ll ___ room for the piano.', opts:['make','create','give','build'], a:'make'},
+    {q:'Wear a suit if you want to ___ a good impression.', opts:['create','make','build','give'], a:'create'},
+    {q:'Several residents have ___ a complaint about the noise.', opts:['lodged','made','given','put'], a:'lodged'},
+    {q:'It only took her ten minutes to ___ up a meal for six.', opts:['rustle','make','cook','run'], a:'rustle'},
+    {q:'It took months, but the small shop finally managed to ___ a profit.', opts:['turn','win','gain','earn'], a:'turn'},
+    {q:'Who do you think ___ the phrase “road rage”?', opts:['coined','made','created','invented'], a:'coined'},
+  ]
+},
+{
+  key:'u9', tab:'Unit 9', title:'Unit 9 · Communicating',
+  intro:`<p>Say, speak, talk and tell each have their own set of fixed partners: you <b>speak</b> highly of someone, <b>talk</b> business, <b>tell</b> someone’s fortune, and it goes without <b>saying</b> that these can’t be swapped freely.</p><p>Beyond those four everyday verbs, a whole layer of more formal verbs also means roughly “communicate”, each with its own flavour: <b>state</b> your aim, <b>declare</b> a winner, <b>pronounce</b> someone dead, <b>impart</b> knowledge, <b>divulge</b> a secret, <b>disseminate</b> information, <b>notify</b> the police, <b>protest</b> your innocence, <b>profess</b> ignorance.</p>`,
+  groups:[
+    {label:'Collocations with say, speak, talk, tell', items:[
+      {term:'I wouldn’t say no to', key:'informal: I’d like', ex:'I wouldn’t <b>say no to</b> a cold drink right now.'},
+      {term:'needless to say / it goes without saying', key:'', ex:'<b>Needless to say</b>, we were thrilled with the result.'},
+      {term:'generally speaking / strictly speaking', key:'', ex:'<b>Strictly speaking</b>, a tomato is a fruit, not a vegetable.'},
+      {term:'speak highly of someone', key:'say good things', ex:'Her old professor still <b>speaks highly of</b> her.'},
+      {term:'talk business', key:'', ex:'Once the small talk was over, it was time to <b>talk business</b>.'},
+      {term:'talk nonsense / sense', key:'', ex:'At first he seemed to be <b>talking nonsense</b>, but he had a point.'},
+      {term:'tell someone’s fortune', key:'predict their future', ex:'A woman at the fair offered to <b>tell my fortune</b>.'},
+    ]},
+    {label:'More formal verbs meaning ‘communicate’', items:[
+      {term:'state your aim / business', key:'formal', ex:'The charity <b>states its aim</b> as ending child poverty by 2040.'},
+      {term:'give an account of', key:'speech or writing', ex:'She <b>gave a detailed account of</b> the accident to the police.'},
+      {term:'get the message across', key:'informal', ex:'The campaign really <b>got the message across</b> about recycling.'},
+      {term:'declare someone the winner', key:'formal, at the moment', ex:'The judges <b>declared</b> her <b>the winner</b> of the competition.'},
+      {term:'pronounce someone dead', key:'formal, official', ex:'He was <b>pronounced dead</b> at the scene by paramedics.'},
+      {term:'impart knowledge / wisdom', key:'formal', ex:'The old craftsman was glad to <b>impart</b> his <b>knowledge</b> to an apprentice.'},
+      {term:'divulge a secret / sources', key:'formal', ex:'The journalist refused to <b>divulge her sources</b>.'},
+      {term:'disseminate information', key:'formal, widely', ex:'The health ministry is working to <b>disseminate information</b> about the outbreak.'},
+      {term:'notify the police', key:'formal', ex:'We had to <b>notify the police</b> about the break-in.'},
+      {term:'protest your innocence', key:'formal, insist', ex:'He continued to <b>protest his innocence</b> throughout the trial.'},
+      {term:'profess ignorance', key:'formal, claim not to know', ex:'She <b>professed ignorance</b> of the whole affair, though few believed her.'},
+    ]},
+  ],
+  quiz:[
+    {q:'I wouldn’t ___ no to a cold drink right now.', opts:['say','tell','speak','talk'], a:'say'},
+    {q:'___ speaking, we should leave more time for questions next time.', opts:['Generally','Strictly','Really','Actually'], a:'Generally'},
+    {q:'She always ___ very highly of her old teacher.', opts:['speaks','says','tells','talks'], a:'speaks'},
+    {q:'He wouldn’t ___ his sources, even under pressure.', opts:['divulge','impart','declare','pronounce'], a:'divulge'},
+    {q:'The charity tries to ___ information about the disease as widely as possible.', opts:['disseminate','divulge','declare','profess'], a:'disseminate'},
+    {q:'We had to ___ the police about the break-in straight away.', opts:['notify','impart','divulge','declare'], a:'notify'},
+    {q:'Even with the evidence against him, he continued to ___ his innocence.', opts:['protest','profess','declare','state'], a:'protest'},
+    {q:'The paramedic ___ him dead at the scene.', opts:['pronounced','declared','stated','professed'], a:'pronounced'},
+  ]
+},
+{
+  key:'u10', tab:'Unit 10', title:'Unit 10 · Collocations with phrasal verbs',
+  intro:`<p>Phrasal verbs collocate with particular nouns just as ordinary verbs do, and news writing leans on them heavily: officials <b>take up</b> office, committees <b>come up with</b> alternatives, authorities <b>come down heavily on</b> offenders. Everyday conversation has its own set &mdash; <b>soak up</b> the atmosphere, <b>free up</b> some time, <b>work up</b> an appetite, <b>live up to</b> expectations.</p><p>A few other phrasal verbs form especially strong collocations worth learning as a block: <b>burst into</b> tears/laughter, <b>dip into</b> savings, <b>jot down</b> an address, <b>see off</b> an intruder, <b>adhere to</b> principles.</p>`,
+  groups:[
+    {label:'News and official style', items:[
+      {term:'abide by a decision', key:'formal: accept it', ex:'Both sides agreed to <b>abide by</b> the referee’s decision.'},
+      {term:'take up office', key:'start an official role', ex:'The new governor will <b>take up office</b> on 1 March.'},
+      {term:'come up with an alternative', key:'', ex:'The committee was asked to <b>come up with</b> an alternative plan.'},
+      {term:'come down heavily on', key:'punish severely', ex:'Police say they’ll <b>come down heavily on</b> anyone caught fare-dodging.'},
+      {term:'file for divorce', key:'', ex:'The couple <b>filed for divorce</b> after six months apart.'},
+      {term:'act on a tip-off', key:'a secret warning', ex:'Officers <b>acted on a tip-off</b> and raided the warehouse at dawn.'},
+    ]},
+    {label:'Everyday conversation', items:[
+      {term:'soak up the atmosphere', key:'', ex:'We spent the evening just <b>soaking up the atmosphere</b> of the old town.'},
+      {term:'free up some time', key:'', ex:'I’ll try to <b>free up some time</b> on Friday for a proper chat.'},
+      {term:'keep up a language', key:'not lose it', ex:'I have a hard time <b>keeping up</b> my Spanish since moving back.'},
+      {term:'work up an appetite', key:'', ex:'A long walk always <b>works up an appetite</b> before dinner.'},
+      {term:'fit in with someone’s plans', key:'', ex:'Lunch on Tuesday would <b>fit in</b> perfectly <b>with</b> my plans.'},
+      {term:'live up to expectations', key:'', ex:'The sequel didn’t quite <b>live up to</b> everyone’s <b>expectations</b>.'},
+    ]},
+    {label:'Other strong phrasal-verb collocations', items:[
+      {term:'burst into tears / laughter', key:'suddenly start', ex:'She <b>burst into tears</b> the moment she saw the damage.'},
+      {term:'dip into savings / funds', key:'spend some of it', ex:'We had to <b>dip into our savings</b> to cover the repairs.'},
+      {term:'jot down an address / a number', key:'write quickly', ex:'Let me <b>jot down</b> your number before I forget it.'},
+      {term:'see off an intruder / opponent', key:'defeat or get rid of', ex:'The old guard dog has <b>seen off</b> more than one intruder.'},
+      {term:'adhere to principles / beliefs', key:'formal: stick to', ex:'It’s hard to <b>adhere to</b> your principles when everyone else cuts corners.'},
+    ]},
+  ],
+  quiz:[
+    {q:'The new mayor will ___ office next Monday.', opts:['take up','take on','take in','take over'], a:'take up'},
+    {q:'We have to ___ by the referee’s decision, whether we like it or not.', opts:['abide','adhere','comply','come'], a:'abide'},
+    {q:'Can you ___ up some time on Friday for a quick call?', opts:['free','clear','open','make'], a:'free'},
+    {q:'The trip didn’t ___ up to my expectations at all.', opts:['live','come','keep','meet'], a:'live'},
+    {q:'I’m trying to ___ up my French so I don’t lose it.', opts:['keep','free','work','soak'], a:'keep'},
+    {q:'All that swimming really ___ up an appetite.', opts:['works','makes','builds','drives'], a:'works'},
+    {q:'When she heard the news, she ___ into tears.', opts:['burst','broke','fell','ran'], a:'burst'},
+    {q:'Could you ___ down my number before you forget it?', opts:['jot','write','note','put'], a:'jot'},
+    {q:'The old guard dog saw ___ every intruder who came near the house.', opts:['off','away','out','down'], a:'off'},
+    {q:'It’s hard to ___ to your principles when everyone else is cutting corners.', opts:['adhere','abide','come','live'], a:'adhere'},
+  ]
+},
+];
+
+/* ============ HELPERS ============ */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* allow the small set of formatting tags we author inside data */
+function fmt(s){ return String(s); }
+
+let topicKey = BOOK[0].key;
+let mode = 'learn';
+function curTopic(){ return BOOK.find(t=>t.key===topicKey); }
+
+/* ---- topic tabs ---- */
+const topicSeg = document.getElementById('topicSeg');
+BOOK.forEach(t=>{
+  const b=document.createElement('button');
+  b.id='topic-'+t.key; b.type='button'; b.setAttribute('role','tab');
+  b.setAttribute('aria-selected', t.key===topicKey?'true':'false');
+  b.textContent=t.tab;
+  b.addEventListener('click', ()=>{ topicKey=t.key; mode='learn'; render(); });
+  topicSeg.appendChild(b);
+});
+
+document.getElementById('mode-learn').addEventListener('click', ()=>{ mode='learn'; render(); });
+document.getElementById('mode-practice').addEventListener('click', ()=>{ mode='practice'; startPractice(); render(); });
+
+/* ---- learn ---- */
+const learnView=document.getElementById('learnView');
+function renderLearn(t){
+  let h = '<div class="intro">'+fmt(t.intro)+'</div>';
+  t.groups.forEach(g=>{
+    h += '<div class="g-group"><div class="g-group-label">'+esc(g.label)+'</div>';
+    g.items.forEach(it=>{
+      h += '<div class="g-item">'+
+        '<div class="gi-term">'+fmt(it.term)+(it.key?' <span class="gi-key">'+esc(it.key)+'</span>':'')+'</div>'+
+        (it.ex?'<div class="gi-ex">'+fmt(it.ex)+'</div>':'')+
+        (it.note?'<div class="gi-note">'+fmt(it.note)+'</div>':'')+
+      '</div>';
+    });
+    h += '</div>';
+  });
+  learnView.innerHTML=h;
+}
+
+/* ---- practice ---- */
+const practiceView=document.getElementById('practiceView');
+let quiz={items:[], i:0, correct:0, total:0, answered:false, optOrder:[]};
+function startPractice(){
+  const t=curTopic();
+  quiz.items=shuffle(t.quiz);
+  quiz.i=0; quiz.correct=0; quiz.total=0; quiz.answered=false;
+  prepQuestion();
+}
+function prepQuestion(){
+  const q=quiz.items[quiz.i];
+  quiz.answered=false;
+  quiz.optOrder = q.single ? q.opts.slice() : shuffle(q.opts);
+}
+function renderPractice(){
+  if(quiz.i>=quiz.items.length){
+    const pct=quiz.total?Math.round(quiz.correct/quiz.total*100):0;
+    practiceView.innerHTML='<div class="p-wrap">'+
+      '<div class="p-done">'+quiz.correct+' / '+quiz.total+' &middot; '+pct+'%</div>'+
+      '<p class="p-explain">Nicely done. Practice again to lock it in.</p>'+
+      '<div class="p-row"><button class="p-btn primary" id="pRestart">Restart</button></div></div>';
+    document.getElementById('pRestart').addEventListener('click', ()=>{ startPractice(); render(); });
+    return;
+  }
+  const q=quiz.items[quiz.i];
+  const qhtml = esc(q.q).replace('___','<span class="blank">?</span>');
+  let opts='';
+  quiz.optOrder.forEach(o=>{
+    opts += '<button class="p-opt" data-o="'+esc(o)+'">'+esc(o)+'</button>';
+  });
+  practiceView.innerHTML='<div class="p-wrap">'+
+    '<div class="p-score">'+(quiz.i+1)+' / '+quiz.items.length+' &nbsp;&middot;&nbsp; '+quiz.correct+' correct</div>'+
+    '<div class="p-q">'+qhtml+'</div>'+
+    '<div class="p-hint" id="pHint"></div>'+
+    '<div class="p-opts" id="pOpts">'+opts+'</div>'+
+    '<div class="p-explain" id="pExplain"></div>'+
+    '<div class="p-row"><button class="p-btn" id="pReveal">Show answer</button><button class="p-btn primary" id="pNext" disabled>Next &rarr;</button></div>'+
+  '</div>';
+  document.getElementById('pOpts').addEventListener('click', onAnswer);
+  document.getElementById('pReveal').addEventListener('click', revealAnswer);
+  document.getElementById('pNext').addEventListener('click', nextQuestion);
+}
+function markOptions(){
+  const q=quiz.items[quiz.i];
+  Array.from(document.querySelectorAll('.p-opt')).forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.o===q.a) b.classList.add('correct');
+  });
+  const ex=document.getElementById('pExplain');
+  ex.innerHTML='<b>'+esc(q.a)+'</b>'+(q.note?' &middot; '+fmt(q.note):'');
+  document.getElementById('pNext').disabled=false;
+  document.getElementById('pReveal').disabled=true;
+}
+function onAnswer(e){
+  const b=e.target.closest('.p-opt'); if(!b || quiz.answered) return;
+  quiz.answered=true; quiz.total++;
+  const q=quiz.items[quiz.i];
+  if(b.dataset.o===q.a) quiz.correct++;
+  else b.classList.add('incorrect');
+  markOptions();
+}
+function revealAnswer(){
+  if(quiz.answered) return;
+  quiz.answered=true; quiz.total++;
+  markOptions();
+}
+function nextQuestion(){ quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); render(); }
+
+/* ---- render orchestrator ---- */
+function render(){
+  const t=curTopic();
+  BOOK.forEach(x=>{ const b=document.getElementById('topic-'+x.key); if(b) b.setAttribute('aria-selected', x.key===topicKey?'true':'false'); });
+  document.getElementById('topicTitle').textContent=t.title;
+  document.getElementById('mode-learn').setAttribute('aria-selected', mode==='learn'?'true':'false');
+  document.getElementById('mode-practice').setAttribute('aria-selected', mode==='practice'?'true':'false');
+  learnView.hidden = mode!=='learn';
+  practiceView.hidden = mode!=='practice';
+  if(mode==='learn') renderLearn(t); else renderPractice();
+  window.scrollTo({top:0, behavior:'auto'});
+}
+render();
+</script>
+</body>
+</html>

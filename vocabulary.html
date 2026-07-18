@@ -54,6 +54,7 @@
         <option value="weak">Weak</option>
         <option value="shaky">Shaky</option>
         <option value="known">Known</option>
+        <option value="flagged">Flagged</option>
         <option value="hidden">Learned</option>
       </select>
       <span class="count" id="count"></span>
@@ -603,6 +604,13 @@ document.getElementById('navDown').addEventListener('click', ()=>moveFocus(1));
 document.body.classList.add('list-active');
 let startTab = 'list';
 try{ const saved = localStorage.getItem('ns-vocab-tab'); if(saved && TABS.indexOf(saved)>=0) startTab = saved; }catch(e){}
+/* Stats dropdown deep-links: vocabulary.html?filter=flagged|known|... opens the list pre-filtered */
+try{
+  const qf = new URLSearchParams(location.search).get('filter');
+  if(qf && ['all','weak','shaky','known','flagged','hidden'].indexOf(qf)>=0){
+    filterVal = qf; if(filterSel) filterSel.value = qf; startTab = 'list';
+  }
+}catch(e){}
 selectTab(startTab);
 
 </script>
