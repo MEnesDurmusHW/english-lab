@@ -11,10 +11,12 @@
 
   // ---- 1) PASTE YOUR FIREBASE WEB CONFIG HERE ----
   var CONFIG = {
-    apiKey: "PASTE_API_KEY",
-    authDomain: "PASTE_PROJECT.firebaseapp.com",
-    projectId: "PASTE_PROJECT_ID",
-    appId: "PASTE_APP_ID"
+    apiKey: "AIzaSyB5BGtV0uF13QTrNoWNfpqtm3WpUbpw7mw",
+    authDomain: "nss-english-lab.firebaseapp.com",
+    projectId: "nss-english-lab",
+    storageBucket: "nss-english-lab.firebasestorage.app",
+    messagingSenderId: "343220344822",
+    appId: "1:343220344822:web:d9631f48c5aea04ea599d7"
   };
   // -------------------------------------------------
 
