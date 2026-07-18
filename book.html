@@ -86,6 +86,14 @@
   .p-btn:disabled{opacity:.4;cursor:default}
   .p-done{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:8px}
 
+  /* full-page practice: hide the book intro/topic tabs while quizzing, let the quiz breathe */
+  body.mode-practice header.g-head, body.mode-practice .topics{display:none}
+  body.mode-practice .wrap{padding-top:34px;min-height:100vh;display:flex;flex-direction:column}
+  body.mode-practice .topic-title{text-align:center}
+  body.mode-practice .sub-tabs{align-self:center}
+  body.mode-practice #practiceView{flex:1;display:flex;align-items:center}
+  body.mode-practice .p-wrap{width:100%}
+
   @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} }
 </style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -112,7 +120,7 @@
   <header class="g-head">
     <p class="eyebrow">Collocations</p>
     <h1>Collocations in Use</h1>
-    <p class="sub">Units 1&ndash;10: what a collocation actually is, how it's classified, and the first five themed sets &mdash; metaphor, intensifying/softening adverbs, <b>make</b>-verbs, communicating and phrasal-verb collocations. Each unit has a <b>Learn</b> tab and a <b>Practice</b> quiz.</p>
+    <p class="sub">Units 1&ndash;10: what a collocation actually is, how it's classified, and the first five themed sets — metaphor, intensifying/softening adverbs, <b>make</b>-verbs, communicating and phrasal-verb collocations. Each unit has a <b>Learn</b> tab and a <b>Practice</b> quiz.</p>
     <p class="src">Based on <i>English Collocations in Use &ndash; Advanced</i> (2nd edition) by Felicity O'Dell &amp; Michael McCarthy, Cambridge University Press. Explanations and examples below are rewritten for this app, not reproduced from the book.</p>
   </header>
 
@@ -137,7 +145,7 @@
 const BOOK = [
 {
   key:'u1', tab:'Unit 1', title:'Unit 1 · What is a collocation?',
-  intro:`<p>A <b>collocation</b> is a pair (or small group) of words that native speakers habitually put together, even though nothing in the grammar forces that particular choice. Hair isn't <i>yellow</i>, it's <b>blond</b>. Rain isn't <i>strong</i>, it's <b>heavy</b>. You don't <i>do</i> a mistake, you <b>make</b> a mistake. There's rarely a logical reason &mdash; it's simply the combination that sounds natural.</p><p>Collocations show up in every grammatical shape: verb + noun (<b>arouse</b> interest), adverb + adjective (<b>fundamentally</b> different), adverb + verb (<b>flatly</b> contradict), noun + noun (a <b>lick</b> of paint), and phrasal verb + noun (<b>come up with</b> a suggestion). Learning them as fixed chunks &mdash; not as separate words you combine on the fly &mdash; is what makes advanced English sound fluent rather than merely correct.</p><p>Collocations also carry <b>register</b>: <i>alight from a bus</i> is the formal, notice-board version of the everyday <i>get off a bus</i>. Picking the right partner word is as much about the situation as about meaning.</p>`,
+  intro:`<p>A <b>collocation</b> is a pair (or small group) of words that native speakers habitually put together, even though nothing in the grammar forces that particular choice. Hair isn't <i>yellow</i>, it's <b>blond</b>. Rain isn't <i>strong</i>, it's <b>heavy</b>. You don't <i>do</i> a mistake, you <b>make</b> a mistake. There's rarely a logical reason — it's simply the combination that sounds natural.</p><p>Collocations show up in every grammatical shape: verb + noun (<b>arouse</b> interest), adverb + adjective (<b>fundamentally</b> different), adverb + verb (<b>flatly</b> contradict), noun + noun (a <b>lick</b> of paint), and phrasal verb + noun (<b>come up with</b> a suggestion). Learning them as fixed chunks — not as separate words you combine on the fly — is what makes advanced English sound fluent rather than merely correct.</p><p>Collocations also carry <b>register</b>: <i>alight from a bus</i> is the formal, notice-board version of the everyday <i>get off a bus</i>. Picking the right partner word is as much about the situation as about meaning.</p>`,
   groups:[
     {label:'The basic idea: only one partner sounds right', items:[
       {term:'blond hair', key:'not yellow hair', ex:'She dyed her hair a pale <b>blond</b>.', note:'The colour word that pairs with hair is blond(e), never yellow.'},
@@ -156,7 +164,7 @@ const BOOK = [
       {term:'come up with a suggestion', key:'phrasal verb + noun', ex:'Can anyone <b>come up with</b> a better suggestion?'},
     ]},
     {label:'Register: the same idea, a different partner', items:[
-      {term:'alight from a bus', key:'formal / notices', ex:'Passengers must <b>alight</b> only when the bus has stopped.', note:'Never used in ordinary speech &mdash; there you’d say get off a bus.'},
+      {term:'alight from a bus', key:'formal / notices', ex:'Passengers must <b>alight</b> only when the bus has stopped.', note:'Never used in ordinary speech — there you’d say get off a bus.'},
       {term:'get off a bus', key:'neutral / everyday', ex:'I usually <b>get off</b> the bus two stops early.'},
     ]},
   ],
@@ -167,13 +175,26 @@ const BOOK = [
     {q:'The strange lights in the sky ___ everyone’s curiosity.', opts:['aroused','raised','lifted','grew'], a:'aroused'},
     {q:'His statement ___ contradicted the police report.', opts:['flatly','hardly','deeply','strongly'], a:'flatly'},
     {q:'This wall really just needs a ___ of paint.', opts:['lick','touch','coat','drop'], a:'lick', note:'"a lick of paint" = a quick, light repainting.'},
-    {q:'Passengers must not ___ from the vehicle while it is moving.', opts:['get off','alight','descend','exit'], a:'alight', note:'Formal, notice-board register &mdash; get off is the everyday equivalent.'},
+    {q:'Passengers must not ___ from the vehicle while it is moving.', opts:['get off','alight','descend','exit'], a:'alight', note:'Formal, notice-board register — get off is the everyday equivalent.'},
     {q:'This matter is of great ___ to the whole team.', opts:['importance','size','bigness','note'], a:'importance'},
+    {q:'Book exercise 1.1 — match the pair: adhere ___ your principles.', opts:['to','with','by','on'], a:'to'},
+    {q:'Book exercise 1.1 — the scandal aroused enormous public ___ .', opts:['interest','attention','curiosity','concern'], a:'interest', note:'arouse someone’s interest'},
+    {q:'Book exercise 1.1 — can anyone ___ up with a better idea before the meeting?', opts:['come','get','make','go'], a:'come', note:'come up with a suggestion'},
+    {q:'Book exercise 1.1 — feeling adventurous, they decided to ___ the stock market.', opts:['play','run','go','work'], a:'play'},
+    {q:'Book exercise 1.2 — you should try to use a ___ range of language in your writing.', opts:['wider','longer','bigger','further'], a:'wider'},
+    {q:'Book exercise 1.2 — candidates who use collocations well ___ higher marks.', opts:['gain','gather','take','win'], a:'gain'},
+    {q:'Book exercise 1.2 — before you can ___ from normal collocation patterns for effect, you must know what they are.', opts:['depart','lose','leave','miss'], a:'depart', note:'depart from a pattern'},
+    {q:'Book exercise 1.3 — our new family hotel is set in a ___ location, away from the crowds.', opts:['secluded','stylish','breathtaking','nice'], a:'secluded'},
+    {q:'Book exercise 1.3 — all the rooms have ___ furnishings.', opts:['stylish','secluded','breathtaking','nice'], a:'stylish'},
+    {q:'Book exercise 1.3 — enjoy ___ views over the surrounding countryside.', opts:['breathtaking','stylish','secluded','nice'], a:'breathtaking'},
+    {q:'Book exercise 1.4 — which is the FORMAL way to say “get off the bus”?', opts:['alight from the bus','hop off the bus','climb down from the bus','exit the bus'], a:'alight from the bus'},
+    {q:'Book exercise 1.4 — which is the INFORMAL way to say “have something to eat”?', opts:['grab a bite','take a snack','get some food','have a nibble'], a:'grab a bite'},
+    {q:'Book exercise 1.4 — which is the FORMAL way to say “end the agreement”?', opts:['terminate the agreement','finish the agreement','close the agreement','stop the agreement'], a:'terminate the agreement'},
   ]
 },
 {
   key:'u2', tab:'Unit 2', title:'Unit 2 · Strong, fixed and weak collocations',
-  intro:`<p>Collocations sit on a scale from <b>strong</b> to <b>weak</b>. A strong collocation has very few possible partners &mdash; <i>mitigating</i> almost only ever goes with <i>circumstances</i> or <i>factors</i>. A weak collocation has many possible partners &mdash; <i>broad</i> combines happily with hint, accent, smile, shoulders, avenue and dozens more, so no single pairing feels special.</p><p>A <b>fixed</b> collocation is a strong collocation frozen solid: nothing in it can be swapped or reordered, as in <i>to and fro</i>. Some fixed expressions are also idioms, where the meaning can't be worked out from the individual words at all.</p><p>Most collocations sit somewhere in the middle of the scale. <i>Picturesque</i>, for instance, pairs naturally with village, location or town &mdash; more restricted than <i>broad</i>, but far less restricted than <i>mitigating</i>.</p>`,
+  intro:`<p>Collocations sit on a scale from <b>strong</b> to <b>weak</b>. A strong collocation has very few possible partners — <i>mitigating</i> almost only ever goes with <i>circumstances</i> or <i>factors</i>. A weak collocation has many possible partners — <i>broad</i> combines happily with hint, accent, smile, shoulders, avenue and dozens more, so no single pairing feels special.</p><p>A <b>fixed</b> collocation is a strong collocation frozen solid: nothing in it can be swapped or reordered, as in <i>to and fro</i>. Some fixed expressions are also idioms, where the meaning can't be worked out from the individual words at all.</p><p>Most collocations sit somewhere in the middle of the scale. <i>Picturesque</i>, for instance, pairs naturally with village, location or town — more restricted than <i>broad</i>, but far less restricted than <i>mitigating</i>.</p>`,
   groups:[
     {label:'Strong collocations (very few partners)', items:[
       {term:'mitigating circumstances / factors', key:'strong', ex:'The court accepted there were <b>mitigating circumstances</b> and reduced the sentence.'},
@@ -183,7 +204,7 @@ const BOOK = [
       {term:'adjourn a meeting / trial', key:'strong', ex:'The judge decided to <b>adjourn</b> the trial until Monday morning.'},
     ]},
     {label:'Fixed collocations (nothing can be changed)', items:[
-      {term:'to and fro', key:'fixed', ex:'The old rocking chair creaked <b>to and fro</b> on the porch.', note:'Completely frozen &mdash; you can’t say “fro and to” or replace either word.'},
+      {term:'to and fro', key:'fixed', ex:'The old rocking chair creaked <b>to and fro</b> on the porch.', note:'Completely frozen — you can’t say “fro and to” or replace either word.'},
     ]},
     {label:'Weak collocations (many possible partners)', items:[
       {term:'a broad hint / accent / smile', key:'weak', ex:'He gave a <b>broad</b> hint that he wanted the job.'},
@@ -200,7 +221,14 @@ const BOOK = [
     {q:'The judge decided to ___ the hearing until the following week.', opts:['adjourn','cancel','pause','end'], a:'adjourn'},
     {q:'He dropped such a ___ hint about his birthday that nobody could miss it.', opts:['broad','wide','big','full'], a:'broad'},
     {q:'The flight was delayed because of ___ weather over the Atlantic.', opts:['inclement','broad','mitigating','auburn'], a:'inclement'},
-    {q:'The pendulum swung ___ , ticking steadily.', opts:['to and fro','here and there','up and down','round and round'], a:'to and fro', note:'A fixed collocation &mdash; no word in it can be swapped.'},
+    {q:'The pendulum swung ___ , ticking steadily.', opts:['to and fro','here and there','up and down','round and round'], a:'to and fro', note:'A fixed collocation — no word in it can be swapped.'},
+    {q:'Book exercise 2.1 — we are in ___ agreement about the plan, though a few details remain.', opts:['broad','mitigating','deliriously','picturesque'], a:'broad'},
+    {q:'Book exercise 2.1 — she has striking ___ hair, a deep reddish-brown.', opts:['auburn','broad','picturesque','mitigating'], a:'auburn'},
+    {q:'Book exercise 2.1 — we were ___ happy when we heard the news.', opts:['deliriously','broadly','mitigatingly','inclemently'], a:'deliriously'},
+    {q:'Book exercise 2.1 — she gave a ___ smile as she opened the door.', opts:['broad','auburn','picturesque','inclement'], a:'broad'},
+    {q:'Book exercise 2.1 — they stayed in a ___ village in the hills.', opts:['picturesque','broad','auburn','mitigating'], a:'picturesque'},
+    {q:'Book exercise 2.1 — the chair decided to ___ the meeting until tomorrow.', opts:['adjourn','broaden','mitigate','picture'], a:'adjourn'},
+    {q:'Book exercise 2.1 — the garden party was cancelled owing to ___ weather.', opts:['inclement','broad','auburn','picturesque'], a:'inclement'},
   ]
 },
 {
@@ -247,11 +275,21 @@ const BOOK = [
     {q:'He said he’d fire us all, but it was just an ___ threat.', opts:['idle','vain','lazy','mounting'], a:'idle'},
     {q:'There’s ___ concern about the new road scheme among residents.', opts:['mounting','raising','climbing','vain'], a:'mounting'},
     {q:'She failed the interview ___ ; she barely answered a question.', opts:['miserably','recklessly','intensely','stunningly'], a:'miserably'},
+    {q:'Book exercise 3.2 — the scientific evidence ___ that humans first emerged in Africa.', opts:['suggests','proves','argues','claims'], a:'suggests'},
+    {q:'Book exercise 3.2 — the wind ___ all night and the rain kept me awake.', opts:['howled','roared','screamed','blew'], a:'howled'},
+    {q:'Book exercise 3.2 — look at the smoke ___ from those buildings — call the fire brigade!', opts:['spreading','growing','rising','climbing'], a:'spreading'},
+    {q:'Book exercise 3.2 — it was so cold my teeth started ___ .', opts:['chattering','shivering','shaking','rattling'], a:'chattering'},
+    {q:'Book exercise 3.2 — parents worry that classroom standards have ___ in recent years.', opts:['slipped','fallen','dropped','sunk'], a:'slipped'},
+    {q:'Book exercise 3.2 — you must go on the trip if the opportunity ever ___ .', opts:['arises','appears','rises','happens'], a:'arises'},
+    {q:'Book exercise 3.2 — an alarming new disease is ___ among cattle in the south.', opts:['spreading','growing','rising','expanding'], a:'spreading'},
+    {q:'Book exercise 3.5 — they rushed her to hospital, in the ___ hope of saving her life.', opts:['vain','idle','simple','lazy'], a:'vain'},
+    {q:'Book exercise 3.5 — the dog was ___ at the mouth, so we called the vet.', opts:['foaming','fuming','fainting','frothing'], a:'foaming'},
+    {q:'Book exercise 3.5 — without warning, the whole choir ___ into song.', opts:['burst','broke','exploded','erupted'], a:'burst'},
   ]
 },
 {
   key:'u4', tab:'Unit 4', title:'Unit 4 · Finding and working on collocations in texts',
-  intro:`<p>The fastest way to grow your collocation vocabulary is to notice it in real texts &mdash; newspaper features, film reviews, tourist websites &mdash; rather than only in wordlists. Once you spot one, it helps to record it in a way that shows how strong or weak it is.</p><p>A <b>collocation fork</b> is useful for a strong collocation: one word in the middle, and its few real partners branching off it (<i>pending</i> &rarr; the results / the outcome / the response). A <b>collocation bubble</b> suits a weak collocation with many partners, such as all the different kinds of <i>value</i> something can have (practical, sentimental, novelty&hellip;).</p>`,
+  intro:`<p>The fastest way to grow your collocation vocabulary is to notice it in real texts — newspaper features, film reviews, tourist websites — rather than only in wordlists. Once you spot one, it helps to record it in a way that shows how strong or weak it is.</p><p>A <b>collocation fork</b> is useful for a strong collocation: one word in the middle, and its few real partners branching off it (<i>pending</i> &rarr; the results / the outcome / the response). A <b>collocation bubble</b> suits a weak collocation with many partners, such as all the different kinds of <i>value</i> something can have (practical, sentimental, novelty&hellip;).</p>`,
   groups:[
     {label:'Collocation fork: pending', items:[
       {term:'pending the results', key:'', ex:'The suspension is <b>pending the results</b> of the investigation.'},
@@ -270,7 +308,7 @@ const BOOK = [
       {term:'a reliable / rich source', key:'', ex:'Local farmers are a <b>rich source</b> of weather lore.'},
     ]},
     {label:'Other useful collocations spotted in texts', items:[
-      {term:'have a gift for languages', key:'', ex:'Marek has a real <b>gift for languages</b> &mdash; he picked up Dutch in months.'},
+      {term:'have a gift for languages', key:'', ex:'Marek has a real <b>gift for languages</b> — he picked up Dutch in months.'},
       {term:'face a challenge', key:'', ex:'Every new teacher has to <b>face the challenge</b> of a noisy classroom.'},
       {term:'pass a milestone', key:'', ex:'The company has just <b>passed the milestone</b> of a million users.'},
       {term:'financial stability', key:'', ex:'The new contract finally gave them some <b>financial stability</b>.'},
@@ -286,11 +324,19 @@ const BOOK = [
     {q:'Tourism is the country’s main ___ of income.', opts:['source','root','spring','base'], a:'source'},
     {q:'It’s hard to ___ down exactly why the plan failed.', opts:['pin','hold','pull','set'], a:'pin'},
     {q:'The company has just passed an important ___ : ten years in business.', opts:['milestone','landmark','stepping stone','marker'], a:'milestone'},
+    {q:'Book exercise 4.1 — Tania has always had a real ___ for languages.', opts:['gift','talent','head','passion'], a:'gift'},
+    {q:'Book exercise 4.1 — once my exams are over, I’ll ___ my thoughts to planning a holiday.', opts:['turn','set','put','bring'], a:'turn'},
+    {q:'Book exercise 4.1 — most politicians say they went into politics because they want to ___ .', opts:['make a difference','make an impact','create a change','build a difference'], a:'make a difference'},
+    {q:'Book exercise 4.1 — don’t ___ the value of having good friends around you.', opts:['underestimate','undervalue','underrate','overlook'], a:'underestimate'},
+    {q:'Book exercise 4.1 — he’s got the job — ___ a successful result in tomorrow’s driving test.', opts:['pending','awaiting','following','despite'], a:'pending'},
+    {q:'Book exercise 4.1 — although they lack experience, ___ doctors are often full of enthusiasm.', opts:['newly qualified','freshly graduated','recently trained','newly graduated'], a:'newly qualified'},
+    {q:'Book exercise 4.3 — I had to ___ the poem for my exam.', opts:['learn by heart','learn by head','learn by mind','learn by soul'], a:'learn by heart'},
+    {q:'Book exercise 4.3 — I couldn’t afford the flight, so I had to ___ the chance to go.', opts:['miss','lose','waste','drop'], a:'miss', note:'"miss a chance" is the real collocation, not "lose a chance".'},
   ]
 },
 {
   key:'u5', tab:'Unit 5', title:'Unit 5 · Register',
-  intro:`<p><b>Register</b> is the level of formality a collocation belongs to. Most everyday vocabulary is <b>neutral</b> &mdash; safe in almost any situation. But some collocations are clearly <b>formal</b> (official documents, legal or bureaucratic language), some are <b>informal</b> (conversation, texts, casual writing), and some belong to a specific field such as journalism.</p><p>The same idea can be expressed at every level: a student <b>submits</b> an assignment in formal, official English, but simply <b>hands in</b> the assignment in neutral, spoken English. Knowing both halves of the pair &mdash; and which situation each belongs in &mdash; is what register is really about.</p>`,
+  intro:`<p><b>Register</b> is the level of formality a collocation belongs to. Most everyday vocabulary is <b>neutral</b> — safe in almost any situation. But some collocations are clearly <b>formal</b> (official documents, legal or bureaucratic language), some are <b>informal</b> (conversation, texts, casual writing), and some belong to a specific field such as journalism.</p><p>The same idea can be expressed at every level: a student <b>submits</b> an assignment in formal, official English, but simply <b>hands in</b> the assignment in neutral, spoken English. Knowing both halves of the pair — and which situation each belongs in — is what register is really about.</p>`,
   groups:[
     {label:'Formal vs. neutral', items:[
       {term:'submit an assignment', key:'formal', ex:'Students must <b>submit</b> their assignments online by 5 p.m.'},
@@ -319,24 +365,32 @@ const BOOK = [
     {q:'Let’s ___ a snack before the film starts.', opts:['grab','take','catch','get'], a:'grab'},
     {q:'The minister avoided the question, so the reporter decided to ___ further.', opts:['probe','dig','dive','dip'], a:'probe'},
     {q:'(formal) Police are ___ an investigation into the fire.', opts:['conducting','doing','making','looking'], a:'conducting'},
+    {q:'Book exercise 5.1 — (informal) I was ___ by the four-hour lecture.', opts:['bored stupid','bored dead','bored flat','bored solid'], a:'bored stupid'},
+    {q:'Book exercise 5.1 — (formal) the researchers ___ a study of urban commuting patterns.', opts:['conducted','did','made','held'], a:'conducted'},
+    {q:'Book exercise 5.1 — (informal) I just updated everything, so my laptop is ___ .', opts:['bang up to date','dead up to date','spot up to date','right up to date'], a:'bang up to date'},
+    {q:'Book exercise 5.1 — (formal) please ___ a recent photograph to the form.', opts:['affix','attach','stick','fix'], a:'affix'},
+    {q:'Book exercise 5.2 — which register is this? “This is breaking news, here on Global TV Extra.”', opts:['journalism','legal','technical','informal conversation'], a:'journalism'},
+    {q:'Book exercise 5.2 — a witness may be asked to ___ for a second time.', opts:['testify','state','declare','confess'], a:'testify', note:'Legal register.'},
+    {q:'Book exercise 5.2 — customers shall ___ the right to compensation in such cases.', opts:['forfeit','lose','waste','surrender'], a:'forfeit', note:'Legal register.'},
+    {q:'Book exercise 5.2 — these are the songs ___ the charts this week.', opts:['climbing','rising','topping','hitting'], a:'climbing', note:'Entertainment-news register.'},
   ]
 },
 {
   key:'u6', tab:'Unit 6', title:'Unit 6 · Metaphor',
-  intro:`<p>Many collocations use ordinary words &mdash; body parts, weight, movement &mdash; in a non-literal, metaphorical sense. When a writer <i>casts light on</i> a situation, nobody is holding a lamp: the phrase just means the writer helps us understand it better.</p><p><b>Weight</b> metaphors are especially productive: <i>heavy</i> can mean either physically heavy or serious/difficult (a heavy burden), while <i>light</i> can mean carefree rather than literally weightless (a light heart). <b>Movement</b> metaphors describe how easily or suddenly something happens: you can <i>walk into</i> a job effortlessly, or <i>run into</i> trouble unexpectedly.</p>`,
+  intro:`<p>Many collocations use ordinary words — body parts, weight, movement — in a non-literal, metaphorical sense. When a writer <i>casts light on</i> a situation, nobody is holding a lamp: the phrase just means the writer helps us understand it better.</p><p><b>Weight</b> metaphors are especially productive: <i>heavy</i> can mean either physically heavy or serious/difficult (a heavy burden), while <i>light</i> can mean carefree rather than literally weightless (a light heart). <b>Movement</b> metaphors describe how easily or suddenly something happens: you can <i>walk into</i> a job effortlessly, or <i>run into</i> trouble unexpectedly.</p>`,
   groups:[
     {label:'Metaphors based on the body', items:[
       {term:'face (up to) the facts', key:'accept reality', ex:'It’s time you <b>faced up to the facts</b>: the project has failed.'},
       {term:'shoulder the blame', key:'take responsibility', ex:'Although others were at fault too, Alice decided to <b>shoulder the blame</b>.'},
-      {term:'foot the bill', key:'pay', ex:'Order whatever you like &mdash; the company is <b>footing the bill</b>.'},
+      {term:'foot the bill', key:'pay', ex:'Order whatever you like — the company is <b>footing the bill</b>.'},
       {term:'head a team', key:'lead it', ex:'Priya now <b>heads</b> the product design team.'},
       {term:'keep someone on their toes', key:'keep them alert', ex:'Three young kids under five <b>keep</b> her constantly <b>on her toes</b>.'},
-      {term:'have an eye for detail', key:'notice things well', ex:'Ask Gina to check the report &mdash; she has a great <b>eye for detail</b>.'},
+      {term:'have an eye for detail', key:'notice things well', ex:'Ask Gina to check the report — she has a great <b>eye for detail</b>.'},
       {term:'go hand in hand with', key:'happen together', ex:'Rising rents <b>go hand in hand with</b> gentrification.'},
     ]},
     {label:'Metaphors based on weight', items:[
       {term:'a heavy burden / responsibility', key:'', ex:'Caring for both parents became a <b>heavy burden</b> for her.'},
-      {term:'a weighty tome / matter', key:'serious content', ex:'His new book on tax law is a <b>weighty tome</b> &mdash; nearly 900 pages.'},
+      {term:'a weighty tome / matter', key:'serious content', ex:'His new book on tax law is a <b>weighty tome</b> — nearly 900 pages.'},
       {term:'light reading', key:'not serious', ex:'I just want some <b>light reading</b> for the beach, nothing heavy.'},
       {term:'a slim chance', key:'a small chance', ex:'There’s only a <b>slim chance</b> he’ll agree to the deal.'},
       {term:'fat chance', key:'informal: almost none', ex:'Fat chance of that ever happening!'},
@@ -351,14 +405,18 @@ const BOOK = [
   ],
   quiz:[
     {q:'Even though others were responsible too, Alice decided to ___ the blame.', opts:['shoulder','head','foot','face'], a:'shoulder'},
-    {q:'Don’t worry about the bill &mdash; the company is ___ it.', opts:['footing','heading','shouldering','facing'], a:'footing'},
+    {q:'Don’t worry about the bill — the company is ___ it.', opts:['footing','heading','shouldering','facing'], a:'footing'},
     {q:'Looking after three toddlers keeps her constantly on her ___ .', opts:['toes','feet','hands','eyes'], a:'toes'},
     {q:'It’s time you ___ up to the facts: the plan failed.', opts:['faced','shouldered','footed','headed'], a:'faced'},
     {q:'Gina has a real eye ___ detail; nothing gets past her.', opts:['for','on','to','with'], a:'for'},
-    {q:'That’s a really ___ book &mdash; 900 pages on maritime law.', opts:['weighty','light','slim','fat'], a:'weighty'},
+    {q:'That’s a really ___ book — 900 pages on maritime law.', opts:['weighty','light','slim','fat'], a:'weighty'},
     {q:'There’s only a ___ chance he’ll turn up on time.', opts:['slim','fat','light','heavy'], a:'slim'},
     {q:'James ___ straight into a great job right after university.', opts:['walked','ran','jumped','hit'], a:'walked'},
     {q:'Don’t ___ to conclusions before you’ve heard both sides.', opts:['jump','run','walk','hit'], a:'jump'},
+    {q:'Book exercise 6.1 — Eva always finds the best deals — she has a real eye for a ___ .', opts:['bargain','deal','discount','sale'], a:'bargain'},
+    {q:'Book exercise 6.3 — Jan left the room with a heavy heart, meaning she felt ___ .', opts:['sad and reluctant','happy and relieved','angry and defiant','confused and indifferent'], a:'sad and reluctant'},
+    {q:'Book exercise 6.4 — Kieran’s constant whistling is ___ me crazy.', opts:['driving','getting','riding','making'], a:'driving'},
+    {q:'Book exercise 6.4 — Marco was thrilled to see his name ___ the list of successful candidates.', opts:['heading','footing','facing','topping'], a:'heading'},
   ]
 },
 {
@@ -389,20 +447,31 @@ const BOOK = [
     ]},
   ],
   quiz:[
-    {q:'Olivia’s flat is always ___ clean &mdash; not a speck of dust.', opts:['spotlessly','thoroughly','blatantly','wildly'], a:'spotlessly'},
+    {q:'Olivia’s flat is always ___ clean — not a speck of dust.', opts:['spotlessly','thoroughly','blatantly','wildly'], a:'spotlessly'},
     {q:'It was ___ rude of him to ignore her completely.', opts:['downright','slightly','mildly','loosely'], a:'downright'},
     {q:'That gossip site is fun, but the stories are ___ inaccurate.', opts:['wildly','mildly','slightly','faintly'], a:'wildly'},
     {q:'The film is only ___ based on the true story.', opts:['loosely','thoroughly','utterly','highly'], a:'loosely'},
-    {q:'I was ___ surprised he turned up at all &mdash; nothing more.', opts:['mildly','utterly','thoroughly','downright'], a:'mildly'},
+    {q:'I was ___ surprised he turned up at all — nothing more.', opts:['mildly','utterly','thoroughly','downright'], a:'mildly'},
     {q:'I would ___ appreciate any help you can offer.', opts:['greatly','highly','strongly','utterly'], a:'greatly', note:'highly doesn’t collocate with appreciate.'},
     {q:'His accent is so strong it’s ___ unlikely anyone will follow him.', opts:['highly','greatly','utterly','thoroughly'], a:'highly'},
     {q:'I ___ enjoyed the concert last night.', opts:['thoroughly','highly','greatly','utterly'], a:'thoroughly'},
-    {q:'The whole idea is ___ ridiculous &mdash; it could never work.', opts:['utterly','highly','greatly','mildly'], a:'utterly'},
+    {q:'The whole idea is ___ ridiculous — it could never work.', opts:['utterly','highly','greatly','mildly'], a:'utterly'},
+    {q:'Book exercise 7.2 — you should be ___ ashamed of yourself! Your behaviour was appalling.', opts:['thoroughly','blatantly','downright','wildly'], a:'thoroughly'},
+    {q:'Book exercise 7.4 — sometimes Tony says ___ ridiculous things.', opts:['utterly','highly','greatly','mildly'], a:'utterly'},
+    {q:'Book exercise 7.4 — the crossword today is ___ difficult; I can’t even start it.', opts:['incredibly','highly','strongly','greatly'], a:'incredibly'},
+    {q:'Book exercise 7.4 — it’s ___ sweet of you to offer to help.', opts:['awfully','highly','strongly','utterly'], a:'awfully'},
+    {q:'Book exercise 7.4 — I found his remarks ___ offensive; he should apologise.', opts:['deeply','highly','greatly','utterly'], a:'deeply'},
+    {q:'Book exercise 7.4 — she leads a ___ lonely life on a remote island.', opts:['terribly','utterly','highly','greatly'], a:'terribly', note:'utterly does NOT collocate with lonely, per the table in this unit.'},
+    {q:'Book exercise 7.4 — we should try to keep the two groups ___ separate from each other.', opts:['completely','highly','greatly','utterly'], a:'completely'},
+    {q:'Book exercise 7.4 — she is a ___ educated person, with three degrees.', opts:['highly','greatly','utterly','thoroughly'], a:'highly'},
+    {q:'Book exercise 7.4 — I’ve been ___ busy all week, barely had time to eat.', opts:['incredibly','utterly','highly','greatly'], a:'incredibly', note:'utterly does NOT collocate with busy, per the table in this unit.'},
+    {q:'Book exercise 7.5 — your help would be ___ appreciated.', opts:['greatly','strongly','highly','utterly'], a:'greatly', note:'The book flags "strongly appreciated" as incorrect.'},
+    {q:'Book exercise 7.5 — the song is ___ influenced by Brazilian folk rhythms.', opts:['strongly','highly','greatly','utterly'], a:'strongly', note:'The book flags "highly influenced" as incorrect.'},
   ]
 },
 {
   key:'u8', tab:'Unit 8', title:'Unit 8 · Make and verbs that mean make',
-  intro:`<p><b>Make</b> is one of the most over- and under-used verbs in learner English. You <b>make</b> a suggestion, a contribution, a formal apology and arrangements &mdash; not do or give them. But make isn’t right everywhere either: you <b>have</b> a party and you <b>do</b> research, you don’t make either.</p><p>Beyond the basic errors, make also appears in a long list of set expressions (make a habit of, make enemies, make an early escape), and several more formal or specific verbs can replace it: <b>create</b> an impression, <b>stage</b> a protest, <b>lodge</b> a complaint, <b>rustle up</b> a meal (informal), <b>turn</b> a profit, <b>coin</b> a phrase.</p>`,
+  intro:`<p><b>Make</b> is one of the most over- and under-used verbs in learner English. You <b>make</b> a suggestion, a contribution, a formal apology and arrangements — not do or give them. But make isn’t right everywhere either: you <b>have</b> a party and you <b>do</b> research, you don’t make either.</p><p>Beyond the basic errors, make also appears in a long list of set expressions (make a habit of, make enemies, make an early escape), and several more formal or specific verbs can replace it: <b>create</b> an impression, <b>stage</b> a protest, <b>lodge</b> a complaint, <b>rustle up</b> a meal (informal), <b>turn</b> a profit, <b>coin</b> a phrase.</p>`,
   groups:[
     {label:'Common make errors', items:[
       {term:'make a suggestion', key:'not do/give', ex:'Can I <b>make a suggestion</b> before we vote?'},
@@ -439,6 +508,17 @@ const BOOK = [
     {q:'It only took her ten minutes to ___ up a meal for six.', opts:['rustle','make','cook','run'], a:'rustle'},
     {q:'It took months, but the small shop finally managed to ___ a profit.', opts:['turn','win','gain','earn'], a:'turn'},
     {q:'Who do you think ___ the phrase “road rage”?', opts:['coined','made','created','invented'], a:'coined'},
+    {q:'Book exercise 8.2 — try to make a ___ of noticing good collocations whenever you read.', opts:['habit','practice','routine','custom'], a:'habit'},
+    {q:'Book exercise 8.2 — we had to move our luggage to make ___ for the bike.', opts:['room','space','place','way'], a:'room'},
+    {q:'Book exercise 8.2 — the new CEO has made a lot of ___ by being so autocratic.', opts:['enemies','rivals','critics','opponents'], a:'enemies'},
+    {q:'Book exercise 8.2 — if she makes a ___ of this project, she’ll likely get promoted.', opts:['success','hit','win','triumph'], a:'success'},
+    {q:'Book exercise 8.2 — the old gentleman said he was delighted to make my ___ .', opts:['acquaintance','friendship','introduction','meeting'], a:'acquaintance'},
+    {q:'Book exercise 8.2 — every young scientist dreams of making a ___ that changes the world.', opts:['discovery','invention','breakthrough','finding'], a:'discovery'},
+    {q:'Book exercise 8.2 — we tried to make a ___ against the new development, but building started anyway.', opts:['stand','protest','fight','stop'], a:'stand'},
+    {q:'Book exercise 8.2 — the ___ you gave me contained a few small errors.', opts:['calculations','counts','sums','figures'], a:'calculations'},
+    {q:'Book exercise 8.3 — Tessa helped me ___ some lovely cushion covers for my new flat.', opts:['run up','make up','sew up','build up'], a:'run up'},
+    {q:'Book exercise 8.4 — at the meeting, the chairman put forward an interesting ___ .', opts:['proposal','suggestion','idea','plan'], a:'proposal'},
+    {q:'Book exercise 8.4 — we rearranged the hall to ___ a more relaxed atmosphere for the yoga class.', opts:['create','make','build','set'], a:'create'},
   ]
 },
 {
@@ -477,11 +557,21 @@ const BOOK = [
     {q:'We had to ___ the police about the break-in straight away.', opts:['notify','impart','divulge','declare'], a:'notify'},
     {q:'Even with the evidence against him, he continued to ___ his innocence.', opts:['protest','profess','declare','state'], a:'protest'},
     {q:'The paramedic ___ him dead at the scene.', opts:['pronounced','declared','stated','professed'], a:'pronounced'},
+    {q:'Book exercise 9.1 — ___ speaking, you shouldn’t really be in this room.', opts:['Strictly','Generally','Really','Actually'], a:'Strictly'},
+    {q:'Book exercise 9.1 — Joel ___ me a secret and made me swear not to pass it on.', opts:['told','said','spoke','talked'], a:'told'},
+    {q:'Book exercise 9.1 — I spend all day with toddlers, so forgive me if I start ___ nonsense.', opts:['talking','saying','telling','speaking'], a:'talking'},
+    {q:'Book exercise 9.1 — I had my fortune ___ by a woman at the fair.', opts:['told','said','spoken','read'], a:'told'},
+    {q:'Book exercise 9.1 — shall we eat first and then sit down to ___ business?', opts:['talk','say','speak','tell'], a:'talk'},
+    {q:'Book exercise 9.4 — even faced with clear evidence against him, he made repeated ___ of innocence.', opts:['protestations','professions','declarations','statements'], a:'protestations', note:'Noun form of "protest one’s innocence".'},
+    {q:'Book exercise 9.4 — the charity’s official ___ of aims is to end child hunger by 2040.', opts:['statement','declaration','account','message'], a:'statement', note:'Noun form of "state your aim".'},
+    {q:'Book exercise 9.4 — the ___ of information was slow because of poor internet access.', opts:['dissemination','divulgence','imparting','notification'], a:'dissemination', note:'Noun form of "disseminate information".'},
+    {q:'Book exercise 9.4 — the ___ of the crime to the police happened almost immediately.', opts:['notification','declaration','statement','profession'], a:'notification', note:'Noun form of "notify the police".'},
+    {q:'Book exercise 9.4 — the ___ of the competition winner will be made at 6 p.m.', opts:['declaration','statement','pronouncement','profession'], a:'declaration', note:'Noun form of "declare someone the winner".'},
   ]
 },
 {
   key:'u10', tab:'Unit 10', title:'Unit 10 · Collocations with phrasal verbs',
-  intro:`<p>Phrasal verbs collocate with particular nouns just as ordinary verbs do, and news writing leans on them heavily: officials <b>take up</b> office, committees <b>come up with</b> alternatives, authorities <b>come down heavily on</b> offenders. Everyday conversation has its own set &mdash; <b>soak up</b> the atmosphere, <b>free up</b> some time, <b>work up</b> an appetite, <b>live up to</b> expectations.</p><p>A few other phrasal verbs form especially strong collocations worth learning as a block: <b>burst into</b> tears/laughter, <b>dip into</b> savings, <b>jot down</b> an address, <b>see off</b> an intruder, <b>adhere to</b> principles.</p>`,
+  intro:`<p>Phrasal verbs collocate with particular nouns just as ordinary verbs do, and news writing leans on them heavily: officials <b>take up</b> office, committees <b>come up with</b> alternatives, authorities <b>come down heavily on</b> offenders. Everyday conversation has its own set — <b>soak up</b> the atmosphere, <b>free up</b> some time, <b>work up</b> an appetite, <b>live up to</b> expectations.</p><p>A few other phrasal verbs form especially strong collocations worth learning as a block: <b>burst into</b> tears/laughter, <b>dip into</b> savings, <b>jot down</b> an address, <b>see off</b> an intruder, <b>adhere to</b> principles.</p>`,
   groups:[
     {label:'News and official style', items:[
       {term:'abide by a decision', key:'formal: accept it', ex:'Both sides agreed to <b>abide by</b> the referee’s decision.'},
@@ -518,6 +608,18 @@ const BOOK = [
     {q:'Could you ___ down my number before you forget it?', opts:['jot','write','note','put'], a:'jot'},
     {q:'The old guard dog saw ___ every intruder who came near the house.', opts:['off','away','out','down'], a:'off'},
     {q:'It’s hard to ___ to your principles when everyone else is cutting corners.', opts:['adhere','abide','come','live'], a:'adhere'},
+    {q:'Book exercise 10.2 — I’d been looking forward to the course, but it didn’t ___ my expectations.', opts:['live up to','come up to','keep up to','meet up to'], a:'live up to'},
+    {q:'Book exercise 10.2 — has anyone ___ a good alternative to the petrol engine yet?', opts:['come up with','thought up with','made up with','brought up with'], a:'come up with'},
+    {q:'Book exercise 10.2 — I should jot ___ your address in case I forget it.', opts:['down','up','in','off'], a:'down'},
+    {q:'Book exercise 10.2 — the new club president is due to take ___ office next week.', opts:['up','on','over','in'], a:'up'},
+    {q:'Book exercise 10.2 — we have to abide ___ the committee’s decision, whether we like it or not.', opts:['by','to','with','for'], a:'by'},
+    {q:'Book exercise 10.2 — most members of the group adhere ___ a shared philosophy.', opts:['to','by','with','for'], a:'to'},
+    {q:'Book exercise 10.2 — I don’t have any plans, so I can easily fit ___ with yours.', opts:['in','up','for','by'], a:'in'},
+    {q:'Book exercise 10.2 — Melissa Bragg has filed ___ divorce in a New York court.', opts:['for','by','with','up'], a:'for'},
+    {q:'Book exercise 10.4 — everyone ___ into laughter when she told the story.', opts:['burst','broke','fell','ran'], a:'burst'},
+    {q:'Book exercise 10.4 — police say they’ll ___ down heavily on anyone caught using fireworks illegally.', opts:['come','go','fall','land'], a:'come'},
+    {q:'Book exercise 10.4 — the police acted on a ___ and managed to prevent a robbery.', opts:['tip-off','rip-off','lead','hunch'], a:'tip-off'},
+    {q:'Book exercise 10.4 — we sat on the balcony, soaking ___ the atmosphere of the festival.', opts:['up','through','in','down'], a:'up'},
   ]
 },
 ];
@@ -630,7 +732,7 @@ function revealAnswer(){
   quiz.answered=true; quiz.total++;
   markOptions();
 }
-function nextQuestion(){ quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); render(); }
+function nextQuestion(){ quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); renderPractice(); }
 
 /* ---- render orchestrator ---- */
 function render(){
@@ -639,6 +741,7 @@ function render(){
   document.getElementById('topicTitle').textContent=t.title;
   document.getElementById('mode-learn').setAttribute('aria-selected', mode==='learn'?'true':'false');
   document.getElementById('mode-practice').setAttribute('aria-selected', mode==='practice'?'true':'false');
+  document.body.classList.toggle('mode-practice', mode==='practice');
   learnView.hidden = mode!=='learn';
   practiceView.hidden = mode!=='practice';
   if(mode==='learn') renderLearn(t); else renderPractice();

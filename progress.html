@@ -38,12 +38,22 @@
   <div class="subbar">
     <div class="seg" role="tablist" aria-label="Progress">
       <button id="tab-overview" role="tab" aria-selected="true">Overview</button>
+      <button id="tab-flagged" role="tab" aria-selected="false">Flagged</button>
+      <button id="tab-known" role="tab" aria-selected="false">Known</button>
       <button id="tab-learned" role="tab" aria-selected="false">Learned</button>
     </div>
   </div>
 
   <div id="view-overview" role="tabpanel">
     <div class="stats-wrap" id="statsWrap"></div>
+  </div>
+
+  <div id="view-flagged" role="tabpanel" hidden>
+    <div id="flaggedList"></div>
+  </div>
+
+  <div id="view-known" role="tabpanel" hidden>
+    <div id="knownList"></div>
   </div>
 
   <div id="view-learned" role="tabpanel" hidden>
@@ -75,22 +85,48 @@ function renderStats(){
   if(rb) rb.addEventListener('click', ()=>{ if(confirm('Tüm skorlar silinecek. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
 }
 
-/* ============ LEARNED (öğrendiklerim) ============ */
+/* ============ list views (flagged / known / learned) ============ */
+const flaggedEl=document.getElementById('flaggedList');
+const knownEl=document.getElementById('knownList');
 const learnedEl=document.getElementById('learnedList');
 const RESTORE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>';
-function renderLearned(){
-  const list=WORDS.filter(w=>isHidden(w.en));
-  if(!list.length){ learnedEl.innerHTML='<div class="empty">Henüz “öğrendim” olarak işaretlenen kelime yok. Liste ve kartlarda ✓ ile ekleyebilirsin.</div>'; return; }
-  learnedEl.innerHTML='<div class="list">'+list.map(function(w){
-    return '<div class="entry" data-type="'+w.type+'" data-i="'+w._i+'"><div class="entry-row">'+
-      '<div class="entry-head" style="cursor:default">'+
-        '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
-        '<span class="eh-type">'+typeLabel(w.type)+'</span>'+
-      '</div>'+
-      '<span class="entry-actions"><button type="button" class="row-btn row-hide on" data-a="restore" title="Rotasyona geri getir" aria-label="Geri getir">'+RESTORE_SVG+'</button></span>'+
-    '</div></div>';
-  }).join('')+'</div>';
+const FLAG_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+
+function wordRow(w, actionsHTML){
+  return '<div class="entry" data-type="'+w.type+'" data-i="'+w._i+'"><div class="entry-row">'+
+    '<div class="entry-head" style="cursor:default">'+
+      '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
+      '<span class="eh-type">'+typeLabel(w.type)+'</span>'+
+    '</div>'+
+    (actionsHTML ? '<span class="entry-actions">'+actionsHTML+'</span>' : '')+
+  '</div></div>';
 }
+function renderWordList(el, list, emptyMsg, actionFn){
+  if(!list.length){ el.innerHTML='<div class="empty">'+emptyMsg+'</div>'; return; }
+  el.innerHTML='<div class="list">'+list.map(function(w){ return wordRow(w, actionFn?actionFn(w):''); }).join('')+'</div>';
+}
+
+function renderFlagged(){
+  renderWordList(flaggedEl, WORDS.filter(function(w){ return isFlagged(w.en); }),
+    'Henüz cümlede çalışmak için işaretlenen kelime yok. Liste ve kartlarda bayrak simgesiyle ekleyebilirsin.',
+    function(){ return '<button type="button" class="row-btn row-flag on" data-a="unflag" title="İşareti kaldır" aria-label="İşareti kaldır">'+FLAG_SVG+'</button>'; });
+}
+function renderKnown(){
+  renderWordList(knownEl, WORDS.filter(function(w){ return statusOf(w.en)==='known' && !isHidden(w.en); }),
+    'Henüz “Biliyorum” seviyesine gelen kelime yok. Kart ve testlerde doğru yaptıkça buraya eklenir.',
+    null);
+}
+function renderLearned(){
+  renderWordList(learnedEl, WORDS.filter(function(w){ return isHidden(w.en); }),
+    'Henüz “öğrendim” olarak işaretlenen kelime yok. Liste ve kartlarda ✓ ile ekleyebilirsin.',
+    function(){ return '<button type="button" class="row-btn row-hide on" data-a="restore" title="Rotasyona geri getir" aria-label="Geri getir">'+RESTORE_SVG+'</button>'; });
+}
+
+flaggedEl.addEventListener('click', function(e){
+  const b=e.target.closest('[data-a="unflag"]'); if(!b) return;
+  const i=+b.closest('.entry').dataset.i;
+  toggleFlag(WORDS[i].en); renderFlagged();
+});
 learnedEl.addEventListener('click', function(e){
   const b=e.target.closest('[data-a="restore"]'); if(!b) return;
   const i=+b.closest('.entry').dataset.i;
@@ -98,7 +134,8 @@ learnedEl.addEventListener('click', function(e){
 });
 
 /* ============ sub-tab controller ============ */
-const P_TABS=['overview','learned'];
+const P_RENDER={overview:renderStats, flagged:renderFlagged, known:renderKnown, learned:renderLearned};
+const P_TABS=['overview','flagged','known','learned'];
 function selectTab(t){
   if(P_TABS.indexOf(t)<0) t='overview';
   P_TABS.forEach(function(x){
@@ -106,13 +143,15 @@ function selectTab(t){
     if(v) v.hidden = x!==t;
     if(b) b.setAttribute('aria-selected', x===t?'true':'false');
   });
-  if(t==='overview') renderStats(); else renderLearned();
+  (P_RENDER[t]||renderStats)();
   try{ localStorage.setItem('ns-progress-tab', t); }catch(e){}
 }
 P_TABS.forEach(function(t){ const b=document.getElementById('tab-'+t); if(b) b.addEventListener('click', function(){ selectTab(t); }); });
 
 let startTab='overview';
 try{ const s=localStorage.getItem('ns-progress-tab'); if(s && P_TABS.indexOf(s)>=0) startTab=s; }catch(e){}
+/* honor ?tab= deep-link */
+try{ const qt=new URLSearchParams(location.search).get('tab'); if(qt && P_TABS.indexOf(qt)>=0) startTab=qt; }catch(e){}
 selectTab(startTab);
 </script>
 </body>
