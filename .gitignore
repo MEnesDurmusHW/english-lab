@@ -1,0 +1,6 @@
+*firebase-adminsdk*.json
+fb-key.json
+serviceAccount*.json
+.firebase/
+firebase-debug.log
+node_modules/
