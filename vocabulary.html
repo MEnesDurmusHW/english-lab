@@ -432,15 +432,30 @@ dirTrBtn.addEventListener('click', ()=>{ dirEN=false; dirTrBtn.setAttribute('ari
 const qPrompt=document.getElementById('qPrompt'), qSub=document.getElementById('qSub'), qOptions=document.getElementById('qOptions'),
   qScore=document.getElementById('qScore'), qNext=document.getElementById('qNext'),
   qdirEn=document.getElementById('qdir-en'), qdirTr=document.getElementById('qdir-tr');
-let quiz={dir:'en2tr', queue:[], cur:null, answered:false, correct:0, total:0};
+let quiz={dir:'en2tr', queue:[], bagFilter:null, cur:null, answered:false, correct:0, total:0};
 let quizAutoTimer=null;
 function sideText(w,side){ return side==='en' ? w.en : w.tr; }
-function startQuiz(){ quiz.correct=0; quiz.total=0; quiz.queue=shuffle(activeWords()); newQuestion(); }
+/* Tüm aktif kelimeleri torbaya koyar; tur bitmeden hiçbiri tekrar etmez.
+   Yeni tur, bir önceki soruyla aynı kelimeyle başlamasın diye kaydırılır. */
+function buildQuizBag(){
+  quiz.queue=shuffle(activeWords());
+  quiz.bagFilter=filterVal;
+  if(quiz.cur && quiz.queue.length>1 && quiz.queue[0]._i===quiz.cur._i) quiz.queue.push(quiz.queue.shift());
+}
+function restartQuiz(){ quiz.correct=0; quiz.total=0; quiz.cur=null; buildQuizBag(); newQuestion(); }
+/* Sekmeye her dönüşte sıfırdan karıştırma; devam eden turu ve skoru koru
+   (filtre değişmediyse). Böylece tüm kelimeler sırayla sorulur, baştakiler
+   sürekli tekrar etmez. */
+function startQuiz(){
+  const pool=activeWords();
+  if(pool.length && quiz.queue.length && quiz.bagFilter===filterVal && quiz.cur){ updateCount(); return; }
+  restartQuiz();
+}
 function newQuestion(){
   clearTimeout(quizAutoTimer);
   const pool=activeWords();
-  if(!pool.length){ qPrompt.textContent='…'; qSub.textContent=''; qOptions.innerHTML='<p class="empty">Bu filtrede kelime yok.</p>'; qScore.textContent=''; qNext.disabled=true; updateCount(); return; }
-  if(!quiz.queue.length) quiz.queue=shuffle(pool);
+  if(!pool.length){ qPrompt.textContent='…'; qSub.textContent=''; qOptions.innerHTML='<p class="empty">Bu filtrede kelime yok.</p>'; qScore.textContent=''; qNext.disabled=true; quiz.cur=null; updateCount(); return; }
+  if(!quiz.queue.length || quiz.bagFilter!==filterVal) buildQuizBag();
   const w=quiz.queue.shift(); quiz.cur=w; quiz.answered=false;
   const answerSide=quiz.dir==='en2tr'?'tr':'en';
   const promptSide=quiz.dir==='en2tr'?'en':'tr';
@@ -472,8 +487,8 @@ function answerQuiz(btn,opt){
   updateCount();
 }
 qNext.addEventListener('click', newQuestion);
-qdirEn.addEventListener('click', ()=>{ quiz.dir='en2tr'; qdirEn.setAttribute('aria-selected','true'); qdirTr.setAttribute('aria-selected','false'); startQuiz(); });
-qdirTr.addEventListener('click', ()=>{ quiz.dir='tr2en'; qdirTr.setAttribute('aria-selected','true'); qdirEn.setAttribute('aria-selected','false'); startQuiz(); });
+qdirEn.addEventListener('click', ()=>{ quiz.dir='en2tr'; qdirEn.setAttribute('aria-selected','true'); qdirTr.setAttribute('aria-selected','false'); restartQuiz(); });
+qdirTr.addEventListener('click', ()=>{ quiz.dir='tr2en'; qdirTr.setAttribute('aria-selected','true'); qdirEn.setAttribute('aria-selected','false'); restartQuiz(); });
 
 /* ============ BOŞLUK DOLDURMA ============ */
 const fSentence=document.getElementById('fSentence'), fHint=document.getElementById('fHint'), fInput=document.getElementById('fInput'),
