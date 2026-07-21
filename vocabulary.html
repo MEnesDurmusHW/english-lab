@@ -433,9 +433,11 @@ const qPrompt=document.getElementById('qPrompt'), qSub=document.getElementById('
   qScore=document.getElementById('qScore'), qNext=document.getElementById('qNext'),
   qdirEn=document.getElementById('qdir-en'), qdirTr=document.getElementById('qdir-tr');
 let quiz={dir:'en2tr', queue:[], cur:null, answered:false, correct:0, total:0};
+let quizAutoTimer=null;
 function sideText(w,side){ return side==='en' ? w.en : w.tr; }
 function startQuiz(){ quiz.correct=0; quiz.total=0; quiz.queue=shuffle(activeWords()); newQuestion(); }
 function newQuestion(){
+  clearTimeout(quizAutoTimer);
   const pool=activeWords();
   if(!pool.length){ qPrompt.textContent='…'; qSub.textContent=''; qOptions.innerHTML='<p class="empty">Bu filtrede kelime yok.</p>'; qScore.textContent=''; qNext.disabled=true; updateCount(); return; }
   if(!quiz.queue.length) quiz.queue=shuffle(pool);
@@ -464,7 +466,9 @@ function answerQuiz(btn,opt){
   Array.from(qOptions.children).forEach(b=>{ b.disabled=true; if(+b.dataset.i===w._i) b.classList.add('correct'); });
   if(!correct) btn.classList.add('wrong');
   qScore.textContent='Doğru '+quiz.correct+' / '+quiz.total;
-  qNext.disabled=false; qNext.focus();
+  qNext.disabled=false;
+  if(correct){ clearTimeout(quizAutoTimer); quizAutoTimer=setTimeout(newQuestion, 650); }
+  else qNext.focus();
   updateCount();
 }
 qNext.addEventListener('click', newQuestion);
