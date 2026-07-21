@@ -22,6 +22,7 @@
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
 <script src="sync.js" defer></script>
+<script src="success-fx.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{ --mono:'Space Grotesk',monospace; --accent-soft:rgba(59,91,165,.16); --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
@@ -669,6 +670,7 @@ function renderLearn(t){
 /* ---- practice ---- */
 const practiceView=document.getElementById('practiceView');
 let quiz={items:[], i:0, correct:0, total:0, answered:false, optOrder:[]};
+let pAutoTimer=null;
 function startPractice(){
   const t=curTopic();
   quiz.items=shuffle(t.quiz);
@@ -723,16 +725,18 @@ function onAnswer(e){
   const b=e.target.closest('.p-opt'); if(!b || quiz.answered) return;
   quiz.answered=true; quiz.total++;
   const q=quiz.items[quiz.i];
-  if(b.dataset.o===q.a) quiz.correct++;
+  const correct=b.dataset.o===q.a;
+  if(correct) quiz.correct++;
   else b.classList.add('incorrect');
   markOptions();
+  if(correct){ successFX(); clearTimeout(pAutoTimer); pAutoTimer=setTimeout(nextQuestion, 650); }
 }
 function revealAnswer(){
   if(quiz.answered) return;
   quiz.answered=true; quiz.total++;
   markOptions();
 }
-function nextQuestion(){ quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); renderPractice(); }
+function nextQuestion(){ clearTimeout(pAutoTimer); quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); renderPractice(); }
 
 /* ---- render orchestrator ---- */
 function render(){
