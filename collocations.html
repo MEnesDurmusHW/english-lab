@@ -168,6 +168,7 @@ collStudyEl.addEventListener('click', function(e){
 
 /* ---- alıştırma ---- */
 let collEx={type:'match', correct:0, total:0, answer:null, done:false};
+let collAutoTimer=null;
 const cexScore=document.getElementById('cexScore'), cexBody=document.getElementById('cexBody'), cexHint=document.getElementById('cexHint');
 function cexScoreText(){ cexScore.textContent = collEx.total ? ('Correct '+collEx.correct+' / '+collEx.total) : ''; }
 function collMatchPool(){
@@ -186,6 +187,7 @@ function startCollEx(){
   else{ cexHint.innerHTML='<kbd>Enter</kbd> check / next'; newCollFill(); }
 }
 function newCollMatch(){
+  clearTimeout(collAutoTimer);
   collEx.done=false;
   const pool=collMatchPool();
   if(pool.length<1 || WORDS.length<4){ cexBody.innerHTML='<div class="empty">Not enough collocations in this filter.</div>'; cexScoreText(); return; }
@@ -219,10 +221,13 @@ function answerCollMatch(btn,opt){
   });
   if(opt===collEx.answer){ collEx.correct++; successFX(); }
   else btn.classList.add('wrong');
-  const nb=document.getElementById('cexNext'); nb.disabled=false; nb.focus();
+  const nb=document.getElementById('cexNext'); nb.disabled=false;
+  if(opt===collEx.answer){ clearTimeout(collAutoTimer); collAutoTimer=setTimeout(newCollMatch, 650); }
+  else nb.focus();
   cexScoreText();
 }
 function newCollFill(){
+  clearTimeout(collAutoTimer);
   collEx.done=false;
   const pool=collFillPool();
   if(!pool.length){ cexBody.innerHTML='<div class="empty">No fill-in collocations in this filter.</div>'; cexScoreText(); return; }
