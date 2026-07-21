@@ -72,6 +72,7 @@
 
 <script src="data.js"></script>
 <script src="lab-core.js"></script>
+<script src="success-fx.js"></script>
 <script>
 /* stubs for helpers that only exist on the vocabulary page */
 function updateCount(){}
@@ -216,7 +217,7 @@ function answerCollMatch(btn,opt){
     const label=b.querySelector('span:last-child').textContent;
     if(label===collEx.answer) b.classList.add('correct');
   });
-  if(opt===collEx.answer) collEx.correct++;
+  if(opt===collEx.answer){ collEx.correct++; successFX(); }
   else btn.classList.add('wrong');
   const nb=document.getElementById('cexNext'); nb.disabled=false; nb.focus();
   cexScoreText();
@@ -252,7 +253,7 @@ function checkCollFill(){
   const val=normalize(inp.value); if(!val) return;
   collEx.done=true; collEx.total++;
   const ok=collEx.answer.indexOf(val)>=0;
-  if(ok){ collEx.correct++; fb.textContent='Correct'; fb.className='f-feedback ok'; }
+  if(ok){ collEx.correct++; successFX(); fb.textContent='Correct'; fb.className='f-feedback ok'; }
   else{ fb.textContent='Answer: '+collEx.answer.join(' / '); fb.className='f-feedback no'; }
   inp.disabled=true;
   cexScoreText();
