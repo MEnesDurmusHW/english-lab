@@ -167,8 +167,23 @@ collStudyEl.addEventListener('click', function(e){
 });
 
 /* ---- alıştırma ---- */
-let collEx={type:'match', correct:0, total:0, answer:null, done:false};
+let collEx={type:'match', correct:0, total:0, answer:null, done:false, bag:[], bagKey:null, last:null};
 let collAutoTimer=null;
+/* Kalıcı shuffle-bag: aktif moddaki tüm collocation'lar bir tur içinde
+   tekrarsız sorulur (eskiden her seferinde yerine koyarak rastgele seçiliyordu,
+   bu yüzden aynı sorular sık sık tekrar ediyordu). Mod ya da filtre değişince
+   torba yeniden kurulur; yeni tur bir önceki soruyla başlamaz. */
+function collSig(it){ return it ? (it.w.en+'||'+it.phrase) : ''; }
+function collDraw(pool){
+  const key=collEx.type+'|'+filterVal;
+  if(!collEx.bag || !collEx.bag.length || collEx.bagKey!==key){
+    collEx.bag=shuffle(pool); collEx.bagKey=key;
+    if(collEx.last && collEx.bag.length>1 && collSig(collEx.bag[0])===collEx.last) collEx.bag.push(collEx.bag.shift());
+  }
+  const item=collEx.bag.shift();
+  collEx.last=collSig(item);
+  return item;
+}
 const cexScore=document.getElementById('cexScore'), cexBody=document.getElementById('cexBody'), cexHint=document.getElementById('cexHint');
 function cexScoreText(){ cexScore.textContent = collEx.total ? ('Correct '+collEx.correct+' / '+collEx.total) : ''; }
 function collMatchPool(){
@@ -191,7 +206,7 @@ function newCollMatch(){
   collEx.done=false;
   const pool=collMatchPool();
   if(pool.length<1 || WORDS.length<4){ cexBody.innerHTML='<div class="empty">Not enough collocations in this filter.</div>'; cexScoreText(); return; }
-  const q=pool[Math.floor(Math.random()*pool.length)];
+  const q=collDraw(pool);
   collEx.answer=q.w.en;
   const others=shuffle(WORDS.filter(function(w){ return w.en!==q.w.en; })).slice(0,3).map(function(w){ return w.en; });
   const opts=shuffle([q.w.en].concat(others));
@@ -231,7 +246,7 @@ function newCollFill(){
   collEx.done=false;
   const pool=collFillPool();
   if(!pool.length){ cexBody.innerHTML='<div class="empty">No fill-in collocations in this filter.</div>'; cexScoreText(); return; }
-  const q=pool[Math.floor(Math.random()*pool.length)];
+  const q=collDraw(pool);
   const raw=q.m[0];
   collEx.answer=raw.toLowerCase().split('/').map(function(s){ return s.trim(); }).filter(Boolean);
   cexBody.innerHTML=
