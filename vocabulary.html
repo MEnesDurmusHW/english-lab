@@ -180,6 +180,7 @@
 
 <script src="data.js"></script>
 <script src="lab-core.js"></script>
+<script src="success-fx.js"></script>
 <script>
 
 
@@ -459,7 +460,7 @@ function newQuestion(){
 function answerQuiz(btn,opt){
   if(quiz.answered) return; quiz.answered=true;
   const w=quiz.cur; const correct=opt._i===w._i;
-  quiz.total++; if(correct){ quiz.correct++; addScore(w.en,1); } else { addScore(w.en,-1); }
+  quiz.total++; if(correct){ quiz.correct++; addScore(w.en,1); successFX(); } else { addScore(w.en,-1); }
   Array.from(qOptions.children).forEach(b=>{ b.disabled=true; if(+b.dataset.i===w._i) b.classList.add('correct'); });
   if(!correct) btn.classList.add('wrong');
   qScore.textContent='Doğru '+quiz.correct+' / '+quiz.total;
@@ -503,7 +504,7 @@ function checkFill(){
   const w=fill.cur.w, b=fill.cur.b; const val=normalize(fInput.value); if(!val) return;
   const ok = val===normalize(b.answer) || val===normalize(b.shown) || coreForms(w.en).some(f=>normalize(f)===val);
   fill.answered=true; fill.total++; fInput.disabled=true;
-  if(ok){ fill.correct++; addScore(w.en,1); fFeedback.textContent='Doğru! ('+b.shown+')'; fFeedback.className='f-feedback ok'; }
+  if(ok){ fill.correct++; addScore(w.en,1); successFX(); fFeedback.textContent='Doğru! ('+b.shown+')'; fFeedback.className='f-feedback ok'; }
   else { addScore(w.en,-1); fFeedback.textContent='Doğru cevap: '+b.shown; fFeedback.className='f-feedback no'; }
   fScore.textContent='Doğru '+fill.correct+' / '+fill.total;
   updateCount();
