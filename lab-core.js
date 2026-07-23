@@ -140,6 +140,17 @@ function saveHidden(){ try{ localStorage.setItem(HIDE_KEY,JSON.stringify(HIDDEN)
 function isHidden(en){ return !!HIDDEN[en]; }
 function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; saveHidden(); }
 
+/* ============ GRUP FİLTRESİ ============ */
+const GROUP_KEY='ns-vocab-group';
+let groupVal='all';                                        // 'all' ya da bir grup id'si (w.grp)
+function groupById(v){ return (typeof WORD_GROUPS!=='undefined') ? WORD_GROUPS.find(g=>String(g.id)===String(v)) : null; }
+try{ const g=localStorage.getItem(GROUP_KEY); if(g!==null && g!=='all') groupVal=g; }catch(e){}
+// kayıtlı değeri gerçek grup id tipine eşle; grup artık yoksa tüm gruplara dön
+if(groupVal!=='all'){ const m=groupById(groupVal); groupVal = m ? m.id : 'all'; }
+function saveGroup(){ try{ localStorage.setItem(GROUP_KEY, groupVal==='all'?'all':String(groupVal)); }catch(e){} }
+function matchesGroup(w){ return groupVal==='all' || w.grp===groupVal; }
+function groupLabel(g){ return (typeof g.id==='number' ? 'Grup '+g.id : g.id) + ' ('+g.count+')'; }
+
 /* ============ FİLTRE ============ */
 let filterVal = 'all';
 function matchesFilter(w){
@@ -150,7 +161,7 @@ function matchesFilter(w){
   if(filterVal==='shaky') return statusOf(w.en)!=='known';  // Sağlam değil = sağlam olmayan her şey (zayıf dahil)
   return statusOf(w.en)===filterVal;
 }
-function activeWords(){ return WORDS.filter(matchesFilter); }
+function activeWords(){ return WORDS.filter(w=>matchesGroup(w) && matchesFilter(w)); }
 
 /* ============ ORTAK ARAÇLAR ============ */
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }

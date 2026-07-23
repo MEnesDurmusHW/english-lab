@@ -44,6 +44,12 @@
     </div>
   </div>
 
+  <div class="ctlbar" id="groupBar" hidden>
+    <div class="ctlbar-right">
+      <select class="filter-sel" id="groupSel" aria-label="Kelime grubu"></select>
+    </div>
+  </div>
+
   <div id="view-overview" role="tabpanel">
     <div class="stats-wrap" id="statsWrap"></div>
   </div>
@@ -68,9 +74,10 @@
 /* ============ OVERVIEW (istatistik) ============ */
 const statsWrap=document.getElementById('statsWrap');
 function renderStats(){
-  const total=WORDS.length; let known=0, shaky=0, weak=0, studied=0;
-  WORDS.forEach(w=>{ const st=statusOf(w.en); if(st==='known')known++; else if(st==='weak')weak++; else shaky++; if(w.en in SCORES) studied++; });
-  const hid=WORDS.filter(w=>isHidden(w.en)).length;
+  const pool=WORDS.filter(matchesGroup);
+  const total=pool.length; let known=0, shaky=0, weak=0, studied=0;
+  pool.forEach(w=>{ const st=statusOf(w.en); if(st==='known')known++; else if(st==='weak')weak++; else shaky++; if(w.en in SCORES) studied++; });
+  const hid=pool.filter(w=>isHidden(w.en)).length;
   const pct=function(n){ return total ? Math.round(n/total*100) : 0; };
   const seg=function(cls,n){ return n ? '<i class="'+cls+'" style="width:'+(n/total*100)+'%"></i>' : ''; };
   const dot={known:'var(--ok)', shaky:'var(--mid)', weak:'var(--bad)'};
@@ -82,7 +89,7 @@ function renderStats(){
     '<p class="stat-note">Kartlarda ve testlerde her doğru skoru +1, her yanlış -1 değiştirir. Skor '+KNOWN_AT+' ve üzeri: Biliyorum. Eksi: Zayıf.</p>'+
     '<div class="f-row" style="margin-top:18px"><button class="btn" id="statsReset">İlerlemeyi sıfırla</button></div>';
   const rb=document.getElementById('statsReset');
-  if(rb) rb.addEventListener('click', ()=>{ if(confirm('Tüm skorlar silinecek. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
+  if(rb) rb.addEventListener('click', ()=>{ if(confirm('Yalnızca skorlar (bilme durumu) sıfırlanacak. Yazdığın cümleler ve “öğrendim” işaretlediğin kelimeler korunur. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
 }
 
 /* ============ list views (flagged / known / learned) ============ */
@@ -107,17 +114,17 @@ function renderWordList(el, list, emptyMsg, actionFn){
 }
 
 function renderFlagged(){
-  renderWordList(flaggedEl, WORDS.filter(function(w){ return isFlagged(w.en); }),
+  renderWordList(flaggedEl, WORDS.filter(function(w){ return matchesGroup(w) && isFlagged(w.en); }),
     'Henüz cümlede çalışmak için işaretlenen kelime yok. Liste ve kartlarda bayrak simgesiyle ekleyebilirsin.',
     function(){ return '<button type="button" class="row-btn row-flag on" data-a="unflag" title="İşareti kaldır" aria-label="İşareti kaldır">'+FLAG_SVG+'</button>'; });
 }
 function renderKnown(){
-  renderWordList(knownEl, WORDS.filter(function(w){ return statusOf(w.en)==='known' && !isHidden(w.en); }),
+  renderWordList(knownEl, WORDS.filter(function(w){ return matchesGroup(w) && statusOf(w.en)==='known' && !isHidden(w.en); }),
     'Henüz “Biliyorum” seviyesine gelen kelime yok. Kart ve testlerde doğru yaptıkça buraya eklenir.',
     null);
 }
 function renderLearned(){
-  renderWordList(learnedEl, WORDS.filter(function(w){ return isHidden(w.en); }),
+  renderWordList(learnedEl, WORDS.filter(function(w){ return matchesGroup(w) && isHidden(w.en); }),
     'Henüz “öğrendim” olarak işaretlenen kelime yok. Liste ve kartlarda ✓ ile ekleyebilirsin.',
     function(){ return '<button type="button" class="row-btn row-hide on" data-a="restore" title="Rotasyona geri getir" aria-label="Geri getir">'+RESTORE_SVG+'</button>'; });
 }
@@ -136,8 +143,24 @@ learnedEl.addEventListener('click', function(e){
 /* ============ sub-tab controller ============ */
 const P_RENDER={overview:renderStats, flagged:renderFlagged, known:renderKnown, learned:renderLearned};
 const P_TABS=['overview','flagged','known','learned'];
+let currentPTab='overview';
+
+/* grup seçici — her sekmeyi (istatistik + listeler) gruba göre süzer */
+(function(){
+  const gs=document.getElementById('groupSel'), bar=document.getElementById('groupBar');
+  if(!gs || !bar) return;
+  if(WORD_GROUPS.length < 2){ bar.hidden=true; return; }
+  bar.hidden=false;
+  let opts='<option value="all">Tüm gruplar</option>';
+  WORD_GROUPS.forEach(g=>{ opts+='<option value="'+g.id+'">'+groupLabel(g)+'</option>'; });
+  gs.innerHTML=opts;
+  gs.value = groupVal==='all' ? 'all' : String(groupVal);
+  gs.addEventListener('change', ()=>{ const m=groupById(gs.value); groupVal = m ? m.id : 'all'; saveGroup(); (P_RENDER[currentPTab]||renderStats)(); });
+})();
+
 function selectTab(t){
   if(P_TABS.indexOf(t)<0) t='overview';
+  currentPTab=t;
   P_TABS.forEach(function(x){
     const v=document.getElementById('view-'+x), b=document.getElementById('tab-'+x);
     if(v) v.hidden = x!==t;
