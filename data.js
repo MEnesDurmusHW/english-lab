@@ -102,6 +102,54 @@ Ambition has a {{tendency}} to blind us, so burnout feels almost {{inevitable}} 
 Şöhret iki ucu keskin bir kılıçtır: kapılar açar ama yargılanmayı davet eder. Bir eleştirmen başarının çoğunlukla şans olduğunu söylediğinde tam üstüne bastı, ama bu buzdağının yalnızca görünen ucuydu. İddialı vaatlere temkinli yaklaş; onları şüpheyle karşıla. İkna edici bir argüman bile yanlış olabilir. Kendi fikrini sınamak için bilerek karşı tarafı savunmak ve zıt görüşü ortaya atmak işe yarar.
 
 Hırsın gözümüzü karartma eğilimi vardır; bu yüzden tükenmişlik neredeyse kaçınılmazdır ve hem işe hem sağlığa zararlıdır. Şehirden uzak, sessiz bir müstakil evde, yalnızca takma adıyla tanınan bir romancı bunu anlamıştı. Onun ilgi odağından uzak kalışı bilinçliydi. "Bir yıldız daha yeni bir yıldızı kıskanıyor. Bunun neresi haber?" diye yazdı.`
+},
+{ title:`The Vendor Audit`,
+  en:`Erin had promised to {{look into}} the shipping delays by Friday, but her director asked her to {{hold off}} until the quarterly numbers were finalized. She spent the weekend trying to {{catch up on}} three months of unread reports.
+
+By Monday she felt {{skeptical}}. The vendor's explanation sounded {{plausible}} on paper, but the invoices were {{ambiguous}} about which warehouse had actually shipped the goods. She wanted to be {{meticulous}}, so she cross-checked every date herself.
+
+Then, in the middle of the audit, she {{ran into|run into}} her old university friend, Toby, who now worked for that very vendor. He mentioned, {{discreetly|discreet}}, that the company had closed a {{redundant}} regional office months earlier — which explained half the confusion.
+
+Erin realized she needed to {{cut back on}} trusting paperwork alone. She {{came up with|come up with}} a simple fix: a shared tracking sheet updated daily by both sides. It wasn't glamorous, but it worked, and that was enough for both sides to trust it again.`,
+  tr:`Erin, cuma gününe kadar kargo gecikmelerini araştıracağına söz vermişti, ama direktörü çeyreklik rakamlar netleşene kadar bunu ertelemesini istedi. Hafta sonunu, üç aylık okunmamış raporların açığını kapatmaya çalışarak geçirdi.
+
+Pazartesiye kadar şüpheciydi. Tedarikçinin açıklaması kağıt üzerinde akla yatkın görünüyordu, ama faturalar hangi depodan sevkiyat yapıldığı konusunda belirsizdi. Titiz davranmak istedi, bu yüzden her tarihi kendisi tek tek kontrol etti.
+
+Denetimin ortasında, o sırada aynı tedarikçide çalışan eski üniversite arkadaşı Toby ile tesadüfen karşılaştı. Toby, ağzı sıkı bir şekilde, şirketin aylar önce gereksiz hale gelen bir bölge ofisini kapattığını ima etti — bu da kafa karışıklığının yarısını açıklıyordu.
+
+Erin, sadece evraklara güvenmeyi kısması gerektiğini fark etti. Basit bir çözüm buldu: her iki tarafın da günlük güncellediği ortak bir takip tablosu. Göz kamaştırıcı değildi ama işe yaradı ve bu, iki tarafın da sisteme yeniden güvenmesi için yeterliydi.`
+},
+{ title:`The Promotion`,
+  en:`Priya had been offered a promotion, but she felt {{apprehensive}} about it. Her manager was known for being {{relentless}} in meetings, pressing every point until people gave up. Even so, she decided to {{go through with}} the interview instead of backing out at the last minute.
+
+On the day, she told herself not to {{beat around the bush}}. When her manager asked what she really wanted, she was {{candid}}: more responsibility, not just a bigger title. She refused to {{settle for}} a token raise instead of the real role.
+
+Her manager then asked whether she would {{give in to}} pressure from clients who always pushed for discounts. Priya said she would rather stay {{assertive}} and risk losing a difficult client than accept unfair terms.
+
+It was a long meeting, and eventually they agreed to {{call it a day}}. A week later, before the paperwork was even signed, a colleague warned her not to {{jump the gun}} by telling the whole office. Priya listened, {{bit the bullet|bite the bullet}}, and waited quietly until it was official — a small sacrifice that ended up {{making up for|make up for}} months of uncertainty.`,
+  tr:`Priya'ya terfi teklif edilmişti ama bu konuda içine kurt düşmüştü. Müdürü, insanlar pes edene kadar her noktada ısrar eden, amansız biri olarak tanınırdı. Yine de son anda vazgeçmek yerine mülakatı sonuna kadar götürmeye karar verdi.
+
+Görüşme günü kendine lafı dolandırmamayı söyledi. Müdürü gerçekten ne istediğini sorduğunda açık sözlü davrandı: daha büyük bir unvan değil, daha fazla sorumluluk istiyordu. Gerçek rol yerine sembolik bir zamla yetinmeyi reddetti.
+
+Müdürü ardından, her zaman indirim isteyen müşterilerin baskısına boyun eğip eğmeyeceğini sordu. Priya, haksız şartları kabul etmektense zor bir müşteriyi kaybetmeyi göze alıp özgüvenli kalacağını söyledi.
+
+Toplantı uzun sürdü ve sonunda işi orada bırakmaya karar verdiler. Bir hafta sonra, evraklar imzalanmadan önce bir meslektaşı ona acele edip bunu tüm ofise duyurmaması konusunda uyardı. Priya dinledi, dişini sıktı ve resmileşene kadar sessizce bekledi — bu küçük fedakarlık, aylardır süren belirsizliğin acısını çıkardı.`
+},
+{ title:`The Comeback`,
+  en:`When the factory lost its biggest client, Marco felt {{overwhelmed}}. For years the business had grown {{complacent}}, assuming that a real competitor would show up only {{once in a blue moon}}.
+
+Marco knew the bank was watching closely — one more missed payment and the company would be {{on thin ice}}. Reading the manager's email carefully, he could {{read between the lines}}: the loan would not be renewed twice.
+
+Everyone told him to {{throw in the towel}}, but Marco worked {{against the clock}} for three weeks, chasing a new contract that felt frustratingly {{elusive}}. Just when he was ready to give up, an old customer called out of nowhere — {{a blessing in disguise}}, since that single order was enough to {{redeem}} the whole quarter.
+
+The experience left him more careful, and, in a strange way, more {{resilient}}. The factory survived, and Marco made sure the whole team stayed alert from then on.`,
+  tr:`Fabrika en büyük müşterisini kaybedince Marco kendini bunalmış hissetti. Yıllardır işletme rehavete kapılmış, gerçek bir rakibin ancak kırk yılda bir ortaya çıkacağını varsaymışlardı.
+
+Marco, bankanın durumu yakından izlediğini biliyordu — bir ödeme daha kaçırılırsa şirket riskli bir durumda kalacaktı. Müdürün e-postasını dikkatlice okuyunca satır aralarını okuyabildi: kredi bir daha yenilenmeyecekti.
+
+Herkes ona pes etmesini söyledi, ama Marco üç hafta boyunca zamana karşı çalışarak, sinir bozucu derecede ele avuca sığmayan yeni bir anlaşmanın peşinden koştu. Tam pes etmeye hazırlanmışken, eski bir müşteri hiç beklenmedik bir anda aradı — başta kötü görünüp sonradan hayra yorulan bir durumdu, çünkü tek bir sipariş çeyreğin tamamını telafi etmeye yetti.
+
+Bu deneyim onu daha dikkatli, ve garip bir şekilde daha dayanıklı biri haline getirdi. Fabrika ayakta kaldı ve Marco o günden sonra tüm ekibin tetikte kalmasını sağladı.`
 }
 ];
 
@@ -198,5 +246,40 @@ const COLL_EX = {
   "inevitable": ["After years of losses, the company's collapse was inevitable.", "It was inevitable that the two rivals would eventually clash.", "Higher prices are an inevitable consequence of rising fuel costs."],
   "tendency": ["He has a tendency to interrupt people during meetings.", "She showed a tendency towards perfectionism at work.", "There's a growing tendency for young people to shop online."],
   "not bat an eyelid": ["She didn't bat an eyelid when the bill arrived.", "He handed over the cash without batting an eyelid.", "When I told her the news, she didn't even bat an eyelid."],
-  "by all accounts": ["By all accounts, the concert was an unforgettable evening.", "The launch was, by all accounts, a success.", "By all accounts, the concert went extremely well last night."]
+  "by all accounts": ["By all accounts, the concert was an unforgettable evening.", "The launch was, by all accounts, a success.", "By all accounts, the concert went extremely well last night."],
+  "hold off": ["Let's hold off on making a decision until we have all the facts.", "Luckily the rain held off until the match was over.", "We decided to hold off for a while before buying a house."],
+  "catch up on": ["I spent the whole weekend catching up on sleep and unread emails.", "Let's catch up with each other over coffee next week."],
+  "look into": ["The bank promised to look into the complaint and call me back.", "That sounds like a bug — I'll look into it right away."],
+  "cut back on": ["The doctor told him to cut back on salt and sugar.", "I'm trying to cut down on coffee because it keeps me awake."],
+  "come up with": ["The team came up with a clever solution to the parking problem.", "They couldn't come up with the money in time to save the shop."],
+  "go through with": ["In the end they decided to go through with the wedding.", "She kept changing her mind and couldn't go through with it."],
+  "settle for": ["After such a strong start, the team had to settle for a draw.", "He's ambitious and will settle for nothing less than first place."],
+  "run into": ["The project ran into serious problems when the funding dried up."],
+  "make up for": ["She worked extra hours to make up for the time she had lost.", "I forgot your birthday, but I promise I'll make it up to you."],
+  "give in to": ["He finally gave in to temptation and ordered dessert.", "Don't give in to him just because he keeps complaining."],
+  "bite the bullet": ["I bit the bullet and booked the flight before I could change my mind.", "The repairs are expensive, but we'll just have to bite the bullet."],
+  "read between the lines": ["She never said she was unhappy, but reading between the lines, I could tell."],
+  "jump the gun": ["Don't jump the gun by announcing the results before they're confirmed.", "Celebrating now feels a bit premature — the deal isn't signed yet."],
+  "beat around the bush": ["Stop beating around the bush and tell me what really happened.", "Without beating around the bush, she told him the project was cancelled."],
+  "call it a day": ["We've done enough for now — let's call it a day.", "After thirty years in teaching, she decided to call it a day."],
+  "throw in the towel": ["After months of losses, the owners finally threw in the towel.", "It's been tough, but I'm not ready to throw in the towel yet."],
+  "once in a blue moon": ["We only eat out once in a blue moon, so tonight is a real treat."],
+  "on thin ice": ["After missing three deadlines, he knew he was skating on thin ice.", "You're on thin ice with the manager after that comment."],
+  "against the clock": ["The surgeons were racing against the clock to save his life.", "Finishing the report by Friday was a real race against the clock."],
+  "a blessing in disguise": ["Losing that job turned out to be a blessing in disguise."],
+  "meticulous": ["The watchmaker is known for his meticulous attention to detail.", "She keeps meticulous records of every single expense.", "He's meticulous about keeping his tools clean and organized."],
+  "ambiguous": ["The politician gave a deliberately ambiguous answer.", "Her ambiguous reply left everyone guessing.", "The contract is ambiguous about who pays for repairs."],
+  "redundant": ["The factory closed and hundreds of workers were made redundant.", "In 'past history', the word 'past' is redundant.", "As technology advanced, many of the old jobs became redundant."],
+  "plausible": ["He came up with a plausible explanation for being late.", "Her theory sounds plausible, but there's no proof yet.", "It's perfectly plausible that they simply forgot."],
+  "skeptical": ["Many scientists were skeptical about the new claim at first.", "She remained deeply skeptical of his promises.", "Until I see the evidence, I'll remain skeptical."],
+  "discreet": ["Please be discreet about what I told you in confidence.", "He made a few discreet inquiries before hiring her."],
+  "relentless": ["The team kept up relentless pressure until they finally scored.", "She was relentless in her pursuit of the truth.", "The novel moves at a relentless pace from the very first page."],
+  "candid": ["To be candid, I don't think the plan will work.", "She was refreshingly candid about her past mistakes.", "We had a candid conversation about the team's problems."],
+  "elusive": ["For many families, affordable housing remains an elusive dream.", "A cure for the disease has so far proved elusive.", "The author is an elusive figure who rarely gives interviews."],
+  "redeem": ["After an early mistake, he redeemed himself with a brilliant finish.", "You can redeem your points for free flights and hotel stays.", "The film is dull, but the soundtrack is its one redeeming feature."],
+  "overwhelmed": ["She was overwhelmed by the kindness of complete strangers.", "New parents often feel overwhelmed in the first few weeks.", "By Friday I was completely overwhelmed with work."],
+  "complacent": ["We can't afford to be complacent about safety.", "After a few easy wins, the team grew complacent and started losing.", "The report warns that the industry has become dangerously complacent."],
+  "apprehensive": ["She felt apprehensive about her first day at the new school.", "It's completely normal to feel apprehensive before a big exam.", "He was a little apprehensive about flying for the first time."],
+  "resilient": ["Years of hardship had made her emotionally resilient.", "The country has a remarkably resilient economy.", "Despite the setbacks, the community proved remarkably resilient."],
+  "assertive": ["You need to be more assertive if you want that promotion.", "She answered in a calm but assertive tone.", "A good manager is assertive without being aggressive."]
 };

@@ -140,28 +140,95 @@ function saveHidden(){ try{ localStorage.setItem(HIDE_KEY,JSON.stringify(HIDDEN)
 function isHidden(en){ return !!HIDDEN[en]; }
 function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; saveHidden(); }
 
-/* ============ GRUP FİLTRESİ ============ */
-const GROUP_KEY='ns-vocab-group';
-let groupVal='all';                                        // 'all' ya da bir grup id'si (w.grp)
-function groupById(v){ return (typeof WORD_GROUPS!=='undefined') ? WORD_GROUPS.find(g=>String(g.id)===String(v)) : null; }
-try{ const g=localStorage.getItem(GROUP_KEY); if(g!==null && g!=='all') groupVal=g; }catch(e){}
-// kayıtlı değeri gerçek grup id tipine eşle; grup artık yoksa tüm gruplara dön
-if(groupVal!=='all'){ const m=groupById(groupVal); groupVal = m ? m.id : 'all'; }
-function saveGroup(){ try{ localStorage.setItem(GROUP_KEY, groupVal==='all'?'all':String(groupVal)); }catch(e){} }
-function matchesGroup(w){ return groupVal==='all' || w.grp===groupVal; }
-function groupLabel(g){ return (typeof g.id==='number' ? 'Grup '+g.id : g.id) + ' ('+g.count+')'; }
+/* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
+   Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.
+   Gruplar/durumlar kendi içinde VEYA, fasetler arası VE ile birleşir. */
+const FILTER_KEY='ns-vocab-filter';
+let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned'
+try{
+  const f=JSON.parse(localStorage.getItem(FILTER_KEY))||{};
+  if(Array.isArray(f.g)) selGroups=f.g.slice();
+  if(Array.isArray(f.s)) selStatus=f.s.slice();
+  if(Array.isArray(f.v)) selSaved=f.v.slice();
+}catch(e){}
+if(typeof WORD_GROUPS!=='undefined') selGroups=selGroups.filter(id=>WORD_GROUPS.some(g=>g.id===id));   // geçersiz grupları at
+function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved})); }catch(e){} }
+function filterActiveCount(){ return selGroups.length + selStatus.length + selSaved.length; }
+function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved]); }   // torba/önbellek kimliği
+function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; saveFilter(); }
 
-/* ============ FİLTRE ============ */
-let filterVal = 'all';
+function matchesGroup(w){ return selGroups.length===0 || selGroups.indexOf(w.grp)>=0; }
 function matchesFilter(w){
-  if(filterVal==='hidden') return isHidden(w.en);          // yalnızca gizlenenler
-  if(isHidden(w.en)) return false;                         // gizlenenler diğer görünümlerde çıkmaz
-  if(filterVal==='flagged') return isFlagged(w.en);        // cümlede çalışmak için işaretlediklerin
-  if(filterVal==='all') return true;
-  if(filterVal==='shaky') return statusOf(w.en)!=='known';  // Sağlam değil = sağlam olmayan her şey (zayıf dahil)
-  return statusOf(w.en)===filterVal;
+  if(!matchesGroup(w)) return false;
+  const learned=isHidden(w.en);
+  if(selSaved.indexOf('learned')>=0){ if(!learned) return false; }   // yalnızca öğrenilenler
+  else if(learned) return false;                                     // öğrenilenler normalde gizli
+  if(selSaved.indexOf('flagged')>=0 && !isFlagged(w.en)) return false;
+  if(selStatus.length && selStatus.indexOf(statusOf(w.en))<0) return false;
+  return true;
 }
-function activeWords(){ return WORDS.filter(w=>matchesGroup(w) && matchesFilter(w)); }
+function activeWords(){ return WORDS.filter(matchesFilter); }
+
+/* ============ FİLTRE PANELİ (paylaşılan buton + popover) ============ */
+const FILTER_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+function _fltArr(kind){ return kind==='g'?selGroups : kind==='s'?selStatus : selSaved; }
+function _fltChip(kind,val,label){
+  const on=_fltArr(kind).indexOf(val)>=0;
+  return '<button type="button" class="flt-chip'+(on?' on':'')+'" data-k="'+kind+'" data-v="'+val+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button>';
+}
+/* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved'] */
+function mountFilter(host, onChange, sections){
+  sections = sections || ['groups','status','saved'];
+  host.innerHTML =
+    '<div class="filter-wrap">'+
+      '<button type="button" class="filter-btn" id="fltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrele">'+
+        FILTER_ICON+'<span class="flt-badge" id="fltBadge" hidden></span>'+
+      '</button>'+
+      '<div class="filter-panel" id="fltPanel" role="dialog" aria-label="Filtre" hidden></div>'+
+    '</div>';
+  const btn=host.querySelector('#fltBtn'), panel=host.querySelector('#fltPanel'), badge=host.querySelector('#fltBadge');
+  function updateBadge(){
+    const n=filterActiveCount();
+    if(n){ badge.textContent=n; badge.hidden=false; btn.classList.add('on'); }
+    else { badge.hidden=true; btn.classList.remove('on'); }
+  }
+  function renderPanel(){
+    let h='<div class="flt-head"><span>Filtrele</span><button type="button" class="flt-clear" id="fltClear"'+(filterActiveCount()?'':' disabled')+'>Temizle</button></div>';
+    if(sections.indexOf('groups')>=0 && typeof WORD_GROUPS!=='undefined' && WORD_GROUPS.length>1){
+      h+='<div class="flt-sec"><div class="flt-lbl">Gruplar</div><div class="flt-chips">'+
+        WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?'Grup '+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div></div>';
+    }
+    if(sections.indexOf('status')>=0){
+      h+='<div class="flt-sec"><div class="flt-lbl">Skor durumu</div><div class="flt-chips">'+
+        _fltChip('s','weak','Zayıf')+_fltChip('s','shaky','Sağlam değil')+_fltChip('s','known','Biliyorum')+'</div></div>';
+    }
+    if(sections.indexOf('saved')>=0){
+      h+='<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-chips">'+
+        _fltChip('v','flagged','Cümlede çalışacaklarım')+_fltChip('v','learned','Öğrendiklerim')+'</div></div>';
+    }
+    h+='<div class="flt-foot" id="fltFoot"></div>';
+    panel.innerHTML=h;
+    const foot=panel.querySelector('#fltFoot');
+    if(foot) foot.textContent = activeWords().length+' kelime eşleşiyor';
+  }
+  function apply(){ saveFilter(); updateBadge(); renderPanel(); if(onChange) onChange(); }
+  panel.addEventListener('click', function(e){
+    if(e.target.closest('#fltClear')){ clearFilter(); apply(); return; }
+    const chip=e.target.closest('.flt-chip'); if(!chip) return;
+    const k=chip.getAttribute('data-k'), raw=chip.getAttribute('data-v');
+    const v = (k==='g' && raw!=='' && !isNaN(+raw)) ? +raw : raw;   // grup id sayıysa sayıya çevir
+    const arr=_fltArr(k), i=arr.indexOf(v);
+    if(i>=0) arr.splice(i,1); else arr.push(v);
+    apply();
+  });
+  function open(){ renderPanel(); panel.hidden=false; btn.setAttribute('aria-expanded','true'); }
+  function close(){ panel.hidden=true; btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); panel.hidden?open():close(); });
+  document.addEventListener('click', function(e){ if(!e.target.closest('.filter-wrap')) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  updateBadge();
+  return { updateBadge:updateBadge, renderPanel:renderPanel, close:close };
+}
 
 /* ============ ORTAK ARAÇLAR ============ */
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }

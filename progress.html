@@ -45,8 +45,9 @@
   </div>
 
   <div class="ctlbar" id="groupBar" hidden>
+    <p class="ctlbar-hint">Grup filtresi tüm sekmeleri kapsar.</p>
     <div class="ctlbar-right">
-      <select class="filter-sel" id="groupSel" aria-label="Kelime grubu"></select>
+      <div id="filterMount"></div>
     </div>
   </div>
 
@@ -145,17 +146,13 @@ const P_RENDER={overview:renderStats, flagged:renderFlagged, known:renderKnown, 
 const P_TABS=['overview','flagged','known','learned'];
 let currentPTab='overview';
 
-/* grup seçici — her sekmeyi (istatistik + listeler) gruba göre süzer */
+/* grup filtresi (yalnızca Gruplar bölümü) — her sekmeyi gruba göre süzer */
 (function(){
-  const gs=document.getElementById('groupSel'), bar=document.getElementById('groupBar');
-  if(!gs || !bar) return;
-  if(WORD_GROUPS.length < 2){ bar.hidden=true; return; }
+  const bar=document.getElementById('groupBar'), mount=document.getElementById('filterMount');
+  if(!bar || !mount) return;
+  if(typeof WORD_GROUPS==='undefined' || WORD_GROUPS.length < 2){ bar.hidden=true; return; }
   bar.hidden=false;
-  let opts='<option value="all">Tüm gruplar</option>';
-  WORD_GROUPS.forEach(g=>{ opts+='<option value="'+g.id+'">'+groupLabel(g)+'</option>'; });
-  gs.innerHTML=opts;
-  gs.value = groupVal==='all' ? 'all' : String(groupVal);
-  gs.addEventListener('change', ()=>{ const m=groupById(gs.value); groupVal = m ? m.id : 'all'; saveGroup(); (P_RENDER[currentPTab]||renderStats)(); });
+  mountFilter(mount, function(){ (P_RENDER[currentPTab]||renderStats)(); }, ['groups']);
 })();
 
 function selectTab(t){

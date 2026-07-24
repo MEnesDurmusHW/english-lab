@@ -46,14 +46,7 @@
 
   <div class="ctlbar">
     <div class="ctlbar-right">
-      <select class="filter-sel" id="filterSel" aria-label="Filter words">
-        <option value="all">All</option>
-        <option value="weak">Weak</option>
-        <option value="shaky">Shaky</option>
-        <option value="known">Known</option>
-        <option value="flagged">Flagged</option>
-        <option value="hidden">Learned</option>
-      </select>
+      <div id="filterMount"></div>
     </div>
   </div>
 
@@ -175,7 +168,7 @@ let collAutoTimer=null;
    torba yeniden kurulur; yeni tur bir önceki soruyla başlamaz. */
 function collSig(it){ return it ? (it.w.en+'||'+it.phrase) : ''; }
 function collDraw(pool){
-  const key=collEx.type+'|'+filterVal;
+  const key=collEx.type+'|'+filterSig();
   if(!collEx.bag || !collEx.bag.length || collEx.bagKey!==key){
     collEx.bag=shuffle(pool); collEx.bagKey=key;
     if(collEx.last && collEx.bag.length>1 && collSig(collEx.bag[0])===collEx.last) collEx.bag.push(collEx.bag.shift());
@@ -363,8 +356,8 @@ document.getElementById('coll-fill').addEventListener('click', function(){ collM
 function renderColl(){ renderCollProgress(); buildCollOrder(); showCollMode(); }
 
 /* filter + init */
-const filterSel=document.getElementById('filterSel');
-if(filterSel) filterSel.addEventListener('change', function(){ filterVal=filterSel.value; collPos=0; renderColl(); });
+const _fltMount=document.getElementById('filterMount');
+if(_fltMount) mountFilter(_fltMount, function(){ collPos=0; renderColl(); }, ['groups','status','saved']);
 renderColl();
 </script>
 </body>

@@ -49,16 +49,8 @@
   <div class="ctlbar">
     <p class="ctlbar-hint" id="ctlHint"></p>
     <div class="ctlbar-right" id="filterHost">
-      <select class="filter-sel" id="groupSel" aria-label="Kelime grubu"></select>
-      <select class="filter-sel" id="filterSel" aria-label="Filter words">
-        <option value="all">All</option>
-        <option value="weak">Weak</option>
-        <option value="shaky">Shaky</option>
-        <option value="known">Known</option>
-        <option value="flagged">Flagged</option>
-        <option value="hidden">Learned</option>
-      </select>
       <span class="count" id="count"></span>
+      <div id="filterMount"></div>
     </div>
   </div>
 
@@ -342,24 +334,15 @@ TABS.forEach(t=> tabBtn[t].addEventListener('click', ()=>selectTab(t)));
   document.addEventListener('click', function(e){ if(!e.target.closest('.more-menu')) closeMore(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMore(); });
   const gm=document.getElementById('go-mastered');
-  if(gm) gm.addEventListener('click', function(){ filterVal='hidden'; if(filterSel) filterSel.value='hidden'; selectTab('list'); });
+  if(gm) gm.addEventListener('click', function(){
+    clearFilter(); selSaved=['learned']; saveFilter();
+    if(fltUI) fltUI.updateBadge();
+    selectTab('list');
+  });
 })();
 
-const filterSel = document.getElementById('filterSel');
-filterSel.addEventListener('change', ()=>{ filterVal = filterSel.value; refreshCurrent(); });
-
-/* grup seçici — WORD_GROUPS'tan doldurulur; tek grup varsa gizli kalır */
-const groupSel = document.getElementById('groupSel');
-if(groupSel){
-  if(WORD_GROUPS.length < 2){ groupSel.hidden = true; }
-  else {
-    let opts='<option value="all">Tüm gruplar</option>';
-    WORD_GROUPS.forEach(g=>{ opts+='<option value="'+g.id+'">'+groupLabel(g)+'</option>'; });
-    groupSel.innerHTML=opts;
-    groupSel.value = groupVal==='all' ? 'all' : String(groupVal);
-    groupSel.addEventListener('change', ()=>{ const m=groupById(groupSel.value); groupVal = m ? m.id : 'all'; saveGroup(); refreshCurrent(); });
-  }
-}
+/* filtre butonu + 3 bölümlü panel (gruplar · skor · kaydedilenler) */
+let fltUI = mountFilter(document.getElementById('filterMount'), refreshCurrent, ['groups','status','saved']);
 
 /* filtre dropdown'ını sekmeye göre yerleştir: kart/quiz'de üst satıra, diğerlerinde çubuğa */
 const filterHost = document.getElementById('filterHost');
@@ -453,7 +436,7 @@ function sideText(w,side){ return side==='en' ? w.en : w.tr; }
    Yeni tur, bir önceki soruyla aynı kelimeyle başlamasın diye kaydırılır. */
 function buildQuizBag(){
   quiz.queue=shuffle(activeWords());
-  quiz.bagFilter=filterVal;
+  quiz.bagFilter=filterSig();
   if(quiz.cur && quiz.queue.length>1 && quiz.queue[0]._i===quiz.cur._i) quiz.queue.push(quiz.queue.shift());
 }
 function restartQuiz(){ quiz.correct=0; quiz.total=0; quiz.cur=null; buildQuizBag(); newQuestion(); }
@@ -462,14 +445,14 @@ function restartQuiz(){ quiz.correct=0; quiz.total=0; quiz.cur=null; buildQuizBa
    sürekli tekrar etmez. */
 function startQuiz(){
   const pool=activeWords();
-  if(pool.length && quiz.queue.length && quiz.bagFilter===filterVal && quiz.cur){ updateCount(); return; }
+  if(pool.length && quiz.queue.length && quiz.bagFilter===filterSig() && quiz.cur){ updateCount(); return; }
   restartQuiz();
 }
 function newQuestion(){
   clearTimeout(quizAutoTimer);
   const pool=activeWords();
   if(!pool.length){ qPrompt.textContent='…'; qSub.textContent=''; qOptions.innerHTML='<p class="empty">Bu filtrede kelime yok.</p>'; qScore.textContent=''; qNext.disabled=true; quiz.cur=null; updateCount(); return; }
-  if(!quiz.queue.length || quiz.bagFilter!==filterVal) buildQuizBag();
+  if(!quiz.queue.length || quiz.bagFilter!==filterSig()) buildQuizBag();
   const w=quiz.queue.shift(); quiz.cur=w; quiz.answered=false;
   const answerSide=quiz.dir==='en2tr'?'tr':'en';
   const promptSide=quiz.dir==='en2tr'?'en':'tr';
@@ -638,11 +621,16 @@ document.getElementById('navDown').addEventListener('click', ()=>moveFocus(1));
 document.body.classList.add('list-active');
 let startTab = 'list';
 try{ const saved = localStorage.getItem('ns-vocab-tab'); if(saved && TABS.indexOf(saved)>=0) startTab = saved; }catch(e){}
-/* Stats dropdown deep-links: vocabulary.html?filter=flagged|known|... opens the list pre-filtered */
+/* Stats dropdown deep-links: vocabulary.html?filter=flagged|known|hidden|weak|shaky */
 try{
   const qf = new URLSearchParams(location.search).get('filter');
-  if(qf && ['all','weak','shaky','known','flagged','hidden'].indexOf(qf)>=0){
-    filterVal = qf; if(filterSel) filterSel.value = qf; startTab = 'list';
+  if(qf && qf!=='all'){
+    clearFilter();
+    if(qf==='flagged') selSaved=['flagged'];
+    else if(qf==='hidden') selSaved=['learned'];
+    else if(['weak','shaky','known'].indexOf(qf)>=0) selStatus=[qf];
+    saveFilter(); if(fltUI) fltUI.updateBadge();
+    startTab = 'list';
   }
 }catch(e){}
 selectTab(startTab);

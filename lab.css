@@ -733,3 +733,54 @@
 [data-theme="dark"][data-section="collocations"]{--accent:#A78BFA;--accent-2:#C4B5FD;--accent-soft:rgba(167,139,250,.16);--accent-glow:rgba(167,139,250,.22)}
 [data-section="articles"]{--accent:#0D9488;--accent-2:#14B8A6;--accent-soft:rgba(13,148,136,.10);--accent-glow:rgba(13,148,136,.18)}
 [data-theme="dark"][data-section="articles"]{--accent:#2DD4BF;--accent-2:#5EEAD4;--accent-soft:rgba(45,212,191,.16);--accent-glow:rgba(45,212,191,.22)}
+
+/* ============================================================
+   Filtre butonu + panel (gruplar · skor · kaydedilenler)
+   ============================================================ */
+.filter-wrap{position:relative;display:inline-flex}
+.filter-btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:11px;cursor:pointer;padding:0;appearance:none;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-dim);
+  box-shadow:var(--shadow-sm);transition:.15s;
+}
+.filter-btn svg{width:16px;height:16px}
+.filter-btn:hover{color:var(--accent);border-color:var(--accent)}
+.filter-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filter-btn.on{color:var(--accent);border-color:var(--accent)}
+.flt-badge{
+  position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;padding:0 4px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-size:.66rem;font-weight:700;line-height:1;
+  color:#fff;background:var(--accent);border-radius:9px;box-shadow:0 0 0 2px var(--paper);
+}
+.filter-panel{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:120;width:min(300px,86vw);
+  background:var(--paper);border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--shadow-lg);padding:14px;display:flex;flex-direction:column;gap:14px;
+  animation:fltIn .13s ease;
+}
+@keyframes fltIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.filter-panel[hidden]{display:none}
+.flt-head{display:flex;align-items:center;justify-content:space-between;font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text)}
+.flt-clear{
+  font-family:var(--sans);font-size:.76rem;font-weight:600;color:var(--accent);
+  background:none;border:none;cursor:pointer;padding:4px 2px;
+}
+.flt-clear:disabled{color:var(--text-muted);cursor:default}
+.flt-clear:not(:disabled):hover{text-decoration:underline}
+.flt-sec{display:flex;flex-direction:column;gap:8px}
+.flt-lbl{font-family:var(--sans);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.flt-chips{display:flex;flex-wrap:wrap;gap:7px}
+.flt-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+  padding:6px 11px;font-family:var(--sans);font-size:.82rem;font-weight:500;
+  color:var(--text-dim);cursor:pointer;transition:.14s;white-space:nowrap;
+}
+.flt-chip:hover{border-color:var(--accent);color:var(--text)}
+.flt-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.flt-chip.on{border-color:var(--accent);color:var(--text);background:var(--accent-soft);font-weight:600}
+.flt-chip i{font-style:normal;font-size:.72rem;font-weight:700;color:var(--text-muted)}
+.flt-chip.on i{color:var(--accent)}
+.flt-foot{font-family:var(--sans);font-size:.78rem;color:var(--text-muted);padding-top:12px;border-top:1px solid var(--border)}
