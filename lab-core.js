@@ -84,13 +84,22 @@ document.addEventListener('keydown', function(e){
   else if(e.key==='End') n=chips.length-1;
   if(n>=0){ e.preventDefault(); e.stopPropagation(); chips[n].focus(); }
 });
+/* açıklama metinlerinde başlık kelimesini gizler (kartta cevabı ele vermesin;
+   örnek cümleler ve collocation'lar hariç — onlar kelimeyi göstermeli) */
+function maskHead(text, en){
+  if(!text) return text;
+  coreForms(en).forEach(function(f){
+    text = text.replace(new RegExp('\\b'+reEscape(f)+'[a-z]*', 'gi'), '<span class="masked" title="gizlendi">·····</span>');
+  });
+  return text;
+}
 function detailFields(w){
   let h = ipaBlock(w);
   h += '<div class="field tr-main"><span class="lbl">Meaning</span><p>'+w.tr+'</p></div>';
-  if(w.hint) h += '<div class="field"><span class="lbl">Nüans</span><p>'+w.hint+'</p></div>';
+  if(w.hint) h += '<div class="field"><span class="lbl">Nüans</span><p>'+maskHead(w.hint,w.en)+'</p></div>';
   if(w.similar){
     const m = w.similar.split(/\.\s*Fark:\s*/);
-    const sh = m.length>1 ? '<b class="syn">'+linkifyWords(m[0])+'.</b><span class="diff">'+m[1]+'</span>' : '<b class="syn">'+linkifyWords(w.similar)+'</b>';
+    const sh = m.length>1 ? '<b class="syn">'+linkifyWords(m[0])+'.</b><span class="diff">'+maskHead(m[1],w.en)+'</span>' : '<b class="syn">'+linkifyWords(w.similar)+'</b>';
     h += '<div class="field"><span class="lbl">Benzer kelimeler</span><p>'+sh+'</p></div>';
   }
   if(w.opposite) h += '<div class="field antonyms"><span class="lbl">Zıt kelimeler</span><p><b class="ant">'+linkifyWords(w.opposite)+'</b></p></div>';
@@ -98,8 +107,8 @@ function detailFields(w){
   if(w.ex2) ex += '<p class="en-ex">'+w.ex2+'</p><p class="tr-ex">'+w.exTr2+'</p>';
   h += '<div class="field"><span class="lbl">Examples</span>'+ex+'</div>';
   if(w.coll) h += '<div class="field"><span class="lbl">Collocations</span><p class="coll-desc">En sık birlikte kullanıldığı kelimeler (fiil, edat, artikel). Bir kalıba tıkla ya da ok tuşlarıyla gez; örnek cümlesi altta açılır:</p><div class="coll">'+collFormat(w)+'</div></div>';
-  if(w.detail) h += '<div class="field explanation"><span class="lbl">Explanation</span><p>'+w.detail+'</p></div>';
-  if(w.note)   h += '<div class="field meta"><span class="lbl">Origin</span><p>'+w.note+'</p></div>';
+  if(w.detail) h += '<div class="field explanation"><span class="lbl">Explanation</span><p>'+maskHead(w.detail,w.en)+'</p></div>';
+  if(w.note)   h += '<div class="field meta"><span class="lbl">Origin</span><p>'+maskHead(w.note,w.en)+'</p></div>';
   if(w.extra)  h += '<div class="field meta"><span class="lbl">Good to know</span><p>'+w.extra+'</p></div>';
   return h;
 }
