@@ -396,7 +396,7 @@ function renderCard(){
   if(dirEN){ sideTag.textContent='İngilizce'; promptEl.textContent=w.en; promptEl.classList.toggle('small',w.en.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.tr; aTr.textContent=w.en; }
   else { sideTag.textContent='Türkçe'; promptEl.textContent=w.tr; promptEl.classList.toggle('small',w.tr.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.en; aTr.textContent=w.tr; }
   const showHint = (!dirEN && w.hint);
-  promptHint.textContent = showHint ? w.hint : '';
+  promptHint.innerHTML = showHint ? maskHead(w.hint, w.en) : '';
   promptHint.style.display = showHint ? '' : 'none';
   updateCount();
 }
