@@ -568,7 +568,7 @@
   .stat-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
 
   /* cümle pratiği + yer imi (flag) */
-  .topbar-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+  .topbar-right{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
   .flag-btn{appearance:none;cursor:pointer;width:36px;height:36px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);display:flex;align-items:center;justify-content:center;padding:0;box-shadow:var(--shadow-sm);transition:.15s}
   .flag-btn:hover{border-color:var(--accent);color:var(--accent)}
   .flag-btn svg{width:16px;height:16px}
@@ -756,7 +756,8 @@
   color:#fff;background:var(--accent);border-radius:9px;box-shadow:0 0 0 2px var(--paper);
 }
 .filter-panel{
-  position:absolute;top:calc(100% + 8px);right:0;z-index:120;width:min(300px,86vw);
+  position:absolute;top:calc(100% + 8px);right:0;z-index:120;
+  width:300px;max-width:calc(100vw - 16px);max-height:min(72vh,560px);overflow-y:auto;
   background:var(--paper);border:1px solid var(--border);border-radius:16px;
   box-shadow:var(--shadow-lg);padding:14px;display:flex;flex-direction:column;gap:14px;
   animation:fltIn .13s ease;

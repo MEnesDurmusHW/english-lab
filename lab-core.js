@@ -222,6 +222,7 @@ function mountFilter(host, onChange, sections){
   }
   function apply(){ saveFilter(); updateBadge(); renderPanel(); if(onChange) onChange(); }
   panel.addEventListener('click', function(e){
+    e.stopPropagation();   // panel içi tıklama dış "kapat" tetiklemesin (re-render öğeyi koparıyor)
     if(e.target.closest('#fltClear')){ clearFilter(); apply(); return; }
     const chip=e.target.closest('.flt-chip'); if(!chip) return;
     const k=chip.getAttribute('data-k'), raw=chip.getAttribute('data-v');
@@ -230,7 +231,18 @@ function mountFilter(host, onChange, sections){
     if(i>=0) arr.splice(i,1); else arr.push(v);
     apply();
   });
-  function open(){ renderPanel(); panel.hidden=false; btn.setAttribute('aria-expanded','true'); }
+  function open(){
+    renderPanel(); panel.hidden=false; btn.setAttribute('aria-expanded','true');
+    // ekran dışına taşarsa (mobilde buton solda kalınca) viewport içine kaydır
+    panel.style.left=''; panel.style.right='';
+    const pad=8, wrap=host.querySelector('.filter-wrap'), r=panel.getBoundingClientRect();
+    if(r.left < pad && wrap){
+      panel.style.right='auto';
+      panel.style.left = (pad - wrap.getBoundingClientRect().left) + 'px';
+    } else if(r.right > window.innerWidth - pad){
+      panel.style.left='auto'; panel.style.right='0';
+    }
+  }
   function close(){ panel.hidden=true; btn.setAttribute('aria-expanded','false'); }
   btn.addEventListener('click', function(e){ e.stopPropagation(); panel.hidden?open():close(); });
   document.addEventListener('click', function(e){ if(!e.target.closest('.filter-wrap')) close(); });
