@@ -86,7 +86,13 @@
   .p-btn:disabled{opacity:.4;cursor:default}
   .p-done{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:8px}
 
-  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} }
+  /* Practice = tam sayfa: açıklayıcı başlık gizlenir, soru dikey ortalanır;
+     böylece her soru geçişinde aşağı kaydırmaya gerek kalmaz. */
+  body.practice-active .g-head{display:none}
+  body.practice-active .wrap{padding-top:24px;padding-bottom:32px}
+  body.practice-active #practiceView{min-height:calc(100svh - 176px);display:flex;flex-direction:column;justify-content:center}
+
+  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} body.practice-active .wrap{padding-top:16px} body.practice-active #practiceView{min-height:calc(100svh - 210px)} }
 </style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -508,6 +514,7 @@ function render(){
   document.getElementById('mode-practice').setAttribute('aria-selected', mode==='practice'?'true':'false');
   learnView.hidden = mode!=='learn';
   practiceView.hidden = mode!=='practice';
+  document.body.classList.toggle('practice-active', mode==='practice');
   if(mode==='learn') renderLearn(t); else renderPractice();
   window.scrollTo({top:0, behavior:'auto'});
 }
