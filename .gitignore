@@ -5,5 +5,8 @@ serviceAccount*.json
 firebase-debug.log
 node_modules/
 
+# kişisel Claude Code ayarları (skill'ler paylaşılır, bu dosya paylaşılmaz)
+.claude/settings.local.json
+
 # copyrighted source material — do not publish
 *.pdf
