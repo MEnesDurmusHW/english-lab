@@ -262,11 +262,12 @@
   .ipa .uk b{background:var(--uk)}
   .ipa .us b{background:var(--us)}
   .ipa-link{
-    display:inline-flex;align-items:center;gap:5px;margin-left:auto;
-    font-family:var(--sans);font-size:.78rem;font-weight:600;color:var(--accent);
-    text-decoration:none;border:1px solid var(--border);border-radius:10px;padding:5px 12px;transition:.15s;
+    display:flex;align-items:center;justify-content:center;margin-left:auto;
+    width:34px;height:34px;color:var(--text-muted);
+    text-decoration:none;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;transition:.15s;
   }
-  .ipa-link:hover{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
+  .ipa-link svg{width:15px;height:15px}
+  .ipa-link:hover{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
 
   /* fields */
   .field{margin:0 0 18px}
