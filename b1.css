@@ -318,22 +318,24 @@
    ============================================================ */
 @media (min-width:900px){
   .b1-app{padding-bottom:40px;min-height:0}
-  .b1-strip{padding:0;cursor:default}
+  .b1-strip{padding:0}
   .b1-strip-bar{height:4px;border-radius:0}
   .b1-context{max-width:1120px;margin:0 auto;width:100%;box-sizing:border-box;min-height:56px}
 
+  /* Yan sütunlar simetrik olmadan kart sayfa merkezinden kayar ve dock ile
+     hizalanmaz. 1120px altında ray yok -> tek ortalanmış sütun. */
   .b1-main{
-    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
-    max-width:1120px;margin:0 auto;width:100%;box-sizing:border-box;flex:0 0 auto;
+    display:grid;grid-template-columns:auto;justify-content:center;align-items:center;
+    gap:24px;max-width:1200px;margin:0 auto;width:100%;box-sizing:border-box;flex:0 0 auto;
   }
-  .b1-stage{grid-column:2;flex:0 0 auto;padding:24px 0}
+  .b1-stage{grid-column:1;flex:0 0 auto;padding:24px 0}
   .b1-card{width:520px;max-width:520px;height:336px;padding:40px 32px 32px}
   .b1-app.is-zero .b1-card{max-height:none}
   .b1-empty{width:520px;max-width:520px;min-height:336px}
   .b1-note{overflow-y:auto;max-height:112px}
 
   .b1-rail{
-    display:block;grid-column:3;justify-self:start;width:240px;box-sizing:border-box;
+    box-sizing:border-box;
     border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);
     padding:16px;
   }
@@ -380,6 +382,15 @@
     font-family:var(--mono);font-size:.68rem;background:var(--surface-2);
     border:1px solid var(--border);border-radius:8px;padding:2px 6px;color:var(--text-dim);
   }
+}
+
+/* ≥1120px: ray için yer var. Yan sütunlar birebir aynı tanımda olduğu için
+   orta sütun (kart) sayfa merkezinde kalır ve alttaki dock ile hizalanır. */
+@media (min-width:1120px){
+  .b1-strip{cursor:default}          /* ray görünür, alt sayfaya gerek yok */
+  .b1-main{grid-template-columns:minmax(0,240px) auto minmax(0,240px)}
+  .b1-stage{grid-column:2}
+  .b1-rail{display:block;grid-column:3;justify-self:start;width:100%;max-width:240px}
 }
 
 /* 601–899px: mobil düzen ama kart genişler */

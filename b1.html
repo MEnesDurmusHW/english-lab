@@ -456,7 +456,10 @@ dirBtn.addEventListener('click', () => setDir(!dirTR));
 $('emptyClear').addEventListener('click', () => { b1ClearFilter(); onFilterChange(); });
 
 strip.addEventListener('click', () => {
-  if (window.matchMedia('(min-width:900px)').matches) return;   // masaüstünde ray zaten görünür
+  /* Ray gerçekten görünüyorsa alt sayfaya gerek yok. Sabit bir kırılım
+     noktası yerine öğenin görünürlüğüne bakıyoruz — ray artık 1120px'te
+     devreye giriyor, iki yerde eşitlenmesi gereken sayı kalmasın. */
+  if (railEl.offsetParent !== null) return;
   progressSheet.hidden ? openSheet(progressSheet) : closeSheets();
 });
 moreBtn.addEventListener('click', () => { moreSheet.hidden ? openSheet(moreSheet) : closeSheets(); });
