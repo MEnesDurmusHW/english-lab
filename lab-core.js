@@ -31,6 +31,7 @@ function ipaBlock(w){
   let out = '<div class="ipa">';
   if(w.uk) out += '<span class="uk"><b>UK</b>'+w.uk+'</span>';
   if(w.us) out += '<span class="us"><b>US</b>'+w.us+'</span>';
+  out += '<a class="ipa-link" href="'+cambridgeURL(w.en)+'" target="_blank" rel="noopener" title="Cambridge Dictionary\'de aç">Cambridge <span aria-hidden="true">&#8599;</span></a>';
   return out + '</div>';
 }
 function collFormat(w){
