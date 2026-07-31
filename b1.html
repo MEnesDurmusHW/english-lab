@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>B1 Recall — NS's English Lab</title>
+<meta name="description" content="B1 seviyesi İngilizce kelimeler için Türkçeden İngilizceye flash kart tekrar alanı: bildim/bilemedim, doğru olma skoru, öğrendim işareti ve paket/tür/durum filtresi.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="B1 Recall">
+<meta property="og:description" content="B1 kelimeleri için Türkçe → İngilizce hatırlama ve tekrar alanı.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/b1.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="share.js" defer></script>
+<script src="success-fx.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<link rel="stylesheet" href="b1.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<!-- appbar.js KULLANILMIYOR: paylaşımlı gezinti (Vocabulary/Collocations/Articles)
+     ve Stats menüsü vocabulary.html filtrelerine gider; bu alan izole olmalı.
+     Bölüm rengi için data-section'ı burada elle veriyoruz. -->
+<script>document.documentElement.setAttribute('data-section','b1');</script>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="appbar">
+  <div class="appbar-inner solo">
+    <a class="brand" href="index.html" aria-label="English Lab ana sayfasına dön">
+      <span class="brand-mark">NS</span>
+      <span class="brand-text">
+        <span class="brand-name">B1 Recall</span>
+        <span class="brand-sub">English Lab</span>
+      </span>
+    </a>
+    <div class="appbar-tools">
+      <button class="tool-btn" type="button" onclick="openShare()" aria-label="Bu sayfayı paylaş">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Temayı değiştir">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <span id="syncHost" class="sync-host"></span>
+    </div>
+  </div>
+</header>
+
+<div class="b1-app" id="app">
+
+  <!-- ilerleme şeridi: mobilde dokununca panel açar, masaüstünde sadece görsel -->
+  <button class="b1-strip" id="strip" type="button" aria-expanded="false" aria-label="İlerleme detayı">
+    <span class="b1-strip-bar" id="stripBar">
+      <i class="b1-seg-known" id="segKnown"></i>
+      <i class="b1-seg-shaky" id="segShaky"></i>
+      <i class="b1-seg-weak"  id="segWeak"></i>
+    </span>
+  </button>
+
+  <div class="b1-context">
+    <span class="b1-scope" id="scope"></span>
+    <button class="b1-dir" id="dirBtn" type="button" aria-label="Yön: Türkçeden İngilizceye. Değiştirmek için dokun.">TR→EN</button>
+    <div id="filterMount"></div>
+  </div>
+
+  <div class="b1-main">
+    <div class="b1-stage">
+      <button class="b1-nav-btn js-prev" type="button" aria-label="Önceki kart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <article class="b1-card" id="card" tabindex="0" role="button" aria-label="Kartı çevir">
+        <div class="b1-card-meta">
+          <span class="b1-badge" id="badge"></span>
+          <span class="b1-idx" id="idx"></span>
+        </div>
+        <div class="b1-faces" id="faces">
+          <div class="b1-face b1-face-front">
+            <div class="b1-pos" id="fPos"></div>
+            <h2 class="b1-term" id="fTerm"></h2>
+            <p class="b1-note" id="fNote"></p>
+          </div>
+          <div class="b1-face b1-face-back">
+            <div class="b1-pos" id="bPos"></div>
+            <h2 class="b1-answer" id="bAnswer"></h2>
+            <p class="b1-answer-tr" id="bTr"></p>
+            <p class="b1-note" id="bNote"></p>
+          </div>
+        </div>
+        <span class="b1-flip-hint" id="flipHint">çevirmek için dokun</span>
+      </article>
+
+      <div class="b1-empty" id="empty" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        <h2>Bu filtreyle eşleşen kelime yok</h2>
+        <p>Bir paket veya durum seçimini kaldırmayı dene.</p>
+        <button type="button" id="emptyClear">Filtreyi temizle</button>
+      </div>
+
+      <button class="b1-nav-btn js-next" type="button" aria-label="Sonraki kart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <aside class="b1-rail" id="rail" aria-label="İlerleme"></aside>
+  </div>
+
+  <!-- mobil: ikon sırası -->
+  <div class="b1-utils">
+    <button class="b1-icon-btn js-prev" type="button" aria-label="Önceki kart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="b1-icon-btn js-flag" type="button" aria-label="İşaretle" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+    </button>
+    <button class="b1-icon-btn js-learn" type="button" aria-label="Öğrendim olarak işaretle" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </button>
+    <button class="b1-icon-btn" id="moreBtn" type="button" aria-label="Daha fazla" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+    </button>
+    <button class="b1-icon-btn js-next" type="button" aria-label="Sonraki kart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div class="b1-dock">
+    <button class="b1-reveal" id="revealBtn" type="button">Cevabı göster</button>
+    <div class="b1-rate">
+      <button class="b1-miss js-miss" type="button">Bilemedim<span class="b1-key">N</span></button>
+      <button class="b1-hit js-hit" type="button">Bildim<span class="b1-key">M</span></button>
+    </div>
+  </div>
+
+  <!-- masaüstü: metin düğmeleri -->
+  <div class="b1-desk-utils">
+    <button class="b1-util-btn js-flag" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      İşaretle
+    </button>
+    <button class="b1-util-btn js-learn" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Öğrendim
+    </button>
+    <button class="b1-util-btn js-shuffle" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      Karıştır
+    </button>
+    <button class="b1-util-btn js-reset" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Skoru sıfırla
+    </button>
+  </div>
+
+  <p class="b1-kbd">
+    <kbd>Boşluk</kbd> çevir · <kbd>←</kbd> <kbd>→</kbd> gez · <kbd>N</kbd> bilemedim · <kbd>M</kbd> bildim · <kbd>L</kbd> işaretle · <kbd>G</kbd> öğrendim · <kbd>S</kbd> karıştır
+  </p>
+</div>
+
+<div class="b1-sheet-backdrop" id="backdrop" hidden></div>
+
+<div class="b1-sheet b1-progress-sheet" id="progressSheet" hidden role="dialog" aria-label="İlerleme"></div>
+
+<div class="b1-sheet b1-more" id="moreSheet" hidden role="dialog" aria-label="Daha fazla">
+  <h3>Daha fazla</h3>
+  <button type="button" class="js-shuffle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+    Karıştır
+  </button>
+  <button type="button" class="js-reset">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    Bu kelimenin skorunu sıfırla
+  </button>
+  <button type="button" class="js-dir">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    <span id="moreDirLabel">Yön: EN→TR yap</span>
+  </button>
+</div>
+
+<script src="b1-data.js"></script>
+<script src="b1-core.js"></script>
+<script>
+/* ============================================================
+   B1 Recall — sayfa mantığı
+   Veri: B1 (b1-data.js) · Ortak mantık: b1-core.js
+   data.js / lab-core.js / ns-vocab-* ile hiçbir bağlantısı yok.
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
+      badge = $('badge'), idxEl = $('idx'), scopeEl = $('scope'), railEl = $('rail'),
+      fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
+      bPos = $('bPos'), bAnswer = $('bAnswer'), bTr = $('bTr'), bNote = $('bNote'),
+      flipHint = $('flipHint'), dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
+      strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
+      backdrop = $('backdrop'), progressSheet = $('progressSheet'), moreSheet = $('moreSheet'),
+      moreBtn = $('moreBtn'), moreDirLabel = $('moreDirLabel');
+
+let order = [], pos = 0, flipped = false, dirTR = true, lastSig = null, seen = 0;
+let sessCards = 0, sessHits = 0;          // yalnızca bellekte — seans sayacı
+
+const all = s => Array.prototype.slice.call(document.querySelectorAll(s));
+
+/* ---- tur (torba): filtre değişmedikçe tur bitmeden kelime tekrar etmez ---- */
+function buildOrder(keepCurrent){
+  const cur = (keepCurrent && order.length) ? order[pos] : null;
+  order = b1Shuffle(b1Active().map(w => w._i));
+  lastSig = b1FilterSig();
+  pos = 0;
+  if (cur != null){ const at = order.indexOf(cur); if (at >= 0) pos = at; }
+}
+function cur(){ return B1[order[pos]]; }
+
+/* ---- kart ---- */
+function renderCard(){
+  const has = order.length > 0;
+  card.hidden = !has; empty.hidden = has;
+  all('.b1-icon-btn, .b1-nav-btn, .b1-util-btn').forEach(b => { if(!b.id) b.disabled = !has; });
+  revealBtn.disabled = !has;
+
+  if (!has){
+    idxEl.textContent = '0 / 0';
+    setRevealed(false);
+    renderProgress();
+    return;
+  }
+  const w = cur();
+  flipped = false;
+  card.classList.remove('is-flipped');
+  setRevealed(false);
+  idxEl.textContent = (pos + 1) + ' / ' + order.length;
+
+  const posLabel = B1_POS_LABEL[w.pos] || w.pos;
+  fPos.textContent = posLabel;
+  bPos.textContent = posLabel;
+
+  if (dirTR){
+    fTerm.textContent = w.tr;
+    bAnswer.textContent = w.en;
+    bTr.textContent = w.tr;
+    /* ayrım notu ön yüzde ipucu — başlık kelimesi maskeli */
+    fNote.innerHTML = w.note ? b1MaskHead(w.note, w.en) : '';
+    bNote.textContent = w.note || '';          // arka yüzde maskesiz tam metin
+  } else {
+    fTerm.textContent = w.en;
+    bAnswer.textContent = w.tr;
+    bTr.textContent = w.en;
+    fNote.innerHTML = '';                      // EN görünürken not Türkçeyi ele verebilir
+    bNote.textContent = w.note || '';
+  }
+  fTerm.classList.toggle('is-long', fTerm.textContent.length > 24);
+  bAnswer.classList.toggle('is-long', bAnswer.textContent.length > 24);
+  card.setAttribute('aria-label', 'Kartı çevir');
+
+  renderBadge();
+  syncToggleBtns();
+  renderProgress();
+}
+function renderBadge(){
+  if (!order.length){ badge.className = 'b1-badge'; badge.textContent = ''; return; }
+  const en = cur().en, t = b1Tries(en);
+  if (!t){ badge.className = 'b1-badge st-new'; badge.textContent = 'Yeni'; return; }
+  const st = b1StatusOf(en);
+  badge.className = 'b1-badge st-' + st;
+  badge.textContent = B1_STATUS_LABEL[st] + ' · ' + b1AccText(en) + ' (' + b1Hits(en) + '/' + t + ')';
+}
+function setRevealed(on){
+  app.classList.toggle('is-revealed', on);
+}
+
+/* ---- ilerleme: şerit + ray + alt sayfa ---- */
+function stats(){
+  const scope = b1Active();
+  let known = 0, shaky = 0, weak = 0, fresh = 0, hits = 0, tries = 0;
+  scope.forEach(w => {
+    const t = b1Tries(w.en);
+    tries += t; hits += b1Hits(w.en);
+    if (!t){ fresh++; return; }
+    const s = b1StatusOf(w.en);
+    if (s === 'known') known++; else if (s === 'weak') weak++; else shaky++;
+  });
+  return { n: scope.length, known, shaky, weak, fresh, hits, tries,
+           learned: B1.filter(w => b1IsHidden(w.en)).length };
+}
+function renderProgress(){
+  const s = stats(), n = s.n || 1;
+  app.classList.toggle('is-zero', s.tries === 0);
+  segKnown.style.width = (s.known / n * 100).toFixed(2) + '%';
+  segShaky.style.width = (s.shaky / n * 100).toFixed(2) + '%';
+  segWeak.style.width  = (s.weak  / n * 100).toFixed(2) + '%';
+  strip.setAttribute('aria-label',
+    'İlerleme: ' + s.known + ' biliyorum, ' + s.shaky + ' sağlam değil, ' + s.weak + ' zayıf, ' + s.fresh + ' denenmedi');
+
+  const acc = s.tries ? Math.round(s.hits / s.tries * 100) + '%' : '—';
+  const rows = s.tries === 0
+    ? '<p class="b1-session-val">' + s.n + ' kelime · hepsi denenmedi</p>'
+    : '<div class="b1-rail-row"><i class="b1-dot-known"></i><span>Biliyorum</span><b>' + s.known + '</b></div>' +
+      '<div class="b1-rail-row"><i class="b1-dot-shaky"></i><span>Sağlam değil</span><b>' + s.shaky + '</b></div>' +
+      '<div class="b1-rail-row"><i class="b1-dot-weak"></i><span>Zayıf</span><b>' + s.weak + '</b></div>' +
+      '<div class="b1-rail-row"><i class="b1-dot-none"></i><span>Denenmedi</span><b>' + s.fresh + '</b></div>' +
+      '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>';
+
+  const html =
+    '<div class="b1-acc' + (s.tries ? '' : ' is-none') + '">' + acc + '</div>' +
+    '<p class="b1-acc-label">' + (s.tries ? 'doğru olma skoru' : 'henüz deneme yok') + '</p>' +
+    '<hr class="b1-rail-sep">' + rows +
+    '<hr class="b1-rail-sep">' +
+    '<p class="b1-session-label">Bu seans</p>' +
+    '<p class="b1-session-val">' + sessCards + ' kart · ' + sessHits + ' doğru</p>';
+
+  railEl.innerHTML = html;
+  if (!progressSheet.hidden) progressSheet.innerHTML = '<h3>İlerleme</h3>' + html;
+
+  scopeEl.textContent = scopeLabel(s.n);
+}
+function scopeLabel(n){
+  const parts = [];
+  if (b1SelPacks.length){
+    const ids = b1SelPacks.slice().sort((a, b) => a - b);
+    parts.push(ids.length === 1 ? 'Paket ' + ids[0]
+      : 'Paket ' + ids[0] + '–' + ids[ids.length - 1] + (ids.length !== ids[ids.length - 1] - ids[0] + 1 ? ' (seçili)' : ''));
+  } else parts.push('Tüm paketler');
+  if (b1SelPos.length) parts.push(b1SelPos.map(p => B1_POS_LABEL[p] || p).join(', '));
+  if (b1SelStatus.length) parts.push(b1SelStatus.map(s => B1_STATUS_LABEL[s]).join(', '));
+  if (b1SelSaved.indexOf('flagged') >= 0) parts.push('İşaretli');
+  if (b1SelSaved.indexOf('learned') >= 0) parts.push('Öğrendiklerim');
+  parts.push(n + ' kelime');
+  return parts.join(' · ');
+}
+
+/* ---- eylemler ---- */
+function flip(){
+  if (!order.length) return;
+  flipped = !flipped;
+  card.classList.toggle('is-flipped', flipped);
+  setRevealed(flipped);
+  card.setAttribute('aria-label', flipped ? 'Kartı çevir (cevap görünüyor)' : 'Kartı çevir');
+  if (flipped){
+    seen++;
+    if (seen > 3) app.classList.add('is-seasoned');
+  }
+}
+function slide(dir){
+  const cls = dir > 0 ? 'enter-right' : 'enter-left';
+  faces.classList.remove('enter-right', 'enter-left');
+  void faces.offsetWidth;
+  faces.classList.add(cls);
+}
+function next(){ if (!order.length) return; pos = (pos + 1) % order.length; renderCard(); slide(1); }
+function prev(){ if (!order.length) return; pos = (pos - 1 + order.length) % order.length; renderCard(); slide(-1); }
+function shuffleAll(){ if (!order.length) return; buildOrder(false); renderCard(); slide(1); }
+function rate(hit, btn){
+  if (!order.length) return;
+  b1AddResult(cur().en, hit);
+  sessCards++; if (hit) sessHits++;
+  if (btn){ btn.classList.add('is-pulse'); setTimeout(() => btn.classList.remove('is-pulse'), 130); }
+  if (hit && typeof window.successFX === 'function'){ try { window.successFX(); } catch (e) {} }
+  next();
+}
+function resetCurrent(){ if (!order.length) return; b1ResetWord(cur().en); renderCard(); closeSheets(); }
+function toggleFlag(){ if (!order.length) return; b1ToggleFlag(cur().en); syncToggleBtns(); renderProgress(); }
+function toggleLearned(){
+  if (!order.length) return;
+  const w = cur();
+  b1ToggleHidden(w.en);
+  if (!b1Matches(w)){
+    order.splice(pos, 1);
+    if (pos >= order.length) pos = 0;
+  }
+  renderCard(); closeSheets();
+}
+function syncToggleBtns(){
+  const has = order.length > 0;
+  const fl = has && b1IsFlagged(cur().en), le = has && b1IsHidden(cur().en);
+  all('.js-flag').forEach(b => { b.classList.toggle('is-flagged', !!fl); b.setAttribute('aria-pressed', fl ? 'true' : 'false'); });
+  all('.js-learn').forEach(b => { b.classList.toggle('is-learned', !!le); b.setAttribute('aria-pressed', le ? 'true' : 'false'); });
+  all('.js-reset').forEach(b => { b.disabled = !has || b1Tries(cur().en) === 0; });
+}
+function setDir(tr){
+  dirTR = tr;
+  dirBtn.textContent = tr ? 'TR→EN' : 'EN→TR';
+  dirBtn.setAttribute('aria-label', tr
+    ? 'Yön: Türkçeden İngilizceye. Değiştirmek için dokun.'
+    : 'Yön: İngilizceden Türkçeye. Değiştirmek için dokun.');
+  moreDirLabel.textContent = tr ? 'Yön: EN→TR yap' : 'Yön: TR→EN yap';
+  renderCard();
+}
+
+/* ---- alt sayfalar ---- */
+function openSheet(el){
+  closeSheets();
+  if (el === progressSheet) progressSheet.innerHTML = '<h3>İlerleme</h3>' + railEl.innerHTML;
+  el.hidden = false; backdrop.hidden = false;
+  if (el === progressSheet) strip.setAttribute('aria-expanded', 'true');
+  if (el === moreSheet) moreBtn.setAttribute('aria-expanded', 'true');
+}
+function closeSheets(){
+  progressSheet.hidden = true; moreSheet.hidden = true; backdrop.hidden = true;
+  strip.setAttribute('aria-expanded', 'false');
+  moreBtn.setAttribute('aria-expanded', 'false');
+}
+
+/* ---- filtre değişince turu yeniden kur ---- */
+function onFilterChange(){
+  if (b1FilterSig() !== lastSig) buildOrder(true);
+  renderCard();
+  fltUI.refresh();
+}
+
+/* ---- olaylar ---- */
+card.addEventListener('click', flip);
+card.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); flip(); } });
+revealBtn.addEventListener('click', flip);
+all('.js-next').forEach(b => b.addEventListener('click', next));
+all('.js-prev').forEach(b => b.addEventListener('click', prev));
+all('.js-shuffle').forEach(b => b.addEventListener('click', () => { shuffleAll(); closeSheets(); }));
+all('.js-reset').forEach(b => b.addEventListener('click', resetCurrent));
+all('.js-flag').forEach(b => b.addEventListener('click', toggleFlag));
+all('.js-learn').forEach(b => b.addEventListener('click', toggleLearned));
+all('.js-hit').forEach(b => b.addEventListener('click', () => rate(true, b)));
+all('.js-miss').forEach(b => b.addEventListener('click', () => rate(false, b)));
+all('.js-dir').forEach(b => b.addEventListener('click', () => { setDir(!dirTR); closeSheets(); }));
+dirBtn.addEventListener('click', () => setDir(!dirTR));
+$('emptyClear').addEventListener('click', () => { b1ClearFilter(); onFilterChange(); });
+
+strip.addEventListener('click', () => {
+  if (window.matchMedia('(min-width:900px)').matches) return;   // masaüstünde ray zaten görünür
+  progressSheet.hidden ? openSheet(progressSheet) : closeSheets();
+});
+moreBtn.addEventListener('click', () => { moreSheet.hidden ? openSheet(moreSheet) : closeSheets(); });
+backdrop.addEventListener('click', closeSheets);
+
+/* kart üzerinde yatay kaydırma = gezinme */
+let tx = 0, ty = 0, tt = 0;
+card.addEventListener('touchstart', e => {
+  const t = e.changedTouches[0]; tx = t.clientX; ty = t.clientY; tt = Date.now();
+}, { passive: true });
+card.addEventListener('touchend', e => {
+  const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+  if (Date.now() - tt < 400 && Math.abs(dx) > 56 && Math.abs(dx) > Math.abs(dy) * 1.5){
+    e.preventDefault();
+    dx < 0 ? next() : prev();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  /* e.target document olabilir (odak yokken) — closest() her hedefte bulunmaz */
+  const t = e.target;
+  if (t && typeof t.closest === 'function' && t.closest('input, textarea')) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'Escape'){ closeSheets(); return; }
+  const k = e.key.toLowerCase();
+  if (e.key === ' '){ e.preventDefault(); flip(); }
+  else if (e.key === 'ArrowRight'){ e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); prev(); }
+  else if (k === 'm'){ e.preventDefault(); rate(true, document.querySelector('.js-hit')); }
+  else if (k === 'n'){ e.preventDefault(); rate(false, document.querySelector('.js-miss')); }
+  else if (k === 'l'){ e.preventDefault(); toggleFlag(); }
+  else if (k === 'g'){ e.preventDefault(); toggleLearned(); }
+  else if (k === 's'){ e.preventDefault(); shuffleAll(); }
+});
+
+/* ---- başlat ---- */
+const fltUI = b1MountFilter($('filterMount'), onFilterChange);
+buildOrder(false);
+renderCard();
+</script>
+</body>
+</html>

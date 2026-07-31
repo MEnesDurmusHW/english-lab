@@ -637,6 +637,8 @@
     max-width:1180px;margin:0 auto;padding:11px clamp(16px,4vw,32px);
     display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;
   }
+  /* .solo: bolumler arasi gezinti olmayan sayfalar (B1 Recall) — orta sutun yok */
+  .appbar-inner.solo{grid-template-columns:1fr auto}
 
   /* brand */
   .brand{display:inline-flex;align-items:center;gap:11px;justify-self:start;text-decoration:none;min-width:0}
@@ -740,6 +742,8 @@
 [data-theme="dark"][data-section="collocations"]{--accent:#A78BFA;--accent-2:#C4B5FD;--accent-soft:rgba(167,139,250,.16);--accent-glow:rgba(167,139,250,.22)}
 [data-section="articles"]{--accent:#0D9488;--accent-2:#14B8A6;--accent-soft:rgba(13,148,136,.10);--accent-glow:rgba(13,148,136,.18)}
 [data-theme="dark"][data-section="articles"]{--accent:#2DD4BF;--accent-2:#5EEAD4;--accent-soft:rgba(45,212,191,.16);--accent-glow:rgba(45,212,191,.22)}
+[data-section="b1"]{--accent:#059669;--accent-2:#10B981;--accent-soft:rgba(5,150,105,.10);--accent-glow:rgba(5,150,105,.18)}
+[data-theme="dark"][data-section="b1"]{--accent:#34D399;--accent-2:#6EE7B7;--accent-soft:rgba(52,211,153,.16);--accent-glow:rgba(52,211,153,.22)}
 
 /* ============================================================
    Filtre butonu + panel (gruplar · skor · kaydedilenler)
@@ -792,3 +796,4 @@
 .flt-chip i{font-style:normal;font-size:.72rem;font-weight:700;color:var(--text-muted)}
 .flt-chip.on i{color:var(--accent)}
 .flt-foot{font-family:var(--sans);font-size:.78rem;color:var(--text-muted);padding-top:12px;border-top:1px solid var(--border)}
+
