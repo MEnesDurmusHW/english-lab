@@ -320,9 +320,12 @@ function renderProgress(){
   strip.setAttribute('aria-label',
     'İlerleme: ' + s.known + ' biliyorum, ' + s.shaky + ' sağlam değil, ' + s.weak + ' zayıf, ' + s.fresh + ' denenmedi');
 
-  const acc = s.tries ? Math.round(s.hits / s.tries * 100) + '%' : '—';
+  /* sıfır durumunda boş bir çizgi yerine o an bilinen gerçek sayıyı göster */
+  const acc = s.tries ? Math.round(s.hits / s.tries * 100) + '%' : String(s.n);
+  /* sıfır durumu 5 satırlık hâlin alt kümesi — iskelet değişmez, zıplama olmaz */
   const rows = s.tries === 0
-    ? '<p class="b1-session-val">' + s.n + ' kelime · hepsi denenmedi</p>'
+    ? '<div class="b1-rail-row"><i class="b1-dot-none"></i><span>Denenmedi</span><b>' + s.fresh + '</b></div>' +
+      '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>'
     : '<div class="b1-rail-row"><i class="b1-dot-known"></i><span>Biliyorum</span><b>' + s.known + '</b></div>' +
       '<div class="b1-rail-row"><i class="b1-dot-shaky"></i><span>Sağlam değil</span><b>' + s.shaky + '</b></div>' +
       '<div class="b1-rail-row"><i class="b1-dot-weak"></i><span>Zayıf</span><b>' + s.weak + '</b></div>' +
@@ -331,7 +334,7 @@ function renderProgress(){
 
   const html =
     '<div class="b1-acc' + (s.tries ? '' : ' is-none') + '">' + acc + '</div>' +
-    '<p class="b1-acc-label">' + (s.tries ? 'doğru olma skoru' : 'henüz deneme yok') + '</p>' +
+    '<p class="b1-acc-label">' + (s.tries ? 'doğru olma skoru' : 'kelime · henüz deneme yok') + '</p>' +
     '<hr class="b1-rail-sep">' + rows +
     '<hr class="b1-rail-sep">' +
     '<p class="b1-session-label">Bu seans</p>' +
