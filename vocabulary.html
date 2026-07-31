@@ -63,8 +63,8 @@
   <div class="cards-view" id="view-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
     <div class="card-topbar">
       <div class="seg" role="group" aria-label="Yön">
-        <button id="dir-en" aria-selected="true">EN → TR</button>
-        <button id="dir-tr" aria-selected="false">TR → EN</button>
+        <button id="dir-en" aria-selected="false">EN → TR</button>
+        <button id="dir-tr" aria-selected="true">TR → EN</button>
       </div>
       <div class="topbar-right">
         <span class="assess-badge" id="cardBadge"></span>
@@ -377,7 +377,7 @@ const cardEl=document.getElementById('card'), sideTag=document.getElementById('s
   aTerm=document.getElementById('aTerm'), cardIpa=document.getElementById('cardIpa'), aTr=document.getElementById('aTr'),
   cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), facesEl=document.querySelector('.faces'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
   detailBtn=document.getElementById('detailBtn'), dirEnBtn=document.getElementById('dir-en'), dirTrBtn=document.getElementById('dir-tr');
-let order=[], cardPos=0, flipped=false, dirEN=true;
+let order=[], cardPos=0, flipped=false, dirEN=false;
 function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
 function curCard(){ return WORDS[order[cardPos]]; }
 function renderCardBadge(){
@@ -396,7 +396,7 @@ function renderCard(){
   if(dirEN){ sideTag.textContent='İngilizce'; promptEl.textContent=w.en; promptEl.classList.toggle('small',w.en.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.tr; aTr.textContent=w.en; }
   else { sideTag.textContent='Türkçe'; promptEl.textContent=w.tr; promptEl.classList.toggle('small',w.tr.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.en; aTr.textContent=w.tr; }
   const showHint = (!dirEN && w.hint);
-  promptHint.innerHTML = showHint ? maskHead(w.hint, w.en) : '';
+  promptHint.innerHTML = showHint ? w.hint : '';
   promptHint.style.display = showHint ? '' : 'none';
   updateCount();
 }
