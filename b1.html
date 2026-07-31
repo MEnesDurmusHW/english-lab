@@ -97,6 +97,7 @@
           <div class="b1-face b1-face-back">
             <div class="b1-pos" id="bPos"></div>
             <h2 class="b1-answer" id="bAnswer"></h2>
+            <p class="b1-ipa" id="bIpa"></p>
             <p class="b1-answer-tr" id="bTr"></p>
             <p class="b1-note" id="bNote"></p>
           </div>
@@ -215,6 +216,7 @@ const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
       badge = $('badge'), idxEl = $('idx'), scopeEl = $('scope'), railEl = $('rail'),
       fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
       bPos = $('bPos'), bAnswer = $('bAnswer'), bTr = $('bTr'), bNote = $('bNote'),
+      bIpa = $('bIpa'),
       flipHint = $('flipHint'), dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
       revealLabel = $('revealLabel'),
       strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
@@ -263,6 +265,7 @@ function renderCard(){
   if (dirTR){
     fTerm.textContent = w.tr;
     bAnswer.textContent = w.en;
+    bIpa.textContent = w.ipa || '';        // cevap İngilizce -> okunuşu göster
     bTr.textContent = w.tr;
     /* ayrım notu ön yüzde ipucu — başlık kelimesi maskeli */
     fNote.innerHTML = w.note ? b1MaskHead(w.note, w.en) : '';
@@ -270,6 +273,7 @@ function renderCard(){
   } else {
     fTerm.textContent = w.en;
     bAnswer.textContent = w.tr;
+    bIpa.textContent = '';                 // cevap Türkçe -> okunuş arka yüze ait değil
     bTr.textContent = w.en;
     fNote.innerHTML = '';                      // EN görünürken not Türkçeyi ele verebilir
     bNote.textContent = w.note || '';

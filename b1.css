@@ -121,6 +121,13 @@
   font-size:clamp(1.9rem,7vw,2.6rem);line-height:1.1;letter-spacing:-.03em;color:var(--text);
 }
 .b1-answer.is-long{font-size:clamp(1.4rem,5vw,1.9rem)}
+/* IPA: yalnızca ARKA yüzde, cevabın hemen altında. Tüm kelimelerde
+   bulunduğu için kartlar arası kayma yapmaz; ön yüz hiç etkilenmez. */
+.b1-ipa{
+  margin:8px 0 0;font-family:var(--mono);font-weight:600;font-size:.75rem;
+  letter-spacing:.02em;color:var(--text-muted);
+}
+.b1-ipa:empty{display:none}
 .b1-answer-tr{
   margin:12px 0 0;font-family:var(--sans);font-size:.92rem;line-height:1.45;
   color:var(--text-dim);max-width:30ch;
