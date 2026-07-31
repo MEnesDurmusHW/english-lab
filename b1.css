@@ -27,10 +27,8 @@
 .b1-seg-known{background:var(--ok)}
 .b1-seg-shaky{background:var(--mid)}
 .b1-seg-weak {background:var(--bad)}
-/* sıfır durumu: renk yok, "henüz veri yok" deseni */
-.b1-app.is-zero .b1-strip-bar{
-  background-image:repeating-linear-gradient(90deg,transparent 0 6px,var(--border) 6px 7px);
-}
+/* sıfır durumu: renk yok — düz, sakin bir ray (desen "bozuk" gibi okunuyordu) */
+.b1-app.is-zero .b1-strip-bar{opacity:.55}
 
 /* ---------- bağlam satırı ---------- */
 .b1-context{
@@ -52,22 +50,21 @@
 /* ---------- orta bölge ---------- */
 .b1-main{flex:1;display:flex;flex-direction:column;min-height:0;padding:0 clamp(16px,4vw,32px)}
 .b1-stage{
-  flex:1;display:flex;align-items:center;justify-content:center;gap:20px;
-  min-height:0;padding:16px 0;
+  flex:1;display:flex;align-items:stretch;justify-content:center;gap:20px;
+  min-height:0;padding:10px 0;
 }
 
 /* ---------- kart ---------- */
 .b1-card{
   position:relative;box-sizing:border-box;width:100%;max-width:520px;
-  flex:1 1 auto;min-height:260px;max-height:440px;
-  padding:44px 20px 34px;border-radius:24px;
+  flex:1 1 auto;min-height:240px;
+  padding:48px 22px 38px;border-radius:24px;
   background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;cursor:pointer;overflow:hidden;
   transition:box-shadow .2s,transform .2s,background-color .22s,border-color .22s;
   touch-action:pan-y;
 }
-.b1-app.is-zero .b1-card{max-height:470px}
 /* üst kenarda çok hafif parıltı — koyu temada kartın üstünü ayırır */
 .b1-card::before{
   content:"";position:absolute;inset:0 0 auto;height:120px;pointer-events:none;
@@ -199,22 +196,23 @@
   border-top:1px solid var(--border);
 }
 .b1-reveal{
-  display:block;width:100%;height:56px;border-radius:16px;border:0;cursor:pointer;
-  background:linear-gradient(180deg,var(--accent-2),var(--accent));color:#fff;
-  font-family:var(--sans);font-weight:700;font-size:1rem;letter-spacing:-.01em;
-  box-shadow:0 4px 16px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,.18);
-  transition:filter .16s,transform .09s ease-out;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;height:44px;margin-bottom:10px;border-radius:14px;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+  background:var(--accent-soft);color:var(--accent);
+  font-family:var(--sans);font-weight:600;font-size:.9rem;letter-spacing:-.01em;
+  transition:filter .16s,transform .09s ease-out,background-color .16s;
 }
-[data-theme="dark"] .b1-reveal{color:#0B0E14}
-.b1-rate{display:none;grid-template-columns:1fr 1fr;gap:12px}
-.b1-app.is-revealed .b1-reveal{display:none}
-.b1-app.is-revealed .b1-rate{display:grid;animation:b1DockIn .16s ease-out}
-@keyframes b1DockIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.b1-reveal svg{width:16px;height:16px}
+/* puanlama her zaman açık — kartı çevirmeden de işaretlenebilir */
+.b1-rate{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .b1-rate button{
-  position:relative;height:56px;border-radius:16px;cursor:pointer;border:1px solid;
-  font-family:var(--sans);font-weight:700;font-size:1rem;
+  position:relative;display:flex;align-items:center;justify-content:center;gap:9px;
+  height:58px;padding:0 20px;border-radius:16px;cursor:pointer;border:1px solid;
+  font-family:var(--sans);font-weight:600;font-size:.95rem;letter-spacing:-.01em;
   transition:filter .13s ease-out,transform .09s ease-out;
 }
+.b1-rate button svg{width:18px;height:18px;flex:0 0 auto}
 .b1-miss{
   background:color-mix(in srgb,var(--bad) 13%,transparent);
   border-color:color-mix(in srgb,var(--bad) 36%,transparent);color:var(--bad);
@@ -225,8 +223,9 @@
 }
 .b1-rate button.is-pulse{filter:brightness(1.25)}
 .b1-key{
-  position:absolute;top:7px;right:9px;font-family:var(--mono);font-weight:600;font-size:.6rem;
-  color:var(--text-muted);opacity:.7;display:none;
+  font-family:var(--mono);font-weight:600;font-size:.62rem;color:currentColor;
+  opacity:.5;border:1px solid currentColor;border-radius:5px;padding:1px 5px;
+  margin-left:2px;display:none;
 }
 
 /* ---------- alt sayfalar (filtre · ilerleme · daha fazla) ---------- */
@@ -356,16 +355,19 @@
   .b1-util-btn.is-flagged{color:var(--mid)}
   .b1-util-btn.is-learned{color:var(--ok)}
 
+  /* margin:0 auto flex ögesinde align-items:stretch'i iptal edip kutuyu
+     içeriğe daraltıyor — genişliği açıkça verip align-self ile ortalıyoruz */
   .b1-dock{
     position:static;padding:20px 0 0;background:none;border:0;
     backdrop-filter:none;-webkit-backdrop-filter:none;
-    max-width:420px;margin:0 auto;
+    width:100%;max-width:460px;align-self:center;
   }
-  .b1-reveal,.b1-rate button{height:52px}
+  .b1-reveal{height:46px}
+  .b1-rate button{height:54px}
   .b1-key{display:inline}
 
   .b1-kbd{
-    margin:18px 0 0;text-align:center;
+    display:block;margin:18px 0 0;text-align:center;
     font-family:var(--sans);font-size:.76rem;color:var(--text-muted);line-height:1.8;
   }
   .b1-kbd kbd{
@@ -379,7 +381,8 @@
 @media (min-width:601px) and (max-width:899px){
   .b1-card,.b1-empty{max-width:560px}
   .b1-dock{position:static;padding:16px 0 0;background:none;border:0;
-    backdrop-filter:none;-webkit-backdrop-filter:none;max-width:480px;margin:0 auto}
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    width:100%;max-width:480px;align-self:center}
   .b1-app{padding-bottom:40px}
 }
 

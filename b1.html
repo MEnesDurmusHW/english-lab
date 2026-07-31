@@ -139,10 +139,19 @@
   </div>
 
   <div class="b1-dock">
-    <button class="b1-reveal" id="revealBtn" type="button">Cevabı göster</button>
+    <button class="b1-reveal" id="revealBtn" type="button">
+      <svg id="revealIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="revealLabel">Cevabı göster</span>
+    </button>
     <div class="b1-rate">
-      <button class="b1-miss js-miss" type="button">Bilemedim<span class="b1-key">N</span></button>
-      <button class="b1-hit js-hit" type="button">Bildim<span class="b1-key">M</span></button>
+      <button class="b1-miss js-miss" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Bilemedim<span class="b1-key">N</span>
+      </button>
+      <button class="b1-hit js-hit" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Bildim<span class="b1-key">M</span>
+      </button>
     </div>
   </div>
 
@@ -207,6 +216,7 @@ const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
       fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
       bPos = $('bPos'), bAnswer = $('bAnswer'), bTr = $('bTr'), bNote = $('bNote'),
       flipHint = $('flipHint'), dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
+      revealLabel = $('revealLabel'),
       strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
       backdrop = $('backdrop'), progressSheet = $('progressSheet'), moreSheet = $('moreSheet'),
       moreBtn = $('moreBtn'), moreDirLabel = $('moreDirLabel');
@@ -232,6 +242,7 @@ function renderCard(){
   card.hidden = !has; empty.hidden = has;
   all('.b1-icon-btn, .b1-nav-btn, .b1-util-btn').forEach(b => { if(!b.id) b.disabled = !has; });
   revealBtn.disabled = !has;
+  all('.js-hit, .js-miss').forEach(b => { b.disabled = !has; });
 
   if (!has){
     idxEl.textContent = '0 / 0';
@@ -279,8 +290,11 @@ function renderBadge(){
   badge.className = 'b1-badge st-' + st;
   badge.textContent = B1_STATUS_LABEL[st] + ' · ' + b1AccText(en) + ' (' + b1Hits(en) + '/' + t + ')';
 }
+/* Puanlama düğmeleri her zaman etkin — kart çevrilmeden de işaretlenebilir.
+   "Cevabı göster" bir geçiş düğmesi; dock yüksekliği sabit kalır, düzen zıplamaz. */
 function setRevealed(on){
   app.classList.toggle('is-revealed', on);
+  revealLabel.textContent = on ? 'Cevabı gizle' : 'Cevabı göster';
 }
 
 /* ---- ilerleme: şerit + ray + alt sayfa ---- */
