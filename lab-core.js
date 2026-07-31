@@ -87,21 +87,23 @@ document.addEventListener('keydown', function(e){
 });
 function detailFields(w){
   let h = ipaBlock(w);
-  h += '<div class="field tr-main"><span class="lbl">Meaning</span><p>'+w.tr+'</p></div>';
+  h += '<div class="field tr-main"><span class="lbl">Meaning</span><p>'+w.tr+'</p>'+(w.detail?'<p class="tr-detail">'+w.detail+'</p>':'')+'</div>';
   if(w.hint) h += '<div class="field"><span class="lbl">Nüans</span><p>'+w.hint+'</p></div>';
-  if(w.similar){
-    const m = w.similar.split(/\.\s*Fark:\s*/);
-    const sh = m.length>1 ? '<b class="syn">'+linkifyWords(m[0])+'.</b><span class="diff">'+m[1]+'</span>' : '<b class="syn">'+linkifyWords(w.similar)+'</b>';
-    h += '<div class="field"><span class="lbl">Benzer kelimeler</span><p>'+sh+'</p></div>';
-  }
-  if(w.opposite) h += '<div class="field antonyms"><span class="lbl">Zıt kelimeler</span><p><b class="ant">'+linkifyWords(w.opposite)+'</b></p></div>';
   let ex = '<p class="en-ex">'+w.ex+'</p><p class="tr-ex">'+w.exTr+'</p>';
   if(w.ex2) ex += '<p class="en-ex">'+w.ex2+'</p><p class="tr-ex">'+w.exTr2+'</p>';
   h += '<div class="field"><span class="lbl">Examples</span>'+ex+'</div>';
-  if(w.coll) h += '<div class="field"><span class="lbl">Collocations</span><p class="coll-desc">En sık birlikte kullanıldığı kelimeler (fiil, edat, artikel). Bir kalıba tıkla ya da ok tuşlarıyla gez; örnek cümlesi altta açılır:</p><div class="coll">'+collFormat(w)+'</div></div>';
-  if(w.detail) h += '<div class="field explanation"><span class="lbl">Explanation</span><p>'+w.detail+'</p></div>';
-  if(w.note)   h += '<div class="field meta"><span class="lbl">Origin</span><p>'+w.note+'</p></div>';
-  if(w.extra)  h += '<div class="field meta"><span class="lbl">Good to know</span><p>'+w.extra+'</p></div>';
+
+  let more = '';
+  if(w.similar){
+    const m = w.similar.split(/\.\s*Fark:\s*/);
+    const sh = m.length>1 ? '<b class="syn">'+linkifyWords(m[0])+'.</b><span class="diff">'+m[1]+'</span>' : '<b class="syn">'+linkifyWords(w.similar)+'</b>';
+    more += '<div class="field"><span class="lbl">Benzer kelimeler</span><p>'+sh+'</p></div>';
+  }
+  if(w.opposite) more += '<div class="field antonyms"><span class="lbl">Zıt kelimeler</span><p><b class="ant">'+linkifyWords(w.opposite)+'</b></p></div>';
+  if(w.coll) more += '<div class="field"><span class="lbl">Collocations</span><details class="coll-desc"><summary>Nasıl kullanılır?</summary><p>En sık birlikte kullanıldığı kelimeler (fiil, edat, artikel). Bir kalıba tıkla ya da ok tuşlarıyla gez; örnek cümlesi altta açılır.</p></details><div class="coll">'+collFormat(w)+'</div></div>';
+  if(w.note)  more += '<div class="field meta"><span class="lbl">Origin</span><p>'+w.note+'</p></div>';
+  if(w.extra) more += '<div class="field meta"><span class="lbl">Good to know</span><p>'+w.extra+'</p></div>';
+  if(more) h += '<details class="more-fields"><summary>Daha fazla</summary>'+more+'</details>';
   return h;
 }
 function cardDetailFields(w){
@@ -116,6 +118,10 @@ try{ SCORES = JSON.parse(localStorage.getItem(SCORE_KEY)) || {}; }catch(e){ SCOR
 const STATUS_LABEL = {known:'Biliyorum', shaky:'Sağlam değil', weak:'Zayıf'};
 function saveScores(){ try{ localStorage.setItem(SCORE_KEY, JSON.stringify(SCORES)); }catch(e){} }
 function getScore(en){ return SCORES[en] || 0; }
+function resetScoresForGroups(ids){
+  WORDS.forEach(function(w){ if(ids.indexOf(w.grp)>=0) delete SCORES[w.en]; });
+  saveScores();
+}
 function addScore(en, d){ let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; saveScores(); }
 function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
@@ -197,7 +203,9 @@ function mountFilter(host, onChange, sections){
     let h='<div class="flt-head"><span>Filtrele</span><button type="button" class="flt-clear" id="fltClear"'+(filterActiveCount()?'':' disabled')+'>Temizle</button></div>';
     if(sections.indexOf('groups')>=0 && typeof WORD_GROUPS!=='undefined' && WORD_GROUPS.length>1){
       h+='<div class="flt-sec"><div class="flt-lbl">Gruplar</div><div class="flt-chips">'+
-        WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?'Grup '+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div></div>';
+        WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?'Grup '+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div>'+
+        (selGroups.length ? '<button type="button" class="flt-reset" id="fltResetGroup">Seçili grubun istatistiğini sıfırla</button>' : '')+
+      '</div>';
     }
     if(sections.indexOf('status')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">Skor durumu</div><div class="flt-chips">'+
@@ -216,6 +224,15 @@ function mountFilter(host, onChange, sections){
   panel.addEventListener('click', function(e){
     e.stopPropagation();   // panel içi tıklama dış "kapat" tetiklemesin (re-render öğeyi koparıyor)
     if(e.target.closest('#fltClear')){ clearFilter(); apply(); return; }
+    if(e.target.closest('#fltResetGroup')){
+      const n = WORDS.filter(w=>selGroups.indexOf(w.grp)>=0).length;
+      if(confirm(n+' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.')){
+        resetScoresForGroups(selGroups.slice());
+        renderPanel();
+        if(onChange) onChange();
+      }
+      return;
+    }
     const chip=e.target.closest('.flt-chip'); if(!chip) return;
     const k=chip.getAttribute('data-k'), raw=chip.getAttribute('data-v');
     const v = (k==='g' && raw!=='' && !isNaN(+raw)) ? +raw : raw;   // grup id sayıysa sayıya çevir

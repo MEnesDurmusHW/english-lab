@@ -283,6 +283,7 @@
   .field.tr-main{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);border-radius:var(--radius-sm);padding:14px 16px}
   .field.tr-main .lbl{color:var(--accent)}
   .field.tr-main p{color:var(--text);font-weight:600;font-size:1.05rem;line-height:1.45}
+  .field.tr-main .tr-detail{margin-top:8px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--accent) 18%,transparent);font-weight:400;font-size:.92rem;color:var(--text-dim)}
 
   /* examples: each EN line becomes an accented block, TR hangs under it */
   .field .en-ex{
@@ -303,7 +304,13 @@
   .masked{display:inline-block;color:var(--text-muted);letter-spacing:2px;opacity:.6;user-select:none;transform:translateY(1px)}
 
   /* collocations */
-  .field .coll-desc{color:var(--text-muted);font-size:.8rem;line-height:1.5;margin:0 0 10px}
+  .field .coll-desc{margin:0 0 10px}
+  .field .coll-desc summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:var(--text-muted);font-size:.8rem;font-weight:600;user-select:none}
+  .field .coll-desc summary::-webkit-details-marker{display:none}
+  .field .coll-desc summary::before{content:"▸";display:inline-block;font-size:.7em;transition:transform .15s}
+  .field .coll-desc[open] summary::before{transform:rotate(90deg)}
+  .field .coll-desc summary:hover{color:var(--text)}
+  .field .coll-desc p{color:var(--text-muted);font-size:.8rem;line-height:1.5;margin:6px 0 0}
   .field .coll{text-align:left}
   .coll-chips{display:flex;flex-wrap:wrap;gap:8px}
   .coll-chip{display:inline-block;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-family:inherit;font-size:.9rem;color:var(--text-dim);line-height:1.45;cursor:pointer;transition:.14s;text-align:left}
@@ -314,13 +321,26 @@
   .coll-ex{margin-top:10px;padding:9px 13px;border-left:2px solid var(--accent);background:var(--surface-2);border-radius:0 8px 8px 0;font-size:.9rem;color:var(--text-dim);line-height:1.5;font-style:italic}
 
   /* meta group (background info, de-emphasized) */
-  .field.explanation,.field.meta{
+  .field.meta{
     margin-top:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);
     padding:13px 15px;
   }
-  .field.explanation{margin-top:20px}
-  .field.explanation .lbl::before,.field.meta .lbl::before{background:var(--text-muted)}
-  .field.explanation p,.field.meta p{color:var(--text-dim);font-size:.92rem}
+  .field.meta .lbl::before{background:var(--text-muted)}
+  .field.meta p{color:var(--text-dim);font-size:.92rem}
+
+  /* collapsible "more" group: similar/opposite/collocations/origin/extra, collapsed by default */
+  details.more-fields{margin-top:18px}
+  details.more-fields>summary{
+    list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    color:var(--text-muted);font-family:var(--mono);font-size:.72rem;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;user-select:none;
+  }
+  details.more-fields>summary::-webkit-details-marker{display:none}
+  details.more-fields>summary::before{content:"▸";display:inline-block;font-size:.85em;transition:transform .15s}
+  details.more-fields[open]>summary::before{transform:rotate(90deg)}
+  details.more-fields>summary:hover{color:var(--accent)}
+  details.more-fields[open]>summary{margin-bottom:16px}
+  details.more-fields>.field:first-of-type{margin-top:0}
 
   /* ---- collocation sekmesi ---- */
   .coll-view{max-width:600px;margin:0 auto}
@@ -796,5 +816,10 @@
 .flt-chip.on{border-color:var(--accent);color:var(--text);background:var(--accent-soft);font-weight:600}
 .flt-chip i{font-style:normal;font-size:.72rem;font-weight:700;color:var(--text-muted)}
 .flt-chip.on i{color:var(--accent)}
+.flt-reset{
+  align-self:flex-start;font-family:var(--sans);font-size:.76rem;font-weight:600;color:var(--bad);
+  background:none;border:none;cursor:pointer;padding:2px;
+}
+.flt-reset:hover{text-decoration:underline}
 .flt-foot{font-family:var(--sans);font-size:.78rem;color:var(--text-muted);padding-top:12px;border-top:1px solid var(--border)}
 

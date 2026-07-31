@@ -260,8 +260,8 @@ function wireHeads(){
 }
 function scrollEntryToTop(entry){
   requestAnimationFrame(()=>{
-    const tabs = document.querySelector('.tabs');
-    const offset = (tabs ? tabs.offsetHeight : 0) + 16;
+    const appbar = document.querySelector('.appbar');
+    const offset = (appbar ? appbar.offsetHeight : 0) + 16;
     const y = entry.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({top: Math.max(0, y), behavior:'smooth'});
   });
@@ -403,7 +403,11 @@ function renderCard(){
 function replayAnim(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
 function playEnter(dir){ if(facesEl) replayAnim(facesEl, dir>0?'enter-right':'enter-left'); }
 function flipCard(){ if(!order.length) return; flipped=!flipped; cardEl.classList.toggle('flipped',flipped); replayAnim(cardEl,'flip-anim'); }
-function nextCard(){ if(!order.length) return; cardPos=(cardPos+1)%order.length; renderCard(); playEnter(1); }
+function nextCard(){
+  if(!order.length) return;
+  if(cardPos===order.length-1){ buildOrder(); } else { cardPos++; }
+  renderCard(); playEnter(1);
+}
 function prevCard(){ if(!order.length) return; cardPos=(cardPos-1+order.length)%order.length; renderCard(); playEnter(-1); }
 function shuffleCards(){ buildOrder(); renderCard(); playEnter(1); }
 function toggleCardDetails(){ const on=cardDetails.classList.toggle('show'); detailBtn.setAttribute('aria-pressed',on?'true':'false'); }
