@@ -103,10 +103,20 @@
 
 /* iki yüz aynı hücrede */
 .b1-faces{display:grid;width:100%;z-index:1}
+/* Üç satırlı ızgara: üst boşluk | kelime bloğu | not alanı.
+   1fr ... 1fr simetrik olduğu için kelime bloğu kartın tam ortasında kalır;
+   not aşağıda kendi alanına yerleşir. Böylece notu olan ve olmayan kartlarda
+   kelime aynı yükseklikte durur — önce tüm yüz ortalandığı için notlu kartta
+   kelime yukarı kayıyordu. */
 .b1-faces > .b1-face{
-  grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-width:0;
+  grid-area:1/1;display:grid;grid-template-rows:1fr auto 1fr;
+  justify-items:center;min-width:0;width:100%;
 }
+.b1-head{
+  grid-row:2;display:flex;flex-direction:column;align-items:center;
+  width:100%;min-width:0;
+}
+.b1-face .b1-note{grid-row:3;align-self:start}
 .b1-face-back{opacity:0;visibility:hidden;pointer-events:none}
 .b1-card.is-flipped .b1-face-front{opacity:0;visibility:hidden;pointer-events:none}
 .b1-card.is-flipped .b1-face-back{opacity:1;visibility:visible;pointer-events:auto}

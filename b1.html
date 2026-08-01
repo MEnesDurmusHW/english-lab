@@ -98,18 +98,21 @@
         </div>
         <div class="b1-faces" id="faces">
           <div class="b1-face b1-face-front">
-            <div class="b1-pos" id="fPos"></div>
-            <h2 class="b1-term" id="fTerm"></h2>
-            <!-- Arka yüzdeki IPA ve Türkçe satırlarının karşılığı: boş ama yer
-                 kaplar. Böylece kelime ve açıklama iki yüzde de aynı hizada
-                 durur, kart çevrilirken metin zıplamaz. -->
-            <p class="b1-ipa" aria-hidden="true"></p>
+            <div class="b1-head">
+              <div class="b1-pos" id="fPos"></div>
+              <h2 class="b1-term" id="fTerm"></h2>
+              <!-- Arka yüzdeki IPA satırının karşılığı: boş ama yer kaplar,
+                   böylece kart çevrilirken kelime yerinden oynamaz. -->
+              <p class="b1-ipa" aria-hidden="true"></p>
+            </div>
             <p class="b1-note" id="fNote"></p>
           </div>
           <div class="b1-face b1-face-back">
-            <div class="b1-pos" id="bPos"></div>
-            <h2 class="b1-answer" id="bAnswer"></h2>
-            <p class="b1-ipa" id="bIpa"></p>
+            <div class="b1-head">
+              <div class="b1-pos" id="bPos"></div>
+              <h2 class="b1-answer" id="bAnswer"></h2>
+              <p class="b1-ipa" id="bIpa"></p>
+            </div>
             <p class="b1-note" id="bNote"></p>
           </div>
         </div>
