@@ -7,6 +7,13 @@
 <meta name="description" content="B1 seviyesi İngilizce kelimeler için Türkçeden İngilizceye flash kart tekrar alanı: bildim/bilemedim, doğru olma skoru, öğrendim işareti ve paket/tür/durum filtresi.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NS's English Lab">
 <meta property="og:locale" content="tr_TR">
@@ -19,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <script src="success-fx.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -96,13 +104,15 @@
                  kaplar. Böylece kelime ve açıklama iki yüzde de aynı hizada
                  durur, kart çevrilirken metin zıplamaz. -->
             <p class="b1-ipa" aria-hidden="true"></p>
+            <p class="b1-ipa" aria-hidden="true"></p>
             <p class="b1-answer-tr" aria-hidden="true"></p>
             <p class="b1-note" id="fNote"></p>
           </div>
           <div class="b1-face b1-face-back">
             <div class="b1-pos" id="bPos"></div>
             <h2 class="b1-answer" id="bAnswer"></h2>
-            <p class="b1-ipa" id="bIpa"></p>
+            <p class="b1-ipa" id="bIpaUk"></p>
+            <p class="b1-ipa" id="bIpaUs"></p>
             <p class="b1-answer-tr" id="bTr"></p>
             <p class="b1-note" id="bNote"></p>
           </div>
@@ -221,7 +231,7 @@ const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
       badge = $('badge'), idxEl = $('idx'), scopeEl = $('scope'), railEl = $('rail'),
       fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
       bPos = $('bPos'), bAnswer = $('bAnswer'), bTr = $('bTr'), bNote = $('bNote'),
-      bIpa = $('bIpa'),
+      bIpaUk = $('bIpaUk'), bIpaUs = $('bIpaUs'),
       flipHint = $('flipHint'), dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
       revealLabel = $('revealLabel'),
       strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
@@ -270,7 +280,8 @@ function renderCard(){
   if (dirTR){
     fTerm.textContent = w.tr;
     bAnswer.textContent = w.en;
-    bIpa.textContent = w.ipa || '';        // cevap İngilizce -> okunuşu göster
+    bIpaUk.innerHTML = w.ipa   ? '<span class="b1-ipa-tag">UK</span> ' + w.ipa   : ''; // cevap İngilizce -> okunuşu göster
+    bIpaUs.innerHTML = w.ipaUs ? '<span class="b1-ipa-tag">US</span> ' + w.ipaUs : '';
     bTr.textContent = w.tr;
     /* ayrım notu ön yüzde ipucu — başlık kelimesi maskeli */
     fNote.innerHTML = w.note ? b1MaskHead(w.note, w.en) : '';
@@ -278,7 +289,8 @@ function renderCard(){
   } else {
     fTerm.textContent = w.en;
     bAnswer.textContent = w.tr;
-    bIpa.textContent = '';                 // cevap Türkçe -> okunuş arka yüze ait değil
+    bIpaUk.textContent = '';               // cevap Türkçe -> okunuş arka yüze ait değil
+    bIpaUs.textContent = '';
     bTr.textContent = w.en;
     fNote.innerHTML = '';                      // EN görünürken not Türkçeyi ele verebilir
     bNote.textContent = w.note || '';

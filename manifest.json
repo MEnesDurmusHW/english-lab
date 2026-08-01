@@ -1,0 +1,53 @@
+{
+  "id": "./",
+  "name": "NS's English Lab",
+  "short_name": "English Lab",
+  "description": "A small workshop for the parts of English that only stick with practice: vocabulary, collocations, articles, synonyms and grammar patterns.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#F4F5F8",
+  "theme_color": "#F4F5F8",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Vocabulary",
+      "short_name": "Vocabulary",
+      "description": "Words with IPA, nuance and examples",
+      "url": "vocabulary.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "B1 Recall",
+      "short_name": "B1 Recall",
+      "description": "Turkish first, recall the English, then flip",
+      "url": "b1.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Collocations",
+      "short_name": "Collocations",
+      "description": "The words each word keeps company with",
+      "url": "collocations.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Grammar Patterns",
+      "short_name": "Grammar",
+      "description": "Learn a pattern, then practise it",
+      "url": "grammar.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
