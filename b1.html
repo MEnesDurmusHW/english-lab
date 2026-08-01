@@ -104,20 +104,15 @@
                  kaplar. Böylece kelime ve açıklama iki yüzde de aynı hizada
                  durur, kart çevrilirken metin zıplamaz. -->
             <p class="b1-ipa" aria-hidden="true"></p>
-            <p class="b1-ipa" aria-hidden="true"></p>
-            <p class="b1-answer-tr" aria-hidden="true"></p>
             <p class="b1-note" id="fNote"></p>
           </div>
           <div class="b1-face b1-face-back">
             <div class="b1-pos" id="bPos"></div>
             <h2 class="b1-answer" id="bAnswer"></h2>
-            <p class="b1-ipa" id="bIpaUk"></p>
-            <p class="b1-ipa" id="bIpaUs"></p>
-            <p class="b1-answer-tr" id="bTr"></p>
+            <p class="b1-ipa" id="bIpa"></p>
             <p class="b1-note" id="bNote"></p>
           </div>
         </div>
-        <span class="b1-flip-hint" id="flipHint">çevirmek için dokun</span>
       </article>
 
       <div class="b1-empty" id="empty" hidden>
@@ -230,15 +225,15 @@ const $ = id => document.getElementById(id);
 const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
       badge = $('badge'), idxEl = $('idx'), scopeEl = $('scope'), railEl = $('rail'),
       fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
-      bPos = $('bPos'), bAnswer = $('bAnswer'), bTr = $('bTr'), bNote = $('bNote'),
-      bIpaUk = $('bIpaUk'), bIpaUs = $('bIpaUs'),
-      flipHint = $('flipHint'), dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
+      bPos = $('bPos'), bAnswer = $('bAnswer'), bNote = $('bNote'),
+      bIpa = $('bIpa'),
+      dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
       revealLabel = $('revealLabel'),
       strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
       backdrop = $('backdrop'), progressSheet = $('progressSheet'), moreSheet = $('moreSheet'),
       moreBtn = $('moreBtn'), moreDirLabel = $('moreDirLabel');
 
-let order = [], pos = 0, flipped = false, dirTR = true, lastSig = null, seen = 0;
+let order = [], pos = 0, flipped = false, dirTR = true, lastSig = null;
 let sessCards = 0, sessHits = 0;          // yalnızca bellekte — seans sayacı
 
 const all = s => Array.prototype.slice.call(document.querySelectorAll(s));
@@ -252,6 +247,15 @@ function buildOrder(keepCurrent){
   if (cur != null){ const at = order.indexOf(cur); if (at >= 0) pos = at; }
 }
 function cur(){ return B1[order[pos]]; }
+
+/* UK ve US okunuşu çoğu kelimede aynı; aynıysa etiketsiz tek satır göster. */
+function ipaHTML(w){
+  const uk = w.ipa || '', us = w.ipaUs || '';
+  if (uk && us && uk !== us)
+    return '<span><b class="b1-ipa-tag">UK</b>' + uk + '</span>' +
+           '<span><b class="b1-ipa-tag">US</b>' + us + '</span>';
+  return uk || us ? '<span>' + (uk || us) + '</span>' : '';
+}
 
 /* ---- kart ---- */
 function renderCard(){
@@ -280,18 +284,14 @@ function renderCard(){
   if (dirTR){
     fTerm.textContent = w.tr;
     bAnswer.textContent = w.en;
-    bIpaUk.innerHTML = w.ipa   ? '<span class="b1-ipa-tag">UK</span> ' + w.ipa   : ''; // cevap İngilizce -> okunuşu göster
-    bIpaUs.innerHTML = w.ipaUs ? '<span class="b1-ipa-tag">US</span> ' + w.ipaUs : '';
-    bTr.textContent = w.tr;
+    bIpa.innerHTML = ipaHTML(w);           // cevap İngilizce -> okunuşu göster
     /* ayrım notu ön yüzde ipucu — başlık kelimesi maskeli */
     fNote.innerHTML = w.note ? b1MaskHead(w.note, w.en) : '';
     bNote.textContent = w.note || '';          // arka yüzde maskesiz tam metin
   } else {
     fTerm.textContent = w.en;
     bAnswer.textContent = w.tr;
-    bIpaUk.textContent = '';               // cevap Türkçe -> okunuş arka yüze ait değil
-    bIpaUs.textContent = '';
-    bTr.textContent = w.en;
+    bIpa.textContent = '';                 // cevap Türkçe -> okunuş arka yüze ait değil
     fNote.innerHTML = '';                      // EN görünürken not Türkçeyi ele verebilir
     bNote.textContent = w.note || '';
   }
@@ -388,10 +388,6 @@ function flip(){
   card.classList.toggle('is-flipped', flipped);
   setRevealed(flipped);
   card.setAttribute('aria-label', flipped ? 'Kartı çevir (cevap görünüyor)' : 'Kartı çevir');
-  if (flipped){
-    seen++;
-    if (seen > 3) app.classList.add('is-seasoned');
-  }
 }
 function slide(dir){
   const cls = dir > 0 ? 'enter-right' : 'enter-left';
