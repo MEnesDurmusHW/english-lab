@@ -117,11 +117,21 @@
   width:100%;min-width:0;
 }
 .b1-face .b1-note{grid-row:3;align-self:start}
-.b1-face-back{opacity:0;visibility:hidden;pointer-events:none}
-.b1-card.is-flipped .b1-face-front{opacity:0;visibility:hidden;pointer-events:none}
-.b1-card.is-flipped .b1-face-back{opacity:1;visibility:visible;pointer-events:auto}
+/* Yüz geçişi: GELEN yüz solarak girer, GİDEN yüz anında kaybolur.
+   Giden yüzün opaklığı da solarak inerse (eski hâl: arka yüz .08s gecikmeli
+   .14s'lik solma) yüz ~90ms boyunca opacity:1'de kalıp yalnızca visibility ile
+   gizleniyor. visibility ana iş parçacığında, opaklık derleyicide (compositor)
+   uygulandığı için mobil Safari/WebView'de bu pencere boyanabiliyor: sonraki
+   karta geçerken cevap bir an ekranda görünüyordu. Geçişi yalnızca "gelen"
+   durumun kuralına koyuyoruz; giden yüzde geçiş yok, boyanacak bir şey kalmıyor.
+   Gecikme de kalktı: giden yüz zaten anında gittiği için .08s'lik gecikme
+   kartı bir an boş bırakmaktan başka bir işe yaramıyordu. */
+.b1-face-back{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+.b1-card.is-flipped .b1-face-front{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+.b1-card.is-flipped .b1-face-back{
+  opacity:1;visibility:visible;pointer-events:auto;transition:opacity .14s ease;
+}
 .b1-face-front{transition:opacity .1s ease}
-.b1-face-back{transition:opacity .14s ease .08s}
 
 .b1-pos{
   font-family:var(--mono);font-weight:600;font-size:.68rem;
