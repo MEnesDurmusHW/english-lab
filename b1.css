@@ -135,6 +135,11 @@
   line-height:1.2;letter-spacing:.02em;color:var(--text-muted);
   min-height:1.2em;                  /* boşken de yer kaplar (hizalama) */
 }
+.b1-ipa + .b1-ipa{margin-top:3px}    /* UK/US satırları birbirine yakın dursun */
+.b1-ipa-tag{
+  display:inline-block;min-width:1.7em;font-weight:700;letter-spacing:.05em;
+  color:var(--text-dim);opacity:.75;
+}
 .b1-answer-tr{
   margin:12px 0 0;font-family:var(--sans);font-size:.92rem;line-height:1.45;
   color:var(--text-dim);max-width:30ch;
