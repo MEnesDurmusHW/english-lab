@@ -415,10 +415,19 @@
   .card .flip-hint{position:absolute;bottom:13px;font-size:.68rem;color:var(--text-muted)}
 
   .faces{display:grid;width:100%}
-  .faces > .face{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .16s ease}
-  .face-back{opacity:0;visibility:hidden}
-  .card.flipped .face-front{opacity:0;visibility:hidden}
-  .card.flipped .face-back{opacity:1;visibility:visible}
+  /* Yüz geçişi: GELEN yüz solarak girer, GİDEN yüz anında kaybolur.
+     Geçiş iki yüzün ortak kuralında dururken giden yüz de solarak iniyordu,
+     yani opaklığı ~150ms boyunca sıfıra düşene kadar yalnızca visibility ile
+     gizleniyordu. visibility ana iş parçacığında, opaklık derleyicide
+     (compositor) uygulandığı için mobil Safari/WebView'de bu pencere
+     boyanabiliyor: sonraki karta geçerken cevap bir an görünüyordu.
+     Geçişi yalnızca "gelen" durumun kuralına koyunca giden yüzde boyanacak
+     bir şey kalmıyor. (Aynı düzeltme b1.css'te de var.) */
+  .faces > .face{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .face-front{transition:opacity .16s ease}
+  .face-back{opacity:0;visibility:hidden;transition:none}
+  .card.flipped .face-front{opacity:0;visibility:hidden;transition:none}
+  .card.flipped .face-back{opacity:1;visibility:visible;transition:opacity .16s ease}
   .card.flipped .flip-hint{display:none}
   .answer{width:100%}
   .answer .a-term{font-family:var(--display);font-weight:700;font-size:clamp(1.35rem,4.5vw,1.9rem);line-height:1.12;color:var(--accent);letter-spacing:-.03em}
