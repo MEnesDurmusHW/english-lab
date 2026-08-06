@@ -151,7 +151,7 @@ function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; 
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.
    Gruplar/durumlar kendi içinde VEYA, fasetler arası VE ile birleşir. */
 const FILTER_KEY='ns-vocab-filter';
-let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned'
+let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned' (dahil) veya '!flagged'/'!learned' (hariç)
 try{
   const f=JSON.parse(localStorage.getItem(FILTER_KEY))||{};
   if(Array.isArray(f.g)) selGroups=f.g.slice();
@@ -165,12 +165,16 @@ function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved]); }  
 function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; saveFilter(); }
 
 function matchesGroup(w){ return selGroups.length===0 || selGroups.indexOf(w.grp)>=0; }
+/* 'kaydedilenler' fasetinin her satırı 3 durumlu: boş (kısıt yok) · dahil (yalnızca o) · hariç (o olmayanlar) */
+function matchesSaved(val, isOn){
+  if(selSaved.indexOf(val)>=0) return isOn;         // dahil et
+  if(selSaved.indexOf('!'+val)>=0) return !isOn;    // hariç tut
+  return true;                                       // nötr: kısıt yok
+}
 function matchesFilter(w){
   if(!matchesGroup(w)) return false;
-  const learned=isHidden(w.en);
-  if(selSaved.indexOf('learned')>=0){ if(!learned) return false; }   // yalnızca öğrenilenler
-  else if(learned) return false;                                     // öğrenilenler normalde gizli
-  if(selSaved.indexOf('flagged')>=0 && !isFlagged(w.en)) return false;
+  if(!matchesSaved('learned', isHidden(w.en))) return false;
+  if(!matchesSaved('flagged', isFlagged(w.en))) return false;
   if(selStatus.length && selStatus.indexOf(statusOf(w.en))<0) return false;
   return true;
 }
@@ -178,10 +182,21 @@ function activeWords(){ return WORDS.filter(matchesFilter); }
 
 /* ============ FİLTRE PANELİ (paylaşılan buton + popover) ============ */
 const FILTER_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+const FLT_INC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+const FLT_EXC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>';
 function _fltArr(kind){ return kind==='g'?selGroups : kind==='s'?selStatus : selSaved; }
 function _fltChip(kind,val,label){
   const on=_fltArr(kind).indexOf(val)>=0;
   return '<button type="button" class="flt-chip'+(on?' on':'')+'" data-k="'+kind+'" data-v="'+val+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button>';
+}
+/* 'kaydedilenler' satırı: etiket + dahil et/hariç tut ikon toggle çifti (3 durum: nötr · dahil · hariç) */
+function _fltTriRow(val,label){
+  const inc=selSaved.indexOf(val)>=0, exc=selSaved.indexOf('!'+val)>=0;
+  return '<div class="flt-tri-row"><span class="flt-tri-label">'+label+'</span>'+
+    '<div class="flt-tri" role="group" aria-label="'+label+'">'+
+      '<button type="button" class="flt-tri-btn inc'+(inc?' on':'')+'" data-v="'+val+'" data-m="inc" aria-pressed="'+(inc?'true':'false')+'" title="Dahil et" aria-label="Dahil et">'+FLT_INC_ICON+'</button>'+
+      '<button type="button" class="flt-tri-btn exc'+(exc?' on':'')+'" data-v="'+val+'" data-m="exc" aria-pressed="'+(exc?'true':'false')+'" title="Hariç tut" aria-label="Hariç tut">'+FLT_EXC_ICON+'</button>'+
+    '</div></div>';
 }
 /* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved'] */
 function mountFilter(host, onChange, sections){
@@ -212,8 +227,8 @@ function mountFilter(host, onChange, sections){
         _fltChip('s','weak','Zayıf')+_fltChip('s','shaky','Sağlam değil')+_fltChip('s','known','Biliyorum')+'</div></div>';
     }
     if(sections.indexOf('saved')>=0){
-      h+='<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-chips">'+
-        _fltChip('v','flagged','Cümlede çalışacaklarım')+_fltChip('v','learned','Öğrendiklerim')+'</div></div>';
+      h+='<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-tri-list">'+
+        _fltTriRow('flagged','Cümlede çalışacaklarım')+_fltTriRow('learned','Öğrendiklerim')+'</div></div>';
     }
     h+='<div class="flt-foot" id="fltFoot"></div>';
     panel.innerHTML=h;
@@ -231,6 +246,15 @@ function mountFilter(host, onChange, sections){
         renderPanel();
         if(onChange) onChange();
       }
+      return;
+    }
+    const tri=e.target.closest('.flt-tri-btn');
+    if(tri){
+      const val=tri.getAttribute('data-v'), key=(tri.getAttribute('data-m')==='inc'?'':'!')+val, oppKey=(tri.getAttribute('data-m')==='inc'?'!':'')+val;
+      const oi=selSaved.indexOf(oppKey); if(oi>=0) selSaved.splice(oi,1);   // karşıt modu her zaman kaldır
+      const i=selSaved.indexOf(key);
+      if(i>=0) selSaved.splice(i,1); else selSaved.push(key);              // tekrar tıklama -> nötr
+      apply();
       return;
     }
     const chip=e.target.closest('.flt-chip'); if(!chip) return;

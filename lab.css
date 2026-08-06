@@ -825,6 +825,20 @@
 .flt-chip.on{border-color:var(--accent);color:var(--text);background:var(--accent-soft);font-weight:600}
 .flt-chip i{font-style:normal;font-size:.72rem;font-weight:700;color:var(--text-muted)}
 .flt-chip.on i{color:var(--accent)}
+.flt-tri-list{display:flex;flex-direction:column;gap:6px}
+.flt-tri-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.flt-tri-label{font-family:var(--sans);font-size:.82rem;font-weight:500;color:var(--text-dim);flex:1;min-width:0}
+.flt-tri{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:2px;gap:2px;flex-shrink:0}
+.flt-tri-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:8px;padding:0;appearance:none;border:0;
+  background:transparent;color:var(--text-muted);cursor:pointer;transition:.14s;
+}
+.flt-tri-btn svg{width:14px;height:14px}
+.flt-tri-btn:hover{color:var(--text)}
+.flt-tri-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.flt-tri-btn.inc.on{background:var(--ok);color:#fff}
+.flt-tri-btn.exc.on{background:var(--bad);color:#fff}
 .flt-reset{
   align-self:flex-start;font-family:var(--sans);font-size:.76rem;font-weight:600;color:var(--bad);
   background:none;border:none;cursor:pointer;padding:2px;
