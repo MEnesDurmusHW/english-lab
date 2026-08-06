@@ -11,7 +11,7 @@
      everything else  untouched — Firebase auth/Firestore and the
                       analytics beacon must go straight to the network
    ============================================================ */
-const VERSION = '2026-08-01a';
+const VERSION = '2026-08-02a';
 const SHELL = `nsel-shell-${VERSION}`;
 const RUNTIME = `nsel-runtime-${VERSION}`;
 const FONTS = `nsel-fonts-${VERSION}`;
@@ -52,12 +52,29 @@ const PRECACHE = [
 
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
+/* Store under `path` even when hosting redirected us somewhere else.
+   Firebase has cleanUrls on, so /b1.html answers 301 -> /b1, and a redirected
+   Response cannot be handed to Cache.put as-is. Copy it into a plain one. */
+async function cachePut(cache, path, response) {
+  if (!response.redirected) return cache.put(path, response.clone());
+  const body = await response.clone().blob();
+  return cache.put(path, new Response(body, {
+    status: 200,
+    statusText: 'OK',
+    headers: response.headers
+  }));
+}
+
 /* ---- install: fill the shell cache, one file at a time so a single
         404 can't fail the whole install ---- */
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL);
-    await Promise.allSettled(PRECACHE.map((path) => cache.add(new Request(path, { cache: 'reload' }))));
+    await Promise.allSettled(PRECACHE.map(async (path) => {
+      const response = await fetch(path, { cache: 'reload', credentials: 'same-origin' });
+      if (!response.ok) throw new Error(path + ' -> ' + response.status);
+      await cachePut(cache, path, response);
+    }));
   })());
 });
 
@@ -88,11 +105,18 @@ function cacheable(response) {
 async function handleNavigation(event) {
   const request = event.request;
   try {
+    // A navigation request carries redirect mode "manual", so fetching it
+    // directly turns Firebase's cleanUrls 301 (/b1.html -> /b1) into an opaque
+    // redirect. Handing one of those back breaks the navigation inside an
+    // installed iOS app — the page never paints and Safari's error chrome
+    // appears. Refetch by URL so the redirect is followed here instead and the
+    // browser only ever sees a real page.
     const preloaded = await event.preloadResponse;
-    const response = preloaded || await fetch(request);
+    const response = preloaded && preloaded.type !== 'opaqueredirect'
+      ? preloaded
+      : await fetch(request.url, { credentials: 'same-origin', redirect: 'follow' });
     if (cacheable(response)) {
-      const copy = response.clone();
-      caches.open(RUNTIME).then((c) => c.put(request, copy)).catch(() => {});
+      caches.open(RUNTIME).then((c) => cachePut(c, request.url, response)).catch(() => {});
     }
     return response;
   } catch (err) {
@@ -120,7 +144,7 @@ async function staleWhileRevalidate(request, cacheName) {
   const hit = await cache.match(request);
   const network = fetch(request)
     .then((response) => {
-      if (cacheable(response)) cache.put(request, response.clone());
+      if (cacheable(response)) cachePut(cache, request.url, response).catch(() => {});
       return response;
     })
     .catch(() => null);
