@@ -31,7 +31,7 @@ Arayüz tamamen veriye bağlıdır — grup filtresi `grp` alanından otomatik t
 ## Kayıt alanları
 
 Zorunlu: `en, tr, type, uk, us, note, detail, ex, exTr, ex2, exTr2, coll` + `ce` (COLL_EX örnekleri).
-İsteğe bağlı: `hint, extra, similar, opposite`. `grp` ve `_i` elle yazılmaz.
+İsteğe bağlı: `hint, hintCard, extra, similar, opposite`. `grp` ve `_i` elle yazılmaz.
 
 | alan | içerik |
 |---|---|
@@ -43,12 +43,23 @@ Zorunlu: `en, tr, type, uk, us, note, detail, ex, exTr, ex2, exTr2, coll` + `ce`
 | `detail` | Türkçe tanım, tek cümle, başlık kelimesini kullanmadan |
 | `ex` / `exTr` | doğal İngilizce örnek + Türkçe çevirisi |
 | `ex2` / `exTr2` | ikinci örnek, farklı bir kullanımı göstersin |
-| `hint` | tuzak/nüans: edat, `-ing` zorunluluğu, okunuş karışması, özne farkı |
+| `hint` | **yalnızca** gerçek eşanlamlılar arasında hangisinin doğru kelime olduğunu ayırt eden kısa ipucu (bkz. aşağıdaki "hint ve hintCard" bölümü) |
 | `extra` | "iyi bilinmesi gereken" ek anlam ya da yakın kalıp |
 | `similar` | `a, b, c. Fark: <a> ...; <b> ...; <c> ...` biçimi zorunlu — arayüz `. Fark:` ile ikiye böler |
 | `opposite` | zıt kelimeler, virgülle, sonunda nokta |
 | `coll` | ` · ` ile ayrılmış 3 collocation |
 | `ce` | `coll` parçalarıyla **aynı sırada, aynı sayıda** tam örnek cümle |
+
+## `hint` ve `hintCard`
+
+`hint` iki farklı yerde görünebilir ve bu ikisinin kuralları farklıdır:
+
+1. **Kart üzerinde** (Türkçe → İngilizce yönünde, cevap görünmeden önce) — yalnızca `hintCard:true` de eklenmiş kayıtlarda gösterilir.
+2. **Detay panelinde** ("Nüans" satırı, kullanıcı elle açana kadar gizli) — `hintCard` olsun olmasın her zaman gösterilir.
+
+`hintCard:true` **sadece** şu durumda eklenmeli: aynı gruptaki ya da Türkçe karşılığı çakışan gerçek bir eşanlamlısı var ve `hint`, doğru kelimeyi seçmeye yarayan kısa bir ayrım cümlesi (İngilizce, "Emphasis: ..." ya da "A positive/negative word: ..." kalıbında — bkz. `exasperated`, `assertive`). Kart üzerinde göründüğü için **başlık kelimesini asla içermemeli** (bkz. Maskeleme).
+
+Edat, `-ing` zorunluluğu, okunuş/yazım karışması, özne kısıtı gibi kullanım notları `hint`'e yazılabilir ama **`hintCard` eklenmez** — bunlar yalnızca detay panelinde görünsün, kartta görünmesin. Bu tür notlar için `extra` alanı da uygun bir seçenektir.
 
 ## Tip seçimi
 
@@ -70,10 +81,11 @@ Her `coll` parçası için sırayla bir tam cümle. Cümle o parçanın kalıbı
 
 ## Maskeleme
 
-Kartta cevabı ele vermemek için `note`, `detail`, `hint` ve `similar`'ın "Fark:" kısmındaki **başlık kelimesi otomatik gizlenir**. Bu yüzden:
-- `detail` ve `note` içinde başlık kelimesini kullanmaktan kaçın (gizlenince cümle kopar).
-- `similar`'ın "Fark:" kısmında başlık kelimesi geçebilir — gizlenmesi zaten istenen davranıştır; ama cümle gizlenmiş hâlde de okunabilir kalsın (`bu kalıp günlüktür` gibi bir gönderme daha güvenli).
-- `ex`, `ex2`, `coll`, `ce` maskelenmez — kelimeyi açıkça göstermeleri gerekir.
+**data.js/vocabulary.html'de otomatik gizleme yoktur** (bu yalnızca izole B1 modülünde, `b1MaskHead` ile var). Yani `note`, `detail`, `hint` içine yazılan her şey elle kontrol edilmeli:
+- `detail` ve `note` içinde başlık kelimesini kullanmaktan kaçın — cevabı doğrudan ele verir.
+- `hint` içinde başlık kelimesi **kesinlikle** geçmemeli, özellikle `hintCard:true` eklenmişse: bu alan cevap açılmadan ÖNCE kartın üzerinde görünür, kelimeyi (herhangi bir çekimini de) içermesi cevabı doğrudan verir.
+- `similar`'ın "Fark:" kısmında başlık kelimesi geçebilir — bu alan yalnızca elle açılan detay panelinde göründüğü için sorun değil.
+- `ex`, `ex2`, `coll`, `ce` zaten kelimeyi açıkça göstermesi gereken alanlardır.
 
 ## Örnek payload maddesi
 
