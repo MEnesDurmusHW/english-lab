@@ -11,7 +11,7 @@
      everything else  untouched — Firebase auth/Firestore and the
                       analytics beacon must go straight to the network
    ============================================================ */
-const VERSION = '2026-08-02a';
+const VERSION = '2026-08-07a';
 const SHELL = `nsel-shell-${VERSION}`;
 const RUNTIME = `nsel-runtime-${VERSION}`;
 const FONTS = `nsel-fonts-${VERSION}`;
@@ -27,6 +27,7 @@ const PRECACHE = [
   'grammar.html',
   'book.html',
   'b1.html',
+  'b1-unknown.html',
   'progress.html',
   'styles.css',
   'lab.css',
@@ -105,18 +106,30 @@ function cacheable(response) {
 async function handleNavigation(event) {
   const request = event.request;
   try {
-    // A navigation request carries redirect mode "manual", so fetching it
-    // directly turns Firebase's cleanUrls 301 (/b1.html -> /b1) into an opaque
-    // redirect. Handing one of those back breaks the navigation inside an
-    // installed iOS app — the page never paints and Safari's error chrome
-    // appears. Refetch by URL so the redirect is followed here instead and the
-    // browser only ever sees a real page.
+    // Firebase has cleanUrls on, so /b1.html answers 301 -> /b1. A navigation
+    // request carries redirect mode "manual", which turns that into an opaque
+    // redirect — and inside an installed iOS app the page then never paints,
+    // Safari's error chrome shows up, and only a manual reload recovers.
+    // Following the redirect here isn't enough either: a response with
+    // .redirected set can't back a navigation, the browser rejects it. So
+    // follow it AND copy the result into a plain response — the browser only
+    // ever sees a finished page, on whichever URL was asked for.
     const preloaded = await event.preloadResponse;
-    const response = preloaded && preloaded.type !== 'opaqueredirect'
+    let response = preloaded && preloaded.type !== 'opaqueredirect'
       ? preloaded
       : await fetch(request.url, { credentials: 'same-origin', redirect: 'follow' });
-    if (cacheable(response)) {
-      caches.open(RUNTIME).then((c) => cachePut(c, request.url, response)).catch(() => {});
+
+    if (response.redirected) {
+      response = new Response(await response.blob(), {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers
+      });
+    }
+
+    if (response.status === 200) {
+      const copy = response.clone();
+      caches.open(RUNTIME).then((c) => c.put(request.url, copy)).catch(() => {});
     }
     return response;
   } catch (err) {
