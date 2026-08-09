@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bilinemeyenler — B1 Recall</title>
+<meta name="description" content="B1 Recall'da en az bir kez denenmiş ama henüz bilinmeyen kelimelerin listesi; tek tıkla panoya kopyala.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Bilinemeyenler — B1 Recall">
+<meta property="og:description" content="B1 Recall'da henüz bilinmeyen kelimelerin listesi ve kopyalama.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/b1-unknown.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<!-- appbar.js KULLANILMIYOR: b1.html gibi bu sayfa da izole B1 alanına ait,
+     bölüm rengi için data-section'ı elle veriyoruz. -->
+<script>document.documentElement.setAttribute('data-section','b1');</script>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="appbar">
+  <div class="appbar-inner solo">
+    <a class="brand" href="b1.html" aria-label="B1 Recall'a dön">
+      <span class="brand-mark">NS</span>
+      <span class="brand-text">
+        <span class="brand-name">Bilinemeyenler</span>
+        <span class="brand-sub">B1 Recall</span>
+      </span>
+    </a>
+    <div class="appbar-tools">
+      <button class="tool-btn" type="button" onclick="openShare()" aria-label="Bu sayfayı paylaş">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Temayı değiştir">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <span id="syncHost" class="sync-host"></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">B1 Recall</p>
+    <h1>Bilinemeyen Kelimeler</h1>
+  </header>
+  <p class="list-hint">En az bir kez denenmiş ama henüz “Biliyorum” seviyesine ulaşmamış B1 kelimeleri. “Öğrendim” işaretlediklerin burada hiç görünmez.</p>
+
+  <div class="ctlbar">
+    <div class="seg" role="tablist" aria-label="Kapsam">
+      <button id="modeBoth" role="tab" type="button" aria-selected="true">Zayıf + Sağlam değil</button>
+      <button id="modeWeak" role="tab" type="button" aria-selected="false">Sadece Zayıf</button>
+    </div>
+    <div class="ctlbar-right">
+      <span class="count" id="count"></span>
+      <button type="button" class="sent-copy" id="copyBtn" title="Kelimeleri panoya kopyala">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Tümünü kopyala</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+</div>
+
+<script src="b1-data.js"></script>
+<script src="b1-core.js"></script>
+<script>
+/* ============================================================
+   Bilinemeyenler — B1 Recall'da en az bir kez denenmiş ama
+   "Biliyorum" seviyesine ulaşmamış kelimeleri listeler + kopyalar.
+   Hiç denenmemiş (taze) kelimeler kasıtlı olarak hariç: bunlar
+   "bilinemedi" değil, henüz sınanmadı.
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const listEl = $('list'), countEl = $('count'), copyBtn = $('copyBtn');
+const modeBothBtn = $('modeBoth'), modeWeakBtn = $('modeWeak');
+let mode = 'broad';   // 'broad' = zayıf + sağlam değil · 'weak' = yalnızca zayıf
+
+function unknownWords(){
+  return B1.filter(function(w){
+    if (b1IsHidden(w.en)) return false;
+    if (!b1Tries(w.en)) return false;
+    const st = b1StatusOf(w.en);
+    return mode==='weak' ? st==='weak' : st!=='known';
+  });
+}
+function wordRow(w){
+  const st = b1StatusOf(w.en);
+  return '<div class="entry" data-i="'+w._i+'"><div class="entry-row">'+
+    '<div class="entry-head" style="cursor:default">'+
+      '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
+      '<span class="eh-meter" data-st="'+st+'" title="'+B1_STATUS_LABEL[st]+' · '+b1AccText(w.en)+'"><i></i><i></i><i></i></span>'+
+      '<span class="eh-type">'+(B1_POS_LABEL[w.pos] || w.pos)+'</span>'+
+    '</div></div></div>';
+}
+function render(){
+  const words = unknownWords();
+  countEl.textContent = words.length + ' kelime';
+  copyBtn.disabled = !words.length;
+  listEl.innerHTML = words.length
+    ? '<div class="list">' + words.map(wordRow).join('') + '</div>'
+    : '<div class="empty">' + (mode==='weak'
+        ? 'Zayıf kategorisinde kelime yok — güzel haber.'
+        : 'Bu kritere uyan kelime yok. Denenmiş ama “Biliyorum” seviyesine gelmemiş kelime kalmadı.') + '</div>';
+}
+function setMode(m){
+  mode = m;
+  modeBothBtn.setAttribute('aria-selected', m==='broad' ? 'true' : 'false');
+  modeWeakBtn.setAttribute('aria-selected', m==='weak' ? 'true' : 'false');
+  render();
+}
+modeBothBtn.addEventListener('click', function(){ setMode('broad'); });
+modeWeakBtn.addEventListener('click', function(){ setMode('weak'); });
+
+function fallbackCopy(text, cb){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){}
+  document.body.removeChild(ta);
+}
+copyBtn.addEventListener('click', function(){
+  const text = unknownWords().map(function(w){ return w.en; }).join('\n');
+  if (!text) return;
+  const label = copyBtn.querySelector('span');
+  const done = function(){
+    copyBtn.classList.add('done'); label.textContent = 'Kopyalandı';
+    setTimeout(function(){ copyBtn.classList.remove('done'); label.textContent = 'Tümünü kopyala'; }, 1600);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
+  } else { fallbackCopy(text, done); }
+});
+
+render();
+</script>
+</body>
+</html>
