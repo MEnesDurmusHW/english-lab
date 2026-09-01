@@ -197,6 +197,82 @@
   font-family:var(--sans);font-weight:600;font-size:.92rem;
 }
 
+/* ---------- liste görünümü ----------
+   Filtreye uyan kelimelerin tamamı tek ekranda. Kart moduna ait ne varsa
+   (sahne, dock, ikon sırası, klavye satırı, yön düğmesi) liste modunda
+   gizlenir — hepsi o anki karta göre iş yapıyor, listede karşılığı yok.
+   Bu seçiciler (0,3,0), medya sorgularındaki tek sınıflı kuralları (0,1,0)
+   yendiği için sıra fark etmeksizin geçerli. */
+.b1-mode{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;
+  border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer;
+  font-family:var(--sans);font-weight:500;font-size:.8rem;color:var(--text-dim);
+  transition:border-color .16s,color .16s;
+}
+.b1-mode svg{width:15px;height:15px;flex:0 0 auto}
+.b1-mode[aria-pressed="true"]{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+
+.b1-app.is-listing .b1-main,
+.b1-app.is-listing .b1-utils,
+.b1-app.is-listing .b1-dock,
+.b1-app.is-listing .b1-desk-utils,
+.b1-app.is-listing .b1-kbd,
+.b1-app.is-listing .b1-dir{display:none}
+/* Liste modunda da tek ekran, kaydırmasız (bu dosyanın kök düzen ilkesi):
+   uygulama tam ekran yüksekliğinde, yalnızca satırlar kayıyor. Böylece
+   kopyala düğmesi liste ne kadar uzun olursa olsun hep görünür kalıyor.
+   61px = appbar; .b1-app'in min-height'ı da aynı sabiti kullanıyor.
+   overflow:hidden bilerek VERİLMİYOR — 600px üstünde filtre paneli absolute
+   konumlu, kırpılırdı. Satırlar kendi içinde kaydığı için gerek de yok. */
+.b1-app.is-listing{padding-bottom:0;height:calc(100dvh - 61px);min-height:0}
+
+.b1-list{display:none}
+.b1-list:not([hidden]){
+  display:flex;flex-direction:column;min-height:0;flex:1;
+  padding:8px clamp(16px,4vw,32px) 0;max-width:1120px;width:100%;
+  margin:0 auto;box-sizing:border-box;
+}
+.b1-list-bar{
+  display:flex;align-items:center;gap:12px;justify-content:space-between;
+  padding:8px 0 12px;border-bottom:1px solid var(--divider);
+}
+.b1-list-count{
+  font-family:var(--sans);font-weight:500;font-size:.82rem;color:var(--text-muted);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.b1-copy{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;
+  border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer;
+  font-family:var(--sans);font-weight:600;font-size:.82rem;color:var(--text-dim);
+  transition:border-color .16s,color .16s,background-color .16s;
+}
+.b1-copy svg{width:15px;height:15px;flex:0 0 auto}
+.b1-copy.is-done{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--border))}
+.b1-copy[disabled]{opacity:.45;pointer-events:none}
+
+.b1-list-rows{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+.b1-lrow{
+  display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;
+  padding:11px 4px;border:0;border-bottom:1px solid var(--divider);
+  background:none;cursor:pointer;text-align:left;font:inherit;color:inherit;
+}
+.b1-lrow:last-child{border-bottom:0}
+.b1-lrow-main{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.b1-lrow-en{
+  font-family:var(--display);font-weight:600;font-size:.98rem;letter-spacing:-.01em;
+  color:var(--text);overflow-wrap:anywhere;
+}
+.b1-lrow-tr{font-family:var(--sans);font-size:.8rem;color:var(--text-dim);overflow-wrap:anywhere}
+.b1-lrow-meta{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.b1-lrow-mark{display:inline-flex;flex:0 0 auto}
+.b1-lrow-mark svg{width:14px;height:14px}
+.b1-lrow-mark.is-flag{color:var(--mid)}
+.b1-lrow-mark.is-learn{color:var(--ok)}
+.b1-list-empty{
+  padding:40px 8px;text-align:center;
+  font-family:var(--sans);font-size:.86rem;color:var(--text-muted);
+}
+
 /* ---------- yardımcı eylem sırası ---------- */
 .b1-utils{
   display:flex;justify-content:space-between;align-items:center;gap:8px;
