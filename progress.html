@@ -26,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="store.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -181,6 +182,12 @@ try{ const s=localStorage.getItem('ns-progress-tab'); if(s && P_TABS.indexOf(s)>
 /* honor ?tab= deep-link */
 try{ const qt=new URLSearchParams(location.search).get('tab'); if(qt && P_TABS.indexOf(qt)>=0) startTab=qt; }catch(e){}
 selectTab(startTab);
+
+/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi — sayfanın tamamı
+   salt okunur istatistik, olduğu gibi yeniden çizilebilir. */
+window.addEventListener('ns-state-changed', function(){
+  (P_RENDER[currentPTab]||renderStats)();
+});
 </script>
 </body>
 </html>

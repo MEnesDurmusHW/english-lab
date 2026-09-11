@@ -16,11 +16,16 @@ const B1_KNOWN_AT = 2;          // net (bildim - bilemedim) >= 2  ->  Biliyorum
 
 /* ============ İSTATİSTİK (bildim / bilemedim) ============
    ns-b1-stats = { "manage": [bildim, bilemedim], ... }
-   Net puan durumu, oran ise "doğru olma skoru"nu verir. */
+   Net puan durumu, oran ise "doğru olma skoru"nu verir.
+
+   Depolar NSStore üzerinden yazılır: yazma anında disk taban alınır ve
+   yalnızca bu sayfanın dokunduğu kelimeler üstüne konur. Geride kalmış
+   bir sekme böylece kendi eski anlık görüntüsünü diske basamaz.
+   Değişen her kelimede touch() şart. */
 const B1_STATS_KEY = 'ns-b1-stats';
 let B1_STATS = {};
-try { B1_STATS = JSON.parse(localStorage.getItem(B1_STATS_KEY)) || {}; } catch (e) { B1_STATS = {}; }
-function b1SaveStats() { try { localStorage.setItem(B1_STATS_KEY, JSON.stringify(B1_STATS)); } catch (e) {} }
+const B1_STATS_STORE = NSStore.map(B1_STATS_KEY, B1_STATS);
+function b1SaveStats() { B1_STATS_STORE.commit(); }
 
 function b1Pair(en) { const p = B1_STATS[en]; return Array.isArray(p) ? p : [0, 0]; }
 function b1Hits(en) { return b1Pair(en)[0]; }
@@ -35,25 +40,26 @@ function b1AddResult(en, hit) {
   const p = b1Pair(en).slice();
   p[hit ? 0 : 1]++;
   B1_STATS[en] = p;
+  B1_STATS_STORE.touch(en);
   b1SaveStats();
 }
-function b1ResetWord(en) { delete B1_STATS[en]; b1SaveStats(); }
+function b1ResetWord(en) { delete B1_STATS[en]; B1_STATS_STORE.touch(en); b1SaveStats(); }
 
 /* ============ ÖĞRENDİM (rotasyondan çıkar) ============ */
 const B1_HIDE_KEY = 'ns-b1-hidden';
 let B1_HIDDEN = {};
-try { B1_HIDDEN = JSON.parse(localStorage.getItem(B1_HIDE_KEY)) || {}; } catch (e) { B1_HIDDEN = {}; }
-function b1SaveHidden() { try { localStorage.setItem(B1_HIDE_KEY, JSON.stringify(B1_HIDDEN)); } catch (e) {} }
+const B1_HIDE_STORE = NSStore.map(B1_HIDE_KEY, B1_HIDDEN);
+function b1SaveHidden() { B1_HIDE_STORE.commit(); }
 function b1IsHidden(en) { return !!B1_HIDDEN[en]; }
-function b1ToggleHidden(en) { if (B1_HIDDEN[en]) delete B1_HIDDEN[en]; else B1_HIDDEN[en] = 1; b1SaveHidden(); }
+function b1ToggleHidden(en) { if (B1_HIDDEN[en]) delete B1_HIDDEN[en]; else B1_HIDDEN[en] = 1; B1_HIDE_STORE.touch(en); b1SaveHidden(); }
 
 /* ============ İŞARETLİLER ============ */
 const B1_FLAG_KEY = 'ns-b1-flag';
 let B1_FLAGS = {};
-try { B1_FLAGS = JSON.parse(localStorage.getItem(B1_FLAG_KEY)) || {}; } catch (e) { B1_FLAGS = {}; }
-function b1SaveFlags() { try { localStorage.setItem(B1_FLAG_KEY, JSON.stringify(B1_FLAGS)); } catch (e) {} }
+const B1_FLAG_STORE = NSStore.map(B1_FLAG_KEY, B1_FLAGS);
+function b1SaveFlags() { B1_FLAG_STORE.commit(); }
 function b1IsFlagged(en) { return !!B1_FLAGS[en]; }
-function b1ToggleFlag(en) { if (B1_FLAGS[en]) delete B1_FLAGS[en]; else B1_FLAGS[en] = 1; b1SaveFlags(); }
+function b1ToggleFlag(en) { if (B1_FLAGS[en]) delete B1_FLAGS[en]; else B1_FLAGS[en] = 1; B1_FLAG_STORE.touch(en); b1SaveFlags(); }
 
 /* ============ FİLTRE ============
    Dört bağımsız faset: paket · tür · durum · kaydedilenler.

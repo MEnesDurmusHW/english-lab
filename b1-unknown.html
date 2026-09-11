@@ -26,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="store.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -162,6 +163,9 @@ copyBtn.addEventListener('click', function(){
 });
 
 render();
+
+/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi — liste salt okunur. */
+window.addEventListener('ns-state-changed', render);
 </script>
 </body>
 </html>

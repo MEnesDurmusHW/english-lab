@@ -111,41 +111,45 @@ function cardDetailFields(w){
 }
 
 /* ============ SKOR / DURUM (localStorage) ============ */
+/* Depolar NSStore üzerinden yazılır: yazma anında disk taban alınır ve
+   yalnızca bu sayfanın dokunduğu kelimeler üstüne konur. Aksi halde
+   saatlerdir açık duran bir sekme tek bir cevapla kendi eski anlık
+   görüntüsünü diske basar. Değişen her kelimede touch() şart. */
 const SCORE_KEY = 'ns-vocab-score';
 const KNOWN_AT = 2;            // skor >= 2  -> Biliyorum (sağlam)
 let SCORES = {};
-try{ SCORES = JSON.parse(localStorage.getItem(SCORE_KEY)) || {}; }catch(e){ SCORES = {}; }
+const SCORE_STORE = NSStore.map(SCORE_KEY, SCORES);
 const STATUS_LABEL = {known:'Biliyorum', shaky:'Sağlam değil', weak:'Zayıf'};
-function saveScores(){ try{ localStorage.setItem(SCORE_KEY, JSON.stringify(SCORES)); }catch(e){} }
+function saveScores(){ SCORE_STORE.commit(); }
 function getScore(en){ return SCORES[en] || 0; }
 function resetScoresForGroups(ids){
-  WORDS.forEach(function(w){ if(ids.indexOf(w.grp)>=0) delete SCORES[w.en]; });
+  WORDS.forEach(function(w){ if(ids.indexOf(w.grp)>=0){ delete SCORES[w.en]; SCORE_STORE.touch(w.en); } });
   saveScores();
 }
-function addScore(en, d){ let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; saveScores(); }
+function addScore(en, d){ let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores(); }
 function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
 
 /* cümle pratiği listesi + kullanıcının yazdığı cümleler */
 const FLAG_KEY='ns-vocab-flag', SENT_KEY='ns-vocab-sentences';
 let FLAGS={}, SENTS={};
-try{ FLAGS=JSON.parse(localStorage.getItem(FLAG_KEY))||{}; }catch(e){ FLAGS={}; }
-try{ SENTS=JSON.parse(localStorage.getItem(SENT_KEY))||{}; }catch(e){ SENTS={}; }
-function saveFlags(){ try{ localStorage.setItem(FLAG_KEY,JSON.stringify(FLAGS)); }catch(e){} }
-function saveSents(){ try{ localStorage.setItem(SENT_KEY,JSON.stringify(SENTS)); }catch(e){} }
+const FLAG_STORE = NSStore.map(FLAG_KEY, FLAGS);
+const SENT_STORE = NSStore.map(SENT_KEY, SENTS);
+function saveFlags(){ FLAG_STORE.commit(); }
+function saveSents(){ SENT_STORE.commit(); }
 function isFlagged(en){ return !!FLAGS[en]; }
-function toggleFlag(en){ if(FLAGS[en]) delete FLAGS[en]; else FLAGS[en]=1; saveFlags(); }
+function toggleFlag(en){ if(FLAGS[en]) delete FLAGS[en]; else FLAGS[en]=1; FLAG_STORE.touch(en); saveFlags(); }
 function getSent(en){ return SENTS[en]||''; }
-function setSent(en,txt){ txt=txt.trim(); if(txt) SENTS[en]=txt; else delete SENTS[en]; saveSents(); }
+function setSent(en,txt){ txt=txt.trim(); if(txt) SENTS[en]=txt; else delete SENTS[en]; SENT_STORE.touch(en); saveSents(); }
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* gizlenen (öğrenilmiş, rotasyondan çıkarılan) kelimeler */
 const HIDE_KEY='ns-vocab-hidden';
 let HIDDEN={};
-try{ HIDDEN=JSON.parse(localStorage.getItem(HIDE_KEY))||{}; }catch(e){ HIDDEN={}; }
-function saveHidden(){ try{ localStorage.setItem(HIDE_KEY,JSON.stringify(HIDDEN)); }catch(e){} }
+const HIDE_STORE = NSStore.map(HIDE_KEY, HIDDEN);
+function saveHidden(){ HIDE_STORE.commit(); }
 function isHidden(en){ return !!HIDDEN[en]; }
-function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; saveHidden(); }
+function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; HIDE_STORE.touch(en); saveHidden(); }
 
 /* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.

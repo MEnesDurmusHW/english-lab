@@ -26,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="store.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -81,13 +82,14 @@ function updateBrowseActive(){}
 
 const COLL_SENT_KEY='ns-vocab-coll-sent';
 let COLL_SENTS={};
-try{ COLL_SENTS=JSON.parse(localStorage.getItem(COLL_SENT_KEY))||{}; }catch(e){ COLL_SENTS={}; }
-function saveCollSents(){ try{ localStorage.setItem(COLL_SENT_KEY,JSON.stringify(COLL_SENTS)); }catch(e){} }
+const COLL_SENT_STORE = NSStore.map(COLL_SENT_KEY, COLL_SENTS);
+function saveCollSents(){ COLL_SENT_STORE.commit(); }
 function getCollSent(en,idx){ return (COLL_SENTS[en]&&COLL_SENTS[en][idx])||''; }
 function setCollSent(en,idx,txt){
   txt=(txt||'').trim();
   if(txt){ if(!COLL_SENTS[en]) COLL_SENTS[en]={}; COLL_SENTS[en][idx]=txt; }
   else if(COLL_SENTS[en]){ delete COLL_SENTS[en][idx]; if(!Object.keys(COLL_SENTS[en]).length) delete COLL_SENTS[en]; }
+  COLL_SENT_STORE.touch(en);
   saveCollSents();
 }
 
@@ -367,6 +369,14 @@ function renderColl(){ renderCollProgress(); buildCollOrder(); showCollMode(); }
 const _fltMount=document.getElementById('filterMount');
 if(_fltMount) mountFilter(_fltMount, function(){ collPos=0; renderColl(); }, ['groups','status','saved']);
 renderColl();
+
+/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi. Yalnızca okuyan
+   görünümler tazelenir; study/match/fill turu yazılanı silmesin diye
+   olduğu gibi bırakılır. */
+window.addEventListener('ns-state-changed', function(){
+  renderCollProgress();
+  if(collMode==='list') renderCollBrowse();
+});
 </script>
 </body>
 </html>

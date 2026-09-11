@@ -26,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="store.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -377,6 +378,16 @@ function refreshCurrent(){
   else if(currentTab==='sentence') renderSentence();
   updateCount();
 }
+
+/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi. Yalnızca okuyan
+   görünümleri yeniden çiz — quiz/boşluk turunu sıfırlamak ya da yazılmakta
+   olan cümleyi silmek pahasına tazelemeye değmez. */
+window.addEventListener('ns-state-changed', function(){
+  if(currentTab==='list') renderList();
+  else if(currentTab==='cards'){ renderCardBadge(); updateFlagBtn(); updateHideBtn(); }
+  updateCount();
+  if(fltUI) fltUI.updateBadge();
+});
 
 
 /* ============ FLASH KART ============ */

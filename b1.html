@@ -26,6 +26,7 @@
 <meta property="og:image:alt" content="NS's English Lab">
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
+<script src="store.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <script src="success-fx.js" defer></script>
@@ -623,6 +624,16 @@ document.addEventListener('keydown', e => {
   else if (k === 'l'){ e.preventDefault(); toggleFlag(); }
   else if (k === 'g'){ e.preventDefault(); toggleLearned(); }
   else if (k === 's'){ e.preventDefault(); shuffleAll(); }
+});
+
+/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi. renderCard() burada
+   çağrılmaz: kartı kapatıp sırayı bozardı — yalnızca durumu okuyan
+   parçalar tazelenir. */
+window.addEventListener('ns-state-changed', function(){
+  renderBadge();
+  syncToggleBtns();
+  renderProgress();
+  if (listing) renderList();
 });
 
 /* ---- başlat ---- */

@@ -1,15 +1,21 @@
 /* ============================================================
-   English Lab — cross-device progress sync (Firebase)
-   Signs in with Google, mirrors all ns-* localStorage keys to
-   Firestore under users/{uid}. Last-writer-wins by timestamp.
+   English Lab — cihazlar arası ilerleme senkronu (Firebase)
 
-   To activate: paste your Firebase web config into CONFIG below.
-   Until then the script stays silent (no sign-in pill appears).
+   ns-* durumunu Firestore'da users/{uid} altına aynalar. Bağımlılık:
+   store.js (NSStore) — bu dosyadan önce yüklenmeli.
+
+   Yazmadan önce bulut okunur ve birleştirilir; körlemesine üzerine yazma
+   yoktur. Birleştirmenin kuralı tek cümle: son başarılı push'tan beri BU
+   cihazda dokunulmuş girdiler yerelden, geri kalan her şey buluttan
+   gelir. Dokunulan girdilerin listesini NSStore ns-sync-pending'de tutar,
+   sayfa yenilense de çevrimdışı kalınsa da kaybolmaz.
+
+   Okuma tarafı onSnapshot: uzaktaki değişiklik açık duran sekmeye anında
+   düşer, sayfa reload'una gerek kalmaz.
    ============================================================ */
 (function () {
   'use strict';
 
-  // ---- 1) PASTE YOUR FIREBASE WEB CONFIG HERE ----
   var CONFIG = {
     apiKey: "AIzaSyB5BGtV0uF13QTrNoWNfpqtm3WpUbpw7mw",
     authDomain: "nss-english-lab.firebaseapp.com",
@@ -18,84 +24,137 @@
     messagingSenderId: "343220344822",
     appId: "1:343220344822:web:d9631f48c5aea04ea599d7"
   };
-  // -------------------------------------------------
 
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
-  var TS_KEY = 'ns-sync-ts';
-  function configured() { return CONFIG.apiKey && CONFIG.apiKey.indexOf('PASTE') !== 0; }
-  function syncable(k) { return /^ns-/.test(k) && !/^ns-sync/.test(k) && k !== 'ns-theme'; }
+  var TS_KEY = 'ns-sync-ts';          // "<uid>|<ts>" — içselleştirdiğimiz bulut updatedAt'i
+  var Store = window.NSStore;
 
-  if (!configured()) return; // not set up yet -> stay invisible
+  function configured() { return CONFIG.apiKey && CONFIG.apiKey.indexOf('PASTE') !== 0; }
+  if (!configured()) return;
+  if (!Store) { console.warn('[sync] store.js yüklenmedi, senkron kapalı'); return; }
 
   var auth = null, db = null, fs = null, uid = null, user = null;
-  var suspend = false, pushTimer = null, started = false;
+  var started = false, unwatch = null;
+  var pushTimer = null, pushing = null, pushAgain = false, backoff = 0;
 
-  /* ---- localStorage helpers ---- */
   var _setItem = localStorage.setItem.bind(localStorage);
+
+  /* Damga hesaba bağlı yazılır. Başka bir hesaba geçilirse eski damga
+     geçersizdir: sıfır sayılır, ilk senkron yolu işler ve A hesabının
+     ilerlemesi B'nin dokümanına basılmaz. Eski düz sayı biçimi de sıfıra
+     düşer — o cihazlar bir kez birleştirmeden geçer. */
+  function localTs() {
+    var raw = localStorage.getItem(TS_KEY) || '';
+    var at = raw.indexOf('|');
+    if (at < 0) return 0;
+    return raw.slice(0, at) === uid ? (+raw.slice(at + 1) || 0) : 0;
+  }
+  function setLocalTs(ts) { _setItem(TS_KEY, uid + '|' + ts); }
+
+  /* ---- localStorage yardımcıları ---- */
   function collectBlob() {
     var blob = {};
     for (var i = 0; i < localStorage.length; i++) {
       var k = localStorage.key(i);
-      if (syncable(k)) blob[k] = localStorage.getItem(k);
+      if (Store.syncable(k)) blob[k] = localStorage.getItem(k);
     }
     return blob;
   }
-  function blobDiffers(blob) {
-    var keys = Object.keys(blob);
-    for (var i = 0; i < keys.length; i++) {
-      if (localStorage.getItem(keys[i]) !== blob[keys[i]]) return true;
-    }
-    return false;
-  }
-  function applyBlob(blob) {
-    suspend = true;
-    try { Object.keys(blob).forEach(function (k) { _setItem(k, blob[k]); }); }
-    finally { suspend = false; }
-  }
-  // intercept app writes to ns-* keys -> schedule a cloud push
+
+  /* Uygulama yazmalarını yakala -> buluta gönderimi zamanla.
+     NSStore'a kayıtlı anahtarlar bekleyen girdilerini commit()'te
+     kendileri işaretler; kalanlar (filtre, sekme, ses tercihi) bütün
+     olarak işaretlenir. */
   localStorage.setItem = function (k, v) {
     _setItem(k, v);
-    if (!suspend && uid && syncable(k)) schedulePush();
+    if (!Store.syncable(k)) return;
+    // Oturum kapalıyken de işaretlenir: kullanıcı çıkış yapıp çalışmaya
+    // devam ederse, tekrar girdiğinde o ilerleme bulut tarafından silinmesin.
+    if (!Store.isStore(k)) Store.markPending(k, ['*']);
+    if (uid) schedulePush();
   };
 
-  /* ---- cloud ops ---- */
+  /* ---- push: oku, birleştir, yaz — hepsi tek transaction içinde ----
+     Eski sürüm doğrudan setDoc ediyordu; geride kalmış bir sekme taze bir
+     zaman damgasıyla bayat blob'u yazıp tüm cihazların ilerlemesini
+     siliyordu. Artık yazmadan önce bulut okunuyor ve araya girilirse
+     transaction baştan çalışıyor. */
   function pushNow() {
     if (!uid || !db) return Promise.resolve();
-    var ts = Date.now();
-    return fs.setDoc(fs.doc(db, 'users', uid), { blob: collectBlob(), updatedAt: ts }, { merge: true })
-      .then(function () { _setItem(TS_KEY, String(ts)); setPill('synced'); })
-      .catch(function (e) { console.warn('[sync] push failed', e); setPill('error'); });
+    if (pushing) { pushAgain = true; return pushing; }
+
+    setPill('saving');
+    var ref = fs.doc(db, 'users', uid);
+    var taken = Store.pending();
+
+    pushing = fs.runTransaction(db, function (tx) {
+      return tx.get(ref).then(function (snap) {
+        var data = snap.exists() ? (snap.data() || {}) : {};
+        var cloudTs = data.updatedAt || 0;
+        var pulled = false;
+        if (cloudTs > localTs() && data.blob) pulled = Store.mergeRemote(data.blob);
+
+        // Saati geride kalmış bir cihaz da ilerletebilsin diye monoton.
+        var ts = Math.max(Date.now(), cloudTs + 1);
+        tx.set(ref, { blob: collectBlob(), updatedAt: ts }, { merge: true });
+        return { ts: ts, pulled: pulled };
+      });
+    }).then(function (res) {
+      setLocalTs(res.ts);
+      Store.clearPending(taken);
+      backoff = 0;
+      setPill('synced');
+      if (res.pulled) Store.notify('cloud');
+    }).catch(function (e) {
+      console.warn('[sync] push failed', e);
+      setPill('error');
+      backoff = Math.min(backoff ? backoff * 2 : 4000, 60000);
+      schedulePush(backoff);
+    }).then(function () {
+      pushing = null;
+      if (pushAgain) { pushAgain = false; schedulePush(500); }
+    });
+
+    return pushing;
   }
-  function schedulePush() {
+
+  function schedulePush(delay) {
     setPill('saving');
     if (pushTimer) clearTimeout(pushTimer);
-    pushTimer = setTimeout(pushNow, 1500);
+    // delay === 0 anlamlı: "hemen". `delay || 1500` onu 1.5 sn'ye çevirirdi.
+    pushTimer = setTimeout(function () { pushTimer = null; pushNow(); },
+      delay === undefined ? 1500 : delay);
   }
-  function initialSync() {
+
+  /* ---- pull: dokümanı canlı dinle ----
+     Eskiden tek seferlik getDoc vardı, yani uzun süre açık duran sekme
+     buluttaki değişikliği hiç öğrenmiyordu. Artık anında düşüyor ve
+     sayfa reload'a gerek kalmadan tazeleniyor. */
+  function watch() {
     if (!uid || !db) return;
-    fs.getDoc(fs.doc(db, 'users', uid)).then(function (snap) {
-      var localTs = +(localStorage.getItem(TS_KEY) || 0);
-      if (!snap.exists()) { pushNow(); return; }
+    if (unwatch) { unwatch(); unwatch = null; }
+    unwatch = fs.onSnapshot(fs.doc(db, 'users', uid), function (snap) {
+      if (!snap.exists()) { schedulePush(0); return; }
       var data = snap.data() || {};
       var cloudTs = data.updatedAt || 0;
-      var blob = data.blob || {};
-      if (cloudTs > localTs && blobDiffers(blob)) {
-        applyBlob(blob);
-        _setItem(TS_KEY, String(cloudTs));
-        setPill('synced');
-        // the app already read localStorage at init; reload once to reflect cloud state
-        if (!sessionStorage.getItem('ns-sync-reloaded')) {
-          sessionStorage.setItem('ns-sync-reloaded', '1');
-          location.reload();
-        }
-      } else if (cloudTs > localTs) {
-        _setItem(TS_KEY, String(cloudTs));
-        setPill('synced');
-      } else {
-        pushNow();
-      }
-    }).catch(function (e) { console.warn('[sync] initial sync failed', e); setPill('error'); });
+      if (cloudTs <= localTs() || !data.blob) { setPill('synced'); return; }
+
+      var changed = Store.mergeRemote(data.blob);
+      setLocalTs(cloudTs);
+      setPill('synced');
+      if (changed) Store.notify('cloud');
+      // Bulutta olmayan yerel girdiler kaldıysa geri yaz.
+      if (Object.keys(Store.pending()).length) schedulePush();
+    }, function (e) {
+      console.warn('[sync] watch failed', e);
+      setPill('error');
+    });
   }
+
+  window.addEventListener('online', function () { if (uid) schedulePush(500); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' && uid && Object.keys(Store.pending()).length) schedulePush(500);
+  });
 
   /* ---- UI pill ---- */
   var pill, pillText;
@@ -147,16 +206,26 @@
       var app = appMod.initializeApp(CONFIG);
       auth = authMod.getAuth(app);
       db = dbMod.getFirestore(app);
-      // expose the firestore/auth helpers we need
       fs = {
         doc: dbMod.doc, getDoc: dbMod.getDoc, setDoc: dbMod.setDoc,
+        onSnapshot: dbMod.onSnapshot, runTransaction: dbMod.runTransaction,
         GoogleAuthProvider: authMod.GoogleAuthProvider,
         signInWithPopup: authMod.signInWithPopup, signOut: authMod.signOut
       };
       authMod.onAuthStateChanged(auth, function (u) {
         user = u; uid = u ? u.uid : null;
-        if (uid) { setPill('synced'); initialSync(); }
-        else { setPill('signedout'); }
+        if (uid) {
+          // Bu hesapla ilk senkron: giriş öncesi biriken yerel ilerleme
+          // hiç push edilmediği için bekleyen sayılmaz ve bulut onu
+          // silerdi. Sahiplen ki iki taraf birleşsin.
+          if (!localTs()) Store.claimAll();
+          setPill('synced');
+          watch();
+        }
+        else {
+          if (unwatch) { unwatch(); unwatch = null; }
+          setPill('signedout');
+        }
       });
     }).catch(function (e) {
       console.warn('[sync] SDK load failed', e); setPill('error');
