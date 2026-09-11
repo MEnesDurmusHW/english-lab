@@ -518,16 +518,16 @@
 /* ---------- ortak etkileşim durumları ---------- */
 @media (hover:hover) and (pointer:fine){
   .b1-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
-  .b1-icon-btn:hover,.b1-nav-btn:hover,.b1-dir:hover,
+  .b1-icon-btn:hover,.b1-nav-btn:hover,.b1-dir:hover,.b1-mode:hover,
   .b1-reveal:hover,.b1-empty button:hover{border-color:var(--accent);color:var(--accent)}
   .b1-util-btn:hover{color:var(--accent);border-color:var(--border);background:var(--surface-2)}
   .b1-rate button:hover{filter:brightness(1.06)}
   .b1-more button:hover,.b1-more a:hover{color:var(--accent)}
   .b1-more button:hover svg,.b1-more a:hover svg{color:var(--accent)}
 }
-.b1-icon-btn:active,.b1-nav-btn:active,.b1-dir:active{transform:scale(.97)}
+.b1-icon-btn:active,.b1-nav-btn:active,.b1-dir:active,.b1-mode:active{transform:scale(.97)}
 .b1-reveal:active,.b1-rate button:active{transform:scale(.985)}
-.b1-strip:focus-visible,.b1-dir:focus-visible,.b1-icon-btn:focus-visible,
+.b1-strip:focus-visible,.b1-dir:focus-visible,.b1-mode:focus-visible,.b1-icon-btn:focus-visible,
 .b1-nav-btn:focus-visible,.b1-util-btn:focus-visible,.b1-more button:focus-visible,.b1-more a:focus-visible,
 .b1-empty button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .b1-reveal:focus-visible,.b1-rate button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
