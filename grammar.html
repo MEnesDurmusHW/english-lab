@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>English Grammar — NS's English Lab</title>
-<meta name="description" content="Interactive English grammar patterns: dependent prepositions, verb patterns, subject-verb agreement, tense consistency and adverbial order. Learn and practise.">
+<meta name="description" content="Interactive English grammar patterns: dependent prepositions, verb patterns, subject-verb agreement, tense consistency, adverbial order, articles, phrasal verb word order and word form confusion. Learn and practise.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="NS's English Lab">
 <meta property="og:locale" content="en">
 <meta property="og:title" content="English Grammar">
-<meta property="og:description" content="Interactive grammar patterns: prepositions, verb patterns, agreement, tense, adverb order.">
+<meta property="og:description" content="Interactive grammar patterns: prepositions, verb patterns, agreement, tense, adverb order, articles, phrasal verbs, word forms.">
 <meta property="og:url" content="https://menesdurmushw.github.io/english-lab/grammar.html">
 <meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -51,10 +51,13 @@
   .topics .seg button[aria-selected="true"]{background:var(--accent);color:#fff}
   .topics .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-  .topic-title{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:20px 0 2px;letter-spacing:-.01em}
-  .sub-tabs{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;margin:12px 0 20px}
-  .sub-tabs button{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.84rem;padding:8px 20px;border-radius:999px;transition:.18s}
-  .sub-tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+  .topic-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:22px 0 20px}
+  .topic-title{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:0;letter-spacing:-.01em;flex:1 1 240px;min-width:0}
+  .practice-cta{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;cursor:pointer;background:var(--accent);border:1px solid var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.92rem;padding:11px 22px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.09);transition:transform .18s,box-shadow .18s}
+  .practice-cta:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.14)}
+  .practice-cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .practice-cta svg{width:15px;height:15px;flex:0 0 auto}
+  .practice-cta .cta-n{font-family:var(--mono);font-size:.74rem;font-weight:700;opacity:.72}
 
   /* learn */
   .intro{font-size:1rem;color:var(--text-dim);line-height:1.7;text-align:justify;margin-bottom:8px}
@@ -73,34 +76,49 @@
   .right{color:var(--ok);font-weight:700}
   .wrong{color:var(--bad);font-weight:700;text-decoration:line-through}
 
-  /* practice */
-  .p-wrap{max-width:620px;margin:0 auto;text-align:center}
-  .p-score{font-family:var(--mono);font-size:.78rem;letter-spacing:.05em;color:var(--text-muted);margin-bottom:20px}
-  .p-q{font-size:1.28rem;line-height:1.6;color:var(--text);margin-bottom:6px;font-family:var(--serif);font-weight:500}
+  /* ===== practice: tam ekran katman ===== */
+  .p-overlay{position:fixed;inset:0;z-index:1200;background:var(--bg);display:flex;flex-direction:column;overscroll-behavior:contain}
+  .p-overlay[hidden]{display:none}
+  body.p-open{overflow:hidden}
+  .p-head{flex:0 0 auto;padding:calc(14px + env(safe-area-inset-top)) clamp(14px,4vw,26px) 0}
+  .p-head-in{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .p-topic{font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .p-count{margin-left:auto;font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .p-exit{appearance:none;flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--surface);color:var(--text-dim);cursor:pointer;transition:.15s}
+  .p-exit:hover{border-color:var(--accent);color:var(--accent)}
+  .p-exit svg{width:15px;height:15px}
+  .p-track{max-width:660px;margin:13px auto 0;height:3px;border-radius:999px;background:var(--border);overflow:hidden}
+  .p-fill{height:100%;width:0;border-radius:999px;background:var(--accent);transition:width .32s cubic-bezier(.4,0,.2,1)}
+  .p-body{flex:1 1 auto;overflow-y:auto;display:flex;padding:26px clamp(14px,4vw,26px)}
+  .p-foot{flex:0 0 auto;padding:0 clamp(14px,4vw,26px) calc(18px + env(safe-area-inset-bottom))}
+  .p-foot-in{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:10px}
+
+  .p-wrap{width:100%;max-width:620px;margin:auto;text-align:center}
+  .p-q{font-family:var(--serif);font-weight:500;font-size:clamp(1.18rem,3.6vw,1.46rem);line-height:1.6;color:var(--text);margin-bottom:26px}
   .p-q .blank{color:var(--accent);border-bottom:2px dashed var(--accent);padding:0 22px}
-  .p-hint{font-size:.86rem;color:var(--text-muted);margin-bottom:22px;min-height:1.1em}
-  .p-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
-  .p-opt{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 12px;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--text);transition:.14s}
+  .p-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:16px}
+  .p-opts.stack{grid-template-columns:1fr}
+  .p-opt{position:relative;appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px 16px 16px 38px;min-height:58px;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:1rem;font-weight:600;line-height:1.35;color:var(--text);transition:.14s}
   .p-opt:hover:not(:disabled){border-color:var(--accent)}
   .p-opt:disabled{cursor:default}
+  .p-opt .k{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.68rem;font-weight:700;color:var(--text-muted);opacity:.8}
   .p-opt.correct{background:var(--ok);border-color:var(--ok);color:#fff}
   .p-opt.incorrect{background:var(--bad);border-color:var(--bad);color:#fff}
-  .p-explain{font-size:.92rem;color:var(--text-dim);line-height:1.6;margin:6px auto 20px;max-width:52ch;min-height:1.2em}
+  .p-opt.correct .k,.p-opt.incorrect .k{color:#fff;opacity:.7}
+  .p-explain{font-size:.92rem;color:var(--text-dim);line-height:1.6;margin:0 auto;max-width:52ch;min-height:3.2em}
   .p-explain b{color:var(--accent)}
-  .p-row{display:flex;justify-content:center;gap:12px}
-  .p-btn{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:11px 26px;font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--text-dim);transition:.15s}
-  .p-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .p-btn{appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:13px 26px;font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--text-dim);transition:.15s;white-space:nowrap}
+  .p-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
   .p-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  .p-btn:disabled{opacity:.4;cursor:default}
-  .p-done{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:8px}
+  .p-btn.primary:hover:not(:disabled){color:#fff}
+  .p-btn:disabled{opacity:.35;cursor:default}
+  .p-btn.grow{flex:1 1 auto}
+  .p-kbd{margin-right:auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);display:none}
+  .p-done{font-family:var(--serif);font-size:clamp(2.4rem,9vw,3.4rem);font-weight:600;line-height:1;color:var(--text);letter-spacing:-.02em}
+  .p-pct{font-family:var(--mono);font-size:.82rem;font-weight:700;letter-spacing:.14em;color:var(--accent);margin:12px 0 16px}
 
-  /* Practice = tam sayfa: açıklayıcı başlık gizlenir, soru dikey ortalanır;
-     böylece her soru geçişinde aşağı kaydırmaya gerek kalmaz. */
-  body.practice-active .g-head{display:none}
-  body.practice-active .wrap{padding-top:24px;padding-bottom:32px}
-  body.practice-active #practiceView{min-height:calc(100svh - 176px);display:flex;flex-direction:column;justify-content:center}
-
-  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} body.practice-active .wrap{padding-top:16px} body.practice-active #practiceView{min-height:calc(100svh - 210px)} }
+  @media (hover:hover) and (min-width:640px){ .p-kbd{display:block} }
+  @media (max-width:560px){ .p-opts{grid-template-columns:1fr} .wrap{padding-top:64px} .p-foot-in{flex-wrap:wrap} .p-btn{flex:1 1 auto;padding:13px 18px} }
 </style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -126,21 +144,37 @@
   <header class="g-head">
     <p class="eyebrow">English</p>
     <h1>Grammar Patterns</h1>
-    <p class="sub">The rules that decide which word follows which. Read the pattern, then practise it. Each topic has a <b>Learn</b> tab and a <b>Practice</b> quiz.</p>
+    <p class="sub">The rules that decide which word follows which. Read the pattern, then hit <b>Practice</b> for a full-screen quiz on that topic.</p>
   </header>
 
   <div class="topics">
     <div class="seg" id="topicSeg" role="tablist" aria-label="Grammar topics"></div>
   </div>
 
-  <h2 class="topic-title" id="topicTitle"></h2>
-  <div class="sub-tabs" role="tablist" aria-label="Mode">
-    <button id="mode-learn" role="tab" aria-selected="true">Learn</button>
-    <button id="mode-practice" role="tab" aria-selected="false">Practice</button>
+  <div class="topic-head">
+    <h2 class="topic-title" id="topicTitle"></h2>
+    <button class="practice-cta" id="openPractice" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Practice <span class="cta-n" id="ctaCount"></span>
+    </button>
   </div>
 
   <div id="learnView"></div>
-  <div id="practiceView" hidden></div>
+</div>
+
+<div class="p-overlay" id="practiceOverlay" hidden role="dialog" aria-modal="true" aria-label="Practice">
+  <div class="p-head">
+    <div class="p-head-in">
+      <span class="p-topic" id="pTopic"></span>
+      <span class="p-count" id="pCount"></span>
+      <button class="p-exit" id="pExit" type="button" aria-label="Close practice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-track"><div class="p-fill" id="pFill"></div></div>
+  </div>
+  <div class="p-body" id="pBody"></div>
+  <div class="p-foot"><div class="p-foot-in" id="pFoot"></div></div>
 </div>
 
 <div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">NS's English Lab</span><span class="logo-author">by M. Enes Durmuş</span></div>
@@ -353,7 +387,7 @@ const GRAMMAR = [
   ],
   quiz:[
     {q:'She finished her coffee and ___ the house.', a:'left', opts:['left','leaves','will leave','leave'], note:'Stay in the past to match "finished".'},
-    {q:'By the time we got there, the show ___.', a:'had started', opts:['had started','starts','starts','has started'], note:'An earlier past event needs the past perfect.'},
+    {q:'By the time we got there, the show ___.', a:'had started', opts:['had started','started','starts','has started'], note:'An earlier past event needs the past perfect.'},
     {q:'If I were rich, I ___ a boat.', a:'would buy', opts:['would buy','will buy','buy','bought'], note:'Second conditional: "were" + "would".'},
     {q:'He told me he ___ busy that week.', a:'was', opts:['was','is','will be','has been'], note:'Backshift after "told".'},
     {q:'We were watching TV when the phone ___.', a:'rang', opts:['rang','rings','will ring','ring'], note:'Both actions in the past.'},
@@ -398,6 +432,177 @@ const GRAMMAR = [
     {q:'He drove ___.', a:'carefully through the town this morning', opts:['carefully through the town this morning','through the town carefully this morning','this morning carefully through the town','through the town this morning carefully'], note:'Manner, Place, Time.'},
   ],
 },
+{
+  key:'article', tab:'Articles', title:'Articles: a / an / the / zero',
+  intro:`<p>Before a noun you have four options: <b>a</b>, <b>an</b>, <b>the</b>, or nothing at all (the "zero article"). Two questions settle almost every case. First: is the noun singular and countable? If so, it cannot stand alone. Second: can the listener already tell <b>which one</b> you mean? If yes, use <b>the</b>; if not, use <b>a/an</b>.</p><p>Plural and uncountable nouns take no article when you speak generally (<i>Dogs bark. Water is cheap.</i>) and take <b>the</b> when you mean particular ones (<i>the dogs next door</i>).</p>`,
+  groups:[
+    {label:'The basic choice', items:[
+      {term:'a / an', key:'new, one of many', ex:'I saw <b>a</b> dog in the garden.', note:'Singular countable nouns only, and only when the listener cannot yet identify which one.'},
+      {term:'the', key:'both know which', ex:'I saw a dog. <b>The</b> dog was limping.', note:'By the second mention it is identified, so it takes "the".'},
+      {term:'zero article', key:'general', ex:'<b>Dogs</b> bark. <b>Water</b> is cheap.', note:'Plural or uncountable nouns in a general sense take nothing at all.'},
+      {term:'"a" or "an" follows the sound, not the spelling', key:'sound', ex:'<b>a</b> university, <b>a</b> European, <b>an</b> hour, <b>an</b> MP', note:'"University" begins with a /j/ sound; "hour" begins with a vowel sound; "MP" is read "em-pee".'},
+    ]},
+    {label:'When "the" is required', items:[
+      {term:'Second and later mentions', ex:'She bought a car. <b>The</b> car was red.'},
+      {term:'Only one of its kind', ex:'<b>The</b> sun, <b>the</b> moon, <b>the</b> sky, <b>the</b> internet, <b>the</b> government.'},
+      {term:'Superlatives, ordinals and "same"', ex:'<b>The</b> best day. <b>The</b> first attempt. <b>The</b> same problem.'},
+      {term:'When a phrase after the noun identifies it', ex:'<b>The</b> man in the blue coat. <b>The</b> capital of France.', note:'Compare "a man" (any man) with "the man in the blue coat" (that specific one).'},
+      {term:'Shared situation', ex:'Could you close <b>the</b> door?', note:'There is only one door in the room, so both speakers know which one.'},
+      {term:'Musical instruments', ex:'She plays <b>the</b> violin.', note:'But sports and games take nothing: she plays tennis, he plays chess.'},
+      {term:'Rivers, seas, ranges and plural place names', ex:'<b>The</b> Nile, <b>the</b> Atlantic, <b>the</b> Alps, <b>the</b> Netherlands, <b>the</b> USA.'},
+      {term:'Adjectives standing for a whole group', ex:'<b>The</b> rich, <b>the</b> young, <b>the</b> unemployed.'},
+    ]},
+    {label:'When to use no article at all', items:[
+      {term:'General plurals and uncountables', ex:'<b>Children</b> learn quickly. <b>Honesty</b> matters.', note:'Add "the" only for particular ones: "The children next door are loud."'},
+      {term:'Most countries, cities, continents, single mountains and lakes', ex:'She lives in <b>Turkey</b>, near <b>Ankara</b>. They climbed <b>Everest</b>.'},
+      {term:'Meals, languages, sports and academic subjects', ex:'We had <b>lunch</b>. He speaks <b>Arabic</b>. She studies <b>physics</b> and plays <b>tennis</b>.'},
+      {term:'Institutions used for their purpose', ex:'He goes to <b>school</b>. She is in <b>hospital</b>. They went to <b>bed</b>.', note:'bed, school, university, church, prison, hospital, work, home.'},
+      {term:'Fixed prepositional phrases', ex:'<b>by</b> car, <b>on</b> foot, <b>at</b> night, <b>in</b> town, <b>at</b> home.'},
+    ]},
+    {label:'Pairs that trap learners', items:[
+      {term:'go to school vs go to the school', ex:'He goes to <b>school</b> (as a pupil) vs. I drove to <b>the school</b> to collect him (the building).'},
+      {term:'in hospital vs in the hospital', ex:'She is in <b>hospital</b> (a patient) vs. I work in <b>the hospital</b> (that building).', note:'This split is British. American English says "in the hospital" for both.'},
+      {term:'last week vs the last week', ex:'I saw him <b>last week</b> (the one before this) vs. <b>the last week</b> of term (the final one).'},
+      {term:'a few / few, a little / little', ex:'I have <b>a few</b> friends (some — positive) vs. I have <b>few</b> friends (almost none — negative).'},
+      {term:'Jobs need an article in the singular', ex:'She is <b>an</b> engineer.', note:'Not "She is engineer." The plural is fine without one: "They are engineers."'},
+    ]},
+  ],
+  quiz:[
+    {q:'She is ___ engineer at a car firm.', a:'an', opts:['an','a','the','—'], note:'Singular job title, and "engineer" starts with a vowel sound.'},
+    {q:'___ sun rises in the east.', a:'The', opts:['The','A','An','—'], note:'There is only one sun.'},
+    {q:'I never drink ___ coffee in the evening.', a:'—', opts:['—','a','an','the'], note:'Uncountable noun used generally.'},
+    {q:'We waited for ___ hour.', a:'an', opts:['an','a','the','—'], note:'"Hour" begins with a vowel sound even though it starts with h.'},
+    {q:'They spent last spring in ___ Netherlands.', a:'the', opts:['the','a','an','—'], note:'Plural country names take "the".'},
+    {q:'My son goes to ___ school by bus.', a:'—', opts:['—','the','a','an'], note:'The institution used for its purpose takes no article.'},
+    {q:'Could you turn off ___ light, please?', a:'the', opts:['the','a','an','—'], note:'Both of you know which light.'},
+    {q:'She plays ___ piano beautifully.', a:'the', opts:['the','a','an','—'], note:'Musical instruments take "the".'},
+    {q:'He is studying ___ economics in Vienna.', a:'—', opts:['—','the','a','an'], note:'Academic subjects take no article.'},
+    {q:'That was ___ best film I have seen this year.', a:'the', opts:['the','a','an','—'], note:'Superlatives always take "the".'},
+    {q:'Her father is ___ university lecturer.', a:'a', opts:['a','an','the','—'], note:'"University" begins with a /j/ sound, so "a".'},
+    {q:'I know ___ children in that photograph.', a:'the', opts:['the','a','an','—'], note:'Specific children, identified by the phrase that follows.'},
+  ],
+},
+{
+  key:'phrasal', tab:'Phrasal Verbs', title:'Phrasal Verb Word Order',
+  intro:`<p>A phrasal verb is a verb plus one or two particles (<b>turn off</b>, <b>look after</b>, <b>put up with</b>). The meaning is idiomatic, but the real difficulty is word order: where does the object go?</p><p>There are four types, and only one of them lets you move the object. The single rule you must never break: with a <b>separable</b> phrasal verb, a pronoun object always sits <b>between</b> the verb and the particle — <i>turn it off</i>, never <i>turn off it</i>.</p>`,
+  groups:[
+    {label:'Separable: a noun goes either side, a pronoun must go in the middle', items:[
+      {term:'turn off', key:'separable', ex:'Turn off <b>the light</b>. / Turn <b>the light</b> off. / Turn <b>it</b> off.', note:'All three are fine except "turn off it", which is impossible.'},
+      {term:'pick up / put down', key:'separable', ex:'She picked <b>the baby</b> up. She picked <b>her</b> up.'},
+      {term:'take off / put on', key:'separable', ex:'Take your shoes off. Take <b>them</b> off.'},
+      {term:'throw away / give back', key:'separable', ex:"Don't throw <b>it</b> away. I gave <b>it</b> back."},
+      {term:'fill in / hand in', key:'separable', ex:'Fill the form in. Fill <b>it</b> in.'},
+      {term:'look up (a word)', key:'separable', ex:'I looked the word up. I looked <b>it</b> up.'},
+      {term:'call off / turn down / bring up', key:'separable', ex:'They called the match off. They called <b>it</b> off.'},
+      {term:'A long object goes after the particle', ex:'She turned down <b>the very generous offer they had made</b>.', note:'Splitting the verb across a long phrase makes the sentence hard to follow, so keep the pair together.'},
+    ]},
+    {label:'Inseparable: the object always follows the particle', items:[
+      {term:'look after', key:'inseparable', ex:'She looks after <b>the children</b>. She looks after <b>them</b>.', note:'Never "looks them after".'},
+      {term:'look for', key:'inseparable', ex:"I'm looking for <b>my keys</b>."},
+      {term:'get over', key:'inseparable', ex:'He got over <b>the illness</b> quickly.'},
+      {term:'run into / come across', key:'inseparable', ex:'I ran into <b>an old friend</b>.'},
+      {term:'take after', key:'inseparable', ex:'She takes after <b>her mother</b>.'},
+      {term:'deal with / look into', key:'inseparable', ex:'Who will deal with <b>this</b>?'},
+      {term:'count on / stand for', key:'inseparable', ex:'You can count on <b>me</b>.'},
+      {term:'get on (a bus) / get off', key:'inseparable', ex:'We got on <b>the train</b> at Leeds.'},
+    ]},
+    {label:'Intransitive: no object at all', items:[
+      {term:'break down', ex:'The car <b>broke down</b>.', note:'You cannot say "break something down" with this meaning.'},
+      {term:'show up / turn up', ex:'He <b>showed up</b> two hours late.'},
+      {term:'get up / grow up', ex:'She <b>grew up</b> in Izmir.'},
+      {term:'take off (a plane)', ex:'The flight <b>took off</b> on time.'},
+      {term:'give in / set off / come back', ex:'They finally <b>gave in</b>.'},
+    ]},
+    {label:'Three-word phrasal verbs: never split them', items:[
+      {term:'put up with', ex:"I can't put up with <b>the noise</b>.", note:'The object always comes after all three words, even a pronoun: "put up with it".'},
+      {term:'look forward to', ex:'I look forward to <b>your reply</b>.'},
+      {term:'get on with / catch up with', ex:'She gets on with <b>everyone</b>.'},
+      {term:'run out of', ex:'We ran out of <b>time</b>.'},
+      {term:'come up with', ex:'He came up with <b>a solution</b>.'},
+      {term:'look down on / get away with', ex:'They looked down on <b>him</b>.'},
+    ]},
+    {label:'How to tell which type you have', items:[
+      {term:'The pronoun test', ex:'Say the verb with "it". If "verb + it + particle" sounds right, it is separable.', note:'"Turn it off" works, so "turn off" is separable. "Look it after" does not work, so "look after" is inseparable.'},
+      {term:'Three particles means no splitting', ex:'put up with, get away with, look forward to.', note:'If there are two particles, the object goes at the end. Always.'},
+      {term:'Adverbs never go inside the pair', ex:'She turned the offer down <b>flatly</b>.', note:'Not: "turned the offer flatly down".'},
+    ]},
+  ],
+  quiz:[
+    {q:'These shoes are muddy. Please ___.', a:'take them off', opts:['take them off','take off them'], note:'A pronoun object must sit inside a separable phrasal verb.'},
+    {q:'I did not know the word, so I ___ in a dictionary.', a:'looked it up', opts:['looked it up','looked up it'], note:'"Look up" is separable, so the pronoun goes in the middle.'},
+    {q:'My neighbour ___ while we are away.', a:'looks after our cat', opts:['looks after our cat','looks our cat after'], note:'"Look after" is inseparable: nothing goes between the two words.'},
+    {q:'I cannot ___ the noise from the street.', a:'put up with', opts:['put up with','put with up','up put with'], note:'Three-word phrasal verbs are never split.'},
+    {q:'The match was cancelled — they ___ an hour before kick-off.', a:'called it off', opts:['called it off','called off it'], note:'Pronoun in the middle.'},
+    {q:'She ___ an old school friend at the station.', a:'ran into', opts:['ran into','ran her into','into ran'], note:'"Run into" (= meet by chance) is inseparable.'},
+    {q:'Our car ___ on the way home.', a:'broke down', opts:['broke down','broke it down','broke down it'], note:'"Break down" is intransitive: it takes no object.'},
+    {q:'Here is the book you lent me — I am ___.', a:'giving it back', opts:['giving it back','giving back it'], note:'Separable verb plus a pronoun.'},
+    {q:'Here is the form. Please ___ and sign at the bottom.', a:'fill it in', opts:['fill it in','fill in it'], note:'"Fill in the form" and "fill the form in" are both fine, but a pronoun has only one position.'},
+    {q:'I am really ___ seeing you again.', a:'looking forward to', opts:['looking forward to','looking to forward','forward looking to'], note:'Never split a three-word phrasal verb.'},
+    {q:'The offer was poor, so we ___.', a:'turned it down', opts:['turned it down','turned down it'], note:'Pronoun in the middle.'},
+    {q:'He ___ his father — same voice, same walk.', a:'takes after', opts:['takes after','takes him after','after takes'], note:'"Take after" is inseparable.'},
+  ],
+},
+{
+  key:'wordform', tab:'Word Forms', title:'Word Form Confusion',
+  intro:`<p>Most English words come as a family: one root doing four different jobs. <b>Succeed</b> is the verb, <b>success</b> the noun, <b>successful</b> the adjective, <b>successfully</b> the adverb. Choosing the wrong member is one of the most visible errors in writing, because the sentence is still readable — just clearly non-native.</p><p>The fix is to learn families as sets, and to check what the slot needs: after <i>his</i> or <i>a</i> comes a noun; describing a noun needs an adjective; describing a verb needs an adverb.</p>`,
+  groups:[
+    {label:'Learn the whole family at once', items:[
+      {term:'succeed &middot; success &middot; successful &middot; successfully', key:'v / n / adj / adv', ex:'She <b>succeeded</b>. Her <b>success</b> was total. A <b>successful</b> year. It ended <b>successfully</b>.'},
+      {term:'decide &middot; decision &middot; decisive &middot; decisively', key:'v / n / adj / adv', ex:'They <b>decided</b> quickly. It was a bold <b>decision</b>.'},
+      {term:'differ &middot; difference &middot; different &middot; differently', key:'v / n / adj / adv', ex:'The two <b>differ</b>. There is a real <b>difference</b>.'},
+      {term:'compete &middot; competition / competitor &middot; competitive', key:'v / n / adj', ex:'A <b>competitive</b> market. Our main <b>competitor</b>.'},
+      {term:'explain &middot; explanation &middot; explanatory', key:'v / n / adj', ex:'Give me an <b>explanation</b>.'},
+      {term:'strengthen &middot; strength &middot; strong &middot; strongly', key:'v / n / adj / adv', ex:'We must <b>strengthen</b> the walls. Their main <b>strength</b>.'},
+      {term:'analyse &middot; analysis &middot; analytical &middot; analytically', key:'v / n / adj / adv', ex:'A careful <b>analysis</b> of the data.'},
+      {term:'please &middot; pleasure &middot; pleasant &middot; pleasantly', key:'v / n / adj / adv', ex:'A <b>pleasant</b> surprise. It was a <b>pleasure</b>.'},
+    ]},
+    {label:'Verb vs noun: the classic traps', items:[
+      {term:'advise (verb) / advice (noun)', ex:'She <b>advised</b> me to wait. She gave me good <b>advice</b>.', note:'"Advice" is uncountable — never "advices". The verb is pronounced with a /z/.'},
+      {term:'practise (verb) / practice (noun)', ex:'You must <b>practise</b> daily. Daily <b>practice</b> helps.', note:'This split is British; American English spells both "practice".'},
+      {term:'affect (verb) / effect (noun)', ex:'The rain <b>affected</b> the match. It had a serious <b>effect</b>.', note:'"Effect" can be a verb meaning "bring about", but that is rare and formal.'},
+      {term:'lose (verb) / loss (noun) / loose (adjective)', ex:"Don't <b>lose</b> it. A heavy <b>loss</b>. The screw is <b>loose</b>."},
+      {term:'rise (no object) / raise (takes an object)', ex:'Prices <b>rose</b>. They <b>raised</b> prices.'},
+      {term:'believe (verb) / belief (noun)', ex:'I <b>believe</b> you. A firm <b>belief</b>.'},
+      {term:'live (verb) / life (noun) / alive, lively (adjectives)', ex:'They <b>live</b> here. A quiet <b>life</b>.'},
+    ]},
+    {label:'Adjective vs adverb', items:[
+      {term:'good (adjective) / well (adverb)', ex:'A <b>good</b> result. She sings <b>well</b>.'},
+      {term:'hard vs hardly', ex:'He works <b>hard</b>.', note:'"Hardly" means almost not: "He hardly works" is the opposite meaning.'},
+      {term:'late vs lately', ex:'She arrived <b>late</b>.', note:'"Lately" means recently: "I haven\'t seen her lately."'},
+      {term:'near vs nearly', ex:'We live <b>near</b> the station. It is <b>nearly</b> finished.'},
+      {term:'high vs highly', ex:'The plane flew <b>high</b>. She is <b>highly</b> respected.', note:'"Highly" is figurative, "high" is literal.'},
+      {term:'Some -ly words are adjectives, not adverbs', ex:'A <b>friendly</b> face. A <b>likely</b> outcome.', note:'friendly, lovely, likely, lonely, silly, ugly. You cannot say "he smiled friendly".'},
+      {term:'fast, straight, early are both', ex:'A <b>fast</b> car drives <b>fast</b>.', note:'No -ly version exists. "Fastly" is not a word.'},
+    ]},
+    {label:'-ed vs -ing adjectives', items:[
+      {term:'-ing describes the thing', ex:'The film was <b>boring</b>. This is <b>confusing</b>.', note:'The thing causes the feeling.'},
+      {term:'-ed describes the person', ex:'I was <b>bored</b>. I am <b>confused</b>.', note:'The person receives the feeling. "I am boring" means you bore other people.'},
+      {term:'Common pairs', ex:'interested / interesting, tired / tiring, excited / exciting, surprised / surprising, frustrated / frustrating, worried / worrying.'},
+    ]},
+    {label:'Endings that change the meaning', items:[
+      {term:'-er / -or = the doer, -ee = the receiver', ex:'The <b>employer</b> hires; the <b>employee</b> is hired.', note:'Also interviewer / interviewee, trainer / trainee, payer / payee.'},
+      {term:'economic vs economical', ex:'<b>Economic</b> growth. An <b>economical</b> car.', note:'Economic = about the economy. Economical = saves money or resources.'},
+      {term:'historic vs historical', ex:'A <b>historic</b> victory. A <b>historical</b> novel.', note:'Historic = important in history. Historical = relating to the past.'},
+      {term:'sensible vs sensitive', ex:'A <b>sensible</b> decision. <b>Sensitive</b> skin.', note:'Sensible = showing good judgement. Sensitive = easily affected.'},
+      {term:'classic vs classical', ex:'A <b>classic</b> mistake. <b>Classical</b> music.'},
+      {term:'efficient vs effective', ex:'An <b>efficient</b> process wastes nothing; an <b>effective</b> one gets the result.'},
+    ]},
+  ],
+  quiz:[
+    {q:'His ___ surprised everyone at the office.', a:'success', opts:['success','succeed','successful','successfully'], note:'After "his" the slot needs a noun.'},
+    {q:'The team worked very ___ on the project.', a:'hard', opts:['hard','hardly','harder','hardness'], note:'"Hardly" would mean they barely worked at all.'},
+    {q:'She gave me some very useful ___.', a:'advice', opts:['advice','advise','advices','advised'], note:'"Advice" is the noun and it is uncountable.'},
+    {q:'The film was so ___ that I fell asleep.', a:'boring', opts:['boring','bored','bore','boredom'], note:'-ing describes the thing that causes the feeling.'},
+    {q:'I was completely ___ by the ending.', a:'confused', opts:['confused','confusing','confuse','confusion'], note:'-ed describes the person who feels it.'},
+    {q:'The new rules had a serious ___ on small firms.', a:'effect', opts:['effect','affect','affection','effective'], note:'"Effect" is the noun; "affect" is the verb.'},
+    {q:'He answered every question ___.', a:'correctly', opts:['correctly','correct','correction','corrective'], note:'An adverb is needed to describe how he answered.'},
+    {q:'Buying in bulk is far more ___.', a:'economical', opts:['economical','economic','economy','economics'], note:'"Economical" = saves money. "Economic" = about the economy.'},
+    {q:'She speaks English very ___.', a:'well', opts:['well','good','goodly','best'], note:'"Good" is the adjective; the adverb is "well".'},
+    {q:'The company now employs two hundred ___.', a:'employees', opts:['employees','employers','employments','employed'], note:'-ee = the person who receives the action.'},
+    {q:'There is a clear ___ between the two designs.', a:'difference', opts:['difference','different','differ','differently'], note:'After "a clear" the slot needs a noun.'},
+    {q:'We must ___ the security of the building.', a:'strengthen', opts:['strengthen','strength','strong','strongly'], note:'After "must" the slot needs a verb.'},
+  ],
+},
 ];
 
 /* ============ HELPERS ============ */
@@ -407,8 +612,8 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 function fmt(s){ return String(s); }
 
 let topicKey = GRAMMAR[0].key;
-let mode = 'learn';
 function curTopic(){ return GRAMMAR.find(t=>t.key===topicKey); }
+function topicIndex(){ return GRAMMAR.findIndex(t=>t.key===topicKey); }
 
 /* ---- topic tabs ---- */
 const topicSeg = document.getElementById('topicSeg');
@@ -417,12 +622,9 @@ GRAMMAR.forEach(t=>{
   b.id='topic-'+t.key; b.type='button'; b.setAttribute('role','tab');
   b.setAttribute('aria-selected', t.key===topicKey?'true':'false');
   b.textContent=t.tab;
-  b.addEventListener('click', ()=>{ topicKey=t.key; mode='learn'; render(); });
+  b.addEventListener('click', ()=>{ topicKey=t.key; render(); });
   topicSeg.appendChild(b);
 });
-
-document.getElementById('mode-learn').addEventListener('click', ()=>{ mode='learn'; render(); });
-document.getElementById('mode-practice').addEventListener('click', ()=>{ mode='practice'; startPractice(); render(); });
 
 /* ---- learn ---- */
 const learnView=document.getElementById('learnView');
@@ -442,88 +644,133 @@ function renderLearn(t){
   learnView.innerHTML=h;
 }
 
-/* ---- practice ---- */
-const practiceView=document.getElementById('practiceView');
-let quiz={items:[], i:0, correct:0, total:0, answered:false, optOrder:[]};
-let pAutoTimer=null;
-function startPractice(){
+/* ---- practice: full-screen overlay ---- */
+const ov=document.getElementById('practiceOverlay');
+const pBody=document.getElementById('pBody'), pFoot=document.getElementById('pFoot');
+const pCount=document.getElementById('pCount'), pFill=document.getElementById('pFill');
+const ctaBtn=document.getElementById('openPractice');
+let quiz=null, pAutoTimer=null, pOpen=false;
+
+function openPractice(){
   const t=curTopic();
-  quiz.items=shuffle(t.quiz);
-  quiz.i=0; quiz.correct=0; quiz.total=0; quiz.answered=false;
+  quiz={items:shuffle(t.quiz), i:0, correct:0, answered:false, order:[]};
   prepQuestion();
+  document.getElementById('pTopic').textContent=t.title;
+  ov.hidden=false; pOpen=true;
+  document.body.classList.add('p-open');
+  renderPractice();
+}
+function closePractice(){
+  clearTimeout(pAutoTimer);
+  ov.hidden=true; pOpen=false;
+  document.body.classList.remove('p-open');
+  ctaBtn.focus();
 }
 function prepQuestion(){
-  const q=quiz.items[quiz.i];
   quiz.answered=false;
-  quiz.optOrder = q.single ? q.opts.slice() : shuffle(q.opts);
+  quiz.order=shuffle(quiz.items[quiz.i].opts);
 }
 function renderPractice(){
-  if(quiz.i>=quiz.items.length){
-    const pct=quiz.total?Math.round(quiz.correct/quiz.total*100):0;
-    practiceView.innerHTML='<div class="p-wrap">'+
-      '<div class="p-done">'+quiz.correct+' / '+quiz.total+' &middot; '+pct+'%</div>'+
-      '<p class="p-explain">Nicely done. Practice again to lock it in.</p>'+
-      '<div class="p-row"><button class="p-btn primary" id="pRestart">Restart</button></div></div>';
-    document.getElementById('pRestart').addEventListener('click', ()=>{ startPractice(); render(); });
-    return;
-  }
+  const n=quiz.items.length;
+  if(quiz.i>=n){ renderResult(); return; }
   const q=quiz.items[quiz.i];
-  const qhtml = esc(q.q).replace('___','<span class="blank">?</span>');
+  pCount.textContent=(quiz.i+1)+' / '+n;
+  pFill.style.width=(quiz.i/n*100)+'%';
+  const stack=quiz.order.length%2===1 || quiz.order.some(o=>o.length>16);
   let opts='';
-  quiz.optOrder.forEach(o=>{
-    opts += '<button class="p-opt" data-o="'+esc(o)+'">'+esc(o)+'</button>';
+  quiz.order.forEach((o,idx)=>{
+    opts+='<button class="p-opt" data-o="'+esc(o)+'"><span class="k">'+(idx+1)+'</span>'+esc(o)+'</button>';
   });
-  practiceView.innerHTML='<div class="p-wrap">'+
-    '<div class="p-score">'+(quiz.i+1)+' / '+quiz.items.length+' &nbsp;&middot;&nbsp; '+quiz.correct+' correct</div>'+
-    '<div class="p-q">'+qhtml+'</div>'+
-    '<div class="p-hint" id="pHint"></div>'+
-    '<div class="p-opts" id="pOpts">'+opts+'</div>'+
-    '<div class="p-explain" id="pExplain"></div>'+
-    '<div class="p-row"><button class="p-btn" id="pReveal">Show answer</button><button class="p-btn primary" id="pNext" disabled>Next &rarr;</button></div>'+
+  pBody.innerHTML='<div class="p-wrap">'+
+    '<div class="p-q">'+esc(q.q).replace('___','<span class="blank">?</span>')+'</div>'+
+    '<div class="p-opts'+(stack?' stack':'')+'" id="pOpts">'+opts+'</div>'+
+    '<div class="p-explain" id="pExplain" aria-live="polite"></div>'+
   '</div>';
+  pFoot.innerHTML='<span class="p-kbd">1&ndash;'+quiz.order.length+' to answer &middot; Enter to continue</span>'+
+    '<button class="p-btn" id="pReveal" type="button">Show answer</button>'+
+    '<button class="p-btn primary" id="pNext" type="button" disabled>Next &rarr;</button>';
   document.getElementById('pOpts').addEventListener('click', onAnswer);
   document.getElementById('pReveal').addEventListener('click', revealAnswer);
   document.getElementById('pNext').addEventListener('click', nextQuestion);
+  pBody.scrollTop=0;
+}
+function renderResult(){
+  const n=quiz.items.length, pct=Math.round(quiz.correct/n*100);
+  pCount.textContent=n+' / '+n;
+  pFill.style.width='100%';
+  const msg = pct===100 ? 'Every single one. This topic is yours.'
+    : pct>=80 ? 'Strong. Skim the notes for the ones you missed.'
+    : pct>=50 ? 'Getting there. One more pass will lock it in.'
+    : 'Worth reading the notes again before the next round.';
+  pBody.innerHTML='<div class="p-wrap">'+
+    '<div class="p-done">'+quiz.correct+'<span style="opacity:.35"> / '+n+'</span></div>'+
+    '<div class="p-pct">'+pct+'% CORRECT</div>'+
+    '<p class="p-explain">'+msg+'</p></div>';
+  const nx=GRAMMAR[(topicIndex()+1)%GRAMMAR.length];
+  pFoot.innerHTML='<button class="p-btn" id="pBack" type="button">Back to notes</button>'+
+    '<button class="p-btn" id="pNextTopic" type="button">'+esc(nx.tab)+' &rarr;</button>'+
+    '<button class="p-btn primary grow" id="pRestart" type="button">Practise again</button>';
+  document.getElementById('pBack').addEventListener('click', closePractice);
+  document.getElementById('pRestart').addEventListener('click', openPractice);
+  document.getElementById('pNextTopic').addEventListener('click', ()=>{ topicKey=nx.key; render(); openPractice(); });
 }
 function markOptions(){
   const q=quiz.items[quiz.i];
-  Array.from(document.querySelectorAll('.p-opt')).forEach(b=>{
+  document.querySelectorAll('.p-opt').forEach(b=>{
     b.disabled=true;
     if(b.dataset.o===q.a) b.classList.add('correct');
   });
-  const ex=document.getElementById('pExplain');
-  ex.innerHTML='<b>'+esc(q.a)+'</b>'+(q.note?' &middot; '+fmt(q.note):'');
-  document.getElementById('pNext').disabled=false;
+  document.getElementById('pExplain').innerHTML='<b>'+esc(q.a)+'</b>'+(q.note?' &middot; '+fmt(q.note):'');
+  const nb=document.getElementById('pNext');
+  nb.disabled=false;
   document.getElementById('pReveal').disabled=true;
+  return nb;
 }
 function onAnswer(e){
   const b=e.target.closest('.p-opt'); if(!b || quiz.answered) return;
-  quiz.answered=true; quiz.total++;
-  const q=quiz.items[quiz.i];
-  const correct=b.dataset.o===q.a;
-  if(correct) quiz.correct++;
-  else b.classList.add('incorrect');
-  markOptions();
-  if(correct){ successFX(); clearTimeout(pAutoTimer); pAutoTimer=setTimeout(nextQuestion, 650); }
+  quiz.answered=true;
+  const correct=b.dataset.o===quiz.items[quiz.i].a;
+  if(correct) quiz.correct++; else b.classList.add('incorrect');
+  const nb=markOptions();
+  if(correct){ successFX(); clearTimeout(pAutoTimer); pAutoTimer=setTimeout(nextQuestion, 700); }
+  else nb.focus();
 }
 function revealAnswer(){
   if(quiz.answered) return;
-  quiz.answered=true; quiz.total++;
-  markOptions();
+  quiz.answered=true;
+  markOptions().focus();
 }
-function nextQuestion(){ clearTimeout(pAutoTimer); quiz.i++; if(quiz.i<quiz.items.length) prepQuestion(); render(); }
+function nextQuestion(){
+  clearTimeout(pAutoTimer);
+  quiz.i++;
+  if(quiz.i<quiz.items.length) prepQuestion();
+  renderPractice();
+}
+
+ctaBtn.addEventListener('click', openPractice);
+document.getElementById('pExit').addEventListener('click', closePractice);
+document.addEventListener('keydown', e=>{
+  if(!pOpen || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.key==='Escape'){ e.preventDefault(); closePractice(); return; }
+  if(quiz.i>=quiz.items.length){
+    if(e.key==='Enter'){ e.preventDefault(); document.getElementById('pRestart').click(); }
+    return;
+  }
+  if(!quiz.answered && /^[1-9]$/.test(e.key)){
+    const b=document.querySelectorAll('.p-opt')[+e.key-1];
+    if(b){ e.preventDefault(); b.click(); }
+    return;
+  }
+  if(quiz.answered && (e.key==='Enter'||e.key===' '||e.key==='ArrowRight')){ e.preventDefault(); nextQuestion(); }
+});
 
 /* ---- render orchestrator ---- */
 function render(){
   const t=curTopic();
   GRAMMAR.forEach(x=>{ const b=document.getElementById('topic-'+x.key); if(b) b.setAttribute('aria-selected', x.key===topicKey?'true':'false'); });
   document.getElementById('topicTitle').textContent=t.title;
-  document.getElementById('mode-learn').setAttribute('aria-selected', mode==='learn'?'true':'false');
-  document.getElementById('mode-practice').setAttribute('aria-selected', mode==='practice'?'true':'false');
-  learnView.hidden = mode!=='learn';
-  practiceView.hidden = mode!=='practice';
-  document.body.classList.toggle('practice-active', mode==='practice');
-  if(mode==='learn') renderLearn(t); else renderPractice();
+  document.getElementById('ctaCount').textContent=t.quiz.length+'Q';
+  renderLearn(t);
   window.scrollTo({top:0, behavior:'auto'});
 }
 render();
