@@ -127,7 +127,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
         <h2>Bu filtreyle eşleşen kelime yok</h2>
         <p>Bir paket veya durum seçimini kaldırmayı dene.</p>
-        <button type="button" id="emptyClear">Filtreyi temizle</button>
+        <button type="button" id="emptyClear">Clear filters</button>
       </div>
 
       <button class="b1-nav-btn js-next" type="button" aria-label="Sonraki kart">
@@ -139,7 +139,7 @@
   </div>
 
   <!-- Liste görünümü: o an filtreye uyan kelimelerin tamamı.
-       Ayrı bir "listeler" ekranı yok; İşaretlediklerim, Öğrendiklerim ve
+       Ayrı bir "listeler" ekranı yok; Flagged, Learned ve
        durum listeleri zaten filtrenin birer sonucu, hepsi burada görünür. -->
   <section class="b1-list" id="listView" hidden aria-label="Kelime listesi">
     <div class="b1-list-bar">
@@ -339,11 +339,11 @@ function renderCard(){
 }
 function renderBadge(){
   if (!order.length){ badge.className = 'b1-badge'; badge.textContent = ''; return; }
-  const en = cur().en, t = b1Tries(en);
-  if (!t){ badge.className = 'b1-badge st-new'; badge.textContent = 'Yeni'; return; }
-  const st = b1StatusOf(en);
+  const en = cur().en, t = b1Tries(en), st = b1StatusOf(en);
   badge.className = 'b1-badge st-' + st;
-  badge.textContent = B1_STATUS_LABEL[st] + ' · ' + b1AccText(en) + ' (' + b1Hits(en) + '/' + t + ')';
+  /* Hiç denenmemişte skor/sayaç yok; etiketin kendisi zaten bunu söylüyor. */
+  badge.textContent = st === 'fresh' ? B1_STATUS_LABEL.fresh
+    : B1_STATUS_LABEL[st] + ' · ' + b1AccText(en) + ' (' + b1Hits(en) + '/' + t + ')';
 }
 /* Puanlama düğmeleri her zaman etkin — kart çevrilmeden de işaretlenebilir.
    "Cevabı göster" bir geçiş düğmesi; dock yüksekliği sabit kalır, düzen zıplamaz. */
@@ -355,14 +355,15 @@ function setRevealed(on){
 /* ---- ilerleme: şerit + ray + alt sayfa ---- */
 function stats(){
   const scope = b1Active();
-  let known = 0, shaky = 0, weak = 0, fresh = 0, hits = 0, tries = 0;
+  /* Dört durum birbirini dışladığı için tek sayaç yeter; "denenmedi"yi
+     ayrıca elemeye gerek yok, b1StatusOf zaten 'fresh' döndürüyor. */
+  const by = { known: 0, shaky: 0, weak: 0, fresh: 0 };
+  let hits = 0, tries = 0;
   scope.forEach(w => {
-    const t = b1Tries(w.en);
-    tries += t; hits += b1Hits(w.en);
-    if (!t){ fresh++; return; }
-    const s = b1StatusOf(w.en);
-    if (s === 'known') known++; else if (s === 'weak') weak++; else shaky++;
+    tries += b1Tries(w.en); hits += b1Hits(w.en);
+    by[b1StatusOf(w.en)]++;
   });
+  const { known, shaky, weak, fresh } = by;
   return { n: scope.length, known, shaky, weak, fresh, hits, tries,
            learned: B1.filter(w => b1IsHidden(w.en)).length };
 }
@@ -372,20 +373,18 @@ function renderProgress(){
   segKnown.style.width = (s.known / n * 100).toFixed(2) + '%';
   segShaky.style.width = (s.shaky / n * 100).toFixed(2) + '%';
   segWeak.style.width  = (s.weak  / n * 100).toFixed(2) + '%';
-  strip.setAttribute('aria-label',
-    'İlerleme: ' + s.known + ' biliyorum, ' + s.shaky + ' sağlam değil, ' + s.weak + ' zayıf, ' + s.fresh + ' denenmedi');
+  strip.setAttribute('aria-label', 'İlerleme: ' +
+    B1_STATUS_ORDER.map(k => s[k] + ' ' + B1_STATUS_LABEL[k]).join(', '));
 
   /* sıfır durumunda boş bir çizgi yerine o an bilinen gerçek sayıyı göster */
   const acc = s.tries ? Math.round(s.hits / s.tries * 100) + '%' : String(s.n);
   /* sıfır durumu 5 satırlık hâlin alt kümesi — iskelet değişmez, zıplama olmaz */
+  const railRow = k => '<div class="b1-rail-row"><i class="b1-dot-' + k + '"></i><span>' +
+    B1_STATUS_LABEL[k] + '</span><b>' + s[k] + '</b></div>';
+  const learnedRow = '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>';
   const rows = s.tries === 0
-    ? '<div class="b1-rail-row"><i class="b1-dot-none"></i><span>Denenmedi</span><b>' + s.fresh + '</b></div>' +
-      '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>'
-    : '<div class="b1-rail-row"><i class="b1-dot-known"></i><span>Biliyorum</span><b>' + s.known + '</b></div>' +
-      '<div class="b1-rail-row"><i class="b1-dot-shaky"></i><span>Sağlam değil</span><b>' + s.shaky + '</b></div>' +
-      '<div class="b1-rail-row"><i class="b1-dot-weak"></i><span>Zayıf</span><b>' + s.weak + '</b></div>' +
-      '<div class="b1-rail-row"><i class="b1-dot-none"></i><span>Denenmedi</span><b>' + s.fresh + '</b></div>' +
-      '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>';
+    ? railRow('fresh') + learnedRow
+    : B1_STATUS_ORDER.map(railRow).join('') + learnedRow;
 
   const html =
     '<div class="b1-acc' + (s.tries ? '' : ' is-none') + '">' + acc + '</div>' +
@@ -404,31 +403,30 @@ function scopeLabel(n){
   const parts = [];
   if (b1SelPacks.length){
     const ids = b1SelPacks.slice().sort((a, b) => a - b);
-    parts.push(ids.length === 1 ? 'Paket ' + ids[0]
-      : 'Paket ' + ids[0] + '–' + ids[ids.length - 1] + (ids.length !== ids[ids.length - 1] - ids[0] + 1 ? ' (seçili)' : ''));
-  } else parts.push('Tüm paketler');
+    parts.push(ids.length === 1 ? 'Pack ' + ids[0]
+      : 'Pack ' + ids[0] + '–' + ids[ids.length - 1] + (ids.length !== ids[ids.length - 1] - ids[0] + 1 ? ' (selected)' : ''));
+  } else parts.push('All packs');
   if (b1SelPos.length) parts.push(b1SelPos.map(p => B1_POS_LABEL[p] || p).join(', '));
   if (b1SelStatus.length) parts.push(b1SelStatus.map(s => B1_STATUS_LABEL[s]).join(', '));
-  if (b1SelSaved.indexOf('flagged') >= 0) parts.push('İşaretli');
-  if (b1SelSaved.indexOf('learned') >= 0) parts.push('Öğrendiklerim');
-  parts.push(n + ' kelime');
+  if (b1SelSaved.indexOf('flagged') >= 0) parts.push('Flagged');
+  if (b1SelSaved.indexOf('learned') >= 0) parts.push('Learned');
+  parts.push(n + (n === 1 ? ' word' : ' words'));
   return parts.join(' · ');
 }
 
 /* ---- liste görünümü ----
    Gösterilen küme kartlarınkiyle birebir aynı: b1Active(). Ayrı bir "listeler"
-   ekranı yok — İşaretlediklerim, Öğrendiklerim ve durum listeleri zaten
+   ekranı yok — Flagged, Learned ve durum listeleri zaten
    filtrenin birer sonucu, filtrede ne seçiliyse listede o çıkıyor. */
 const FLAG_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
 const LEARN_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
 function rowHTML(w){
-  const st = b1Tries(w.en) ? b1StatusOf(w.en) : null;
+  const st = b1StatusOf(w.en);
   const marks =
     (b1IsFlagged(w.en) ? '<span class="b1-lrow-mark is-flag" title="İşaretli">' + FLAG_MARK + '</span>' : '') +
     (b1IsHidden(w.en)  ? '<span class="b1-lrow-mark is-learn" title="Öğrendim">' + LEARN_MARK + '</span>' : '');
-  const bdg = st ? '<span class="b1-badge st-' + st + '">' + B1_STATUS_LABEL[st] + '</span>'
-                 : '<span class="b1-badge st-new">Yeni</span>';
+  const bdg = '<span class="b1-badge st-' + st + '">' + B1_STATUS_LABEL[st] + '</span>';
   return '<button type="button" class="b1-lrow" data-i="' + w._i + '">' +
       '<span class="b1-lrow-main">' +
         '<span class="b1-lrow-en">' + b1Escape(w.en) + '</span>' +

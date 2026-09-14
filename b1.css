@@ -97,8 +97,8 @@
 .b1-badge.st-known{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 32%,transparent)}
 .b1-badge.st-shaky{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 32%,transparent)}
 .b1-badge.st-weak {color:var(--bad);border-color:color-mix(in srgb,var(--bad) 32%,transparent)}
-.b1-badge.st-new  {color:var(--text-muted);border:1px dashed var(--border);padding-left:12px}
-.b1-badge.st-new::before{display:none}
+.b1-badge.st-fresh{color:var(--text-muted);border:1px dashed var(--border);padding-left:12px}
+.b1-badge.st-fresh::before{display:none}
 .b1-idx{font-family:var(--mono);font-weight:600;font-size:.68rem;color:var(--text-muted);white-space:nowrap}
 
 /* iki yüz aynı hücrede */
@@ -381,7 +381,7 @@
 .b1-dot-known{background:var(--ok)}
 .b1-dot-shaky{background:var(--mid)}
 .b1-dot-weak {background:var(--bad)}
-.b1-dot-none {border:1px solid var(--border)}
+.b1-dot-fresh{border:1px solid var(--border)}
 .b1-dot-learned{background:var(--accent)}
 .b1-rail-row span{flex:1;font-family:var(--sans);font-weight:500;font-size:.82rem;color:var(--text-dim)}
 .b1-rail-row b{font-family:var(--display);font-weight:700;font-size:.92rem;color:var(--text);font-variant-numeric:tabular-nums}

@@ -11,7 +11,7 @@
      everything else  untouched — Firebase auth/Firestore and the
                       analytics beacon must go straight to the network
    ============================================================ */
-const VERSION = '2026-09-13a';
+const VERSION = '2026-09-14a';
 const SHELL = `nsel-shell-${VERSION}`;
 const RUNTIME = `nsel-runtime-${VERSION}`;
 const FONTS = `nsel-fonts-${VERSION}`;

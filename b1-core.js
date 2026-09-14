@@ -10,9 +10,19 @@
 'use strict';
 
 /* ============ ETİKETLER ============ */
-const B1_STATUS_LABEL = { known: 'Biliyorum', shaky: 'Sağlam değil', weak: 'Zayıf' };
+/* Dört durum birbirini dışlar ve hepsi birlikte kelimelerin tamamını kapsar.
+   Sıra, hakimiyetin azalışına göre: bildiğinden hiç denemediğine.
+   'fresh' ayrı bir durum olmasaydı net puanı 0 olduğu için 'shaky'ye
+   düşerdi — denenmemiş kelime "pekişmemiş" değildir, henüz sınanmamıştır. */
+const B1_STATUS_ORDER = ['known', 'shaky', 'weak', 'fresh'];
+const B1_STATUS_LABEL = {
+  known: 'Known',     // net puan >= B1_KNOWN_AT
+  shaky: 'Shaky',     // denendi, net puan 0 veya 1
+  weak:  'Weak',      // denendi, net puan < 0
+  fresh: 'Untried'    // hiç denenmedi
+};
 const B1_POS_LABEL = { noun: 'Noun', verb: 'Verb', adjective: 'Adjective', adverb: 'Adverb' };
-const B1_KNOWN_AT = 2;          // net (bildim - bilemedim) >= 2  ->  Biliyorum
+const B1_KNOWN_AT = 2;          // net (bildim - bilemedim) >= 2  ->  Known
 
 /* ============ İSTATİSTİK (bildim / bilemedim) ============
    ns-b1-stats = { "manage": [bildim, bilemedim], ... }
@@ -32,7 +42,13 @@ function b1Hits(en) { return b1Pair(en)[0]; }
 function b1Misses(en) { return b1Pair(en)[1]; }
 function b1Tries(en) { const p = b1Pair(en); return p[0] + p[1]; }
 function b1Net(en) { const p = b1Pair(en); return p[0] - p[1]; }
-function b1StatusOf(en) { const n = b1Net(en); if (n >= B1_KNOWN_AT) return 'known'; if (n < 0) return 'weak'; return 'shaky'; }
+function b1StatusOf(en) {
+  if (!b1Tries(en)) return 'fresh';
+  const n = b1Net(en);
+  if (n >= B1_KNOWN_AT) return 'known';
+  if (n < 0) return 'weak';
+  return 'shaky';
+}
 /* doğru olma oranı: hiç denenmediyse null */
 function b1Acc(en) { const t = b1Tries(en); return t ? b1Hits(en) / t : null; }
 function b1AccText(en) { const a = b1Acc(en); return a === null ? 'denenmedi' : Math.round(a * 100) + '%'; }
@@ -140,10 +156,10 @@ function b1FltChip(kind, val, label) {
 function b1MountFilter(host, onChange) {
   host.innerHTML =
     '<div class="filter-wrap">' +
-      '<button type="button" class="filter-btn" id="b1FltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrele">' +
+      '<button type="button" class="filter-btn" id="b1FltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Filter">' +
         B1_FILTER_ICON + '<span class="flt-badge" id="b1FltBadge" hidden></span>' +
       '</button>' +
-      '<div class="filter-panel" id="b1FltPanel" role="dialog" aria-label="Filtre" hidden></div>' +
+      '<div class="filter-panel" id="b1FltPanel" role="dialog" aria-label="Filter" hidden></div>' +
     '</div>';
   const btn = host.querySelector('#b1FltBtn'), panel = host.querySelector('#b1FltPanel'), badge = host.querySelector('#b1FltBadge');
 
@@ -154,24 +170,25 @@ function b1MountFilter(host, onChange) {
   }
   function paint() {
     let h = '';
-    h += '<div class="flt-sec"><div class="flt-lbl">Paketler</div><div class="flt-chips">' +
-      B1_PACKS.map(p => b1FltChip('p', p.id, 'Paket ' + p.id + ' <i>' + p.count + '</i>')).join('') +
+    h += '<div class="flt-sec"><div class="flt-lbl">Packs</div><div class="flt-chips">' +
+      B1_PACKS.map(p => b1FltChip('p', p.id, 'Pack ' + p.id + ' <i>' + p.count + '</i>')).join('') +
       '</div></div>';
     if (B1_POS.length > 1) {
-      h += '<div class="flt-sec"><div class="flt-lbl">Kelime türü</div><div class="flt-chips">' +
+      h += '<div class="flt-sec"><div class="flt-lbl">Word type</div><div class="flt-chips">' +
         B1_POS.map(p => b1FltChip('t', p.id, (B1_POS_LABEL[p.id] || p.id) + ' <i>' + p.count + '</i>')).join('') +
         '</div></div>';
     }
-    h += '<div class="flt-sec"><div class="flt-lbl">Durum</div><div class="flt-chips">' +
-      ['known', 'shaky', 'weak'].map(s => b1FltChip('s', s, B1_STATUS_LABEL[s])).join('') +
+    h += '<div class="flt-sec"><div class="flt-lbl">Status</div><div class="flt-chips">' +
+      B1_STATUS_ORDER.map(s => b1FltChip('s', s, B1_STATUS_LABEL[s])).join('') +
       '</div></div>';
-    h += '<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-chips">' +
-      b1FltChip('v', 'flagged', 'İşaretlediklerim') + b1FltChip('v', 'learned', 'Öğrendiklerim') +
+    h += '<div class="flt-sec"><div class="flt-lbl">Saved</div><div class="flt-chips">' +
+      b1FltChip('v', 'flagged', 'Flagged') + b1FltChip('v', 'learned', 'Learned') +
       '</div></div>';
-    h += '<div class="flt-foot"><button type="button" class="flt-clear" id="b1FltClear">Filtreyi temizle</button>' +
+    h += '<div class="flt-foot"><button type="button" class="flt-clear" id="b1FltClear">Clear filters</button>' +
       '<span class="flt-count" id="b1FltCount"></span></div>';
     panel.innerHTML = h;
-    panel.querySelector('#b1FltCount').textContent = b1Active().length + ' kelime eşleşiyor';
+    const nMatch = b1Active().length;
+    panel.querySelector('#b1FltCount').textContent = nMatch + (nMatch === 1 ? ' word' : ' words') + ' match';
     updateBadge();
   }
   /* mobilde panel alt sayfa olarak açılır; arkasına karartma koyulur */

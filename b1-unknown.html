@@ -71,12 +71,12 @@
     <p class="eyebrow">B1 Recall</p>
     <h1>Bilinemeyen Kelimeler</h1>
   </header>
-  <p class="list-hint">En az bir kez denenmiş ama henüz “Biliyorum” seviyesine ulaşmamış B1 kelimeleri. “Öğrendim” işaretlediklerin burada hiç görünmez.</p>
+  <p class="list-hint">En az bir kez denenmiş ama henüz “Known” seviyesine ulaşmamış B1 kelimeleri. Hiç denenmemişler (“Untried”) buraya girmez. “Öğrendim” işaretlediklerin burada hiç görünmez.</p>
 
   <div class="ctlbar">
     <div class="seg" role="tablist" aria-label="Kapsam">
-      <button id="modeBoth" role="tab" type="button" aria-selected="true">Zayıf + Sağlam değil</button>
-      <button id="modeWeak" role="tab" type="button" aria-selected="false">Sadece Zayıf</button>
+      <button id="modeBoth" role="tab" type="button" aria-selected="true">Weak + Shaky</button>
+      <button id="modeWeak" role="tab" type="button" aria-selected="false">Sadece Weak</button>
     </div>
     <div class="ctlbar-right">
       <span class="count" id="count"></span>
@@ -96,23 +96,23 @@
 <script>
 /* ============================================================
    Bilinemeyenler — B1 Recall'da en az bir kez denenmiş ama
-   "Biliyorum" seviyesine ulaşmamış kelimeleri listeler + kopyalar.
-   Hiç denenmemiş (taze) kelimeler kasıtlı olarak hariç: bunlar
-   "bilinemedi" değil, henüz sınanmadı.
+   "Known" seviyesine ulaşmamış kelimeleri listeler + kopyalar.
+   "Untried" kelimeler kasıtlı olarak hariç: bunlar "bilinemedi"
+   değil, henüz sınanmadı.
    ============================================================ */
 'use strict';
 
 const $ = id => document.getElementById(id);
 const listEl = $('list'), countEl = $('count'), copyBtn = $('copyBtn');
 const modeBothBtn = $('modeBoth'), modeWeakBtn = $('modeWeak');
-let mode = 'broad';   // 'broad' = zayıf + sağlam değil · 'weak' = yalnızca zayıf
+let mode = 'broad';   // 'broad' = Weak + Shaky · 'weak' = yalnızca Weak
 
 function unknownWords(){
   return B1.filter(function(w){
     if (b1IsHidden(w.en)) return false;
-    if (!b1Tries(w.en)) return false;
     const st = b1StatusOf(w.en);
-    return mode==='weak' ? st==='weak' : st!=='known';
+    /* 'fresh' burada hiç istenmiyor: denenmemiş kelime "bilinemedi" değil. */
+    return mode==='weak' ? st==='weak' : (st==='weak' || st==='shaky');
   });
 }
 function wordRow(w){
@@ -131,8 +131,8 @@ function render(){
   listEl.innerHTML = words.length
     ? '<div class="list">' + words.map(wordRow).join('') + '</div>'
     : '<div class="empty">' + (mode==='weak'
-        ? 'Zayıf kategorisinde kelime yok — güzel haber.'
-        : 'Bu kritere uyan kelime yok. Denenmiş ama “Biliyorum” seviyesine gelmemiş kelime kalmadı.') + '</div>';
+        ? '“Weak” durumunda kelime yok — güzel haber.'
+        : 'Bu kritere uyan kelime yok. Denenmiş ama “Known” seviyesine gelmemiş kelime kalmadı.') + '</div>';
 }
 function setMode(m){
   mode = m;
