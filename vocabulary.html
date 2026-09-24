@@ -59,6 +59,12 @@
   <div class="ctlbar">
     <p class="ctlbar-hint" id="ctlHint"></p>
     <div class="ctlbar-right" id="filterHost">
+      <!-- Yalnızca List sekmesinde görünür: kopyalanan küme, o an filtreye
+           uyanların ta kendisi (activeWords). -->
+      <button type="button" class="sent-copy" id="listCopyBtn" title="Filtredeki kelimeleri panoya kopyala" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Kelimeleri kopyala</span>
+      </button>
       <span class="count" id="count"></span>
       <div id="filterMount"></div>
     </div>
@@ -307,6 +313,8 @@ const tabBtn = {}, view = {};
 TABS.forEach(t=>{ tabBtn[t]=document.getElementById('tab-'+t); view[t]=document.getElementById('view-'+t); });
 let currentTab = 'list';
 const ctlHint = document.getElementById('ctlHint');
+const listCopyBtn = document.getElementById('listCopyBtn');
+if(listCopyBtn) listCopyBtn.addEventListener('click', ()=> copyWordList(listCopyBtn, activeWords()));
 const CTL_HINTS = {
   list: '<kbd>↑</kbd> <kbd>↓</kbd> ile gez, <kbd>Enter</kbd> ile aç. Mobilde sağdaki oklarla ilerle.'
 };
@@ -317,6 +325,11 @@ function updateCount(){
   else if(currentTab==='fill') countEl.textContent = 'Doğru '+fill.correct+' / '+fill.total;
   else if(currentTab==='sentence') countEl.textContent = WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en)).length+' kelime';
   else countEl.textContent = activeWords().length+' kelime';
+  /* Kopyalama düğmesi yalnızca List'te ve kopyalanacak bir şey varken */
+  if(listCopyBtn){
+    listCopyBtn.hidden = currentTab!=='list';
+    listCopyBtn.disabled = activeWords().length===0;
+  }
 }
 function selectTab(t){
   currentTab = t;
@@ -594,14 +607,19 @@ sentenceList.addEventListener('click', e=>{
   if(e.target.closest('.sent-detail')){ openWordModal(WORDS[i]); return; }
   if(e.target.closest('.sent-remove')){ toggleFlag(WORDS[i].en); renderSentence(); updateCount(); }
 });
-function copySentenceWords(btn){
-  const flagged=WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en) && !isHidden(w.en));
-  const text=flagged.map(w=>w.en).join('\n');
-  const label=btn.querySelector('span');
-  const done=()=>{ btn.classList.add('done'); label.textContent='Kopyalandı'; setTimeout(()=>{ btn.classList.remove('done'); label.textContent='Kelimeleri kopyala'; },1600); };
+/* Ortak kopyalama: satır başına bir İngilizce kelime. Hangi kümenin
+   kopyalanacağını çağıran belirler; etiket eski hâline geri döner. */
+function copyWordList(btn, words){
+  const text=words.map(w=>w.en).join('\n');
+  if(!text) return;
+  const label=btn.querySelector('span'), old=label.textContent;
+  const done=()=>{ btn.classList.add('done'); label.textContent='Kopyalandı'; setTimeout(()=>{ btn.classList.remove('done'); label.textContent=old; },1600); };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
   } else { fallbackCopy(text,done); }
+}
+function copySentenceWords(btn){
+  copyWordList(btn, WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en) && !isHidden(w.en)));
 }
 function fallbackCopy(text,cb){
   const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
