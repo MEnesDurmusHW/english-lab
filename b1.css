@@ -294,6 +294,14 @@
   color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);
   border-color:color-mix(in srgb,var(--ok) 32%,transparent);
 }
+/* Tekrar listesi bölüm rengine değil kendi turuncusuna bağlı: hangi
+   sayfadan eklendiğinden bağımsız olarak hep aynı şeyi anlatsın. */
+.b1-icon-btn.is-review{
+  color:#EA580C;background:rgba(234,88,12,.12);border-color:rgba(234,88,12,.32);
+}
+[data-theme="dark"] .b1-icon-btn.is-review{
+  color:#FB923C;background:rgba(251,146,60,.14);border-color:rgba(251,146,60,.34);
+}
 .b1-desk-utils{display:none}
 
 /* ---------- eylem dock'u ---------- */
@@ -472,6 +480,8 @@
   .b1-util-btn[disabled]{opacity:.45;pointer-events:none}
   .b1-util-btn.is-flagged{color:var(--mid)}
   .b1-util-btn.is-learned{color:var(--ok)}
+  .b1-util-btn.is-review{color:#EA580C}
+  [data-theme="dark"] .b1-util-btn.is-review{color:#FB923C}
 
   /* margin:0 auto flex ögesinde align-items:stretch'i iptal edip kutuyu
      içeriğe daraltıyor — genişliği açıkça verip align-self ile ortalıyoruz */

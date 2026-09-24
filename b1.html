@@ -27,6 +27,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
 <script src="store.js"></script>
+<script src="review-core.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <script src="success-fx.js" defer></script>
@@ -160,6 +161,9 @@
     <button class="b1-icon-btn js-flag" type="button" aria-label="İşaretle" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
     </button>
+    <button class="b1-icon-btn js-review" type="button" aria-label="Tekrar edileceklere ekle" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    </button>
     <button class="b1-icon-btn js-learn" type="button" aria-label="Öğrendim olarak işaretle" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     </button>
@@ -198,6 +202,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       Öğrendim
     </button>
+    <button class="b1-util-btn js-review" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      <span class="js-revlabel">Tekrara ekle</span>
+    </button>
     <button class="b1-util-btn js-shuffle" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
       Karıştır
@@ -235,9 +243,17 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
     <span id="moreDirLabel">Yön: EN→TR yap</span>
   </button>
+  <button type="button" class="js-review" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    <span class="js-revlabel">Tekrara ekle</span>
+  </button>
   <a href="b1-unknown.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     Bilinemeyenler
+  </a>
+  <a href="review.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    Tekrar Edilecekler
   </a>
 </div>
 
@@ -521,11 +537,21 @@ function toggleLearned(){
   }
   renderCard(); closeSheets();
 }
+/* Tekrar listesine kelimenin bir KOPYASI gider: liste b1-data.js'e bağlı
+   kalmasın, sonradan orada düzenlenebilsin. */
+function toggleReview(){
+  if (!order.length) return;
+  NSReview.toggle(NSReview.fromB1(cur()));
+  syncToggleBtns(); closeSheets();
+}
 function syncToggleBtns(){
   const has = order.length > 0;
   const fl = has && b1IsFlagged(cur().en), le = has && b1IsHidden(cur().en);
+  const rv = has && NSReview.has(cur().en);
   all('.js-flag').forEach(b => { b.classList.toggle('is-flagged', !!fl); b.setAttribute('aria-pressed', fl ? 'true' : 'false'); });
   all('.js-learn').forEach(b => { b.classList.toggle('is-learned', !!le); b.setAttribute('aria-pressed', le ? 'true' : 'false'); });
+  all('.js-review').forEach(b => { b.classList.toggle('is-review', !!rv); b.setAttribute('aria-pressed', rv ? 'true' : 'false'); });
+  all('.js-revlabel').forEach(s => { s.textContent = rv ? 'Tekrardan çıkar' : 'Tekrara ekle'; });
   all('.js-reset').forEach(b => { b.disabled = !has || b1Tries(cur().en) === 0; });
 }
 function setDir(tr){
@@ -570,6 +596,7 @@ all('.js-shuffle').forEach(b => b.addEventListener('click', () => { shuffleAll()
 all('.js-reset').forEach(b => b.addEventListener('click', resetCurrent));
 all('.js-flag').forEach(b => b.addEventListener('click', toggleFlag));
 all('.js-learn').forEach(b => b.addEventListener('click', toggleLearned));
+all('.js-review').forEach(b => b.addEventListener('click', toggleReview));
 all('.js-hit').forEach(b => b.addEventListener('click', () => rate(true, b)));
 all('.js-miss').forEach(b => b.addEventListener('click', () => rate(false, b)));
 all('.js-dir').forEach(b => b.addEventListener('click', () => { setDir(!dirTR); closeSheets(); }));

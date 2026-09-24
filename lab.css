@@ -224,6 +224,10 @@
   .row-btn:hover{border-color:var(--border);color:var(--accent);background:var(--surface-2)}
   .row-btn svg{width:15px;height:15px}
   .row-flag.on{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  /* Tekrar listesi bölüme değil, kendi turuncusuna bağlı: hangi sayfadan
+     eklediğinden bağımsız olarak hep aynı şeyi anlatsın. */
+  .row-rev.on{color:#EA580C;border-color:rgba(234,88,12,.28);background:rgba(234,88,12,.10)}
+  [data-theme="dark"] .row-rev.on{color:#FB923C;border-color:rgba(251,146,60,.30);background:rgba(251,146,60,.14)}
   .row-hide.on{color:var(--ok);border-color:var(--border);background:var(--surface-2)}
   .entry-head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:var(--radius)}
   .eh-idx{font-family:var(--mono);font-size:.72rem;font-weight:500;color:var(--text-muted);width:24px;flex:0 0 auto}

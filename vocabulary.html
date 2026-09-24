@@ -27,6 +27,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
 <script src="store.js"></script>
+<script src="review-core.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -231,6 +232,7 @@ function renderList(){
           '<svg class="eh-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'+
         '</button>'+
         '<span class="entry-actions">'+
+          '<button type="button" class="row-btn row-rev'+(NSReview.has(w.en)?' on':'')+'" data-a="rev" aria-label="Tekrar edileceklere ekle" title="Tekrar edileceklere ekle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>'+
           '<button type="button" class="row-btn row-flag'+(isFlagged(w.en)?' on':'')+'" data-a="flag" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'+
           '<button type="button" class="row-btn row-hide'+(isHidden(w.en)?' on':'')+'" data-a="hide" aria-label="Öğrendim olarak işaretle" title="Öğrendim, kaldır"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></button>'+
         '</span>'+
@@ -245,6 +247,10 @@ listEl.addEventListener('click', e=>{
   if(rb){
     const entry = rb.closest('.entry'); const i = +entry.dataset.i;
     if(rb.dataset.a==='flag'){ toggleFlag(WORDS[i].en); rb.classList.toggle('on', isFlagged(WORDS[i].en)); }
+    /* Tekrar listesine kelimenin bir KOPYASI gider: liste data.js'e bağlı
+       kalmasın, sonradan orada düzenlenebilsin. Ayırt edici açıklama
+       yoksa boş bırakılır ve kayıt "eksik" olarak işaretlenir. */
+    else if(rb.dataset.a==='rev'){ NSReview.toggle(NSReview.fromVocab(WORDS[i])); rb.classList.toggle('on', NSReview.has(WORDS[i].en)); }
     else if(rb.dataset.a==='hide'){ toggleHidden(WORDS[i].en); renderList(); updateCount(); }
     return;
   }

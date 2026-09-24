@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tekrar Edilecekler — NS's English Lab</title>
+<meta name="description" content="Vocabulary ve B1'den bağımsız, global tekrar listesi: öğrenilen kelimeleri unutmamak için Türkçeden İngilizceye flash kartlar, eksik alan takibi ve çalışılacaklar listesi.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Tekrar Edilecekler">
+<meta property="og:description" content="Global tekrar listesi: öğrenileni unutmamak için.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/review.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="review-core.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<script src="success-fx.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<!-- appbar.js KULLANILMIYOR: bu alan Vocabulary/Collocations gezintisinin
+     dışında, kendi başına duran global bir liste. Bölüm rengini elle veriyoruz. -->
+<script>document.documentElement.setAttribute('data-section','review');</script>
+<style>
+  /* ===== bölüm rengi: turuncu — diğer altı alanın hiçbirinde yok ===== */
+  [data-section="review"]{--accent:#EA580C;--accent-2:#F97316;--accent-soft:rgba(234,88,12,.10);--accent-glow:rgba(234,88,12,.18)}
+  [data-theme="dark"][data-section="review"]{--accent:#FB923C;--accent-2:#FDBA74;--accent-soft:rgba(251,146,60,.16);--accent-glow:rgba(251,146,60,.22)}
+
+  :root{ --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
+  [data-theme="dark"]{ --ok:#6fbf7f; --mid:#d8ac5c; --bad:#e0765a; }
+
+  .rv-wrap{max-width:900px;margin:0 auto;padding:26px clamp(14px,4vw,32px) 120px}
+
+  .rv-head{margin-bottom:22px}
+  .rv-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .rv-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:62ch}
+
+  /* ---- özet kutucukları: aynı zamanda filtre düğmeleri ---- */
+  .rv-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 18px}
+  .rv-tile{appearance:none;cursor:pointer;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;transition:border-color .16s,transform .16s,background .16s}
+  .rv-tile:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .rv-tile[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .rv-tile b{display:block;font-family:var(--mono,monospace);font-size:1.5rem;font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--text)}
+  .rv-tile span{display:block;margin-top:6px;font-size:.76rem;font-weight:600;letter-spacing:.04em;color:var(--text-muted)}
+  .rv-tile.is-gap b{color:var(--mid)}
+  .rv-tile.is-study b{color:var(--bad)}
+  .rv-tile.is-ready b{color:var(--ok)}
+  @media (max-width:560px){ .rv-tiles{grid-template-columns:repeat(2,1fr)} }
+
+  /* ---- hazırlık çubuğu: hazır / eksik oranı ---- */
+  .rv-bar{height:6px;border-radius:999px;background:var(--border);overflow:hidden;display:flex;margin-bottom:6px}
+  .rv-bar i{display:block;height:100%;transition:width .3s cubic-bezier(.4,0,.2,1)}
+  .rv-bar .f-ready{background:var(--ok)}
+  .rv-bar .f-gap{background:var(--mid)}
+  .rv-barnote{font-size:.8rem;color:var(--text-muted);margin:0 0 22px;line-height:1.5}
+  .rv-barnote b{color:var(--text)}
+
+  /* ---- eylem satırı ---- */
+  .rv-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  .rv-cta{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:9px;background:var(--accent);border:1px solid var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.95rem;padding:12px 24px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.09);transition:transform .18s,box-shadow .18s,opacity .18s}
+  .rv-cta:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.14)}
+  .rv-cta:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+  .rv-cta svg{width:16px;height:16px}
+  .rv-cta .n{font-family:var(--mono,monospace);font-size:.78rem;font-weight:700;opacity:.75}
+  .rv-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.88rem;padding:11px 18px;border-radius:999px;transition:.15s}
+  .rv-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed}
+  .rv-btn svg{width:15px;height:15px}
+
+  /* ---- arama ---- */
+  .rv-search{position:relative;margin-bottom:14px}
+  .rv-search input{width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px 12px 40px;font-family:var(--sans);font-size:.95rem;color:var(--text)}
+  .rv-search input:focus{outline:none;border-color:var(--accent)}
+  .rv-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-muted);pointer-events:none}
+
+  /* ---- ekleme formu ---- */
+  .rv-add{border:1px solid var(--border);border-radius:14px;background:var(--surface);margin-bottom:18px;overflow:hidden}
+  .rv-add > summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:.92rem;color:var(--accent);display:flex;align-items:center;gap:9px}
+  .rv-add > summary::-webkit-details-marker{display:none}
+  .rv-add > summary svg{width:15px;height:15px}
+  .rv-add-body{padding:4px 16px 16px;border-top:1px solid var(--border)}
+  .rv-field{margin-top:12px}
+  .rv-field label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+  .rv-field input,.rv-field textarea{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:.94rem;color:var(--text);line-height:1.5}
+  .rv-field textarea{resize:vertical;min-height:64px}
+  .rv-field input:focus,.rv-field textarea:focus{outline:none;border-color:var(--accent)}
+  .rv-field .hint{margin:6px 0 0;font-size:.79rem;color:var(--text-muted);line-height:1.5}
+  .rv-add-foot{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .rv-err{font-size:.84rem;color:var(--bad);margin:0}
+
+  /* ---- liste ---- */
+  .rv-list{display:flex;flex-direction:column;gap:9px}
+  .rv-row{border:1px solid var(--border);border-radius:13px;background:var(--surface);overflow:hidden}
+  .rv-row.is-gap{border-left:3px solid var(--mid)}
+  .rv-row.is-ready{border-left:3px solid var(--ok)}
+  .rv-main{display:flex;align-items:center;gap:12px;padding:12px 14px}
+  .rv-text{flex:1 1 auto;min-width:0}
+  .rv-en{font-weight:700;font-size:1.02rem;color:var(--text);letter-spacing:-.01em}
+  .rv-tr{font-size:.9rem;color:var(--text-dim);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rv-tr.empty{color:var(--mid);font-style:italic}
+  .rv-chips{display:flex;gap:6px;align-items:center;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end}
+  .rv-chip{font-family:var(--mono,monospace);font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--border);color:var(--text-muted);white-space:nowrap}
+  .rv-chip.st-known{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 34%,transparent)}
+  .rv-chip.st-shaky{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 34%,transparent)}
+  .rv-chip.st-weak{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 34%,transparent)}
+  .rv-chip.st-fresh{border-style:dashed}
+  .rv-chip.miss{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 44%,transparent);background:color-mix(in srgb,var(--mid) 9%,transparent)}
+  .rv-acts{display:flex;gap:4px;flex:0 0 auto}
+  .rv-icon{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0;transition:.14s}
+  .rv-icon:hover{border-color:var(--border);color:var(--accent);background:var(--bg)}
+  .rv-icon.danger:hover{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+  .rv-icon svg{width:15px;height:15px}
+  .rv-note{padding:0 14px 12px;font-size:.87rem;color:var(--text-dim);line-height:1.55}
+  .rv-note.empty{color:var(--mid);font-style:italic}
+  .rv-edit{padding:4px 14px 16px;border-top:1px solid var(--border);margin-top:2px}
+
+  .rv-empty{text-align:center;padding:52px 20px;color:var(--text-muted)}
+  .rv-empty svg{width:34px;height:34px;opacity:.45;margin-bottom:14px}
+  .rv-empty p{margin:0 0 6px;font-size:.95rem;line-height:1.6}
+
+  @media (max-width:640px){
+    .rv-main{flex-wrap:wrap;gap:8px}
+    .rv-text{flex:1 1 100%;order:1}
+    .rv-chips{order:2;justify-content:flex-start;flex:1 1 auto}
+    .rv-acts{order:3}
+    .rv-tr{white-space:normal}
+  }
+
+  /* ===== çalışma katmanı: tam ekran, TR -> EN ===== */
+  .sv{position:fixed;inset:0;z-index:1200;background:var(--bg);display:flex;flex-direction:column;overscroll-behavior:contain}
+  .sv[hidden]{display:none}
+  body.sv-open{overflow:hidden}
+  .sv-head{flex:0 0 auto;padding:calc(14px + env(safe-area-inset-top)) clamp(14px,4vw,26px) 0}
+  .sv-head-in{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .sv-title{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sv-count{margin-left:auto;font-family:var(--mono,monospace);font-size:.74rem;font-weight:600;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .sv-exit{appearance:none;flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--surface);color:var(--text-dim);cursor:pointer;transition:.15s}
+  .sv-exit:hover{border-color:var(--accent);color:var(--accent)}
+  .sv-exit svg{width:15px;height:15px}
+  .sv-track{max-width:660px;margin:13px auto 0;height:3px;border-radius:999px;background:var(--border);overflow:hidden}
+  .sv-fill{height:100%;width:0;border-radius:999px;background:var(--accent);transition:width .32s cubic-bezier(.4,0,.2,1)}
+  .sv-body{flex:1 1 auto;overflow-y:auto;display:flex;padding:26px clamp(14px,4vw,26px)}
+  .sv-card{width:100%;max-width:560px;margin:auto;text-align:center}
+  .sv-pos{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;min-height:1em}
+  .sv-term{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
+  .sv-ipa{font-family:var(--mono,monospace);font-size:.9rem;color:var(--text-muted);margin:10px 0 0;min-height:1.2em}
+  .sv-hint{margin:22px auto 0;max-width:46ch;font-size:.92rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:18px;min-height:3.4em}
+  .sv-hint em{font-style:normal;color:var(--text-muted);font-size:.86rem}
+  .sv-foot{flex:0 0 auto;padding:0 clamp(14px,4vw,26px) calc(18px + env(safe-area-inset-bottom))}
+  .sv-foot-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+  .sv-reveal{appearance:none;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px;font-family:var(--sans);font-weight:600;font-size:.96rem;color:var(--text-dim);transition:.15s}
+  .sv-reveal:hover{border-color:var(--accent);color:var(--accent)}
+  .sv-reveal svg{width:17px;height:17px}
+  .sv-rate{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sv-rate button{appearance:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:.96rem;color:#fff;border:1px solid transparent;transition:.15s}
+  .sv-miss{background:var(--bad)}
+  .sv-hit{background:var(--ok)}
+  .sv-rate button:hover{filter:brightness(1.07)}
+  .sv-rate button svg{width:17px;height:17px}
+  .sv-kbd{display:none;text-align:center;font-family:var(--mono,monospace);font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:2px 0 0}
+  @media (hover:hover) and (min-width:640px){ .sv-kbd{display:block} }
+  .sv-done{font-family:var(--display,var(--sans));font-size:clamp(2.2rem,8vw,3rem);font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--text)}
+  .sv-pct{font-family:var(--mono,monospace);font-size:.82rem;font-weight:700;letter-spacing:.14em;color:var(--accent);margin:12px 0 16px}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="appbar">
+  <div class="appbar-inner solo">
+    <a class="brand" href="index.html" aria-label="English Lab ana sayfasına dön">
+      <span class="brand-mark">NS</span>
+      <span class="brand-text">
+        <span class="brand-name">Tekrar Edilecekler</span>
+        <span class="brand-sub">English Lab</span>
+      </span>
+    </a>
+    <div class="appbar-tools">
+      <button class="tool-btn" type="button" onclick="openShare()" aria-label="Bu sayfayı paylaş">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Temayı değiştir">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <span id="syncHost" class="sync-host"></span>
+    </div>
+  </div>
+</header>
+
+<div class="rv-wrap">
+
+  <header class="rv-head">
+    <h1>Tekrar Edilecekler</h1>
+    <p>Vocabulary ve B1'in üstünde duran tek liste. Amaç yeni kelime öğrenmek değil, öğrendiğini unutmamak. Kelimeler her iki alandan ya da buradan eklenir; kartlar yalnızca Türkçeden İngilizceye çalışır.</p>
+  </header>
+
+  <div class="rv-bar" aria-hidden="true">
+    <i class="f-ready" id="barReady"></i>
+    <i class="f-gap" id="barGap"></i>
+  </div>
+  <p class="rv-barnote" id="barNote"></p>
+
+  <div class="rv-tiles" role="group" aria-label="Filtre">
+    <button class="rv-tile" type="button" id="tileAll"   data-f="all"   aria-pressed="true"><b id="nAll">0</b><span>Tümü</span></button>
+    <button class="rv-tile is-ready" type="button" id="tileReady" data-f="ready" aria-pressed="false"><b id="nReady">0</b><span>Hazır</span></button>
+    <button class="rv-tile is-gap" type="button" id="tileGap"   data-f="gap"   aria-pressed="false"><b id="nGap">0</b><span>Eksik</span></button>
+    <button class="rv-tile is-study" type="button" id="tileStudy" data-f="study" aria-pressed="false"><b id="nStudy">0</b><span>Çalışılacak</span></button>
+  </div>
+
+  <div class="rv-actions">
+    <button class="rv-cta" type="button" id="studyBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Tekrar et <span class="n" id="studyN"></span>
+    </button>
+    <button class="rv-btn" type="button" id="gapCopyBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="gapCopyLabel">Eksikleri sohbet için kopyala</span>
+    </button>
+  </div>
+
+  <details class="rv-add" id="addBox">
+    <summary>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Elle kelime ekle
+    </summary>
+    <div class="rv-add-body">
+      <div class="rv-field">
+        <label for="addEn">İngilizce</label>
+        <input id="addEn" type="text" autocomplete="off" spellcheck="false" placeholder="ör. resilient">
+      </div>
+      <div class="rv-field">
+        <label for="addTr">Türkçe karşılık</label>
+        <input id="addTr" type="text" autocomplete="off" placeholder="ör. dayanıklı, çabuk toparlanan">
+      </div>
+      <div class="rv-field">
+        <label for="addNote">Ayırt edici açıklama</label>
+        <textarea id="addNote" placeholder="Bu kelimeyi yakın anlamlılarından ne ayırıyor?"></textarea>
+        <p class="hint">Boş bırakabilirsin — kayıt "eksik" olarak işaretlenir, sonra sohbette toplu doldurursun.</p>
+      </div>
+      <div class="rv-add-foot">
+        <button class="rv-cta" type="button" id="addBtn">Listeye ekle</button>
+        <p class="rv-err" id="addErr" hidden></p>
+      </div>
+    </div>
+  </details>
+
+  <div class="rv-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search" type="search" placeholder="Listede ara…" autocomplete="off">
+  </div>
+
+  <div class="rv-list" id="list"></div>
+</div>
+
+<!-- ===== çalışma katmanı ===== -->
+<div class="sv" id="study" hidden role="dialog" aria-modal="true" aria-label="Tekrar">
+  <div class="sv-head">
+    <div class="sv-head-in">
+      <span class="sv-title" id="svTitle">Tekrar</span>
+      <span class="sv-count" id="svCount"></span>
+      <button class="sv-exit" id="svExit" type="button" aria-label="Çalışmayı kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sv-track"><div class="sv-fill" id="svFill"></div></div>
+  </div>
+  <div class="sv-body" id="svBody"></div>
+  <div class="sv-foot"><div class="sv-foot-in" id="svFoot"></div></div>
+</div>
+
+<script>
+/* ============================================================
+   Tekrar Edilecekler — sayfa mantığı
+   Veri + durum: review-core.js (window.NSReview)
+   data.js / b1-data.js YÜKLENMEZ: bu liste kendi kayıtlarını taşır,
+   kaynak dosyalara bağlı değildir. Kelime buraya kopyalanarak girer.
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const R = window.NSReview;
+const esc = R.escapeHTML;
+
+let filter = 'all';
+let query = '';
+let editing = null;          // düzenlenmekte olan kelime (tek seferde bir tane)
+
+/* ---------- ikonlar ---------- */
+const I_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+const I_DEL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
+const SRC_LABEL = { vocab:'Vocabulary', b1:'B1', custom:'Elle' };
+
+/* ---------- liste ---------- */
+function visible(){
+  let arr;
+  if (filter === 'ready') arr = R.ready();
+  else if (filter === 'gap') arr = R.gaps();
+  else if (filter === 'study') arr = R.toStudy();
+  else arr = R.all();
+  if (query){
+    const q = query.toLowerCase();
+    arr = arr.filter(it => it.en.indexOf(q) >= 0 || (it.tr||'').toLowerCase().indexOf(q) >= 0);
+  }
+  return arr;
+}
+
+function missChip(it){
+  const m = R.missingOf(it);
+  if (!m.length) return '';
+  const txt = m.length === 2 ? 'TR + açıklama eksik'
+    : m[0] === 'tr' ? 'TR eksik' : 'Açıklama eksik';
+  return '<span class="rv-chip miss">' + txt + '</span>';
+}
+
+function rowHTML(it){
+  const ready = R.isReady(it);
+  const st = R.statusOf(it.en);
+  const t = R.tries(it.en);
+  const isEditing = editing === it.en;
+  return '<div class="rv-row ' + (ready ? 'is-ready' : 'is-gap') + '" data-en="' + esc(it.en) + '">' +
+    '<div class="rv-main">' +
+      '<span class="rv-text">' +
+        '<span class="rv-en">' + esc(it.en) + '</span>' +
+        '<span class="rv-tr' + (it.tr ? '' : ' empty') + '">' + (it.tr ? esc(it.tr) : 'Türkçe karşılık yok') + '</span>' +
+      '</span>' +
+      '<span class="rv-chips">' +
+        missChip(it) +
+        (ready ? '<span class="rv-chip st-' + st + '">' + R.STATUS_LABEL[st] + (t ? ' · ' + R.accText(it.en) : '') + '</span>' : '') +
+        '<span class="rv-chip">' + (SRC_LABEL[it.src] || it.src) + '</span>' +
+      '</span>' +
+      '<span class="rv-acts">' +
+        '<button type="button" class="rv-icon" data-a="edit" aria-label="Düzenle" title="Düzenle">' + I_EDIT + '</button>' +
+        '<button type="button" class="rv-icon danger" data-a="del" aria-label="Listeden çıkar" title="Listeden çıkar">' + I_DEL + '</button>' +
+      '</span>' +
+    '</div>' +
+    (isEditing ? editHTML(it)
+      : '<p class="rv-note' + (it.note ? '' : ' empty') + '">' + (it.note ? esc(it.note) : 'Ayırt edici açıklama yok — bu kayıt henüz çalışmaya hazır değil.') + '</p>') +
+  '</div>';
+}
+
+function editHTML(it){
+  return '<div class="rv-edit">' +
+    '<div class="rv-field"><label>Türkçe karşılık</label>' +
+      '<input type="text" data-e="tr" value="' + esc(it.tr || '') + '"></div>' +
+    '<div class="rv-field"><label>Ayırt edici açıklama</label>' +
+      '<textarea data-e="note">' + esc(it.note || '') + '</textarea></div>' +
+    '<div class="rv-add-foot">' +
+      '<button type="button" class="rv-cta" data-a="save">Kaydet</button>' +
+      '<button type="button" class="rv-btn" data-a="cancel">Vazgeç</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function emptyHTML(){
+  const msg = R.count() === 0
+    ? 'Liste boş. Vocabulary ya da B1 sayfasındaki <b>tekrar</b> düğmesiyle kelime ekleyebilir, ya da yukarıdan elle girebilirsin.'
+    : (filter === 'gap' ? 'Eksik kayıt yok — hepsi çalışmaya hazır.'
+      : filter === 'study' ? 'Çalışılacak kelime yok. Zayıf ya da sallantıda bir kelime çıkarsa burada listelenir.'
+      : filter === 'ready' ? 'Hazır kayıt yok. Önce eksik alanları doldur.'
+      : 'Aramaya uyan kelime yok.');
+  return '<div class="rv-empty">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>' +
+    '<p>' + msg + '</p></div>';
+}
+
+function renderList(){
+  const arr = visible();
+  $('list').innerHTML = arr.length ? arr.map(rowHTML).join('') : emptyHTML();
+}
+
+function renderSummary(){
+  const s = R.summary();
+  $('nAll').textContent = s.total;
+  $('nReady').textContent = s.ready;
+  $('nGap').textContent = s.gap;
+  $('nStudy').textContent = s.study;
+
+  const n = s.total || 1;
+  $('barReady').style.width = (s.ready / n * 100).toFixed(2) + '%';
+  $('barGap').style.width = (s.gap / n * 100).toFixed(2) + '%';
+  $('barNote').innerHTML = s.total === 0
+    ? 'Henüz kelime yok.'
+    : (s.gap === 0
+        ? '<b>' + s.ready + '</b> kelimenin tamamı çalışmaya hazır.'
+        : '<b>' + s.ready + '</b> hazır · <b>' + s.gap + '</b> kayıtta Türkçe karşılık ya da ayırt edici açıklama eksik. Aradaki farkı sohbete kopyalayıp doldurtabilirsin.');
+
+  $('studyN').textContent = s.ready ? s.ready + '' : '';
+  $('studyBtn').disabled = s.ready === 0;
+  $('gapCopyBtn').disabled = s.gap === 0;
+
+  ['all','ready','gap','study'].forEach(f => {
+    const el = $('tile' + f.charAt(0).toUpperCase() + f.slice(1));
+    if (el) el.setAttribute('aria-pressed', filter === f ? 'true' : 'false');
+  });
+}
+
+function render(){ renderSummary(); renderList(); }
+
+/* ---------- etkileşim ---------- */
+document.querySelectorAll('.rv-tile').forEach(b => {
+  b.addEventListener('click', () => { filter = b.dataset.f; editing = null; render(); });
+});
+$('search').addEventListener('input', e => { query = e.target.value.trim(); renderList(); });
+
+$('list').addEventListener('click', e => {
+  const row = e.target.closest('.rv-row'); if (!row) return;
+  const en = row.dataset.en;
+  const btn = e.target.closest('[data-a]'); if (!btn) return;
+  const a = btn.dataset.a;
+
+  if (a === 'edit'){ editing = editing === en ? null : en; renderList(); return; }
+  if (a === 'del'){
+    if (confirm('"' + en + '" tekrar listesinden çıkarılsın mı? Bu kelimenin tekrar geçmişi de silinir.')){
+      R.remove(en);
+      if (editing === en) editing = null;
+      render();
+    }
+    return;
+  }
+  if (a === 'cancel'){ editing = null; renderList(); return; }
+  if (a === 'save'){
+    const tr = row.querySelector('[data-e="tr"]').value;
+    const note = row.querySelector('[data-e="note"]').value;
+    R.set(en, { tr: tr, note: note });
+    editing = null;
+    render();
+    return;
+  }
+});
+
+/* ---- elle ekleme ---- */
+$('addBtn').addEventListener('click', () => {
+  const en = $('addEn').value.trim();
+  const err = $('addErr');
+  if (!en){ err.textContent = 'İngilizce kelime gerekli.'; err.hidden = false; $('addEn').focus(); return; }
+  if (R.has(en)){ err.textContent = '"' + en.toLowerCase() + '" zaten listede.'; err.hidden = false; return; }
+  err.hidden = true;
+  R.add({ en: en, tr: $('addTr').value, note: $('addNote').value, src: 'custom' });
+  $('addEn').value = ''; $('addTr').value = ''; $('addNote').value = '';
+  filter = 'all'; query = ''; $('search').value = '';
+  render();
+});
+$('addEn').addEventListener('keydown', e => { if (e.key === 'Enter') $('addTr').focus(); });
+$('addTr').addEventListener('keydown', e => { if (e.key === 'Enter') $('addNote').focus(); });
+
+/* ---- eksikleri kopyala ---- */
+$('gapCopyBtn').addEventListener('click', () => {
+  const txt = R.gapReport();
+  if (!txt) return;
+  const done = () => {
+    const l = $('gapCopyLabel'), old = l.textContent;
+    l.textContent = 'Kopyalandı';
+    setTimeout(() => { l.textContent = old; }, 1600);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, () => fallbackCopy(txt, done));
+  } else fallbackCopy(txt, done);
+});
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* ============================================================
+   ÇALIŞMA KATMANI — yalnızca TR -> EN
+   Kaynak küme: "Çalışılacak" sekmesi açıkken sallantıdakiler,
+   aksi halde hazır olanların tamamı. Hazır olmayan kayıt asla
+   karta girmez: eksik açıklamayla sınamak yanıltıcı olurdu.
+   ============================================================ */
+const sv = $('study'), svBody = $('svBody'), svFoot = $('svFoot'),
+      svCount = $('svCount'), svFill = $('svFill'), svTitle = $('svTitle');
+let ses = null, svOpen = false;
+
+function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+function openStudy(){
+  const pool = filter === 'study' ? R.toStudy() : R.ready();
+  if (!pool.length) return;
+  ses = { items: shuffle(pool), i: 0, hit: 0, revealed: false };
+  svTitle.textContent = filter === 'study' ? 'Çalışılacaklar' : 'Tekrar';
+  sv.hidden = false; svOpen = true;
+  document.body.classList.add('sv-open');
+  renderStudy();
+}
+function closeStudy(){
+  sv.hidden = true; svOpen = false;
+  document.body.classList.remove('sv-open');
+  ses = null;
+  render();                      // skorlar değişmiş olabilir
+  $('studyBtn').focus();
+}
+
+function renderStudy(){
+  const n = ses.items.length;
+  if (ses.i >= n){ renderStudyDone(); return; }
+  const it = ses.items[ses.i];
+  svCount.textContent = (ses.i + 1) + ' / ' + n;
+  svFill.style.width = (ses.i / n * 100) + '%';
+
+  if (!ses.revealed){
+    /* Ön yüz: Türkçe + ayırt edici ipucu. İpucunda başlık kelimesi
+       geçiyorsa maskelenir, yoksa cevabı ele verir. */
+    svBody.innerHTML = '<div class="sv-card">' +
+      '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
+      '<h2 class="sv-term">' + esc(it.tr) + '</h2>' +
+      '<p class="sv-ipa"></p>' +
+      '<div class="sv-hint">' + R.maskHead(it.note, it.en) + '</div>' +
+    '</div>';
+    svFoot.innerHTML =
+      '<button class="sv-reveal" id="svReveal" type="button">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+        'Cevabı göster' +
+      '</button>' +
+      '<p class="sv-kbd">Boşluk cevabı gösterir · Esc çıkar</p>';
+    $('svReveal').addEventListener('click', reveal);
+  } else {
+    svBody.innerHTML = '<div class="sv-card">' +
+      '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
+      '<h2 class="sv-term">' + esc(it.en) + '</h2>' +
+      '<p class="sv-ipa">' + esc(it.ipa || '') + '</p>' +
+      '<div class="sv-hint">' + esc(it.note) + '<br><em>' + esc(it.tr) + '</em></div>' +
+    '</div>';
+    svFoot.innerHTML =
+      '<div class="sv-rate">' +
+        '<button class="sv-miss" id="svMiss" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Bilemedim</button>' +
+        '<button class="sv-hit" id="svHit" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Bildim</button>' +
+      '</div>' +
+      '<p class="sv-kbd">N bilemedim · M bildim · Esc çıkar</p>';
+    $('svMiss').addEventListener('click', () => rate(false));
+    $('svHit').addEventListener('click', () => rate(true));
+  }
+  svBody.scrollTop = 0;
+}
+
+function renderStudyDone(){
+  const n = ses.items.length, pct = Math.round(ses.hit / n * 100);
+  svCount.textContent = n + ' / ' + n;
+  svFill.style.width = '100%';
+  const msg = pct === 100 ? 'Hepsi doğru. Bu tur tertemiz.'
+    : pct >= 70 ? 'İyi gidiyor. Kaçırdıkların "Çalışılacak" listesine düştü.'
+    : 'Bunları bir tur daha dönmekte fayda var.';
+  svBody.innerHTML = '<div class="sv-card">' +
+    '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
+    '<div class="sv-pct">' + pct + '% DOĞRU</div>' +
+    '<p class="sv-hint" style="border:0;padding-top:0">' + msg + '</p></div>';
+  svFoot.innerHTML =
+    '<div class="sv-rate">' +
+      '<button class="sv-reveal" id="svBack" type="button" style="border-radius:14px">Listeye dön</button>' +
+      '<button class="sv-reveal" id="svAgain" type="button" style="border-radius:14px;background:var(--accent);border-color:var(--accent);color:#fff">Yeniden</button>' +
+    '</div>';
+  $('svBack').addEventListener('click', closeStudy);
+  $('svAgain').addEventListener('click', openStudy);
+}
+
+function reveal(){ if (!ses || ses.revealed) return; ses.revealed = true; renderStudy(); }
+function rate(hit){
+  if (!ses || !ses.revealed) return;
+  R.addResult(ses.items[ses.i].en, hit);
+  if (hit){ ses.hit++; if (typeof successFX === 'function') successFX(); }
+  ses.i++; ses.revealed = false;
+  renderStudy();
+}
+
+$('studyBtn').addEventListener('click', openStudy);
+$('svExit').addEventListener('click', closeStudy);
+document.addEventListener('keydown', e => {
+  if (!svOpen || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'Escape'){ e.preventDefault(); closeStudy(); return; }
+  if (!ses || ses.i >= ses.items.length) return;
+  if (!ses.revealed){
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); reveal(); }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if (k === 'm'){ e.preventDefault(); rate(true); }
+  else if (k === 'n'){ e.preventDefault(); rate(false); }
+});
+
+/* Başka sekme ya da bulut listeyi değiştirdiyse ekranı tazele. */
+window.addEventListener('ns-state-changed', () => { if (!svOpen) render(); });
+
+render();
+</script>
+</body>
+</html>
