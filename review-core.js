@@ -273,18 +273,18 @@
     var lines = g.map(function (it) {
       var m = missingOf(it);
       var want = m.map(function (f) {
-        return f === 'tr' ? 'Türkçe karşılık' : 'ayırt edici açıklama';
+        return f === 'tr' ? 'Turkish meaning' : 'distinguishing note';
       }).join(' + ');
-      var got = filled(it.tr) ? ' (mevcut TR: ' + it.tr + ')' : '';
-      return '- ' + it.en + ' -> eksik: ' + want + got;
+      var got = filled(it.tr) ? ' (current TR: ' + it.tr + ')' : '';
+      return '- ' + it.en + ' -> missing: ' + want + got;
     });
-    /* Cevabın biçimi burada isteniyor: aynı sayfadaki "Liste olarak ekle"
+    /* Cevabın biçimi burada isteniyor: aynı sayfadaki "Paste a list"
        kutusu bu satırları olduğu gibi yiyor, yani döngü kapanıyor. */
-    return 'Review listemde şu kelimelerin alanları eksik. Her biri için ' +
-      'Türkçe karşılığı ve kelimeyi yakın anlamlılarından ayıran kısa bir ' +
-      'açıklamayı doldurur musun?\n\n' + lines.join('\n') +
-      '\n\nCevabı tam olarak şu biçimde, satır başına bir kelime olarak ver ' +
-      '(başka açıklama ekleme):\nkelime | Türkçe karşılık | ayırt edici açıklama';
+    return 'These entries in my review deck are incomplete. For each one, ' +
+      'give the Turkish meaning and a short note saying what sets the word ' +
+      'apart from its near synonyms.\n\n' + lines.join('\n') +
+      '\n\nReply in exactly this format, one word per line, with nothing ' +
+      'else around it:\nword | Turkish meaning | distinguishing note';
   }
 
   /* Notun içinde başlık kelimesi geçiyorsa kart ön yüzünde cevabı ele

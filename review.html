@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Review Deck — NS's English Lab</title>
-<meta name="description" content="Vocabulary ve B1'den bağımsız, global tekrar listesi: öğrenilen kelimeleri unutmamak için Türkçeden İngilizceye flash kartlar, eksik alan takibi ve çalışılacaklar listesi.">
+<meta name="description" content="A global review list that sits above Vocabulary and B1: Turkish-to-English flashcards for words you already learned, readiness tracking and a to-study pile.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
@@ -16,9 +16,9 @@
 <meta name="application-name" content="English Lab">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NS's English Lab">
-<meta property="og:locale" content="tr_TR">
+<meta property="og:locale" content="en">
 <meta property="og:title" content="Review Deck">
-<meta property="og:description" content="Global tekrar listesi: öğrenileni unutmamak için.">
+<meta property="og:description" content="One review list, so what you learned stays learned.">
 <meta property="og:url" content="https://menesdurmushw.github.io/english-lab/review.html">
 <meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -192,7 +192,7 @@
 
 <header class="appbar">
   <div class="appbar-inner solo">
-    <a class="brand" href="index.html" aria-label="English Lab ana sayfasına dön">
+    <a class="brand" href="index.html" aria-label="Back to the English Lab home">
       <span class="brand-mark">NS</span>
       <span class="brand-text">
         <span class="brand-name">Review Deck</span>
@@ -200,10 +200,10 @@
       </span>
     </a>
     <div class="appbar-tools">
-      <button class="tool-btn" type="button" onclick="openShare()" aria-label="Bu sayfayı paylaş">
+      <button class="tool-btn" type="button" onclick="openShare()" aria-label="Share this page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       </button>
-      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Temayı değiştir">
+      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Toggle theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
@@ -216,7 +216,7 @@
 
   <header class="rv-head">
     <h1>Review Deck</h1>
-    <p>Vocabulary ve B1'in üstünde duran tek liste. Amaç yeni kelime öğrenmek değil, öğrendiğini unutmamak. Kelimeler her iki alandan ya da buradan eklenir; kartlar yalnızca Türkçeden İngilizceye çalışır.</p>
+    <p>One list that sits above Vocabulary and B1. The point is not learning new words but not losing the ones you already know. Add from either area or from here; cards run Turkish to English only.</p>
   </header>
 
   <div class="rv-bar" aria-hidden="true">
@@ -225,45 +225,45 @@
   </div>
   <p class="rv-barnote" id="barNote"></p>
 
-  <div class="rv-tiles" role="group" aria-label="Filtre">
-    <button class="rv-tile" type="button" id="tileAll"   data-f="all"   aria-pressed="true"><b id="nAll">0</b><span>Tümü</span></button>
-    <button class="rv-tile is-ready" type="button" id="tileReady" data-f="ready" aria-pressed="false"><b id="nReady">0</b><span>Hazır</span></button>
-    <button class="rv-tile is-gap" type="button" id="tileGap"   data-f="gap"   aria-pressed="false"><b id="nGap">0</b><span>Eksik</span></button>
-    <button class="rv-tile is-study" type="button" id="tileStudy" data-f="study" aria-pressed="false"><b id="nStudy">0</b><span>Çalışılacak</span></button>
+  <div class="rv-tiles" role="group" aria-label="Filter">
+    <button class="rv-tile" type="button" id="tileAll"   data-f="all"   aria-pressed="true"><b id="nAll">0</b><span>All</span></button>
+    <button class="rv-tile is-ready" type="button" id="tileReady" data-f="ready" aria-pressed="false"><b id="nReady">0</b><span>Ready</span></button>
+    <button class="rv-tile is-gap" type="button" id="tileGap"   data-f="gap"   aria-pressed="false"><b id="nGap">0</b><span>Missing</span></button>
+    <button class="rv-tile is-study" type="button" id="tileStudy" data-f="study" aria-pressed="false"><b id="nStudy">0</b><span>To study</span></button>
   </div>
 
   <div class="rv-actions">
     <button class="rv-cta" type="button" id="studyBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Tekrar et <span class="n" id="studyN"></span>
+      Study <span class="n" id="studyN"></span>
     </button>
     <button class="rv-btn" type="button" id="gapCopyBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      <span id="gapCopyLabel">Eksikleri sohbet için kopyala</span>
+      <span id="gapCopyLabel">Copy the gaps for chat</span>
     </button>
   </div>
 
   <details class="rv-add" id="addBox">
     <summary>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Elle kelime ekle
+      Add one word
     </summary>
     <div class="rv-add-body">
       <div class="rv-field">
-        <label for="addEn">İngilizce</label>
-        <input id="addEn" type="text" autocomplete="off" spellcheck="false" placeholder="ör. resilient">
+        <label for="addEn">English</label>
+        <input id="addEn" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. resilient">
       </div>
       <div class="rv-field">
-        <label for="addTr">Türkçe karşılık</label>
-        <input id="addTr" type="text" autocomplete="off" placeholder="ör. dayanıklı, çabuk toparlanan">
+        <label for="addTr">Turkish meaning</label>
+        <input id="addTr" type="text" autocomplete="off" placeholder="e.g. dayanıklı, çabuk toparlanan">
       </div>
       <div class="rv-field">
-        <label for="addNote">Ayırt edici açıklama</label>
-        <textarea id="addNote" placeholder="Bu kelimeyi yakın anlamlılarından ne ayırıyor?"></textarea>
-        <p class="hint">Boş bırakabilirsin — kayıt "eksik" olarak işaretlenir, sonra sohbette toplu doldurursun.</p>
+        <label for="addNote">Distinguishing note</label>
+        <textarea id="addNote" placeholder="What sets this word apart from its near synonyms?"></textarea>
+        <p class="hint">You can leave this empty — the entry is marked <b>Missing</b> and you can fill it in bulk later from chat.</p>
       </div>
       <div class="rv-add-foot">
-        <button class="rv-cta" type="button" id="addBtn">Listeye ekle</button>
+        <button class="rv-cta" type="button" id="addBtn">Add to deck</button>
         <p class="rv-err" id="addErr" hidden></p>
       </div>
     </div>
@@ -272,37 +272,37 @@
   <details class="rv-add" id="bulkBox">
     <summary>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      Liste olarak ekle
+      Paste a list
     </summary>
     <div class="rv-add-body">
       <div class="rv-field">
-        <label for="bulkText">Satır başına bir kelime</label>
-        <textarea id="bulkText" rows="7" spellcheck="false" placeholder="resilient&#10;ponder&#10;wary&#10;&#10;…ya da alanlarıyla birlikte:&#10;resilient | dayanıklı | Zorluktan sonra çabuk toparlanır; tough fiziksel dayanıklılıktır."></textarea>
-        <p class="hint">Vocabulary ya da B1 listesinden kopyaladığın düz kelime listesini olduğu gibi yapıştırabilirsin — alanlar boş kalır, kayıtlar "eksik" olarak işaretlenir. Eksikleri sohbete doldurttuktan sonra dönen <code>kelime | Türkçe | açıklama</code> satırlarını da aynı kutuya yapıştırırsın; var olan kayıtlar güncellenir, kopya oluşmaz.</p>
+        <label for="bulkText">One entry per line</label>
+        <textarea id="bulkText" rows="7" spellcheck="false" placeholder="resilient&#10;ponder&#10;wary&#10;&#10;…or with its fields:&#10;resilient | dayanıklı | Zorluktan sonra çabuk toparlanır; tough fiziksel dayanıklılıktır."></textarea>
+        <p class="hint">Paste a plain word list straight from Vocabulary or B1 — the fields stay empty and the entries are marked <b>Missing</b>. Once chat has filled them in, paste the returned <code>word | Turkish | note</code> lines into this same box; existing entries are updated, nothing is duplicated.</p>
       </div>
       <p class="rv-preview" id="bulkPreview" hidden></p>
       <div class="rv-add-foot">
-        <button class="rv-cta" type="button" id="bulkBtn" disabled>Listeyi uygula</button>
-        <button class="rv-btn" type="button" id="bulkClear">Kutuyu temizle</button>
+        <button class="rv-cta" type="button" id="bulkBtn" disabled>Apply list</button>
+        <button class="rv-btn" type="button" id="bulkClear">Clear box</button>
       </div>
     </div>
   </details>
 
   <div class="rv-search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="search" type="search" placeholder="Listede ara…" autocomplete="off">
+    <input id="search" type="search" placeholder="Search the deck…" autocomplete="off">
   </div>
 
   <div class="rv-list" id="list"></div>
 </div>
 
 <!-- ===== çalışma katmanı ===== -->
-<div class="sv" id="study" hidden role="dialog" aria-modal="true" aria-label="Tekrar">
+<div class="sv" id="study" hidden role="dialog" aria-modal="true" aria-label="Study">
   <div class="sv-head">
     <div class="sv-head-in">
-      <span class="sv-title" id="svTitle">Tekrar</span>
+      <span class="sv-title" id="svTitle">Study</span>
       <span class="sv-count" id="svCount"></span>
-      <button class="sv-exit" id="svExit" type="button" aria-label="Çalışmayı kapat">
+      <button class="sv-exit" id="svExit" type="button" aria-label="Close study">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </div>
@@ -333,7 +333,7 @@ let editing = null;          // düzenlenmekte olan kelime (tek seferde bir tane
 const I_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 const I_DEL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
-const SRC_LABEL = { vocab:'Vocabulary', b1:'B1', custom:'Elle' };
+const SRC_LABEL = { vocab:'Vocabulary', b1:'B1', custom:'Manual' };
 
 /* ---------- liste ---------- */
 function visible(){
@@ -352,8 +352,8 @@ function visible(){
 function missChip(it){
   const m = R.missingOf(it);
   if (!m.length) return '';
-  const txt = m.length === 2 ? 'TR + açıklama eksik'
-    : m[0] === 'tr' ? 'TR eksik' : 'Açıklama eksik';
+  const txt = m.length === 2 ? 'meaning + note missing'
+    : m[0] === 'tr' ? 'meaning missing' : 'note missing';
   return '<span class="rv-chip miss">' + txt + '</span>';
 }
 
@@ -366,7 +366,7 @@ function rowHTML(it){
     '<div class="rv-main">' +
       '<span class="rv-text">' +
         '<span class="rv-en">' + esc(it.en) + '</span>' +
-        '<span class="rv-tr' + (it.tr ? '' : ' empty') + '">' + (it.tr ? esc(it.tr) : 'Türkçe karşılık yok') + '</span>' +
+        '<span class="rv-tr' + (it.tr ? '' : ' empty') + '">' + (it.tr ? esc(it.tr) : 'No Turkish meaning yet') + '</span>' +
       '</span>' +
       '<span class="rv-chips">' +
         missChip(it) +
@@ -374,35 +374,35 @@ function rowHTML(it){
         '<span class="rv-chip">' + (SRC_LABEL[it.src] || it.src) + '</span>' +
       '</span>' +
       '<span class="rv-acts">' +
-        '<button type="button" class="rv-icon" data-a="edit" aria-label="Düzenle" title="Düzenle">' + I_EDIT + '</button>' +
-        '<button type="button" class="rv-icon danger" data-a="del" aria-label="Listeden çıkar" title="Listeden çıkar">' + I_DEL + '</button>' +
+        '<button type="button" class="rv-icon" data-a="edit" aria-label="Edit" title="Edit">' + I_EDIT + '</button>' +
+        '<button type="button" class="rv-icon danger" data-a="del" aria-label="Remove from deck" title="Remove from deck">' + I_DEL + '</button>' +
       '</span>' +
     '</div>' +
     (isEditing ? editHTML(it)
-      : '<p class="rv-note' + (it.note ? '' : ' empty') + '">' + (it.note ? esc(it.note) : 'Ayırt edici açıklama yok — bu kayıt henüz çalışmaya hazır değil.') + '</p>') +
+      : '<p class="rv-note' + (it.note ? '' : ' empty') + '">' + (it.note ? esc(it.note) : 'No distinguishing note yet — this entry is not ready to study.') + '</p>') +
   '</div>';
 }
 
 function editHTML(it){
   return '<div class="rv-edit">' +
-    '<div class="rv-field"><label>Türkçe karşılık</label>' +
+    '<div class="rv-field"><label>Turkish meaning</label>' +
       '<input type="text" data-e="tr" value="' + esc(it.tr || '') + '"></div>' +
-    '<div class="rv-field"><label>Ayırt edici açıklama</label>' +
+    '<div class="rv-field"><label>Distinguishing note</label>' +
       '<textarea data-e="note">' + esc(it.note || '') + '</textarea></div>' +
     '<div class="rv-add-foot">' +
-      '<button type="button" class="rv-cta" data-a="save">Kaydet</button>' +
-      '<button type="button" class="rv-btn" data-a="cancel">Vazgeç</button>' +
+      '<button type="button" class="rv-cta" data-a="save">Save</button>' +
+      '<button type="button" class="rv-btn" data-a="cancel">Cancel</button>' +
     '</div>' +
   '</div>';
 }
 
 function emptyHTML(){
   const msg = R.count() === 0
-    ? 'Liste boş. Vocabulary ya da B1 sayfasındaki <b>tekrar</b> düğmesiyle kelime ekleyebilir, ya da yukarıdan elle girebilirsin.'
-    : (filter === 'gap' ? 'Eksik kayıt yok — hepsi çalışmaya hazır.'
-      : filter === 'study' ? 'Çalışılacak kelime yok. Zayıf ya da sallantıda bir kelime çıkarsa burada listelenir.'
-      : filter === 'ready' ? 'Hazır kayıt yok. Önce eksik alanları doldur.'
-      : 'Aramaya uyan kelime yok.');
+    ? 'The deck is empty. Add words with the <b>review</b> button on the Vocabulary or B1 pages, or enter them above.'
+    : (filter === 'gap' ? 'Nothing is missing — every entry is ready to study.'
+      : filter === 'study' ? 'Nothing to study. Words that turn out Weak or Shaky show up here.'
+      : filter === 'ready' ? 'No entry is ready yet. Fill in the missing fields first.'
+      : 'No word matches that search.');
   return '<div class="rv-empty">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>' +
     '<p>' + msg + '</p></div>';
@@ -424,13 +424,17 @@ function renderSummary(){
   $('barReady').style.width = (s.ready / n * 100).toFixed(2) + '%';
   $('barGap').style.width = (s.gap / n * 100).toFixed(2) + '%';
   $('barNote').innerHTML = s.total === 0
-    ? 'Henüz kelime yok.'
+    ? 'No words yet.'
     : (s.gap === 0
-        ? '<b>' + s.ready + '</b> kelimenin tamamı çalışmaya hazır.'
-        : '<b>' + s.ready + '</b> hazır · <b>' + s.gap + '</b> kayıtta Türkçe karşılık ya da ayırt edici açıklama eksik. Aradaki farkı sohbete kopyalayıp doldurtabilirsin.');
+        ? 'All <b>' + s.ready + '</b> entries are ready to study.'
+        : '<b>' + s.ready + '</b> ready · <b>' + s.gap + '</b> still missing a Turkish meaning or a distinguishing note. Copy that gap into chat and have it filled.');
 
-  $('studyN').textContent = s.ready ? s.ready + '' : '';
-  $('studyBtn').disabled = s.ready === 0;
+  /* Düğme, o an hangi havuz çalışılacaksa ona bakmalı. "To study"
+     sekmesindeyken Ready sayısına bakmak, hazır kelime varken çalışılacak
+     yokken düğmeyi açık gösterip tıklamayı boşa düşürüyordu. */
+  const poolSize = studyPool().length;
+  $('studyN').textContent = poolSize ? poolSize + '' : '';
+  $('studyBtn').disabled = poolSize === 0;
   $('gapCopyBtn').disabled = s.gap === 0;
 
   ['all','ready','gap','study'].forEach(f => {
@@ -455,7 +459,7 @@ $('list').addEventListener('click', e => {
 
   if (a === 'edit'){ editing = editing === en ? null : en; renderList(); return; }
   if (a === 'del'){
-    if (confirm('"' + en + '" tekrar listesinden çıkarılsın mı? Bu kelimenin tekrar geçmişi de silinir.')){
+    if (confirm('Remove "' + en + '" from the deck? Its review history goes with it.')){
       R.remove(en);
       if (editing === en) editing = null;
       render();
@@ -477,8 +481,8 @@ $('list').addEventListener('click', e => {
 $('addBtn').addEventListener('click', () => {
   const en = $('addEn').value.trim();
   const err = $('addErr');
-  if (!en){ err.textContent = 'İngilizce kelime gerekli.'; err.hidden = false; $('addEn').focus(); return; }
-  if (R.has(en)){ err.textContent = '"' + en.toLowerCase() + '" zaten listede.'; err.hidden = false; return; }
+  if (!en){ err.textContent = 'The English word is required.'; err.hidden = false; $('addEn').focus(); return; }
+  if (R.has(en)){ err.textContent = '"' + en.toLowerCase() + '" is already in the deck.'; err.hidden = false; return; }
   err.hidden = true;
   R.add({ en: en, tr: $('addTr').value, note: $('addNote').value, src: 'custom' });
   $('addEn').value = ''; $('addTr').value = ''; $('addNote').value = '';
@@ -500,15 +504,15 @@ function bulkPreview(){
   box.hidden = false;
   box.classList.toggle('none', p.total === 0);
   if (!p.total){
-    box.innerHTML = 'Bu metinde kelime bulunamadı.' +
-      (p.skipped ? ' <b>' + p.skipped + '</b> satır atlandı.' : '');
+    box.innerHTML = 'No word found in that text.' +
+      (p.skipped ? ' <b>' + p.skipped + '</b> line(s) skipped.' : '');
     return;
   }
-  const bits = ['<b>' + p.total + '</b> kelime tanındı'];
-  if (p.fresh) bits.push('<b>' + p.fresh + '</b> yeni');
-  if (p.existing) bits.push('<b>' + p.existing + '</b> zaten listede (güncellenecek)');
-  if (p.fills) bits.push('<b>' + p.fills + '</b> eksik alan dolacak');
-  if (p.skipped) bits.push('<b>' + p.skipped + '</b> satır atlandı');
+  const bits = ['<b>' + p.total + '</b> word(s) recognised'];
+  if (p.fresh) bits.push('<b>' + p.fresh + '</b> new');
+  if (p.existing) bits.push('<b>' + p.existing + '</b> already here (will be updated)');
+  if (p.fills) bits.push('<b>' + p.fills + '</b> gap(s) will be filled');
+  if (p.skipped) bits.push('<b>' + p.skipped + '</b> line(s) skipped');
   box.innerHTML = bits.join(' · ');
 }
 $('bulkText').addEventListener('input', bulkPreview);
@@ -523,7 +527,7 @@ $('bulkBtn').addEventListener('click', () => {
   render();
   const box = $('bulkPreview');
   box.hidden = false; box.classList.remove('none');
-  box.innerHTML = '<b>' + res.added + '</b> kelime eklendi, <b>' + res.updated + '</b> kayıt güncellendi.';
+  box.innerHTML = '<b>' + res.added + '</b> added, <b>' + res.updated + '</b> updated.';
 });
 
 /* ---- eksikleri kopyala ---- */
@@ -532,7 +536,7 @@ $('gapCopyBtn').addEventListener('click', () => {
   if (!txt) return;
   const done = () => {
     const l = $('gapCopyLabel'), old = l.textContent;
-    l.textContent = 'Kopyalandı';
+    l.textContent = 'Copied';
     setTimeout(() => { l.textContent = old; }, 1600);
   };
   if (navigator.clipboard && navigator.clipboard.writeText){
@@ -559,11 +563,15 @@ let ses = null, svOpen = false;
 
 function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
+/* Çalışılacak havuz tek yerden: hem düğmenin açık/kapalı hâli hem de
+   oturumun kendisi buradan beslenir, ikisi ayrışmasın. */
+function studyPool(){ return filter === 'study' ? R.toStudy() : R.ready(); }
+
 function openStudy(){
-  const pool = filter === 'study' ? R.toStudy() : R.ready();
+  const pool = studyPool();
   if (!pool.length) return;
   ses = { items: shuffle(pool), i: 0, hit: 0, revealed: false };
-  svTitle.textContent = filter === 'study' ? 'Çalışılacaklar' : 'Tekrar';
+  svTitle.textContent = filter === 'study' ? 'To study' : 'Study';
   sv.hidden = false; svOpen = true;
   document.body.classList.add('sv-open');
   renderStudy();
@@ -595,9 +603,9 @@ function renderStudy(){
     svFoot.innerHTML =
       '<button class="sv-reveal" id="svReveal" type="button">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
-        'Cevabı göster' +
+        'Show answer' +
       '</button>' +
-      '<p class="sv-kbd">Boşluk cevabı gösterir · Esc çıkar</p>';
+      '<p class="sv-kbd">Space reveals · Esc exits</p>';
     $('svReveal').addEventListener('click', reveal);
   } else {
     svBody.innerHTML = '<div class="sv-card">' +
@@ -609,11 +617,11 @@ function renderStudy(){
     svFoot.innerHTML =
       '<div class="sv-rate">' +
         '<button class="sv-miss" id="svMiss" type="button">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Bilemedim</button>' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Didn&rsquo;t know</button>' +
         '<button class="sv-hit" id="svHit" type="button">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Bildim</button>' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Knew it</button>' +
       '</div>' +
-      '<p class="sv-kbd">N bilemedim · M bildim · Esc çıkar</p>';
+      '<p class="sv-kbd">N didn\'t know · M knew it · Esc exits</p>';
     $('svMiss').addEventListener('click', () => rate(false));
     $('svHit').addEventListener('click', () => rate(true));
   }
@@ -624,17 +632,17 @@ function renderStudyDone(){
   const n = ses.items.length, pct = Math.round(ses.hit / n * 100);
   svCount.textContent = n + ' / ' + n;
   svFill.style.width = '100%';
-  const msg = pct === 100 ? 'Hepsi doğru. Bu tur tertemiz.'
-    : pct >= 70 ? 'İyi gidiyor. Kaçırdıkların "Çalışılacak" listesine düştü.'
-    : 'Bunları bir tur daha dönmekte fayda var.';
+  const msg = pct === 100 ? 'All correct. Clean round.'
+    : pct >= 70 ? 'Going well. The ones you missed dropped into <b>To study</b>.'
+    : 'Worth another round through these.';
   svBody.innerHTML = '<div class="sv-card">' +
     '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
-    '<div class="sv-pct">' + pct + '% DOĞRU</div>' +
+    '<div class="sv-pct">' + pct + '% CORRECT</div>' +
     '<p class="sv-hint" style="border:0;padding-top:0">' + msg + '</p></div>';
   svFoot.innerHTML =
     '<div class="sv-rate">' +
-      '<button class="sv-reveal" id="svBack" type="button" style="border-radius:14px">Listeye dön</button>' +
-      '<button class="sv-reveal" id="svAgain" type="button" style="border-radius:14px;background:var(--accent);border-color:var(--accent);color:#fff">Yeniden</button>' +
+      '<button class="sv-reveal" id="svBack" type="button" style="border-radius:14px">Back to deck</button>' +
+      '<button class="sv-reveal" id="svAgain" type="button" style="border-radius:14px;background:var(--accent);border-color:var(--accent);color:#fff">Again</button>' +
     '</div>';
   $('svBack').addEventListener('click', closeStudy);
   $('svAgain').addEventListener('click', openStudy);
