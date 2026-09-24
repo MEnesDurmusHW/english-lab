@@ -161,7 +161,7 @@
     <button class="b1-icon-btn js-flag" type="button" aria-label="İşaretle" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
     </button>
-    <button class="b1-icon-btn js-review" type="button" aria-label="Tekrar edileceklere ekle" aria-pressed="false">
+    <button class="b1-icon-btn js-review" type="button" aria-label="Review Deck'e ekle" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
     </button>
     <button class="b1-icon-btn js-learn" type="button" aria-label="Öğrendim olarak işaretle" aria-pressed="false">
@@ -204,7 +204,7 @@
     </button>
     <button class="b1-util-btn js-review" type="button" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-      <span class="js-revlabel">Tekrara ekle</span>
+      <span class="js-revlabel">Review'a ekle</span>
     </button>
     <button class="b1-util-btn js-shuffle" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
@@ -245,7 +245,7 @@
   </button>
   <button type="button" class="js-review" aria-pressed="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-    <span class="js-revlabel">Tekrara ekle</span>
+    <span class="js-revlabel">Review'a ekle</span>
   </button>
   <a href="b1-unknown.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -253,7 +253,7 @@
   </a>
   <a href="review.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-    Tekrar Edilecekler
+    Review Deck
   </a>
 </div>
 
@@ -551,7 +551,7 @@ function syncToggleBtns(){
   all('.js-flag').forEach(b => { b.classList.toggle('is-flagged', !!fl); b.setAttribute('aria-pressed', fl ? 'true' : 'false'); });
   all('.js-learn').forEach(b => { b.classList.toggle('is-learned', !!le); b.setAttribute('aria-pressed', le ? 'true' : 'false'); });
   all('.js-review').forEach(b => { b.classList.toggle('is-review', !!rv); b.setAttribute('aria-pressed', rv ? 'true' : 'false'); });
-  all('.js-revlabel').forEach(s => { s.textContent = rv ? 'Tekrardan çıkar' : 'Tekrara ekle'; });
+  all('.js-revlabel').forEach(s => { s.textContent = rv ? "Review'dan çıkar" : "Review'a ekle"; });
   all('.js-reset').forEach(b => { b.disabled = !has || b1Tries(cur().en) === 0; });
 }
 function setDir(tr){

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tekrar Edilecekler — NS's English Lab</title>
+<title>Review Deck — NS's English Lab</title>
 <meta name="description" content="Vocabulary ve B1'den bağımsız, global tekrar listesi: öğrenilen kelimeleri unutmamak için Türkçeden İngilizceye flash kartlar, eksik alan takibi ve çalışılacaklar listesi.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NS's English Lab">
 <meta property="og:locale" content="tr_TR">
-<meta property="og:title" content="Tekrar Edilecekler">
+<meta property="og:title" content="Review Deck">
 <meta property="og:description" content="Global tekrar listesi: öğrenileni unutmamak için.">
 <meta property="og:url" content="https://menesdurmushw.github.io/english-lab/review.html">
 <meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
@@ -107,6 +107,10 @@
   .rv-field .hint{margin:6px 0 0;font-size:.79rem;color:var(--text-muted);line-height:1.5}
   .rv-add-foot{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
   .rv-err{font-size:.84rem;color:var(--bad);margin:0}
+  .rv-field code{font-family:var(--mono,monospace);font-size:.92em;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1px 5px}
+  .rv-preview{margin:12px 0 0;padding:10px 13px;border-radius:10px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);font-size:.86rem;line-height:1.55;color:var(--text-dim)}
+  .rv-preview b{color:var(--text)}
+  .rv-preview.none{background:var(--surface);border-color:var(--border)}
 
   /* ---- liste ---- */
   .rv-list{display:flex;flex-direction:column;gap:9px}
@@ -191,7 +195,7 @@
     <a class="brand" href="index.html" aria-label="English Lab ana sayfasına dön">
       <span class="brand-mark">NS</span>
       <span class="brand-text">
-        <span class="brand-name">Tekrar Edilecekler</span>
+        <span class="brand-name">Review Deck</span>
         <span class="brand-sub">English Lab</span>
       </span>
     </a>
@@ -211,7 +215,7 @@
 <div class="rv-wrap">
 
   <header class="rv-head">
-    <h1>Tekrar Edilecekler</h1>
+    <h1>Review Deck</h1>
     <p>Vocabulary ve B1'in üstünde duran tek liste. Amaç yeni kelime öğrenmek değil, öğrendiğini unutmamak. Kelimeler her iki alandan ya da buradan eklenir; kartlar yalnızca Türkçeden İngilizceye çalışır.</p>
   </header>
 
@@ -265,6 +269,25 @@
     </div>
   </details>
 
+  <details class="rv-add" id="bulkBox">
+    <summary>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Liste olarak ekle
+    </summary>
+    <div class="rv-add-body">
+      <div class="rv-field">
+        <label for="bulkText">Satır başına bir kelime</label>
+        <textarea id="bulkText" rows="7" spellcheck="false" placeholder="resilient&#10;ponder&#10;wary&#10;&#10;…ya da alanlarıyla birlikte:&#10;resilient | dayanıklı | Zorluktan sonra çabuk toparlanır; tough fiziksel dayanıklılıktır."></textarea>
+        <p class="hint">Vocabulary ya da B1 listesinden kopyaladığın düz kelime listesini olduğu gibi yapıştırabilirsin — alanlar boş kalır, kayıtlar "eksik" olarak işaretlenir. Eksikleri sohbete doldurttuktan sonra dönen <code>kelime | Türkçe | açıklama</code> satırlarını da aynı kutuya yapıştırırsın; var olan kayıtlar güncellenir, kopya oluşmaz.</p>
+      </div>
+      <p class="rv-preview" id="bulkPreview" hidden></p>
+      <div class="rv-add-foot">
+        <button class="rv-cta" type="button" id="bulkBtn" disabled>Listeyi uygula</button>
+        <button class="rv-btn" type="button" id="bulkClear">Kutuyu temizle</button>
+      </div>
+    </div>
+  </details>
+
   <div class="rv-search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input id="search" type="search" placeholder="Listede ara…" autocomplete="off">
@@ -291,7 +314,7 @@
 
 <script>
 /* ============================================================
-   Tekrar Edilecekler — sayfa mantığı
+   Review Deck — sayfa mantığı
    Veri + durum: review-core.js (window.NSReview)
    data.js / b1-data.js YÜKLENMEZ: bu liste kendi kayıtlarını taşır,
    kaynak dosyalara bağlı değildir. Kelime buraya kopyalanarak girer.
@@ -464,6 +487,44 @@ $('addBtn').addEventListener('click', () => {
 });
 $('addEn').addEventListener('keydown', e => { if (e.key === 'Enter') $('addTr').focus(); });
 $('addTr').addEventListener('keydown', e => { if (e.key === 'Enter') $('addNote').focus(); });
+
+/* ---- liste olarak ekle ----
+   Uygulamadan önce ne olacağı yazılır: kaç yeni, kaç güncelleme, kaçı
+   gerçekten bir boşluğu dolduruyor. Körlemesine uygulanmasın. */
+function bulkPreview(){
+  const txt = $('bulkText').value;
+  const box = $('bulkPreview'), btn = $('bulkBtn');
+  if (!txt.trim()){ box.hidden = true; btn.disabled = true; return; }
+  const p = R.previewList(txt);
+  btn.disabled = p.total === 0;
+  box.hidden = false;
+  box.classList.toggle('none', p.total === 0);
+  if (!p.total){
+    box.innerHTML = 'Bu metinde kelime bulunamadı.' +
+      (p.skipped ? ' <b>' + p.skipped + '</b> satır atlandı.' : '');
+    return;
+  }
+  const bits = ['<b>' + p.total + '</b> kelime tanındı'];
+  if (p.fresh) bits.push('<b>' + p.fresh + '</b> yeni');
+  if (p.existing) bits.push('<b>' + p.existing + '</b> zaten listede (güncellenecek)');
+  if (p.fills) bits.push('<b>' + p.fills + '</b> eksik alan dolacak');
+  if (p.skipped) bits.push('<b>' + p.skipped + '</b> satır atlandı');
+  box.innerHTML = bits.join(' · ');
+}
+$('bulkText').addEventListener('input', bulkPreview);
+$('bulkClear').addEventListener('click', () => { $('bulkText').value = ''; bulkPreview(); $('bulkText').focus(); });
+$('bulkBtn').addEventListener('click', () => {
+  const p = R.previewList($('bulkText').value);
+  if (!p.total) return;
+  const res = R.addMany(p.items, 'custom');
+  $('bulkText').value = '';
+  bulkPreview();
+  filter = 'all'; query = ''; $('search').value = '';
+  render();
+  const box = $('bulkPreview');
+  box.hidden = false; box.classList.remove('none');
+  box.innerHTML = '<b>' + res.added + '</b> kelime eklendi, <b>' + res.updated + '</b> kayıt güncellendi.';
+});
 
 /* ---- eksikleri kopyala ---- */
 $('gapCopyBtn').addEventListener('click', () => {

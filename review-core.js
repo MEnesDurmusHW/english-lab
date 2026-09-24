@@ -1,5 +1,5 @@
 /* ============================================================
-   English Lab — Tekrar Edilecekler (global tekrar listesi)
+   English Lab — Review Deck (global tekrar listesi)
 
    Vocabulary ve B1 kendi alanlarında kapalı kutulardır; bu liste ikisinin
    de üstünde durur. Amaç "yeni öğrenmek" değil, öğrenileni unutmamak:
@@ -103,6 +103,73 @@
     /* İstatistik de gitsin: kelime listeden çıktıysa geçmişi anlamsız. */
     if (STATS[k]) { delete STATS[k]; STATS_STORE.touch(k).commit(); }
     return true;
+  }
+
+  /* ---- toplu giriş ----
+     İki yönü de karşılar: Vocabulary/B1'den kopyalanan düz kelime
+     listesi (yalnızca en) ve sohbetin doldurup geri verdiği tam kayıt
+     (en | tr | açıklama). Aynı ayrıştırıcı ikisini de yer.
+
+     Satır biçimi hoşgörülü: madde imi ve numara atılır, alan ayırıcı
+     olarak sırayla | , sekme, tire/uzun tire denenir. Ayırıcı yoksa
+     satırın tamamı kelimedir. */
+  function parseList(text) {
+    var items = [], skipped = [], seen = {};
+    String(text == null ? '' : text).split(/\r?\n/).forEach(function (raw) {
+      var line = clean(raw);
+      if (!line) return;
+      line = line.replace(/^[-*•]\s+/, '').replace(/^\d+[.)]\s+/, '');
+      line = clean(line);
+      if (!line) return;
+
+      var parts;
+      if (line.indexOf('|') >= 0) parts = line.split('|');
+      else if (line.indexOf('\t') >= 0) parts = line.split('\t');
+      else parts = line.split(/\s+[—–]\s+|\s+-\s+/);
+
+      var en = clean(parts[0]).toLowerCase();
+      /* En az bir harf içermeyen satır kelime değildir (başlık, ayraç…) */
+      if (!/[a-zà-ÿ]/i.test(en)) { skipped.push(line); return; }
+
+      var e = { en: en, tr: clean(parts[1] || ''), note: clean(parts.slice(2).join('|')) };
+      /* Aynı yapıştırmada tekrar eden kelime: dolu alanlar birleşsin. */
+      if (seen[en]) {
+        var p = seen[en];
+        if (!p.tr) p.tr = e.tr;
+        if (!p.note) p.note = e.note;
+        return;
+      }
+      seen[en] = e;
+      items.push(e);
+    });
+    return { items: items, skipped: skipped };
+  }
+
+  /* Ayrıştırılmış listeyi uygular. add() dolu alanı boşla ezmediği için
+     düz kelime listesi yapıştırmak mevcut kayıtların içini boşaltmaz. */
+  function addMany(list, src) {
+    var added = 0, updated = 0;
+    list.forEach(function (e) {
+      var existed = has(e.en);
+      add({ en: e.en, tr: e.tr, note: e.note, src: src || 'custom' });
+      if (existed) updated++; else added++;
+    });
+    return { added: added, updated: updated };
+  }
+
+  /* Yapıştırmadan önce ne olacağını söyler — kullanıcı körlemesine
+     uygulamasın. */
+  function previewList(text) {
+    var p = parseList(text);
+    var neu = 0, upd = 0, fills = 0;
+    p.items.forEach(function (e) {
+      if (has(e.en)) {
+        upd++;
+        var cur = DATA[e.en];
+        if ((!filled(cur.tr) && filled(e.tr)) || (!filled(cur.note) && filled(e.note))) fills++;
+      } else neu++;
+    });
+    return { total: p.items.length, fresh: neu, existing: upd, fills: fills, skipped: p.skipped.length, items: p.items };
   }
 
   /* Listede varsa çıkarır, yoksa ekler. Eklendiyse true döner. */
@@ -211,9 +278,13 @@
       var got = filled(it.tr) ? ' (mevcut TR: ' + it.tr + ')' : '';
       return '- ' + it.en + ' -> eksik: ' + want + got;
     });
-    return 'Tekrar listemde şu kelimelerin alanları eksik. Her biri için ' +
+    /* Cevabın biçimi burada isteniyor: aynı sayfadaki "Liste olarak ekle"
+       kutusu bu satırları olduğu gibi yiyor, yani döngü kapanıyor. */
+    return 'Review listemde şu kelimelerin alanları eksik. Her biri için ' +
       'Türkçe karşılığı ve kelimeyi yakın anlamlılarından ayıran kısa bir ' +
-      'açıklamayı doldurur musun?\n\n' + lines.join('\n');
+      'açıklamayı doldurur musun?\n\n' + lines.join('\n') +
+      '\n\nCevabı tam olarak şu biçimde, satır başına bir kelime olarak ver ' +
+      '(başka açıklama ekleme):\nkelime | Türkçe karşılık | ayırt edici açıklama';
   }
 
   /* Notun içinde başlık kelimesi geçiyorsa kart ön yüzünde cevabı ele
@@ -233,6 +304,7 @@
     data: DATA, stats: STATS,
     has: has, get: get, count: count, all: all,
     add: add, set: set, remove: remove, toggle: toggle,
+    parseList: parseList, addMany: addMany, previewList: previewList,
     missingOf: missingOf, isReady: isReady, ready: ready, gaps: gaps,
     toStudy: toStudy, summary: summary, gapReport: gapReport,
     STATUS_ORDER: STATUS_ORDER, STATUS_LABEL: STATUS_LABEL,
