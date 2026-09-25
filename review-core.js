@@ -251,8 +251,20 @@
     }
     return {
       en: w.en, tr: w.tr, note: stripTags(note),
-      pos: w.type || '', ipa: w.uk || w.us || '', src: 'vocab'
+      pos: vocabPos(w), ipa: w.uk || w.us || '', src: 'vocab'
     };
+  }
+  /* data.js'in `type` alanı sözcük türü değil, kategori: isimler de
+     "kelime" olarak geçiyor. Gerçek türü buradan çıkaramayız, o yüzden
+     kategoriyi hiç değilse İngilizceye çeviriyoruz — kart üstünde Türkçe
+     bir etiket görünmesin. Doğru türü kullanıcı listede düzeltebilir. */
+  var VOCAB_POS = {
+    'kelime': 'word', 'sıfat': 'adjective', 'kalıp': 'phrase',
+    'deyim': 'idiom', 'phrasal fiil': 'phrasal verb', 'cümle': 'phrase'
+  };
+  function vocabPos(w) {
+    var t = clean(w.type).toLocaleLowerCase('tr');
+    return VOCAB_POS[t] || t;
   }
   function fromB1(w) {
     return {

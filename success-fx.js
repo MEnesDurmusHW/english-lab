@@ -1,15 +1,20 @@
 /* ============================================================
-   English Lab — success feedback (checkmark HUD + "trink" sound)
+   English Lab — answer feedback (mark HUD + short sound)
    Self-contained, no dependencies. Loaded on every game page.
 
    Usage:  successFX()   -> her doğru/başarılı cevapta çağır.
+           failFX()      -> her yanlış/bilinemedi cevabında çağır.
 
    Davranış:
    - Ekran ortasında Apple tarzı yarı saydam + blur'lu, üstünde
-     gri bir checkmark olan küçük bir HUD ~0.3s görünür, sonra
-     yumuşakça kaybolur. pointer-events:none olduğu için sonraki
-     soruya geçişi hiçbir şekilde engellemez / bekletmez.
-   - Kısa, hafif bir "trink" başarı sesi çalar (WebAudio, dosya yok).
+     gri bir işaret (doğruda checkmark, yanlışta çarpı) olan küçük
+     bir HUD ~0.3s görünür, sonra yumuşakça kaybolur.
+     pointer-events:none olduğu için sonraki soruya geçişi hiçbir
+     şekilde engellemez / bekletmez.
+   - Kısa bir ses çalar (WebAudio, dosya yok): doğruda yukarı çıkan
+     parlak bir "trink", yanlışta aşağı inen boğuk bir "thunk".
+     Yanlış sesi bilerek daha alçak ve daha yumuşak — burası bir
+     çalışma uygulaması, cezalandırıcı bir ton istemiyoruz.
    Ses istenmezse: localStorage['ns-success-sound'] = 'off'.
    ============================================================ */
 (function () {
@@ -50,20 +55,24 @@
     document.head.appendChild(s);
   }
 
+  /* İki geri bildirim aynı HUD'u kullanır, yalnızca içindeki işaret değişir:
+     üst üste iki farklı katman açıp birinin diğerini gölgelemesini istemiyoruz. */
+  var MARK_CHECK = '<path d="M17 34 L28 45 L48 20"/>';
+  var MARK_CROSS = '<path d="M21 21 L43 43"/><path d="M43 21 L21 43"/>';
+
   var hud = null, tShow = null, tHide = null, tGone = null;
   function ensureHud() {
     if (hud) return hud;
     hud = document.createElement('div');
     hud.className = 'sfx-hud';
     hud.setAttribute('aria-hidden', 'true');
-    hud.innerHTML =
-      '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 34 L28 45 L48 20"/></svg>';
     document.body.appendChild(hud);
     return hud;
   }
 
-  function showCheck() {
+  function showMark(mark) {
     var el = ensureHud();
+    el.innerHTML = '<svg viewBox="0 0 64 64" aria-hidden="true">' + mark + '</svg>';
     clearTimeout(tShow); clearTimeout(tHide); clearTimeout(tGone);
     // sıfırla
     el.removeAttribute('data-hide');
@@ -81,9 +90,20 @@
     }, IN_MS + HOLD_MS + OUT_MS);
   }
 
-  /* ---- "trink" başarı sesi (WebAudio) ---- */
+  /* ---- sesler (WebAudio) ----
+     İki ses aynı borudan geçer, yalnızca reçete değişir: iki ayrı
+     AudioContext açmak mobilde gereksiz yük. Nota: [hz, gecikme, süre, tepe]. */
+  var TRINK = {                                  // yukarı çıkan parlak "tri-nk"
+    gain: 0.16, type: 'sine',                    // hafif, dikkat dağıtmayan
+    notes: [[1318.51, 0, 0.16, 1.0], [1975.53, 0.075, 0.20, 0.85]]   // E6 -> B6
+  };
+  var THUNK = {                                  // aşağı inen boğuk "thunk"
+    gain: 0.12, type: 'triangle',                // başarı sesinden daha alçak
+    notes: [[261.63, 0, 0.20, 1.0], [196.00, 0.085, 0.30, 0.9]]      // C4 -> G3
+  };
+
   var actx = null;
-  function playTrink() {
+  function play(kit) {
     try {
       if (localStorage.getItem('ns-success-sound') === 'off') return;
     } catch (e) { /* localStorage yoksa devam */ }
@@ -94,19 +114,19 @@
       if (actx.state === 'suspended') actx.resume();
       var now = actx.currentTime;
       var master = actx.createGain();
-      master.gain.value = 0.16;               // hafif, dikkat dağıtmayan
+      master.gain.value = kit.gain;
       master.connect(actx.destination);
-
-      // iki hızlı, parlak nota: "tri-nk"
-      tone(1318.51, now,        0.16, 1.0, master);  // E6
-      tone(1975.53, now + 0.075, 0.20, 0.85, master); // B6
+      for (var i = 0; i < kit.notes.length; i++) {
+        var n = kit.notes[i];
+        tone(n[0], now + n[1], n[2], n[3], master, kit.type);
+      }
     } catch (e) { /* ses çalınamazsa sessizce geç */ }
   }
 
-  function tone(freq, start, dur, peak, dest) {
+  function tone(freq, start, dur, peak, dest, type) {
     var osc = actx.createOscillator();
     var g = actx.createGain();
-    osc.type = 'sine';
+    osc.type = type || 'sine';
     osc.frequency.value = freq;
     g.gain.setValueAtTime(0.0001, start);
     g.gain.linearRampToValueAtTime(peak, start + 0.008);
@@ -117,9 +137,12 @@
   }
 
   /* ---- genel API ---- */
-  window.successFX = function () {
-    injectStyle();
-    showCheck();
-    playTrink();
-  };
+  /* Geri bildirim hiçbir koşulda akışı kesmemeli: HUD çizilemese de
+     çağıran taraf hata almasın, kart bir sonrakine geçsin. */
+  function fire(mark, kit) {
+    try { injectStyle(); showMark(mark); } catch (e) {}
+    play(kit);
+  }
+  window.successFX = function () { fire(MARK_CHECK, TRINK); };
+  window.failFX    = function () { fire(MARK_CROSS, THUNK); };
 })();

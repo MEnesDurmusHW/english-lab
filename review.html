@@ -101,9 +101,10 @@
   .rv-add-body{padding:4px 16px 16px;border-top:1px solid var(--border)}
   .rv-field{margin-top:12px}
   .rv-field label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-  .rv-field input,.rv-field textarea{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:.94rem;color:var(--text);line-height:1.5}
+  .rv-field input,.rv-field select,.rv-field textarea{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:.94rem;color:var(--text);line-height:1.5}
   .rv-field textarea{resize:vertical;min-height:64px}
-  .rv-field input:focus,.rv-field textarea:focus{outline:none;border-color:var(--accent)}
+  .rv-field select{cursor:pointer}
+  .rv-field input:focus,.rv-field select:focus,.rv-field textarea:focus{outline:none;border-color:var(--accent)}
   .rv-field .hint{margin:6px 0 0;font-size:.79rem;color:var(--text-muted);line-height:1.5}
   .rv-add-foot{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
   .rv-err{font-size:.84rem;color:var(--bad);margin:0}
@@ -128,6 +129,7 @@
   .rv-chip.st-shaky{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 34%,transparent)}
   .rv-chip.st-weak{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 34%,transparent)}
   .rv-chip.st-fresh{border-style:dashed}
+  .rv-chip.pos{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 30%,transparent);background:var(--accent-soft)}
   .rv-chip.miss{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 44%,transparent);background:color-mix(in srgb,var(--mid) 9%,transparent)}
   .rv-acts{display:flex;gap:4px;flex:0 0 auto}
   .rv-icon{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0;transition:.14s}
@@ -164,11 +166,22 @@
   .sv-track{max-width:660px;margin:13px auto 0;height:3px;border-radius:999px;background:var(--border);overflow:hidden}
   .sv-fill{height:100%;width:0;border-radius:999px;background:var(--accent);transition:width .32s cubic-bezier(.4,0,.2,1)}
   .sv-body{flex:1 1 auto;overflow-y:auto;display:flex;padding:26px clamp(14px,4vw,26px)}
-  .sv-card{width:100%;max-width:560px;margin:auto;text-align:center}
-  .sv-pos{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;min-height:1em}
-  .sv-term{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
-  .sv-ipa{font-family:var(--mono,monospace);font-size:.9rem;color:var(--text-muted);margin:10px 0 0;min-height:1.2em}
-  .sv-hint{margin:22px auto 0;max-width:46ch;font-size:.92rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:18px;min-height:3.4em}
+  /* Kartın kutusu iki yüzde de birebir aynı kalmalı: cevap yüzü IPA satırı ve
+     fazladan bir <em> satırı getirdiği için ortalanmış kart büyüyor, kalın
+     terim gözle görülür biçimde zıplıyordu. Yükseklik sabit, içerik tepeden
+     dizili; taşan açıklama kartı büyütmek yerine kendi içinde kayıyor. */
+  .sv-card{width:100%;max-width:560px;margin:auto;text-align:center;display:flex;flex-direction:column;height:clamp(300px,52vh,420px)}
+  /* Sonuç ekranı aynı kutuyu kullanıyor ama üç kısa satırdan oluşuyor:
+     sabit yükseklik onu boşluğa yayardı. */
+  .sv-card.is-result{height:auto;justify-content:center}
+  .sv-pos{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;min-height:1em}
+  /* İki satırlık sabit kutu, metin dikey ortada: tek satırlık İngilizce cevap
+     ile iki satıra taşan Türkçe soru aynı yeri kaplasın. */
+  .sv-term{flex:0 0 auto;min-height:2.3em;display:flex;align-items:center;justify-content:center;font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
+  /* IPA yalnızca cevap yüzünde dolu; yine de iki yüzde de yer tutmalı ki
+     altındaki açıklama aşağı kaymasın. */
+  .sv-ipa{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.9rem;color:var(--text-muted);margin:10px 0 0;min-height:1.2em}
+  .sv-hint{flex:1 1 auto;min-height:0;overflow-y:auto;margin:22px auto 0;max-width:46ch;font-size:.92rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:18px}
   .sv-hint em{font-style:normal;color:var(--text-muted);font-size:.86rem}
   .sv-foot{flex:0 0 auto;padding:0 clamp(14px,4vw,26px) calc(18px + env(safe-area-inset-bottom))}
   .sv-foot-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
@@ -334,6 +347,9 @@ const I_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 const I_DEL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
 const SRC_LABEL = { vocab:'Vocabulary', b1:'B1', custom:'Manual' };
+/* Tür listesi tek yerde: hem düzenleme açılır listesi hem de kart buradan
+   beslenir. Çok kelimeli kayıtlar için son üçü var. */
+const POS_LIST = ['noun','verb','adjective','adverb','phrasal verb','idiom','phrase'];
 
 /* ---------- liste ---------- */
 function visible(){
@@ -369,6 +385,9 @@ function rowHTML(it){
         '<span class="rv-tr' + (it.tr ? '' : ' empty') + '">' + (it.tr ? esc(it.tr) : 'No Turkish meaning yet') + '</span>' +
       '</span>' +
       '<span class="rv-chips">' +
+        /* Tür rozeti: alan boşsa hiç basılmaz, boş bir kutu göstermek
+           gezinirken gürültüden başka bir şey değil. */
+        (it.pos ? '<span class="rv-chip pos">' + esc(it.pos) + '</span>' : '') +
         missChip(it) +
         (ready ? '<span class="rv-chip st-' + st + '">' + R.STATUS_LABEL[st] + (t ? ' · ' + R.accText(it.en) : '') + '</span>' : '') +
         '<span class="rv-chip">' + (SRC_LABEL[it.src] || it.src) + '</span>' +
@@ -384,7 +403,16 @@ function rowHTML(it){
 }
 
 function editHTML(it){
+  const cur = (it.pos || '').toLowerCase();
+  /* Listede olmayan bir tür (başka alandan gelmiş kısaltma vb.) seçenek
+     olarak eklenir: kaydı düzenlemek onu sessizce silmesin. */
+  const opts = POS_LIST.indexOf(cur) < 0 && cur ? POS_LIST.concat([cur]) : POS_LIST;
   return '<div class="rv-edit">' +
+    '<div class="rv-field"><label>Part of speech</label>' +
+      '<select data-e="pos">' +
+        '<option value="">— not set —</option>' +
+        opts.map(p => '<option value="' + esc(p) + '"' + (p === cur ? ' selected' : '') + '>' + esc(p) + '</option>').join('') +
+      '</select></div>' +
     '<div class="rv-field"><label>Turkish meaning</label>' +
       '<input type="text" data-e="tr" value="' + esc(it.tr || '') + '"></div>' +
     '<div class="rv-field"><label>Distinguishing note</label>' +
@@ -470,7 +498,8 @@ $('list').addEventListener('click', e => {
   if (a === 'save'){
     const tr = row.querySelector('[data-e="tr"]').value;
     const note = row.querySelector('[data-e="note"]').value;
-    R.set(en, { tr: tr, note: note });
+    const pos = row.querySelector('[data-e="pos"]').value;
+    R.set(en, { tr: tr, note: note, pos: pos });
     editing = null;
     render();
     return;
@@ -635,7 +664,7 @@ function renderStudyDone(){
   const msg = pct === 100 ? 'All correct. Clean round.'
     : pct >= 70 ? 'Going well. The ones you missed dropped into <b>To study</b>.'
     : 'Worth another round through these.';
-  svBody.innerHTML = '<div class="sv-card">' +
+  svBody.innerHTML = '<div class="sv-card is-result">' +
     '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
     '<div class="sv-pct">' + pct + '% CORRECT</div>' +
     '<p class="sv-hint" style="border:0;padding-top:0">' + msg + '</p></div>';
@@ -652,7 +681,11 @@ function reveal(){ if (!ses || ses.revealed) return; ses.revealed = true; render
 function rate(hit){
   if (!ses || !ses.revealed) return;
   R.addResult(ses.items[ses.i].en, hit);
+  /* Yanlışta da geri bildirim var: iki yanıt arasındaki tek fark bastığın
+     düğmenin rengi olunca, hızlı geçerken kaydın nasıl işlendiği belirsiz
+     kalıyordu. failFX bilerek daha alçak ve yumuşak bir ses çalar. */
   if (hit){ ses.hit++; if (typeof successFX === 'function') successFX(); }
+  else if (typeof failFX === 'function') failFX();
   ses.i++; ses.revealed = false;
   renderStudy();
 }
