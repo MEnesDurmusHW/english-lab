@@ -175,9 +175,20 @@
      sabit yükseklik onu boşluğa yayardı. */
   .sv-card.is-result{height:auto;justify-content:center}
   .sv-pos{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;min-height:1em}
-  /* İki satırlık sabit kutu, metin dikey ortada: tek satırlık İngilizce cevap
-     ile iki satıra taşan Türkçe soru aynı yeri kaplasın. */
-  .sv-term{flex:0 0 auto;min-height:2.3em;display:flex;align-items:center;justify-content:center;font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
+  /* HER ZAMAN üç satırlık, sabit yükseklikte kutu (3 × line-height 1.15).
+     Yükseklik kutuda, yazı boyu içerideki başlıkta: uzun metinde punto
+     düşerse kutu küçülmesin. Üç satır, destedeki en uzun Türkçe karşılığı
+     (60 karakter) tam puntoda aldığı için normal kayıtlarda küçültme hiç
+     devreye girmiyor.
+     Metin TEPEDEN hizalı — ortalanmış olsaydı tek satırlık bir terim üç
+     satırlıktan aşağıda başlar, kalın ifadenin üste mesafesi değişirdi.
+     Böylece hem terimin hem de altındaki açıklamanın üste mesafesi iki
+     yüzde de birebir aynı kalıyor. */
+  .sv-termbox{flex:0 0 auto;height:calc(3.45 * clamp(1.6rem,6vw,2.4rem));display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
+  .sv-term{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
+  /* Emniyet supabı: ileride üç satıra da sığmayacak bir kayıt gelirse
+     satır eklemek yerine punto düşsün, kutu sabit kalsın. */
+  .sv-term.is-long{font-size:clamp(1.2rem,4.4vw,1.8rem)}
   /* IPA yalnızca cevap yüzünde dolu; yine de iki yüzde de yer tutmalı ki
      altındaki açıklama aşağı kaymasın. */
   .sv-ipa{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.9rem;color:var(--text-muted);margin:10px 0 0;min-height:1.2em}
@@ -613,6 +624,16 @@ function closeStudy(){
   $('studyBtn').focus();
 }
 
+/* Terim kutusu her zaman üç satırlık ve sabit yükseklikte; sığmayan
+   metinde satır eklemek yerine punto düşer. Eşik karakter sayısına göre,
+   çünkü kutu genişliği viewport'a bağlı ve burada ölçülemez. 72, üç
+   satırın dar ekranda dahi rahat aldığı uzunluğun üstü. */
+function termHTML(text){
+  const t = String(text || '');
+  return '<div class="sv-termbox"><h2 class="sv-term' + (t.length > 72 ? ' is-long' : '') +
+    '">' + esc(t) + '</h2></div>';
+}
+
 function renderStudy(){
   const n = ses.items.length;
   if (ses.i >= n){ renderStudyDone(); return; }
@@ -625,7 +646,7 @@ function renderStudy(){
        geçiyorsa maskelenir, yoksa cevabı ele verir. */
     svBody.innerHTML = '<div class="sv-card">' +
       '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
-      '<h2 class="sv-term">' + esc(it.tr) + '</h2>' +
+      termHTML(it.tr) +
       '<p class="sv-ipa"></p>' +
       '<div class="sv-hint">' + R.maskHead(it.note, it.en) + '</div>' +
     '</div>';
@@ -639,7 +660,7 @@ function renderStudy(){
   } else {
     svBody.innerHTML = '<div class="sv-card">' +
       '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
-      '<h2 class="sv-term">' + esc(it.en) + '</h2>' +
+      termHTML(it.en) +
       '<p class="sv-ipa">' + esc(it.ipa || '') + '</p>' +
       '<div class="sv-hint">' + esc(it.note) + '<br><em>' + esc(it.tr) + '</em></div>' +
     '</div>';
