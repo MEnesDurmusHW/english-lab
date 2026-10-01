@@ -28,6 +28,7 @@
 <script src="theme.js"></script>
 <script src="store.js"></script>
 <script src="review-core.js"></script>
+<script src="flashcard.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <script src="success-fx.js" defer></script>
@@ -37,6 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lab.css">
+<link rel="stylesheet" href="flashcard.css">
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <!-- appbar.js KULLANILMIYOR: bu alan Vocabulary/Collocations gezintisinin
      dışında, kendi başına duran global bir liste. Bölüm rengini elle veriyoruz. -->
@@ -610,7 +612,7 @@ function studyPool(){ return filter === 'study' ? R.toStudy() : R.ready(); }
 function openStudy(){
   const pool = studyPool();
   if (!pool.length) return;
-  ses = { items: shuffle(pool), i: 0, hit: 0, revealed: false };
+  ses = { items: shuffle(pool), i: 0, hit: 0 };
   svTitle.textContent = filter === 'study' ? 'To study' : 'Study';
   sv.hidden = false; svOpen = true;
   document.body.classList.add('sv-open');
@@ -624,14 +626,18 @@ function closeStudy(){
   $('studyBtn').focus();
 }
 
-/* Terim kutusu her zaman üç satırlık ve sabit yükseklikte; sığmayan
-   metinde satır eklemek yerine punto düşer. Eşik karakter sayısına göre,
-   çünkü kutu genişliği viewport'a bağlı ve burada ölçülemez. 72, üç
-   satırın dar ekranda dahi rahat aldığı uzunluğun üstü. */
-function termHTML(text){
-  const t = String(text || '');
-  return '<div class="sv-termbox"><h2 class="sv-term' + (t.length > 72 ? ' is-long' : '') +
-    '">' + esc(t) + '</h2></div>';
+/* Kartın kendisi artık ortak bileşen (flashcard.js): iskelet, çevirme ve
+   puanlama her alanda aynı. Burada yalnızca hangi verinin hangi yüze
+   gideceği ve oturum akışı kalıyor. */
+let fc = null;
+function ensureCard(){
+  if (fc) return fc;
+  fc = NSFlash.mount(svBody, {
+    labels: { reveal:'Show answer', hide:'Hide answer', miss:"Didn't know",
+              hit:'Knew it', tap:'tap to flip', kbd:'Space flip · N / M rate · Esc exit' },
+    onRate: hit => rate(hit)
+  });
+  return fc;
 }
 
 function renderStudy(){
@@ -640,42 +646,16 @@ function renderStudy(){
   const it = ses.items[ses.i];
   svCount.textContent = (ses.i + 1) + ' / ' + n;
   svFill.style.width = (ses.i / n * 100) + '%';
-
-  if (!ses.revealed){
-    /* Ön yüz: Türkçe + ayırt edici ipucu. İpucunda başlık kelimesi
-       geçiyorsa maskelenir, yoksa cevabı ele verir. */
-    svBody.innerHTML = '<div class="sv-card">' +
-      '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
-      termHTML(it.tr) +
-      '<p class="sv-ipa"></p>' +
-      '<div class="sv-hint">' + R.maskHead(it.note, it.en) + '</div>' +
-    '</div>';
-    svFoot.innerHTML =
-      '<button class="sv-reveal" id="svReveal" type="button">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
-        'Show answer' +
-      '</button>' +
-      '<p class="sv-kbd">Space reveals · Esc exits</p>';
-    $('svReveal').addEventListener('click', reveal);
-  } else {
-    svBody.innerHTML = '<div class="sv-card">' +
-      '<div class="sv-pos">' + esc(it.pos || '') + '</div>' +
-      termHTML(it.en) +
-      '<p class="sv-ipa">' + esc(it.ipa || '') + '</p>' +
-      '<div class="sv-hint">' + esc(it.note) + '<br><em>' + esc(it.tr) + '</em></div>' +
-    '</div>';
-    svFoot.innerHTML =
-      '<div class="sv-rate">' +
-        '<button class="sv-miss" id="svMiss" type="button">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Didn&rsquo;t know</button>' +
-        '<button class="sv-hit" id="svHit" type="button">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Knew it</button>' +
-      '</div>' +
-      '<p class="sv-kbd">N didn\'t know · M knew it · Esc exits</p>';
-    $('svMiss').addEventListener('click', () => rate(false));
-    $('svHit').addEventListener('click', () => rate(true));
-  }
-  svBody.scrollTop = 0;
+  /* Soru yüzünde ipucundaki başlık kelimesi maskelenir, yoksa cevabı
+     ele verir; cevap yüzünde maskeye gerek yok. */
+  ensureCard().show({
+    pos: it.pos || '',
+    idx: (ses.i + 1) + ' / ' + n,
+    term: it.tr,  ipa: '',          hint: R.maskHead(it.note, it.en),
+    answer: it.en, answerIpa: it.ipa || '',
+    answerHint: esc(it.note) + '<br><em>' + esc(it.tr) + '</em>'
+  });
+  svFoot.innerHTML = '';
 }
 
 function renderStudyDone(){
@@ -685,6 +665,7 @@ function renderStudyDone(){
   const msg = pct === 100 ? 'All correct. Clean round.'
     : pct >= 70 ? 'Going well. The ones you missed dropped into <b>To study</b>.'
     : 'Worth another round through these.';
+  fc = null;   // sonuç ekranı bileşeni değiştiriyor, sonraki turda yeniden kurulsun
   svBody.innerHTML = '<div class="sv-card is-result">' +
     '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
     '<div class="sv-pct">' + pct + '% CORRECT</div>' +
@@ -698,16 +679,12 @@ function renderStudyDone(){
   $('svAgain').addEventListener('click', openStudy);
 }
 
-function reveal(){ if (!ses || ses.revealed) return; ses.revealed = true; renderStudy(); }
+/* Ses ve HUD artık bileşenin işi — burada yalnızca skor ve ilerleme var. */
 function rate(hit){
-  if (!ses || !ses.revealed) return;
+  if (!ses || ses.i >= ses.items.length) return;
   R.addResult(ses.items[ses.i].en, hit);
-  /* Yanlışta da geri bildirim var: iki yanıt arasındaki tek fark bastığın
-     düğmenin rengi olunca, hızlı geçerken kaydın nasıl işlendiği belirsiz
-     kalıyordu. failFX bilerek daha alçak ve yumuşak bir ses çalar. */
-  if (hit){ ses.hit++; if (typeof successFX === 'function') successFX(); }
-  else if (typeof failFX === 'function') failFX();
-  ses.i++; ses.revealed = false;
+  if (hit) ses.hit++;
+  ses.i++;
   renderStudy();
 }
 
@@ -717,13 +694,8 @@ document.addEventListener('keydown', e => {
   if (!svOpen || e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === 'Escape'){ e.preventDefault(); closeStudy(); return; }
   if (!ses || ses.i >= ses.items.length) return;
-  if (!ses.revealed){
-    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); reveal(); }
-    return;
-  }
-  const k = e.key.toLowerCase();
-  if (k === 'm'){ e.preventDefault(); rate(true); }
-  else if (k === 'n'){ e.preventDefault(); rate(false); }
+  /* Çevirme ve puanlama kısayolları bileşenden; Esc sayfanın kendi işi. */
+  if (fc && fc.handleKey(e)) e.preventDefault();
 });
 
 /* Başka sekme ya da bulut listeyi değiştirdiyse ekranı tazele. */
