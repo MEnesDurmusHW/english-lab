@@ -1,0 +1,155 @@
+/* ============================================================
+   English Lab — standart flash kart
+
+   Vocabulary, B1 ve Review Deck aynı kartı kullanır. Bölüm rengi
+   (--accent) sayfadan gelir; kartın geometrisi ve akışı her yerde
+   birebir aynıdır.
+
+   TASARIMIN TEK KURALI: kalın terim ve altındaki açıklama her kartta,
+   her yüzde, aynı pikselde durur. Bunu sağlayan iki şey var:
+
+   1) İki yüz de aynı ızgara hücresinde üst üste durur ve İÇ İSKELETİ
+      birebir aynıdır (tür · terim · okunuş · açıklama). Çevirme
+      yalnızca opaklık değiştirir, DOM yeniden çizilmez.
+   2) Her kutunun yüksekliği SABİTTİR, içeriğe göre değişmez. Terim
+      kutusu her zaman üç satırlık ve metin TEPEDEN hizalı — ortalanmış
+      olsaydı tek satırlık bir terim üç satırlıktan aşağıda başlardı.
+
+   Bunun sonucu: kartın toplam yüksekliği de içerikten bağımsız sabittir,
+   dolayısıyla sayfaların ayrıca yükseklik hesaplamasına gerek kalmaz.
+
+   Açıklama metni 200 karakterle sınırlı tutulur (veri tarafında);
+   ayrılan dört satır bunu her zaman alır, taşma olmaz.
+   ============================================================ */
+
+.fc-stage{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+
+/* ---------- kart ---------- */
+.fc{
+  position:relative;box-sizing:border-box;width:100%;max-width:520px;
+  padding:18px 22px 24px;border-radius:24px;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 10px 34px rgba(0,0,0,.09);
+  cursor:pointer;user-select:none;
+  transition:border-color .16s,box-shadow .16s,transform .16s;
+}
+.fc:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))}
+.fc:active{transform:scale(.995)}
+.fc:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fc.is-static{cursor:default}
+.fc.is-static:active{transform:none}
+
+/* üst satır: solda rozet (durum vb.), sağda sayaç */
+.fc-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:22px;margin-bottom:10px;
+}
+.fc-badge{
+  font-family:var(--mono,monospace);font-size:.62rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;
+  border-radius:999px;border:1px solid var(--border);color:var(--text-muted);
+  white-space:nowrap;
+}
+.fc-badge:empty{display:none}
+.fc-idx{
+  margin-left:auto;font-family:var(--mono,monospace);font-size:.7rem;
+  font-weight:600;color:var(--text-muted);font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+/* ---------- iki yüz, aynı hücrede ---------- */
+.fc-faces{display:grid;width:100%}
+.fc-face{grid-area:1/1;display:flex;flex-direction:column;width:100%;min-width:0;text-align:center}
+
+/* Geçiş yalnızca GELEN yüze konur. Giden yüz solarak inerse opaklık
+   derleyicide, visibility ana iş parçacığında uygulandığı için arada
+   bir kare cevap görünebiliyor (mobil Safari'de gözlendi). */
+.fc-back{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+.fc-front{transition:opacity .1s ease}
+.fc.is-flipped .fc-front{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+.fc.is-flipped .fc-back{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .14s ease}
+
+/* ---------- sabit yükseklikli kutular ---------- */
+.fc-pos{
+  flex:0 0 auto;min-height:1em;margin-bottom:12px;
+  font-family:var(--mono,monospace);font-size:.66rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+}
+/* Üç satır × line-height 1.15. Yükseklik kutuda, punto başlıkta:
+   uzun metinde punto düşse bile kutu küçülmez. */
+.fc-termbox{
+  flex:0 0 auto;height:calc(3.45 * var(--fc-term-size));
+  display:flex;align-items:flex-start;justify-content:center;overflow:hidden;
+}
+.fc-term{
+  margin:0;font-family:var(--display,var(--sans));font-weight:700;
+  font-size:var(--fc-term-size);line-height:1.15;letter-spacing:-.03em;
+  color:var(--text);
+}
+.fc-back .fc-term{color:var(--accent)}
+/* Emniyet supabı: üç satıra da sığmayacak kadar uzun metinde punto düşer. */
+.fc-term.is-long{font-size:calc(var(--fc-term-size) * .72)}
+
+.fc-ipa{
+  flex:0 0 auto;min-height:1.2em;margin:10px 0 0;
+  font-family:var(--mono,monospace);font-size:.85rem;color:var(--text-muted);
+}
+
+/* Dört satırlık sabit alan; veri tarafında açıklama 200 karakterle
+   sınırlı olduğu için taşma olmaz. overflow yalnızca emniyet. */
+.fc-hint{
+  flex:0 0 auto;height:calc(4 * 1.6 * .9rem);overflow-y:auto;
+  margin:16px 0 0;padding-top:14px;border-top:1px solid var(--border);
+  font-size:.9rem;line-height:1.6;color:var(--text-dim);text-align:center;
+}
+.fc-hint em{font-style:normal;color:var(--text-muted);font-size:.86rem}
+.fc-hint .masked{letter-spacing:2px;color:var(--text-muted);opacity:.6;user-select:none}
+
+.fc-flip-hint{
+  display:block;margin-top:14px;text-align:center;
+  font-size:.7rem;letter-spacing:.04em;color:var(--text-muted);opacity:.7;
+}
+.fc.is-static .fc-flip-hint{visibility:hidden}
+
+/* ---------- alt alan: çevir + puanlama ---------- */
+.fc-dock{display:flex;flex-direction:column;gap:9px;width:100%;max-width:520px}
+.fc-reveal{
+  appearance:none;cursor:pointer;width:100%;display:flex;align-items:center;
+  justify-content:center;gap:9px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;padding:14px;
+  font-family:var(--sans);font-weight:600;font-size:.94rem;color:var(--text-dim);
+  transition:.15s;
+}
+.fc-reveal:hover{border-color:var(--accent);color:var(--accent)}
+.fc-reveal svg{width:17px;height:17px;flex:0 0 auto}
+.fc-rate{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fc-rate button{
+  appearance:none;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;border-radius:14px;padding:14px;
+  font-family:var(--sans);font-weight:700;font-size:.94rem;color:#fff;
+  border:1px solid transparent;transition:filter .15s,transform .12s;
+}
+.fc-rate button:active{transform:scale(.985)}
+.fc-rate button:hover{filter:brightness(1.07)}
+.fc-rate button svg{width:17px;height:17px;flex:0 0 auto}
+.fc-miss{background:var(--bad)}
+.fc-hit{background:var(--ok)}
+.fc-kbd{
+  display:none;text-align:center;margin:2px 0 0;
+  font-family:var(--mono,monospace);font-size:.67rem;letter-spacing:.03em;
+  color:var(--text-muted);
+}
+@media (hover:hover) and (min-width:640px){ .fc-kbd{display:block} }
+
+/* ---------- ölçek ----------
+   Terim puntosu tek değişkenden türer; kartın bütün sabit yükseklikleri
+   ona bağlı olduğu için kart da bir bütün olarak ölçeklenir. */
+.fc-stage{--fc-term-size:clamp(1.5rem,5.4vw,2.2rem)}
+/* Alçak ekranda kart dikeyde sığmayabilir: terim iki satıra, açıklama
+   üç satıra iner. Hizalama kuralı bozulmaz, yalnızca ayrılan yer küçülür. */
+@media (max-height:720px){
+  .fc-stage{--fc-term-size:clamp(1.25rem,4.6vw,1.75rem)}
+  .fc-termbox{height:calc(2.3 * var(--fc-term-size))}
+  .fc-hint{height:calc(3 * 1.6 * .9rem)}
+  .fc{padding:14px 18px 18px}
+}
