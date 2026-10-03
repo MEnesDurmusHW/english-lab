@@ -156,17 +156,20 @@ function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; 
    Gruplar/durumlar kendi içinde VEYA, fasetler arası VE ile birleşir. */
 const FILTER_KEY='ns-vocab-filter';
 let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned' (dahil) veya '!flagged'/'!learned' (hariç)
+let selBelow=null;                              // skor < selBelow olanlar (null: kısıt yok)
+const BELOW_MIN=-2, BELOW_MAX=5;                // skor -3..5 aralığında; <-2 ve <6 anlamsız
 try{
   const f=JSON.parse(localStorage.getItem(FILTER_KEY))||{};
   if(Array.isArray(f.g)) selGroups=f.g.slice();
   if(Array.isArray(f.s)) selStatus=f.s.slice();
   if(Array.isArray(f.v)) selSaved=f.v.slice();
+  if(typeof f.b==='number' && f.b>=BELOW_MIN && f.b<=BELOW_MAX) selBelow=f.b;
 }catch(e){}
 if(typeof WORD_GROUPS!=='undefined') selGroups=selGroups.filter(id=>WORD_GROUPS.some(g=>g.id===id));   // geçersiz grupları at
-function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved})); }catch(e){} }
-function filterActiveCount(){ return selGroups.length + selStatus.length + selSaved.length; }
-function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved]); }   // torba/önbellek kimliği
-function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; saveFilter(); }
+function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow})); }catch(e){} }
+function filterActiveCount(){ return selGroups.length + selStatus.length + selSaved.length + (selBelow===null?0:1); }
+function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow]); }   // torba/önbellek kimliği
+function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; saveFilter(); }
 
 function matchesGroup(w){ return selGroups.length===0 || selGroups.indexOf(w.grp)>=0; }
 /* 'kaydedilenler' fasetinin her satırı 3 durumlu: boş (kısıt yok) · dahil (yalnızca o) · hariç (o olmayanlar) */
@@ -180,6 +183,7 @@ function matchesFilter(w){
   if(!matchesSaved('learned', isHidden(w.en))) return false;
   if(!matchesSaved('flagged', isFlagged(w.en))) return false;
   if(selStatus.length && selStatus.indexOf(statusOf(w.en))<0) return false;
+  if(selBelow!==null && getScore(w.en)>=selBelow) return false;
   return true;
 }
 function activeWords(){ return WORDS.filter(matchesFilter); }
@@ -228,7 +232,15 @@ function mountFilter(host, onChange, sections){
     }
     if(sections.indexOf('status')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">Skor durumu</div><div class="flt-chips">'+
-        _fltChip('s','weak','Zayıf')+_fltChip('s','shaky','Sağlam değil')+_fltChip('s','known','Biliyorum')+'</div></div>';
+        _fltChip('s','weak','Zayıf')+_fltChip('s','shaky','Sağlam değil')+_fltChip('s','known','Biliyorum')+'</div>'+
+        '<div class="flt-below'+(selBelow===null?'':' on')+'"><span class="flt-tri-label">Skoru şunun altında</span>'+
+          '<div class="flt-step" role="group" aria-label="Skor üst sınırı">'+
+            '<button type="button" class="flt-step-btn" data-d="-1" aria-label="Azalt"'+(selBelow!==null&&selBelow<=BELOW_MIN?' disabled':'')+'>'+FLT_EXC_ICON+'</button>'+
+            '<span class="flt-step-val">'+(selBelow===null?'—':scoreText(selBelow))+'</span>'+
+            '<button type="button" class="flt-step-btn" data-d="1" aria-label="Artır"'+(selBelow!==null&&selBelow>=BELOW_MAX?' disabled':'')+'>'+FLT_INC_ICON+'</button>'+
+          '</div>'+
+          (selBelow===null?'':'<button type="button" class="flt-step-off" id="fltBelowOff" aria-label="Skor sınırını kaldır">&times;</button>')+
+        '</div></div>';
     }
     if(sections.indexOf('saved')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-tri-list">'+
@@ -250,6 +262,15 @@ function mountFilter(host, onChange, sections){
         renderPanel();
         if(onChange) onChange();
       }
+      return;
+    }
+    if(e.target.closest('#fltBelowOff')){ selBelow=null; apply(); return; }
+    const step=e.target.closest('.flt-step-btn');
+    if(step){
+      // ilk dokunuşta Biliyorum eşiğinin bir üstünden başla (+3 altı = +2 dahil herkes)
+      if(selBelow===null) selBelow=KNOWN_AT+1;
+      else selBelow=Math.max(BELOW_MIN, Math.min(BELOW_MAX, selBelow+(+step.getAttribute('data-d'))));
+      apply();
       return;
     }
     const tri=e.target.closest('.flt-tri-btn');
