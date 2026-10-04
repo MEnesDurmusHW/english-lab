@@ -275,12 +275,9 @@ const BY_EN = {};
 WORDS.forEach(w => { BY_EN[w.en] = w; });
 
 const HIDDEN = {}, FLAGS = {};
-const HIDE_STORE = NSStore.map('ns-vocab-hidden', HIDDEN);
-const FLAG_STORE = NSStore.map('ns-vocab-flag', FLAGS);
+const HIDE_STORE = NSStore.map('ns-flow-learned', HIDDEN);
+const FLAG_STORE = NSStore.map('ns-flow-sentence', FLAGS);
 
-/* Learned işaretli olup akış kaydı olmayanlar (akıştan önce işaretlenmiş,
-   Vocabulary henüz açılmamış): içeri al. lab-core.js ile aynı tek seferlik adım. */
-J.adoptOnce(HIDDEN, FLAGS);
 
 const TYPE_EN = {'kelime':'Word','sıfat':'Adjective','kalıp':'Phrase','deyim':'Idiom','phrasal fiil':'Phrasal verb','cümle':'Sentence'};
 const PRI = ['low', 'med', 'high'];

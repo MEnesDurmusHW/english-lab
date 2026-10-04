@@ -28,10 +28,17 @@
   var _setItem = localStorage.setItem.bind(localStorage);
   var _removeItem = localStorage.removeItem.bind(localStorage);
 
-  /* Eski Review Deck'in depoları (2026-10'da ns-journey'e geçildi). Ne
-     okunur ne senkronlanır; her açılışta yerelden silinir ki geride kalmış
-     bir cihaz onları buluta geri yazmasın. */
-  var RETIRED = { 'ns-review': 1, 'ns-review-stats': 1 };
+  /* Emekli depolar. Ne okunur ne senkronlanır; her açılışta yerelden
+     silinir ki geride kalmış bir cihaz onları buluta geri yazmasın.
+       ns-review, ns-review-stats   eski Review Deck (2026-10)
+       ns-journey, ns-journey-adopted, ns-vocab-hidden, ns-vocab-flag
+                                    akışın ilk denemesi ve akış öncesi
+                                    Learned / cümle işaretleri — akış
+                                    sıfırdan başladı (2026-10-04) */
+  var RETIRED = {
+    'ns-review': 1, 'ns-review-stats': 1,
+    'ns-journey': 1, 'ns-journey-adopted': 1, 'ns-vocab-hidden': 1, 'ns-vocab-flag': 1
+  };
   Object.keys(RETIRED).forEach(function (k) { try { _removeItem(k); } catch (e) {} });
 
   /* ns-sync-* ve cihaza özel tercihler buluta gitmez. */

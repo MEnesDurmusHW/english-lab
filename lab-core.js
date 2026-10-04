@@ -135,7 +135,7 @@ function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
 
 /* cümle pratiği listesi + kullanıcının yazdığı cümleler */
-const FLAG_KEY='ns-vocab-flag', SENT_KEY='ns-vocab-sentences';
+const FLAG_KEY='ns-flow-sentence', SENT_KEY='ns-vocab-sentences';
 let FLAGS={}, SENTS={};
 const FLAG_STORE = NSStore.map(FLAG_KEY, FLAGS);
 const SENT_STORE = NSStore.map(SENT_KEY, SENTS);
@@ -148,7 +148,7 @@ function setSent(en,txt){ txt=txt.trim(); if(txt) SENTS[en]=txt; else delete SEN
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* gizlenen (öğrenilmiş, rotasyondan çıkarılan) kelimeler */
-const HIDE_KEY='ns-vocab-hidden';
+const HIDE_KEY='ns-flow-learned';
 let HIDDEN={};
 const HIDE_STORE = NSStore.map(HIDE_KEY, HIDDEN);
 function saveHidden(){ HIDE_STORE.commit(); }
@@ -159,8 +159,6 @@ function toggleHidden(en){
   if(typeof NSJourney!=='undefined'){ if(HIDDEN[en]) NSJourney.learn(en); else NSJourney.unlearn(en); }
 }
 
-/* akıştan önce işaretlenmiş kelimeler bir kez içeri alınır (Learned -> review, cümle listesi -> sentence) */
-if(typeof NSJourney!=='undefined') NSJourney.adoptOnce(HIDDEN, FLAGS);
 
 /* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.

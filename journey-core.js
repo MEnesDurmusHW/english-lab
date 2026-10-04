@@ -10,7 +10,7 @@
      review ──(kartta üst üste 2 kez bilemedi)──► sentence
 
    Depo (NSStore, girdi bazlı birleşir):
-     ns-journey { "<en>": { s, c, d, pri, card:{step,due,last,miss}, sent:{step,due,last} } }
+     ns-flow { "<en>": { s, c, d, pri, card:{step,due,last,miss}, sent:{step,due,last} } }
        s     'new' | 'sentence' | 'review'
        c     farklı günlerde doğru sayacı (yalnızca new aşamasında işler)
        d     sayacın en son arttığı gün (YYYY-MM-DD)
@@ -23,7 +23,7 @@
 (function () {
   'use strict';
 
-  var KEY = 'ns-journey';
+  var KEY = 'ns-flow';
   var DATA = {};
   var STORE = NSStore.map(KEY, DATA);
 
@@ -193,51 +193,6 @@
     return out;
   }
 
-  /* ---- geçiş: akıştan önceki işaretler ----
-     Learned olanlar review'a Medium girer ve ilk kartları BUGÜN gelir:
-     kullanıcı hepsini bir kez kendisi geçsin, takvim oradan başlasın.
-     Cümle listesindekiler sentence aşamasında başlar. Zaten kaydı olan
-     kelimeye dokunmaz. */
-  function adopt(learned, flagged) {
-    var n = 0;
-    learned.forEach(function (en) {
-      if (DATA[en]) return;
-      learn(en, { pri: 'med', startIn: 0 });
-      n++;
-    });
-    flagged.forEach(function (en) {
-      if (DATA[en]) return;
-      put(en, { s: 'sentence', c: NEED_DAYS, d: today() });
-      n++;
-    });
-    return n;
-  }
-
-  /* İlk sürüm (v1) geçişte kartları 7 güne yaymıştı. Hiç puanlanmamış
-     (basamak 0, bilememe yok) kartları bugüne çeker. */
-  function pullUntouched() {
-    var t = today();
-    reviewWords().forEach(function (en) {
-      var j = DATA[en];
-      if (j.card.step || j.card.miss || j.card.due <= t) return;
-      var c = copy(j);
-      c.card.due = t;
-      put(en, c);
-    });
-  }
-
-  /* Geçişi tek seferlik çalıştırır; hem lab-core.js hem review.html çağırır. */
-  var ADOPT_KEY = 'ns-journey-adopted';
-  function adoptOnce(hidden, flags) {
-    try {
-      var v = localStorage.getItem(ADOPT_KEY);
-      if (v === '2') return;
-      if (!v) adopt(Object.keys(hidden), Object.keys(flags).filter(function (en) { return !hidden[en]; }));
-      else pullUntouched();
-      localStorage.setItem(ADOPT_KEY, '2');
-    } catch (e) {}
-  }
-
   window.NSJourney = {
     KEY: KEY, NEED_DAYS: NEED_DAYS, LAPSE_LIMIT: LAPSE_LIMIT,
     PRI_LABEL: PRI_LABEL, CARD_IV: CARD_IV, SENT_IV: SENT_IV,
@@ -247,6 +202,6 @@
     recordPractice: recordPractice, learn: learn, unlearn: unlearn,
     rateCard: rateCard, sentenceDone: sentenceDone, setPriority: setPriority,
     reviewWords: reviewWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
-    upcoming: upcoming, adopt: adopt, adoptOnce: adoptOnce
+    upcoming: upcoming
   };
 })();

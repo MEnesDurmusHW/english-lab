@@ -43,7 +43,7 @@ new ──(farklı 2 günde doğru)──► sentence ──(Learned)──► r
 6. **Learned geri alınırsa** (Vocabulary'de işaret kaldırılırsa) kelime
    Review'dan çıkar, sayacına göre *sentence* ya da *new* olur.
 
-"Learned" = mevcut `ns-vocab-hidden` işareti (Vocabulary'deki ✓ ve
+"Learned" = `ns-flow-learned` işareti (Vocabulary'deki ✓ ve
 Collocations'taki *Consolidate*). Hangisinden basılırsa basılsın aynı geçiş olur.
 
 ## Review takvimleri
@@ -68,8 +68,12 @@ basamak basamak ilerler; son basamakta sabit kalır.
 
 ## Veri
 
-Tek yeni depo `ns-journey` (NSStore, girdi bazlı birleşir, buluta senkronlanır).
-Anahtar `data.js`'teki `en` değeridir.
+Depolar (NSStore, girdi bazlı birleşir, buluta senkronlanır). Anahtar
+`data.js`'teki `en` değeridir.
+
+- `ns-flow` — her kelimenin akıştaki yeri (aşağıda)
+- `ns-flow-learned` — Learned işareti (eski `ns-vocab-hidden`'ın yerine)
+- `ns-flow-sentence` — "Cümlede çalışacaklarım" (eski `ns-vocab-flag`'in yerine)
 
 ```js
 "abandon": {
@@ -82,15 +86,15 @@ Anahtar `data.js`'teki `en` değeridir.
 }
 ```
 
-Eski `ns-review` / `ns-review-stats` artık okunmaz; kullanıcı onayıyla temizlenecek.
-`review-core.js` ve B1/Vocabulary'deki "Review'a ekle" düğmeleri kaldırılır.
+`review-core.js` ve B1/Vocabulary'deki "Review'a ekle" düğmeleri kaldırıldı.
 
-## Geçiş (mevcut veri)
+## Sıfırdan başlangıç (2026-10-04)
 
-- Şu an "Learned" olan kelimeler Review'a Medium öncelikle girer ve ilk kartları
-  **bugün** gelir: kullanıcı hepsini bir kez kendisi geçer, takvim oradan başlar.
-  (İlk sürüm 7 güne yayıyordu; o cihazlarda hiç puanlanmamış kartlar bugüne çekilir.)
-- Şu an "Cümlede çalışacaklarım"da olan kelimeler **sentence** aşamasında başlar.
+Akış öncesi işaretler taşınmadı: bütün kelimeler *new* olarak başlar. Emekli
+anahtarlar (`store.js` → `RETIRED`) ne okunur ne senkronlanır, her açılışta
+yerelden silinir: `ns-review`, `ns-review-stats`, `ns-journey`,
+`ns-journey-adopted`, `ns-vocab-hidden`, `ns-vocab-flag`. Pratik skoru
+(`ns-vocab-score`) ve yazılmış cümleler (`ns-vocab-sentences`) yerinde kalır.
 
 ## Adımlar
 
