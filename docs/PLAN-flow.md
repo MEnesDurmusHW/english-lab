@@ -41,7 +41,11 @@ new ──(farklı 2 günde doğru)──► sentence ──(Learned)──► r
 5. **Geri düşme** — Review kartında üst üste 2 kez bilemezse kelime Review'dan
    çıkar, "Learned" işareti kalkar, tekrar **sentence** aşamasına döner.
 6. **Learned geri alınırsa** (Vocabulary'de işaret kaldırılırsa) kelime
-   Review'dan çıkar, sayacına göre *sentence* ya da *new* olur.
+   Review'dan çıkar ve geldiği aşamaya döner: kısa yoldan geldiyse *new*,
+   cümle aşamasından geldiyse *sentence* (Sentences listesine geri girer).
+7. **Kural:** Sentences listesinde olmak = *sentence* aşamasında olmak.
+   Elle listeye eklenen kelime (Vocabulary'deki kalem düğmesi / L) cümle
+   aşamasına geçer; listeden çıkarılan kelime *new* olur, sayacı sıfırlanır.
 
 "Learned" = `ns-flow-learned` işareti (Vocabulary'deki ✓ ve
 Collocations'taki *Consolidate*). Hangisinden basılırsa basılsın aynı geçiş olur.

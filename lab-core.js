@@ -129,7 +129,7 @@ function resetScoresForGroups(ids){
 function addScore(en, d){
   let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores();
   // akış sayacı ayrı tutulur: farklı 2 günde doğru -> cümle aşaması (bkz. journey-core.js)
-  if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence' && !isFlagged(en)) toggleFlag(en);
+  if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence') setFlag(en, true);
 }
 function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
@@ -142,7 +142,14 @@ const SENT_STORE = NSStore.map(SENT_KEY, SENTS);
 function saveFlags(){ FLAG_STORE.commit(); }
 function saveSents(){ SENT_STORE.commit(); }
 function isFlagged(en){ return !!FLAGS[en]; }
-function toggleFlag(en){ if(FLAGS[en]) delete FLAGS[en]; else FLAGS[en]=1; FLAG_STORE.touch(en); saveFlags(); }
+/* Cümle listesinde olmak = akışta sentence aşamasında olmak. setFlag yalnızca
+   işareti yazar; toggleFlag kullanıcının elle yaptığı değişikliktir ve aşamayı
+   da taşır (elle eklenen kelime cümle aşamasına geçer, çıkarılan baştan başlar). */
+function setFlag(en, on){ if(!!FLAGS[en]===!!on) return; if(on) FLAGS[en]=1; else delete FLAGS[en]; FLAG_STORE.touch(en); saveFlags(); }
+function toggleFlag(en){
+  const on=!FLAGS[en]; setFlag(en, on);
+  if(typeof NSJourney!=='undefined'){ if(on) NSJourney.promote(en); else NSJourney.demote(en); }
+}
 function getSent(en){ return SENTS[en]||''; }
 function setSent(en,txt){ txt=txt.trim(); if(txt) SENTS[en]=txt; else delete SENTS[en]; SENT_STORE.touch(en); saveSents(); }
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -155,8 +162,12 @@ function saveHidden(){ HIDE_STORE.commit(); }
 function isHidden(en){ return !!HIDDEN[en]; }
 function toggleHidden(en){
   if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; HIDE_STORE.touch(en); saveHidden();
-  // Learned = Review'a giriş; geri almak Review'dan çıkarır
-  if(typeof NSJourney!=='undefined'){ if(HIDDEN[en]) NSJourney.learn(en); else NSJourney.unlearn(en); }
+  // Learned = Review'a giriş (cümle listesinden düşer); geri almak Review'dan
+  // çıkarır ve kelime geldiği aşamaya döner — sentence ise listeye geri girer
+  if(typeof NSJourney!=='undefined'){
+    if(HIDDEN[en]){ NSJourney.learn(en); setFlag(en, false); }
+    else setFlag(en, NSJourney.unlearn(en)==='sentence');
+  }
 }
 
 

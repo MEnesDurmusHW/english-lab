@@ -96,6 +96,7 @@
     if (j.s === 'review') return j;
     var t = today();
     var pri = opts.pri || (j.s === 'sentence' ? 'med' : 'low');
+    j.from = j.s;              // geri alınırsa döneceği aşama
     j.s = 'review';
     j.pri = pri;
     j.card = { step: 0, last: t, miss: 0, due: addDays(t, opts.startIn != null ? opts.startIn : iv(CARD_IV, pri, 0)) };
@@ -104,11 +105,30 @@
     return j;
   }
 
-  /* Learned geri alındı: review kaydı silinir, sayaca göre aşama döner. */
+  /* Learned geri alındı: review kaydı silinir, kelime geldiği aşamaya döner
+     (yanlışlıkla basılan kısa yol kelimeyi cümle aşamasına itmesin).
+     Döner: yeni aşama — sayfa cümle listesini buna göre ayarlar. */
   function unlearn(en) {
     var j = DATA[en];
-    if (!j || j.s !== 'review') return;
-    put(en, { s: 'sentence', c: NEED_DAYS, d: j.d || today() });
+    if (!j || j.s !== 'review') return stageOf(en);
+    var back = j.from === 'new' ? { s: 'new', c: j.c || 0, d: j.d } : { s: 'sentence', c: NEED_DAYS, d: j.d || today() };
+    put(en, back);
+    return back.s;
+  }
+
+  /* Elle cümle listesine alma / listeden çıkarma. Cümle listesinde olmak
+     = sentence aşamasında olmak; ikisi hep birlikte değişir. Çıkarılan
+     kelime sayacı sıfırdan başlar, farklı 2 günde bilinince yine gelir. */
+  function promote(en) {
+    var j = copy(DATA[en]);
+    if (j.s !== 'new') return;
+    j.s = 'sentence';
+    put(en, j);
+  }
+  function demote(en) {
+    var j = DATA[en];
+    if (!j || j.s !== 'sentence') return;
+    put(en, { s: 'new', c: 0 });
   }
 
   /* ---- 3. review: kart ----
@@ -200,6 +220,7 @@
     today: today, addDays: addDays, daysBetween: daysBetween,
     get: get, stageOf: stageOf, inReview: inReview, daysCount: daysCount,
     recordPractice: recordPractice, learn: learn, unlearn: unlearn,
+    promote: promote, demote: demote,
     rateCard: rateCard, sentenceDone: sentenceDone, setPriority: setPriority,
     reviewWords: reviewWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
     upcoming: upcoming
