@@ -105,15 +105,14 @@ function findHeadword(w,phrase){
 
 /* ---- ilerleme ---- */
 const collProgress=document.getElementById('collProgress');
+/* "Learned" kararı burada verilmez (akışta Sentences adımının işi); yalnızca
+   kendi örnek cümlesi yazılmış kelime sayısı gösterilir. */
 function renderCollProgress(){
   const total=WORDS.length;
-  const done=WORDS.filter(w=>isHidden(w.en)).length;
   const withSent=WORDS.filter(w=>COLL_SENTS[w.en]&&Object.keys(COLL_SENTS[w.en]).length).length;
-  const pct=total?Math.round(done/total*100):0;
   collProgress.innerHTML=
-    '<div class="cp-top"><span class="cp-label">Words consolidated</span><span class="cp-num">'+done+' / '+total+' · '+pct+'%</span></div>'+
-    '<div class="stat-bar"><i class="s-known" style="width:'+(total?done/total*100:0)+'%"></i></div>'+
-    '<div class="cp-note">Your own example in '+withSent+' word'+(withSent===1?'':'s')+'.</div>';
+    '<div class="cp-top"><span class="cp-label">Your own examples</span><span class="cp-num">'+withSent+' / '+total+' words</span></div>'+
+    '<div class="stat-bar"><i class="s-known" style="width:'+(total?withSent/total*100:0)+'%"></i></div>';
 }
 
 /* ---- çalış: tek kelime navigatörü ---- */
@@ -124,7 +123,7 @@ const collStudyEl=document.getElementById('collStudy');
 function autosize(ta){ ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; }
 function renderCollStudy(){
   if(!collOrder.length){ collStudyEl.innerHTML='<div class="empty">No words to show in this filter. Change the filter above.</div>'; return; }
-  const w=curColl(), done=isHidden(w.en);
+  const w=curColl();
   const rows=collList(w).map(function(p,idx){
     const val=getCollSent(w.en,idx);
     return '<div class="coll-item">'+
@@ -139,7 +138,6 @@ function renderCollStudy(){
     '</div>'+
     '<div class="card-controls coll-controls">'+
       '<button data-act="prev" aria-label="Previous">← Prev</button>'+
-      '<button data-act="done" class="done-btn'+(done?' is-done':'')+'">'+(done?'Solid ✓':'Consolidate')+'</button>'+
       '<button data-act="shuffle" aria-label="Shuffle">Shuffle</button>'+
       '<button data-act="next" aria-label="Next">Next →</button>'+
     '</div>'+
@@ -149,17 +147,12 @@ function renderCollStudy(){
 function collNext(){ if(!collOrder.length) return; collPos=(collPos+1)%collOrder.length; renderCollStudy(); }
 function collPrev(){ if(!collOrder.length) return; collPos=(collPos-1+collOrder.length)%collOrder.length; renderCollStudy(); }
 function collShuffle(){ collOrder=shuffle(collOrder); collPos=0; renderCollStudy(); }
-function collMarkDone(){
-  if(!collOrder.length) return;
-  toggleHidden(curColl().en);
-  buildCollOrder();
-  renderCollStudy(); renderCollProgress(); updateCount();
-}
 collStudyEl.addEventListener('input', function(e){
   const ta=e.target.closest('.coll-mine'); if(!ta) return;
   setCollSent(curColl().en, +ta.dataset.idx, ta.value);
   ta.classList.toggle('saved', !!ta.value.trim());
   autosize(ta);
+  renderCollProgress();
 });
 collStudyEl.addEventListener('click', function(e){
   const b=e.target.closest('button[data-act]'); if(!b) return;
@@ -167,7 +160,6 @@ collStudyEl.addEventListener('click', function(e){
   if(a==='next') collNext();
   else if(a==='prev') collPrev();
   else if(a==='shuffle') collShuffle();
-  else if(a==='done'){ collMarkDone(); renderCollProgress(); }
 });
 
 /* ---- alıştırma ---- */
@@ -368,7 +360,7 @@ function renderColl(){ renderCollProgress(); buildCollOrder(); showCollMode(); }
 
 /* filter + init */
 const _fltMount=document.getElementById('filterMount');
-if(_fltMount) mountFilter(_fltMount, function(){ collPos=0; renderColl(); }, ['groups','status','saved']);
+if(_fltMount) mountFilter(_fltMount, function(){ collPos=0; renderColl(); }, ['groups','status','saved'], null, 'en');
 renderColl();
 
 /* Başka bir sekme ya da bulut ilerlemeyi değiştirdi. Yalnızca okuyan

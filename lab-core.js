@@ -131,6 +131,16 @@ function addScore(en, d){
   // akış sayacı ayrı tutulur: farklı 2 günde doğru -> cümle aşaması (bkz. journey-core.js)
   if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence') setFlag(en, true);
 }
+/* Akış aşaması rozeti (yalnızca bilgi): pratik skorundan bağımsız —
+   skor +2 olsa da akış farklı 2 gün ister. Boş: henüz bir gün bile yok. */
+function flowBadgeHTML(en){
+  if(typeof NSJourney==='undefined') return '';
+  const st=NSJourney.stageOf(en);
+  if(st==='review') return '<span class="flow-badge f-review" title="In Review">Review</span>';
+  if(st==='sentence') return '<span class="flow-badge f-sentence" title="Ready for sentence practice">Sentences</span>';
+  const c=NSJourney.daysCount(en);
+  return c ? '<span class="flow-badge" title="Known on '+c+' of '+NSJourney.NEED_DAYS+' different days">Day '+c+'/'+NSJourney.NEED_DAYS+'</span>' : '';
+}
 function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
 
@@ -211,26 +221,41 @@ function activeWords(){ return WORDS.filter(matchesFilter); }
 const FILTER_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
 const FLT_INC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
 const FLT_EXC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+/* panel metinleri: Vocabulary Türkçe, akışın yeni (İngilizce) sayfaları İngilizce */
+const FLT_TXT = {
+  tr: { filter:'Filtrele', panel:'Filtre', clear:'Temizle', groups:'Gruplar', group:'Grup ', reset:'Seçili grubun istatistiğini sıfırla',
+        resetAsk:' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.', status:'Skor durumu',
+        weak:'Zayıf', shaky:'Sağlam değil', known:'Biliyorum', below:'Skoru şunun altında', belowGroup:'Skor üst sınırı',
+        dec:'Azalt', inc:'Artır', belowOff:'Skor sınırını kaldır', saved:'Kaydedilenler',
+        flagged:'Cümlede çalışacaklarım', learned:'Öğrendiklerim', include:'Dahil et', exclude:'Hariç tut', match:' kelime eşleşiyor' },
+  en: { filter:'Filter', panel:'Filter', clear:'Clear', groups:'Groups', group:'Group ', reset:'Reset practice score for the selected groups',
+        resetAsk:' words will lose their practice score. This cannot be undone. Continue?', status:'Practice score',
+        weak:'Weak', shaky:'Shaky', known:'Known', below:'Score below', belowGroup:'Score limit',
+        dec:'Decrease', inc:'Increase', belowOff:'Remove score limit', saved:'Marked',
+        flagged:'In Sentences', learned:'Learned', include:'Include', exclude:'Exclude', match:' words match' }
+};
 function _fltArr(kind){ return kind==='g'?selGroups : kind==='s'?selStatus : selSaved; }
 function _fltChip(kind,val,label){
   const on=_fltArr(kind).indexOf(val)>=0;
   return '<button type="button" class="flt-chip'+(on?' on':'')+'" data-k="'+kind+'" data-v="'+val+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button>';
 }
 /* 'kaydedilenler' satırı: etiket + dahil et/hariç tut ikon toggle çifti (3 durum: nötr · dahil · hariç) */
-function _fltTriRow(val,label){
+function _fltTriRow(val,label,T){
   const inc=selSaved.indexOf(val)>=0, exc=selSaved.indexOf('!'+val)>=0;
   return '<div class="flt-tri-row"><span class="flt-tri-label">'+label+'</span>'+
     '<div class="flt-tri" role="group" aria-label="'+label+'">'+
-      '<button type="button" class="flt-tri-btn inc'+(inc?' on':'')+'" data-v="'+val+'" data-m="inc" aria-pressed="'+(inc?'true':'false')+'" title="Dahil et" aria-label="Dahil et">'+FLT_INC_ICON+'</button>'+
-      '<button type="button" class="flt-tri-btn exc'+(exc?' on':'')+'" data-v="'+val+'" data-m="exc" aria-pressed="'+(exc?'true':'false')+'" title="Hariç tut" aria-label="Hariç tut">'+FLT_EXC_ICON+'</button>'+
+      '<button type="button" class="flt-tri-btn inc'+(inc?' on':'')+'" data-v="'+val+'" data-m="inc" aria-pressed="'+(inc?'true':'false')+'" title="'+T.include+'" aria-label="'+T.include+'">'+FLT_INC_ICON+'</button>'+
+      '<button type="button" class="flt-tri-btn exc'+(exc?' on':'')+'" data-v="'+val+'" data-m="exc" aria-pressed="'+(exc?'true':'false')+'" title="'+T.exclude+'" aria-label="'+T.exclude+'">'+FLT_EXC_ICON+'</button>'+
     '</div></div>';
 }
 /* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved']
    count: o sayfanın listesinde kaç kelime kaldığını döner (varsayılan: activeWords).
+   lang: 'tr' (varsayılan) | 'en' — panel metinlerinin dili.
    Filtre durumu sayfalar arasında ortak; rozet ve Temizle yalnızca bu panelde
    GÖRÜNEN bölümlere bakar, yoksa başka sayfada seçilmiş, burada görünmeyen
    bir filtre sayılıp kafa karıştırır. */
-function mountFilter(host, onChange, sections, count){
+function mountFilter(host, onChange, sections, count, lang){
+  const T = FLT_TXT[lang] || FLT_TXT.tr;
   sections = sections || ['groups','status','saved'];
   count = count || function(){ return activeWords().length; };
   const has = k => sections.indexOf(k)>=0;
@@ -247,10 +272,10 @@ function mountFilter(host, onChange, sections, count){
   }
   host.innerHTML =
     '<div class="filter-wrap">'+
-      '<button type="button" class="filter-btn" id="fltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrele">'+
+      '<button type="button" class="filter-btn" id="fltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="'+T.filter+'">'+
         FILTER_ICON+'<span class="flt-badge" id="fltBadge" hidden></span>'+
       '</button>'+
-      '<div class="filter-panel" id="fltPanel" role="dialog" aria-label="Filtre" hidden></div>'+
+      '<div class="filter-panel" id="fltPanel" role="dialog" aria-label="'+T.panel+'" hidden></div>'+
     '</div>';
   const btn=host.querySelector('#fltBtn'), panel=host.querySelector('#fltPanel'), badge=host.querySelector('#fltBadge');
   function updateBadge(){
@@ -259,33 +284,33 @@ function mountFilter(host, onChange, sections, count){
     else { badge.hidden=true; btn.classList.remove('on'); }
   }
   function renderPanel(){
-    let h='<div class="flt-head"><span>Filtrele</span><button type="button" class="flt-clear" id="fltClear"'+(shownCount()?'':' disabled')+'>Temizle</button></div>';
+    let h='<div class="flt-head"><span>'+T.filter+'</span><button type="button" class="flt-clear" id="fltClear"'+(shownCount()?'':' disabled')+'>'+T.clear+'</button></div>';
     if(sections.indexOf('groups')>=0 && typeof WORD_GROUPS!=='undefined' && WORD_GROUPS.length>1){
-      h+='<div class="flt-sec"><div class="flt-lbl">Gruplar</div><div class="flt-chips">'+
-        WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?'Grup '+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div>'+
-        (selGroups.length ? '<button type="button" class="flt-reset" id="fltResetGroup">Seçili grubun istatistiğini sıfırla</button>' : '')+
+      h+='<div class="flt-sec"><div class="flt-lbl">'+T.groups+'</div><div class="flt-chips">'+
+        WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?T.group+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div>'+
+        (selGroups.length ? '<button type="button" class="flt-reset" id="fltResetGroup">'+T.reset+'</button>' : '')+
       '</div>';
     }
     if(sections.indexOf('status')>=0){
-      h+='<div class="flt-sec"><div class="flt-lbl">Skor durumu</div><div class="flt-chips">'+
-        _fltChip('s','weak','Zayıf')+_fltChip('s','shaky','Sağlam değil')+_fltChip('s','known','Biliyorum')+'</div>'+
-        '<div class="flt-below'+(selBelow===null?'':' on')+'"><span class="flt-tri-label">Skoru şunun altında</span>'+
-          '<div class="flt-step" role="group" aria-label="Skor üst sınırı">'+
-            '<button type="button" class="flt-step-btn" data-d="-1" aria-label="Azalt"'+(selBelow!==null&&selBelow<=BELOW_MIN?' disabled':'')+'>'+FLT_EXC_ICON+'</button>'+
+      h+='<div class="flt-sec"><div class="flt-lbl">'+T.status+'</div><div class="flt-chips">'+
+        _fltChip('s','weak',T.weak)+_fltChip('s','shaky',T.shaky)+_fltChip('s','known',T.known)+'</div>'+
+        '<div class="flt-below'+(selBelow===null?'':' on')+'"><span class="flt-tri-label">'+T.below+'</span>'+
+          '<div class="flt-step" role="group" aria-label="'+T.belowGroup+'">'+
+            '<button type="button" class="flt-step-btn" data-d="-1" aria-label="'+T.dec+'"'+(selBelow!==null&&selBelow<=BELOW_MIN?' disabled':'')+'>'+FLT_EXC_ICON+'</button>'+
             '<span class="flt-step-val">'+(selBelow===null?'—':scoreText(selBelow))+'</span>'+
-            '<button type="button" class="flt-step-btn" data-d="1" aria-label="Artır"'+(selBelow!==null&&selBelow>=BELOW_MAX?' disabled':'')+'>'+FLT_INC_ICON+'</button>'+
+            '<button type="button" class="flt-step-btn" data-d="1" aria-label="'+T.inc+'"'+(selBelow!==null&&selBelow>=BELOW_MAX?' disabled':'')+'>'+FLT_INC_ICON+'</button>'+
           '</div>'+
-          (selBelow===null?'':'<button type="button" class="flt-step-off" id="fltBelowOff" aria-label="Skor sınırını kaldır">&times;</button>')+
+          (selBelow===null?'':'<button type="button" class="flt-step-off" id="fltBelowOff" aria-label="'+T.belowOff+'">&times;</button>')+
         '</div></div>';
     }
     if(sections.indexOf('saved')>=0){
-      h+='<div class="flt-sec"><div class="flt-lbl">Kaydedilenler</div><div class="flt-tri-list">'+
-        _fltTriRow('flagged','Cümlede çalışacaklarım')+_fltTriRow('learned','Öğrendiklerim')+'</div></div>';
+      h+='<div class="flt-sec"><div class="flt-lbl">'+T.saved+'</div><div class="flt-tri-list">'+
+        _fltTriRow('flagged',T.flagged,T)+_fltTriRow('learned',T.learned,T)+'</div></div>';
     }
     h+='<div class="flt-foot" id="fltFoot"></div>';
     panel.innerHTML=h;
     const foot=panel.querySelector('#fltFoot');
-    if(foot) foot.textContent = count()+' kelime eşleşiyor';
+    if(foot) foot.textContent = count()+T.match;
   }
   function apply(){ saveFilter(); updateBadge(); renderPanel(); if(onChange) onChange(); }
   panel.addEventListener('click', function(e){
@@ -293,7 +318,7 @@ function mountFilter(host, onChange, sections, count){
     if(e.target.closest('#fltClear')){ clearShown(); apply(); return; }
     if(e.target.closest('#fltResetGroup')){
       const n = WORDS.filter(w=>selGroups.indexOf(w.grp)>=0).length;
-      if(confirm(n+' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.')){
+      if(confirm(n+T.resetAsk)){
         resetScoresForGroups(selGroups.slice());
         renderPanel();
         if(onChange) onChange();

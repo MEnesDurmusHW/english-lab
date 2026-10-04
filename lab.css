@@ -238,6 +238,11 @@
   }
 
   /* mastery meter (3 dots) */
+  .flow-badge{flex:0 0 auto;font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px dashed var(--border);color:var(--text-muted);white-space:nowrap}
+  .flow-badge.f-sentence{border-style:solid;color:#C026D3;border-color:rgba(192,38,211,.35);background:rgba(192,38,211,.08)}
+  .flow-badge.f-review{border-style:solid;color:#EA580C;border-color:rgba(234,88,12,.35);background:rgba(234,88,12,.08)}
+  [data-theme="dark"] .flow-badge.f-sentence{color:#E879F9;border-color:rgba(232,121,249,.35);background:rgba(232,121,249,.12)}
+  [data-theme="dark"] .flow-badge.f-review{color:#FB923C;border-color:rgba(251,146,60,.35);background:rgba(251,146,60,.12)}
   .eh-meter{display:inline-flex;gap:4px;flex:0 0 auto;align-items:center}
   .eh-meter i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background .2s}
   .eh-meter[data-st="weak"] i:nth-child(-n+1){background:var(--bad)}
@@ -381,8 +386,6 @@
   .coll-mine:focus{outline:none;border-color:var(--accent)}
   .coll-mine.saved{border-color:var(--ok)}
   .coll-controls{margin-top:20px}
-  .coll-controls .done-btn.is-done{background:var(--ok);border-color:var(--ok);color:#fff}
-  .coll-controls .done-btn.is-done:hover{opacity:.9;color:#fff}
   .coll-nav-idx{text-align:center;font-family:var(--mono);font-size:.72rem;color:var(--text-muted);margin-top:12px}
 
   /* alıştırma */

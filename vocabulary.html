@@ -52,7 +52,6 @@
       <button id="tab-cards" role="tab" aria-selected="false">Flashcards</button>
       <button id="tab-quiz" role="tab" aria-selected="false">Quiz</button>
       <button id="tab-fill" role="tab" aria-selected="false">Fill-in</button>
-      <button id="tab-sentence" role="tab" aria-selected="false">Sentences</button>
     </div>
   </div>
 
@@ -79,6 +78,7 @@
   <div class="cards-view" id="view-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
     <div class="card-topbar">
       <div class="topbar-right">
+        <span id="cardFlow"></span>
         <span class="assess-badge" id="cardBadge"></span>
         <button class="flag-btn" id="flagBtn" type="button" aria-pressed="false" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım (L)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -163,11 +163,6 @@
     </div>
   </div>
 
-  <!-- CÜMLE PRATİĞİ -->
-  <div class="mode-view" id="view-sentence" role="tabpanel" aria-labelledby="tab-sentence">
-    <p class="sent-intro">Cümlede zorlandığın kelimeler ve örnek cümleleri. Tam içerik için sağ üstteki düğmeye bas.</p>
-    <div class="sent-wrap" id="sentenceList"></div>
-  </div>
 
 </div>
 
@@ -203,6 +198,14 @@ function updateAssessRow(row){
   const b=row.querySelector('.assess-badge'); b.className='assess-badge st-'+st; b.textContent=STATUS_LABEL[st];
   row.querySelector('.assess-score b').textContent=scoreText(sc);
 }
+/* cevap kelimeyi cümle aşamasına geçirmiş olabilir: rozeti ve kalem düğmesini tazele */
+function paintEntryFlow(i){
+  const entry=listEl.querySelector('.entry[data-i="'+i+'"]'); if(!entry) return;
+  const en=WORDS[i].en, old=entry.querySelector('.flow-badge'), html=flowBadgeHTML(en);
+  if(old) old.outerHTML=html;
+  else if(html){ const m=entry.querySelector('.eh-meter'); if(m) m.insertAdjacentHTML('beforebegin', html); }
+  const fb=entry.querySelector('.row-flag'); if(fb) fb.classList.toggle('on', isFlagged(en));
+}
 function paintEntryStripe(i){
   const entry=listEl.querySelector('.entry[data-i="'+i+'"]'); if(!entry) return;
   const st=statusOf(WORDS[i].en);
@@ -229,6 +232,7 @@ function renderList(){
         '<button class="entry-head" type="button" aria-expanded="false">'+
           '<span class="eh-idx">'+idx+'</span>'+
           '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
+          flowBadgeHTML(w.en)+
           '<span class="eh-meter" data-st="'+st+'" title="'+STATUS_LABEL[st]+'"><i></i><i></i><i></i></span>'+
           '<span class="eh-type">'+typeLabel(w.type)+'</span>'+
           '<svg class="eh-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'+
@@ -255,7 +259,7 @@ listEl.addEventListener('click', e=>{
   const row = b.closest('.assess-row'); if(!row) return;
   const i = +row.dataset.i;
   addScore(WORDS[i].en, b.dataset.a==='hit' ? 1 : -1);
-  updateAssessRow(row); paintEntryStripe(i);
+  updateAssessRow(row); paintEntryStripe(i); paintEntryFlow(i);
 });
 function heads(){ return Array.from(listEl.querySelectorAll('.entry-head')); }
 function wireHeads(){
@@ -299,7 +303,7 @@ function updateBrowseActive(){
 }
 
 /* ============ SEKME SİSTEMİ ============ */
-const TABS = ['list','cards','quiz','fill','sentence'];
+const TABS = ['list','cards','quiz','fill'];
 const tabBtn = {}, view = {};
 TABS.forEach(t=>{ tabBtn[t]=document.getElementById('tab-'+t); view[t]=document.getElementById('view-'+t); });
 let currentTab = 'list';
@@ -314,7 +318,6 @@ function updateCount(){
   if(currentTab==='cards') countEl.textContent = (order.length ? (cardPos+1) : 0)+' / '+order.length;
   else if(currentTab==='quiz') countEl.textContent = 'Doğru '+quiz.correct+' / '+quiz.total;
   else if(currentTab==='fill') countEl.textContent = 'Doğru '+fill.correct+' / '+fill.total;
-  else if(currentTab==='sentence') countEl.textContent = WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en)).length+' kelime';
   else countEl.textContent = activeWords().length+' kelime';
   /* Kopyalama düğmesi yalnızca List'te ve kopyalanacak bir şey varken */
   if(listCopyBtn){
@@ -336,7 +339,6 @@ function selectTab(t){
   else if(t==='cards'){ buildOrder(); renderCard(); }
   else if(t==='quiz') startQuiz();
   else if(t==='fill') startFill();
-  else if(t==='sentence') renderSentence();
   updateCount();
   updateBrowseActive();
 }
@@ -385,7 +387,6 @@ function refreshCurrent(){
   else if(currentTab==='cards'){ buildOrder(); renderCard(); }
   else if(currentTab==='quiz') startQuiz();
   else if(currentTab==='fill') startFill();
-  else if(currentTab==='sentence') renderSentence();
   updateCount();
 }
 
@@ -411,10 +412,11 @@ const dirEN=false;   // kartlar yalnızca TR -> EN (akış kararı); EN -> TR da
 function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
 function curCard(){ return WORDS[order[cardPos]]; }
 function renderCardBadge(){
-  if(!order.length){ cardBadge.className='assess-badge'; cardBadge.textContent=''; return; }
+  if(!order.length){ cardBadge.className='assess-badge'; cardBadge.textContent=''; document.getElementById('cardFlow').innerHTML=''; return; }
   const w=curCard(), st=statusOf(w.en);
   cardBadge.className='assess-badge st-'+st;
   cardBadge.textContent=STATUS_LABEL[st]+' · '+scoreText(getScore(w.en));
+  document.getElementById('cardFlow').innerHTML=flowBadgeHTML(w.en);
 }
 function renderCard(){
   if(!order.length){ promptEl.textContent='…'; promptEl.classList.remove('small'); promptType.textContent=''; promptHint.textContent=''; promptHint.style.display='none'; cardIpa.textContent=''; idxTag.textContent='0 / 0'; sideTag.textContent=''; cardDetails.innerHTML=''; cardEl.classList.remove('flipped'); renderCardBadge(); updateFlagBtn(); updateCount(); return; }
@@ -568,35 +570,6 @@ fReveal.addEventListener('click', revealFill);
 fNext.addEventListener('click', newFill);
 fInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); if(fill.answered) newFill(); else checkFill(); } });
 
-/* ============ CÜMLE PRATİĞİ ============ */
-const sentenceList=document.getElementById('sentenceList');
-function renderSentence(){
-  const flagged=WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en) && !isHidden(w.en));
-  if(!flagged.length){ sentenceList.innerHTML='<div class="empty">Cümle listen boş. Karttaki yer imi düğmesiyle (klavyede L) ya da listedeki "Cümle" düğmesiyle kelime ekle.</div>'; return; }
-  sentenceList.innerHTML='<div class="sent-bar"><button type="button" class="sent-copy" id="sentCopyBtn" title="Kelimeleri panoya kopyala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Kelimeleri kopyala</span></button></div>'+
-  flagged.map(w=>{
-    let ex='<p class="sent-ex">'+w.ex+'</p>';
-    if(w.ex2) ex+='<p class="sent-ex">'+w.ex2+'</p>';
-    return '<div class="sent-item" data-i="'+w._i+'">'+
-      '<div class="sent-head">'+
-        '<span class="sent-word">'+w.en+'</span>'+
-        '<span class="sent-type">'+typeLabel(w.type)+'</span>'+
-        '<span class="sent-actions">'+
-          '<button type="button" class="sent-detail" aria-label="Detayı aç" title="Detay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></button>'+
-          '<button type="button" class="sent-remove" aria-label="Listeden çıkar" title="Çıkar">&times;</button>'+
-        '</span>'+
-      '</div>'+ex+
-    '</div>';
-  }).join('');
-}
-sentenceList.addEventListener('click', e=>{
-  const copyBtn=e.target.closest('#sentCopyBtn');
-  if(copyBtn){ copySentenceWords(copyBtn); return; }
-  const item=e.target.closest('.sent-item'); if(!item) return;
-  const i=+item.dataset.i;
-  if(e.target.closest('.sent-detail')){ openWordModal(WORDS[i]); return; }
-  if(e.target.closest('.sent-remove')){ toggleFlag(WORDS[i].en); renderSentence(); updateCount(); }
-});
 /* Ortak kopyalama: satır başına bir İngilizce kelime. Hangi kümenin
    kopyalanacağını çağıran belirler; etiket eski hâline geri döner. */
 function copyWordList(btn, words){
@@ -607,9 +580,6 @@ function copyWordList(btn, words){
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
   } else { fallbackCopy(text,done); }
-}
-function copySentenceWords(btn){
-  copyWordList(btn, WORDS.filter(w=>matchesGroup(w) && isFlagged(w.en) && !isHidden(w.en)));
 }
 function fallbackCopy(text,cb){
   const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();

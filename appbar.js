@@ -42,9 +42,9 @@
           '</button>' +
           '<div class="more-pop" id="statsPop" role="menu" hidden>' +
             '<a class="more-item" role="menuitem" href="progress.html">' + ICON.progress + '<span>General</span></a>' +
-            '<a class="more-item" role="menuitem" href="vocabulary.html?filter=flagged">' + ICON.flag + '<span>Flagged</span></a>' +
+            '<a class="more-item" role="menuitem" href="sentences.html">' + ICON.flag + '<span>Sentences</span></a>' +
             '<a class="more-item" role="menuitem" href="vocabulary.html?filter=known">' + ICON.check + '<span>Known</span></a>' +
-            '<a class="more-item" role="menuitem" href="vocabulary.html?filter=hidden">' + ICON.award + '<span>Learned</span></a>' +
+            '<a class="more-item" role="menuitem" href="review.html">' + ICON.award + '<span>Review</span></a>' +
           '</div>' +
         '</div>' +
         '<button class="tool-btn" type="button" onclick="openShare()" aria-label="Share this page">' + ICON.share + '</button>' +
@@ -55,7 +55,7 @@
 
   document.body.insertBefore(bar, document.body.firstChild);
 
-  // Stats dropdown (General / Flagged / Known)
+  // Stats dropdown (General / Sentences / Known / Review)
   var sb = document.getElementById('statsBtn'), sp = document.getElementById('statsPop');
   if (sb && sp) {
     function closeStats() { sp.hidden = true; sb.setAttribute('aria-expanded', 'false'); }
