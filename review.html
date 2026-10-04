@@ -280,12 +280,7 @@ const FLAG_STORE = NSStore.map('ns-vocab-flag', FLAGS);
 
 /* Learned işaretli olup akış kaydı olmayanlar (akıştan önce işaretlenmiş,
    Vocabulary henüz açılmamış): içeri al. lab-core.js ile aynı tek seferlik adım. */
-try {
-  if (!localStorage.getItem('ns-journey-adopted')) {
-    J.adopt(Object.keys(HIDDEN), Object.keys(FLAGS).filter(en => !HIDDEN[en]));
-    localStorage.setItem('ns-journey-adopted', '1');
-  }
-} catch (e) {}
+J.adoptOnce(HIDDEN, FLAGS);
 
 const TYPE_EN = {'kelime':'Word','sıfat':'Adjective','kalıp':'Phrase','deyim':'Idiom','phrasal fiil':'Phrasal verb','cümle':'Sentence'};
 const PRI = ['low', 'med', 'high'];

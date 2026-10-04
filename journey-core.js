@@ -194,14 +194,15 @@
   }
 
   /* ---- geçiş: akıştan önceki işaretler ----
-     Learned olanlar review'a Medium girer, ilk kartları 7 güne yayılır.
-     Cümle listesindekiler sentence aşamasında başlar. Bir kez çalışır:
-     zaten kaydı olan kelimeye dokunmaz. */
+     Learned olanlar review'a Medium girer ve ilk kartları BUGÜN gelir:
+     kullanıcı hepsini bir kez kendisi geçsin, takvim oradan başlasın.
+     Cümle listesindekiler sentence aşamasında başlar. Zaten kaydı olan
+     kelimeye dokunmaz. */
   function adopt(learned, flagged) {
     var n = 0;
-    learned.forEach(function (en, i) {
+    learned.forEach(function (en) {
       if (DATA[en]) return;
-      learn(en, { pri: 'med', startIn: (i % 7) + 1 });
+      learn(en, { pri: 'med', startIn: 0 });
       n++;
     });
     flagged.forEach(function (en) {
@@ -210,6 +211,31 @@
       n++;
     });
     return n;
+  }
+
+  /* İlk sürüm (v1) geçişte kartları 7 güne yaymıştı. Hiç puanlanmamış
+     (basamak 0, bilememe yok) kartları bugüne çeker. */
+  function pullUntouched() {
+    var t = today();
+    reviewWords().forEach(function (en) {
+      var j = DATA[en];
+      if (j.card.step || j.card.miss || j.card.due <= t) return;
+      var c = copy(j);
+      c.card.due = t;
+      put(en, c);
+    });
+  }
+
+  /* Geçişi tek seferlik çalıştırır; hem lab-core.js hem review.html çağırır. */
+  var ADOPT_KEY = 'ns-journey-adopted';
+  function adoptOnce(hidden, flags) {
+    try {
+      var v = localStorage.getItem(ADOPT_KEY);
+      if (v === '2') return;
+      if (!v) adopt(Object.keys(hidden), Object.keys(flags).filter(function (en) { return !hidden[en]; }));
+      else pullUntouched();
+      localStorage.setItem(ADOPT_KEY, '2');
+    } catch (e) {}
   }
 
   window.NSJourney = {
@@ -221,6 +247,6 @@
     recordPractice: recordPractice, learn: learn, unlearn: unlearn,
     rateCard: rateCard, sentenceDone: sentenceDone, setPriority: setPriority,
     reviewWords: reviewWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
-    upcoming: upcoming, adopt: adopt
+    upcoming: upcoming, adopt: adopt, adoptOnce: adoptOnce
   };
 })();

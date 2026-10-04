@@ -160,13 +160,7 @@ function toggleHidden(en){
 }
 
 /* akıştan önce işaretlenmiş kelimeler bir kez içeri alınır (Learned -> review, cümle listesi -> sentence) */
-const JOURNEY_ADOPT_KEY='ns-journey-adopted';
-try{
-  if(typeof NSJourney!=='undefined' && !localStorage.getItem(JOURNEY_ADOPT_KEY)){
-    NSJourney.adopt(Object.keys(HIDDEN), Object.keys(FLAGS).filter(en=>!HIDDEN[en]));
-    localStorage.setItem(JOURNEY_ADOPT_KEY, '1');
-  }
-}catch(e){}
+if(typeof NSJourney!=='undefined') NSJourney.adoptOnce(HIDDEN, FLAGS);
 
 /* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.

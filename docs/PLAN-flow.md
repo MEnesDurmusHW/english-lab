@@ -87,8 +87,9 @@ Eski `ns-review` / `ns-review-stats` artık okunmaz; kullanıcı onayıyla temiz
 
 ## Geçiş (mevcut veri)
 
-- Şu an "Learned" olan kelimeler Review'a Medium öncelikle girer. İlk kart
-  tarihleri önümüzdeki 7 güne yayılır, ilk gün yığılmasın diye.
+- Şu an "Learned" olan kelimeler Review'a Medium öncelikle girer ve ilk kartları
+  **bugün** gelir: kullanıcı hepsini bir kez kendisi geçer, takvim oradan başlar.
+  (İlk sürüm 7 güne yayıyordu; o cihazlarda hiç puanlanmamış kartlar bugüne çekilir.)
 - Şu an "Cümlede çalışacaklarım"da olan kelimeler **sentence** aşamasında başlar.
 
 ## Adımlar
