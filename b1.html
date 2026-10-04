@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>B1 Recall — NS's English Lab</title>
-<meta name="description" content="B1 seviyesi İngilizce kelimeler için Türkçeden İngilizceye flash kart tekrar alanı: bildim/bilemedim, doğru olma skoru, öğrendim işareti ve paket/tür/durum filtresi.">
+<meta name="description" content="B1 seviyesi İngilizce kelimeler için Türkçeden İngilizceye flash kart tekrar alanı: bildim/bilemedim, doğru olma skoru, bilinen kelimeyi gizleme ve paket/tür/durum filtresi.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
@@ -138,7 +138,7 @@
   </div>
 
   <!-- Liste görünümü: o an filtreye uyan kelimelerin tamamı.
-       Ayrı bir "listeler" ekranı yok; Flagged, Learned ve
+       Ayrı bir "listeler" ekranı yok; Flagged, Hidden ve
        durum listeleri zaten filtrenin birer sonucu, hepsi burada görünür. -->
   <section class="b1-list" id="listView" hidden aria-label="Kelime listesi">
     <div class="b1-list-bar">
@@ -159,8 +159,8 @@
     <button class="b1-icon-btn js-flag" type="button" aria-label="İşaretle" aria-pressed="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
     </button>
-    <button class="b1-icon-btn js-learn" type="button" aria-label="Öğrendim olarak işaretle" aria-pressed="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <button class="b1-icon-btn js-learn" type="button" aria-label="Gizle: bildiğim kelime, rotasyondan çıkar" title="Gizle (G)" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
     </button>
     <button class="b1-icon-btn" id="moreBtn" type="button" aria-label="Daha fazla" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
@@ -193,9 +193,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
       İşaretle
     </button>
-    <button class="b1-util-btn js-learn" type="button" aria-pressed="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      Öğrendim
+    <button class="b1-util-btn js-learn" type="button" aria-pressed="false" title="Bildiğim kelime, rotasyondan çıkar (G)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      Gizle
     </button>
     <button class="b1-util-btn js-shuffle" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
@@ -212,7 +212,7 @@
   </div>
 
   <p class="b1-kbd">
-    <kbd>Boşluk</kbd> çevir · <kbd>←</kbd> <kbd>→</kbd> gez · <kbd>N</kbd> bilemedim · <kbd>M</kbd> bildim · <kbd>L</kbd> işaretle · <kbd>G</kbd> öğrendim · <kbd>S</kbd> karıştır
+    <kbd>Boşluk</kbd> çevir · <kbd>←</kbd> <kbd>→</kbd> gez · <kbd>N</kbd> bilemedim · <kbd>M</kbd> bildim · <kbd>L</kbd> işaretle · <kbd>G</kbd> gizle · <kbd>S</kbd> karıştır
   </p>
 </div>
 
@@ -381,7 +381,7 @@ function renderProgress(){
   /* sıfır durumu 5 satırlık hâlin alt kümesi — iskelet değişmez, zıplama olmaz */
   const railRow = k => '<div class="b1-rail-row"><i class="b1-dot-' + k + '"></i><span>' +
     B1_STATUS_LABEL[k] + '</span><b>' + s[k] + '</b></div>';
-  const learnedRow = '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Öğrendim</span><b>' + s.learned + '</b></div>';
+  const learnedRow = '<div class="b1-rail-row"><i class="b1-dot-learned"></i><span>Gizli</span><b>' + s.learned + '</b></div>';
   const rows = s.tries === 0
     ? railRow('fresh') + learnedRow
     : B1_STATUS_ORDER.map(railRow).join('') + learnedRow;
@@ -409,23 +409,23 @@ function scopeLabel(n){
   if (b1SelPos.length) parts.push(b1SelPos.map(p => B1_POS_LABEL[p] || p).join(', '));
   if (b1SelStatus.length) parts.push(b1SelStatus.map(s => B1_STATUS_LABEL[s]).join(', '));
   if (b1SelSaved.indexOf('flagged') >= 0) parts.push('Flagged');
-  if (b1SelSaved.indexOf('learned') >= 0) parts.push('Learned');
+  if (b1SelSaved.indexOf('learned') >= 0) parts.push('Hidden');
   parts.push(n + (n === 1 ? ' word' : ' words'));
   return parts.join(' · ');
 }
 
 /* ---- liste görünümü ----
    Gösterilen küme kartlarınkiyle birebir aynı: b1Active(). Ayrı bir "listeler"
-   ekranı yok — Flagged, Learned ve durum listeleri zaten
+   ekranı yok — Flagged, Hidden ve durum listeleri zaten
    filtrenin birer sonucu, filtrede ne seçiliyse listede o çıkıyor. */
 const FLAG_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
-const LEARN_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+const LEARN_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
 function rowHTML(w){
   const st = b1StatusOf(w.en);
   const marks =
     (b1IsFlagged(w.en) ? '<span class="b1-lrow-mark is-flag" title="İşaretli">' + FLAG_MARK + '</span>' : '') +
-    (b1IsHidden(w.en)  ? '<span class="b1-lrow-mark is-learn" title="Öğrendim">' + LEARN_MARK + '</span>' : '');
+    (b1IsHidden(w.en)  ? '<span class="b1-lrow-mark is-learn" title="Gizli">' + LEARN_MARK + '</span>' : '');
   const bdg = '<span class="b1-badge st-' + st + '">' + B1_STATUS_LABEL[st] + '</span>';
   return '<button type="button" class="b1-lrow" data-i="' + w._i + '">' +
       '<span class="b1-lrow-main">' +

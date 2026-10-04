@@ -182,7 +182,7 @@ function b1MountFilter(host, onChange) {
       B1_STATUS_ORDER.map(s => b1FltChip('s', s, B1_STATUS_LABEL[s])).join('') +
       '</div></div>';
     h += '<div class="flt-sec"><div class="flt-lbl">Saved</div><div class="flt-chips">' +
-      b1FltChip('v', 'flagged', 'Flagged') + b1FltChip('v', 'learned', 'Learned') +
+      b1FltChip('v', 'flagged', 'Flagged') + b1FltChip('v', 'learned', 'Hidden') +
       '</div></div>';
     h += '<div class="flt-foot"><button type="button" class="flt-clear" id="b1FltClear">Clear filters</button>' +
       '<span class="flt-count" id="b1FltCount"></span></div>';
