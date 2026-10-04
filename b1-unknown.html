@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bilinemeyenler — B1 Recall</title>
-<meta name="description" content="B1 Recall'da en az bir kez denenmiş ama henüz bilinmeyen kelimelerin listesi; tek tıkla panoya kopyala.">
+<title>B1 Listeleri — B1 Recall</title>
+<meta name="description" content="B1 Recall listeleri: bilinemeyenler, bilinenler ve gizlenen kelimeler; gizle, geri getir, kopyala.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
@@ -17,8 +17,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NS's English Lab">
 <meta property="og:locale" content="tr_TR">
-<meta property="og:title" content="Bilinemeyenler — B1 Recall">
-<meta property="og:description" content="B1 Recall'da henüz bilinmeyen kelimelerin listesi ve kopyalama.">
+<meta property="og:title" content="B1 Listeleri — B1 Recall">
+<meta property="og:description" content="Bilinemeyenler, bilinenler ve gizlenen B1 kelimeleri.">
 <meta property="og:url" content="https://menesdurmushw.github.io/english-lab/b1-unknown.html">
 <meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -48,7 +48,7 @@
     <a class="brand" href="b1.html" aria-label="B1 Recall'a dön">
       <span class="brand-mark">NS</span>
       <span class="brand-text">
-        <span class="brand-name">Bilinemeyenler</span>
+        <span class="brand-name">B1 Listeleri</span>
         <span class="brand-sub">B1 Recall</span>
       </span>
     </a>
@@ -69,18 +69,28 @@
 
   <header>
     <p class="eyebrow">B1 Recall</p>
-    <h1>Bilinemeyen Kelimeler</h1>
+    <h1>B1 Listeleri</h1>
   </header>
-  <p class="list-hint">En az bir kez denenmiş ama henüz “Known” seviyesine ulaşmamış B1 kelimeleri. Hiç denenmemişler (“Untried”) buraya girmez. Gizlediğin kelimeler burada hiç görünmez.</p>
+
+  <div class="subbar">
+    <div class="seg" role="tablist" aria-label="Liste">
+      <button id="tab-unknown" role="tab" type="button" aria-selected="true">Bilinemeyenler <i class="tab-n" id="nUnknown"></i></button>
+      <button id="tab-known" role="tab" type="button" aria-selected="false">Bilinenler <i class="tab-n" id="nKnown"></i></button>
+      <button id="tab-hidden" role="tab" type="button" aria-selected="false">Gizliler <i class="tab-n" id="nHidden"></i></button>
+    </div>
+  </div>
+
+  <p class="list-hint" id="hint"></p>
 
   <div class="ctlbar">
-    <div class="seg" role="tablist" aria-label="Kapsam">
-      <button id="modeBoth" role="tab" type="button" aria-selected="true">Weak + Shaky</button>
-      <button id="modeWeak" role="tab" type="button" aria-selected="false">Sadece Weak</button>
+    <div class="seg" role="group" aria-label="Kapsam" id="modeSeg">
+      <button id="modeBoth" type="button" aria-selected="true">Weak + Shaky</button>
+      <button id="modeWeak" type="button" aria-selected="false">Sadece Weak</button>
     </div>
+    <input class="b1l-search" id="search" type="search" placeholder="Ara…" autocomplete="off" aria-label="Listede ara">
     <div class="ctlbar-right">
       <span class="count" id="count"></span>
-      <button type="button" class="sent-copy" id="copyBtn" title="Kelimeleri panoya kopyala">
+      <button type="button" class="sent-copy" id="copyBtn" title="Listedeki kelimeleri panoya kopyala">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         <span>Tümünü kopyala</span>
       </button>
@@ -91,80 +101,140 @@
 
 </div>
 
+<style>
+  .tab-n{font-style:normal;font-family:var(--mono);font-size:.7rem;font-weight:700;opacity:.6;margin-left:4px}
+  .b1l-search{flex:1 1 160px;min-width:0;max-width:260px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-family:var(--sans);font-size:.88rem;color:var(--text)}
+  .b1l-search:focus{outline:none;border-color:var(--accent)}
+  #modeSeg[hidden]{display:none}
+</style>
+
 <script src="b1-data.js"></script>
 <script src="b1-core.js"></script>
 <script>
 /* ============================================================
-   Bilinemeyenler — B1 Recall'da en az bir kez denenmiş ama
-   "Known" seviyesine ulaşmamış kelimeleri listeler + kopyalar.
-   "Untried" kelimeler kasıtlı olarak hariç: bunlar "bilinemedi"
-   değil, henüz sınanmadı.
+   B1 Listeleri — kartlardaki filtreye dokunmadan üç liste:
+     Bilinemeyenler  en az bir kez denenmiş, "Known" olmamış (gizliler hariç)
+                     — yeni Vocabulary grubu için aday havuzu, kopyalanır
+     Bilinenler      "Known" seviyesindekiler (gizliler hariç) — Gizle düğmesi
+     Gizliler        rotasyondan çıkarılanlar — Geri getir düğmesi
+   "Untried" kelimeler hiçbir listede yok: henüz sınanmadılar.
+   Sekme ?tab=unknown|known|hidden ile açılabilir.
    ============================================================ */
 'use strict';
 
 const $ = id => document.getElementById(id);
 const listEl = $('list'), countEl = $('count'), copyBtn = $('copyBtn');
-const modeBothBtn = $('modeBoth'), modeWeakBtn = $('modeWeak');
-let mode = 'broad';   // 'broad' = Weak + Shaky · 'weak' = yalnızca Weak
+const TABS = ['unknown', 'known', 'hidden'];
+let tab = 'unknown', mode = 'broad', query = '';   // mode: 'broad' = Weak + Shaky · 'weak' = yalnızca Weak
+
+const HINT = {
+  unknown: 'En az bir kez denenmiş ama henüz “Known” seviyesine ulaşmamış kelimeler. Yeni bir Vocabulary grubu için aday havuzu. Hiç denenmemişler ve gizlediklerin burada yok.',
+  known: 'B1 kartlarında “Known” seviyesine gelmiş kelimeler. Zaten oturmuş olanları buradan tek tıkla gizleyebilirsin.',
+  hidden: 'Rotasyondan çıkardığın kelimeler. Kartlarda ve diğer listelerde görünmezler. Geri getirdiğin kelime kartlara döner.'
+};
+const EMPTY = {
+  unknown: () => mode === 'weak' ? '“Weak” durumunda kelime yok.' : 'Denenmiş ama “Known” seviyesine gelmemiş kelime kalmadı.',
+  known: () => 'Henüz “Known” seviyesine gelen kelime yok.',
+  hidden: () => 'Gizlenen kelime yok. Kartlarda Gizle düğmesiyle (ya da G tuşuyla) ekleyebilirsin.'
+};
+const EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+const RESTORE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>';
 
 function unknownWords(){
-  return B1.filter(function(w){
+  return B1.filter(w => {
     if (b1IsHidden(w.en)) return false;
     const st = b1StatusOf(w.en);
-    /* 'fresh' burada hiç istenmiyor: denenmemiş kelime "bilinemedi" değil. */
-    return mode==='weak' ? st==='weak' : (st==='weak' || st==='shaky');
+    return mode === 'weak' ? st === 'weak' : (st === 'weak' || st === 'shaky');
   });
 }
+function knownWords(){ return B1.filter(w => !b1IsHidden(w.en) && b1StatusOf(w.en) === 'known'); }
+function hiddenWords(){ return B1.filter(w => b1IsHidden(w.en)); }
+const SOURCE = { unknown: unknownWords, known: knownWords, hidden: hiddenWords };
+
+function matchesQuery(w){
+  if (!query) return true;
+  const q = query.toLowerCase();
+  return w.en.toLowerCase().indexOf(q) >= 0 || String(w.tr || '').toLowerCase().indexOf(q) >= 0;
+}
+function current(){ return SOURCE[tab]().filter(matchesQuery); }
+
 function wordRow(w){
   const st = b1StatusOf(w.en);
-  return '<div class="entry" data-i="'+w._i+'"><div class="entry-row">'+
-    '<div class="entry-head" style="cursor:default">'+
-      '<span class="eh-main"><span class="eh-term">'+w.en+'</span><span class="eh-tr">'+w.tr+'</span></span>'+
-      '<span class="eh-meter" data-st="'+st+'" title="'+B1_STATUS_LABEL[st]+' · '+b1AccText(w.en)+'"><i></i><i></i><i></i></span>'+
-      '<span class="eh-type">'+(B1_POS_LABEL[w.pos] || w.pos)+'</span>'+
-    '</div></div></div>';
+  let act = '';
+  if (tab === 'known') act = '<button type="button" class="row-btn" data-a="hide" title="Gizle" aria-label="Gizle">' + EYE_OFF + '</button>';
+  if (tab === 'hidden') act = '<button type="button" class="row-btn" data-a="restore" title="Geri getir" aria-label="Geri getir">' + RESTORE + '</button>';
+  return '<div class="entry" data-en="' + w.en.replace(/"/g, '&quot;') + '"><div class="entry-row">' +
+    '<div class="entry-head" style="cursor:default">' +
+      '<span class="eh-main"><span class="eh-term">' + w.en + '</span><span class="eh-tr">' + w.tr + '</span></span>' +
+      '<span class="eh-meter" data-st="' + st + '" title="' + B1_STATUS_LABEL[st] + ' · ' + b1AccText(w.en) + '"><i></i><i></i><i></i></span>' +
+      '<span class="eh-type">' + (B1_POS_LABEL[w.pos] || w.pos) + '</span>' +
+    '</div>' +
+    (act ? '<span class="entry-actions">' + act + '</span>' : '') +
+  '</div></div>';
 }
+
 function render(){
-  const words = unknownWords();
+  $('nUnknown').textContent = unknownWords().length;
+  $('nKnown').textContent = knownWords().length;
+  $('nHidden').textContent = hiddenWords().length;
+  TABS.forEach(t => $('tab-' + t).setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+  $('hint').textContent = HINT[tab];
+  $('modeSeg').hidden = tab !== 'unknown';
+  const words = current();
   countEl.textContent = words.length + ' kelime';
   copyBtn.disabled = !words.length;
   listEl.innerHTML = words.length
     ? '<div class="list">' + words.map(wordRow).join('') + '</div>'
-    : '<div class="empty">' + (mode==='weak'
-        ? '“Weak” durumunda kelime yok — güzel haber.'
-        : 'Bu kritere uyan kelime yok. Denenmiş ama “Known” seviyesine gelmemiş kelime kalmadı.') + '</div>';
+    : '<div class="empty">' + (query ? 'Aramaya uyan kelime yok.' : EMPTY[tab]()) + '</div>';
 }
-function setMode(m){
-  mode = m;
-  modeBothBtn.setAttribute('aria-selected', m==='broad' ? 'true' : 'false');
-  modeWeakBtn.setAttribute('aria-selected', m==='weak' ? 'true' : 'false');
+
+function setTab(t){
+  tab = TABS.indexOf(t) >= 0 ? t : 'unknown';
+  try { history.replaceState(null, '', '?tab=' + tab); } catch (e) {}
   render();
 }
-modeBothBtn.addEventListener('click', function(){ setMode('broad'); });
-modeWeakBtn.addEventListener('click', function(){ setMode('weak'); });
+TABS.forEach(t => $('tab-' + t).addEventListener('click', () => setTab(t)));
 
-function fallbackCopy(text, cb){
-  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
-  document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); cb(); }catch(e){}
-  document.body.removeChild(ta);
+function setMode(m){
+  mode = m;
+  $('modeBoth').setAttribute('aria-selected', m === 'broad' ? 'true' : 'false');
+  $('modeWeak').setAttribute('aria-selected', m === 'weak' ? 'true' : 'false');
+  render();
 }
-copyBtn.addEventListener('click', function(){
-  const text = unknownWords().map(function(w){ return w.en; }).join('\n');
-  if (!text) return;
-  const label = copyBtn.querySelector('span');
-  const done = function(){
-    copyBtn.classList.add('done'); label.textContent = 'Kopyalandı';
-    setTimeout(function(){ copyBtn.classList.remove('done'); label.textContent = 'Tümünü kopyala'; }, 1600);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
-  } else { fallbackCopy(text, done); }
+$('modeBoth').addEventListener('click', () => setMode('broad'));
+$('modeWeak').addEventListener('click', () => setMode('weak'));
+$('search').addEventListener('input', e => { query = e.target.value.trim(); render(); });
+
+listEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const en = b.closest('.entry').dataset.en;
+  if ((b.dataset.a === 'hide' && !b1IsHidden(en)) || (b.dataset.a === 'restore' && b1IsHidden(en))) b1ToggleHidden(en);
+  render();
 });
 
-render();
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+copyBtn.addEventListener('click', () => {
+  const text = current().map(w => w.en).join('\n');
+  if (!text) return;
+  const label = copyBtn.querySelector('span');
+  const done = () => {
+    copyBtn.classList.add('done'); label.textContent = 'Kopyalandı';
+    setTimeout(() => { copyBtn.classList.remove('done'); label.textContent = 'Tümünü kopyala'; }, 1600);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  else fallbackCopy(text, done);
+});
 
-/* Başka bir sekme ya da bulut ilerlemeyi değiştirdi — liste salt okunur. */
+let startTab = 'unknown';
+try { const q = new URLSearchParams(location.search).get('tab'); if (q) startTab = q; } catch (e) {}
+setTab(startTab);
+
+/* Başka bir sekme ya da bulut değiştirdi: yeniden çiz. */
 window.addEventListener('ns-state-changed', render);
 </script>
 </body>
