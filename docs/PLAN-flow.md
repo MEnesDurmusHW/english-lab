@@ -47,8 +47,13 @@ new ──(farklı 2 günde doğru)──► sentence ──(Learned)──► r
    Elle listeye eklenen kelime (Vocabulary'deki kalem düğmesi / L) cümle
    aşamasına geçer; listeden çıkarılan kelime *new* olur, sayacı sıfırlanır.
 
-"Learned" = `ns-flow-learned` işareti (Vocabulary'deki ✓ ve
-Collocations'taki *Consolidate*). Hangisinden basılırsa basılsın aynı geçiş olur.
+"Learned" = `ns-flow-learned` işareti. Sentences sayfasından (tek tek ya da
+toplu) ve Vocabulary'deki ✓ ile verilir; hangisinden basılırsa basılsın aynı
+geçiş olur. Collocations'taki eski *Consolidate* düğmesi kaldırıldı: Learned
+kararı Sentences adımının işi.
+
+Vocabulary'de her kelimenin yanında akış rozeti durur (*Day 1/2*, *Sentences*,
+*Review*). Yalnızca bilgi verir; pratik skoru ("Biliyorum +2") akıştan ayrıdır.
 
 ## Review takvimleri
 
