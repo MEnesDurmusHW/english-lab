@@ -162,7 +162,7 @@ let currentPTab='overview';
   if(!bar || !mount) return;
   if(typeof WORD_GROUPS==='undefined' || WORD_GROUPS.length < 2){ bar.hidden=true; return; }
   bar.hidden=false;
-  mountFilter(mount, function(){ (P_RENDER[currentPTab]||renderStats)(); }, ['groups']);
+  mountFilter(mount, function(){ (P_RENDER[currentPTab]||renderStats)(); }, ['groups'], function(){ return WORDS.filter(matchesGroup).length; });
 })();
 
 function selectTab(t){

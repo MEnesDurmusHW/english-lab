@@ -176,7 +176,6 @@ try{
 }catch(e){}
 if(typeof WORD_GROUPS!=='undefined') selGroups=selGroups.filter(id=>WORD_GROUPS.some(g=>g.id===id));   // geçersiz grupları at
 function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow})); }catch(e){} }
-function filterActiveCount(){ return selGroups.length + selStatus.length + selSaved.length + (selBelow===null?0:1); }
 function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow]); }   // torba/önbellek kimliği
 function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; saveFilter(); }
 
@@ -215,9 +214,26 @@ function _fltTriRow(val,label){
       '<button type="button" class="flt-tri-btn exc'+(exc?' on':'')+'" data-v="'+val+'" data-m="exc" aria-pressed="'+(exc?'true':'false')+'" title="Hariç tut" aria-label="Hariç tut">'+FLT_EXC_ICON+'</button>'+
     '</div></div>';
 }
-/* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved'] */
-function mountFilter(host, onChange, sections){
+/* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved']
+   count: o sayfanın listesinde kaç kelime kaldığını döner (varsayılan: activeWords).
+   Filtre durumu sayfalar arasında ortak; rozet ve Temizle yalnızca bu panelde
+   GÖRÜNEN bölümlere bakar, yoksa başka sayfada seçilmiş, burada görünmeyen
+   bir filtre sayılıp kafa karıştırır. */
+function mountFilter(host, onChange, sections, count){
   sections = sections || ['groups','status','saved'];
+  count = count || function(){ return activeWords().length; };
+  const has = k => sections.indexOf(k)>=0;
+  function shownCount(){
+    return (has('groups')?selGroups.length:0) +
+      (has('status')?selStatus.length+(selBelow===null?0:1):0) +
+      (has('saved')?selSaved.length:0);
+  }
+  function clearShown(){
+    if(has('groups')) selGroups=[];
+    if(has('status')){ selStatus=[]; selBelow=null; }
+    if(has('saved')) selSaved=[];
+    saveFilter();
+  }
   host.innerHTML =
     '<div class="filter-wrap">'+
       '<button type="button" class="filter-btn" id="fltBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrele">'+
@@ -227,12 +243,12 @@ function mountFilter(host, onChange, sections){
     '</div>';
   const btn=host.querySelector('#fltBtn'), panel=host.querySelector('#fltPanel'), badge=host.querySelector('#fltBadge');
   function updateBadge(){
-    const n=filterActiveCount();
+    const n=shownCount();
     if(n){ badge.textContent=n; badge.hidden=false; btn.classList.add('on'); }
     else { badge.hidden=true; btn.classList.remove('on'); }
   }
   function renderPanel(){
-    let h='<div class="flt-head"><span>Filtrele</span><button type="button" class="flt-clear" id="fltClear"'+(filterActiveCount()?'':' disabled')+'>Temizle</button></div>';
+    let h='<div class="flt-head"><span>Filtrele</span><button type="button" class="flt-clear" id="fltClear"'+(shownCount()?'':' disabled')+'>Temizle</button></div>';
     if(sections.indexOf('groups')>=0 && typeof WORD_GROUPS!=='undefined' && WORD_GROUPS.length>1){
       h+='<div class="flt-sec"><div class="flt-lbl">Gruplar</div><div class="flt-chips">'+
         WORD_GROUPS.map(g=>_fltChip('g',g.id,(typeof g.id==='number'?'Grup '+g.id:g.id)+' <i>'+g.count+'</i>')).join('')+'</div>'+
@@ -258,12 +274,12 @@ function mountFilter(host, onChange, sections){
     h+='<div class="flt-foot" id="fltFoot"></div>';
     panel.innerHTML=h;
     const foot=panel.querySelector('#fltFoot');
-    if(foot) foot.textContent = activeWords().length+' kelime eşleşiyor';
+    if(foot) foot.textContent = count()+' kelime eşleşiyor';
   }
   function apply(){ saveFilter(); updateBadge(); renderPanel(); if(onChange) onChange(); }
   panel.addEventListener('click', function(e){
     e.stopPropagation();   // panel içi tıklama dış "kapat" tetiklemesin (re-render öğeyi koparıyor)
-    if(e.target.closest('#fltClear')){ clearFilter(); apply(); return; }
+    if(e.target.closest('#fltClear')){ clearShown(); apply(); return; }
     if(e.target.closest('#fltResetGroup')){
       const n = WORDS.filter(w=>selGroups.indexOf(w.grp)>=0).length;
       if(confirm(n+' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.')){
