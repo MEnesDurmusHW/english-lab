@@ -8,7 +8,7 @@ oturtuyor: kelime B1'den girer, Review'dan çıkmaz.
 ## Kararlar
 
 - **İki alan.**
-  - *Flow:* B1 Recall → Vocabulary → Articles → Collocations → Review
+  - *Flow:* B1 Recall → Vocabulary → Articles → Collocations → Sentences → Review
   - *Library:* Synonym Constellation, Grammar Patterns, Collocations in Use
 - **B1 → Vocabulary elle.** Önemli kelimeleri kullanıcı seçer, `add-word-set`
   skill'i grubu kurar. Sitede otomatik bir taşıma yok.
@@ -32,7 +32,7 @@ new ──(farklı 2 günde doğru)──► sentence ──(Learned)──► r
 
 1. **new** — Vocabulary'de pratik yapılıyor. Doğru cevap verilen her *yeni gün*
    sayacı 1 artırır; yanlış cevap sayacı sıfırlar. Sayaç 2 olunca kelime
-   **sentence** aşamasına geçer ve otomatik olarak "Cümlede çalışacaklarım"a eklenir.
+   **sentence** aşamasına geçer ve otomatik olarak Sentences sayfasına (`sentences.html`) düşer.
 2. **sentence** — kullanıcı Claude chat'te cümle kurar, sonra **Learned** der.
    Kelime Review'a **Medium** öncelikle girer.
 3. **Kısa yol** — kelime hâlâ *new* iken **Learned** denirse cümle aşaması

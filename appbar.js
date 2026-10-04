@@ -1,7 +1,7 @@
 /* ============================================================
    English Lab — shared top app bar
    Set window.LAB_SECTION before this script loads:
-     'vocabulary' | 'collocations' | 'articles' | 'progress'
+     'vocabulary' | 'collocations' | 'articles' | 'sentences' | 'progress'
    Injects: brand (page name) · tools (Stats/share/theme/sync).
    Also tags <html data-section> so lab.css can recolor per section.
    Sub-tabs live in each page (a .subbar row), wired by that page.
@@ -14,7 +14,7 @@
   var S = window.LAB_SECTION || 'vocabulary';
   document.documentElement.setAttribute('data-section', S);
 
-  var NAME = { vocabulary: 'Vocabulary', collocations: 'Collocations', articles: 'Articles', progress: 'Progress' };
+  var NAME = { vocabulary: 'Vocabulary', collocations: 'Collocations', articles: 'Articles', sentences: 'Sentences', progress: 'Progress' };
 
   var ICON = {
     progress: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',

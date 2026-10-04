@@ -521,7 +521,7 @@ function renderDone(){
   let note = pct === 100 ? 'All correct. Each word moved one step further out.'
     : 'The ones you missed come back tomorrow.';
   if (ses.back.length) note += ' <b>' + ses.back.map(esc).join(', ') + '</b> ' +
-    (ses.back.length === 1 ? 'was' : 'were') + ' missed twice in a row and went back to sentence practice in Vocabulary.';
+    (ses.back.length === 1 ? 'was' : 'were') + ' missed twice in a row and went back to the <a href="sentences.html" style="color:var(--accent)">Sentences</a> page.';
   svBody.innerHTML = '<div class="sv-result">' +
     '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
     '<div class="sv-pct">' + pct + '% CORRECT</div>' +

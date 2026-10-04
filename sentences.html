@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sentences — NS's English Lab</title>
+<meta name="description" content="Step 5 of the flow: words you recognise on two different days, ready to be used in your own sentences.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="Sentences">
+<meta property="og:description" content="Use each word in your own sentences, then send it to Review.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/sentences.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="journey-core.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  .st-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .st-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:62ch}
+  .st-head a{color:var(--accent);font-weight:600;text-decoration:none}
+  .st-head a:hover{text-decoration:underline}
+
+  .st-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:22px 0 14px}
+  .st-count{font-family:var(--mono,monospace);font-size:.78rem;font-weight:600;color:var(--text-muted);margin-right:auto}
+  .st-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.86rem;padding:9px 15px;border-radius:999px;transition:.15s}
+  .st-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .st-btn:disabled{opacity:.4;cursor:not-allowed}
+  .st-btn svg{width:14px;height:14px}
+  .st-cta{background:var(--accent);border-color:var(--accent);color:#fff}
+  .st-cta:hover:not(:disabled){color:#fff;filter:brightness(1.06)}
+  .st-msg{font-size:.86rem;color:var(--ok,#5c8a4a);margin:0 0 12px}
+
+  .st-list{display:flex;flex-direction:column;gap:10px}
+  .st-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
+  .st-item.picked{border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+  .st-pick{grid-row:1 / span 3;margin:4px 0 0;accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+  .st-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+  .st-word{font-weight:700;font-size:1.06rem;color:var(--text);letter-spacing:-.01em}
+  .st-tr{font-size:.88rem;color:var(--text-dim)}
+  .st-type{font-family:var(--mono,monospace);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  .st-acts{display:flex;gap:4px;grid-row:1}
+  .st-icon{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:grid;place-items:center;padding:0;transition:.14s}
+  .st-icon:hover{border-color:var(--border);color:var(--accent);background:var(--bg)}
+  .st-icon.learn:hover{color:var(--ok,#5c8a4a)}
+  .st-icon svg{width:16px;height:16px}
+  .st-ex{grid-column:2 / -1;margin:6px 0 0;font-size:.9rem;line-height:1.55;color:var(--text-dim)}
+  .st-ex p{margin:0 0 3px}
+  .st-ex p::before{content:"“";color:var(--text-muted)}
+  .st-ex p::after{content:"”";color:var(--text-muted)}
+  .st-coll{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .st-coll span{font-size:.78rem;color:var(--text-dim);background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .st-coll .cw-key{color:var(--accent);font-weight:700}
+  @media (max-width:560px){
+    .st-item{grid-template-columns:auto 1fr;padding:12px 13px}
+    .st-acts{grid-column:1 / -1;grid-row:auto;justify-content:flex-end;order:9}
+  }
+  .st-empty{text-align:center;padding:48px 20px;color:var(--text-muted);font-size:.94rem;line-height:1.65;border:1px dashed var(--border);border-radius:14px}
+  .st-empty a{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='sentences';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap">
+  <header class="st-head">
+    <h1>Sentences</h1>
+    <p>Words you recognised on two different days land here. Write your own sentences with each one and have them checked. When a word feels like yours, mark it <b>Learned</b> and it moves to <a href="review.html">Review</a>. <a href="flow.html">How the flow works</a></p>
+  </header>
+
+  <div class="st-bar">
+    <span class="st-count" id="count"></span>
+    <span id="filterMount"></span>
+    <button class="st-btn" type="button" id="allBtn">Select all</button>
+    <button class="st-btn" type="button" id="copyBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copyLbl">Copy for chat</span>
+    </button>
+    <button class="st-btn st-cta" type="button" id="learnBtn">Mark learned</button>
+  </div>
+  <p class="st-msg" id="msg" hidden></p>
+
+  <div class="st-list" id="list"></div>
+</div>
+
+<script src="data.js"></script>
+<script src="lab-core.js"></script>
+<script>
+/* ============================================================
+   Sentences — akışın 5. adımı
+   Liste: cümle aşamasındaki kelimeler (ns-flow-sentence işaretli,
+   henüz Learned değil). Learned -> toggleHidden -> NSJourney.learn,
+   yani Review'a giriş (lab-core.js).
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const ICON_LEARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+const ICON_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+let picked = {};
+
+function pool(){ return WORDS.filter(w => matchesGroup(w) && isFlagged(w.en) && !isHidden(w.en)); }
+function pickedWords(){ return pool().filter(w => picked[w.en]); }
+
+function itemHTML(w){
+  const on = !!picked[w.en];
+  let ex = '<p>' + w.ex + '</p>';
+  if (w.ex2) ex += '<p>' + w.ex2 + '</p>';
+  const coll = collList(w).slice(0, 6).map(p => '<span>' + collPhraseHTML(p) + '</span>').join('');
+  return '<div class="st-item' + (on ? ' picked' : '') + '" data-i="' + w._i + '">' +
+    '<input class="st-pick" type="checkbox" aria-label="Select ' + escapeHTML(w.en) + '"' + (on ? ' checked' : '') + '>' +
+    '<div class="st-top"><span class="st-word">' + w.en + '</span><span class="st-tr">' + w.tr + '</span>' +
+      '<span class="st-type">' + typeLabel(w.type) + '</span>' +
+      (typeof w.grp === 'number' ? '<span class="st-type" style="color:var(--text-muted)">Group ' + w.grp + '</span>' : '') + '</div>' +
+    '<div class="st-acts">' +
+      '<button type="button" class="st-icon" data-a="open" title="Details" aria-label="Details">' + ICON_OPEN + '</button>' +
+      '<button type="button" class="st-icon learn" data-a="learn" title="Learned: send to Review" aria-label="Mark learned">' + ICON_LEARN + '</button>' +
+      '<button type="button" class="st-icon" data-a="drop" title="Remove from this list" aria-label="Remove from this list">' + ICON_X + '</button>' +
+    '</div>' +
+    '<div class="st-ex">' + ex + '</div>' +
+    (coll ? '<div class="st-coll">' + coll + '</div>' : '') +
+  '</div>';
+}
+
+function render(){
+  const list = pool();
+  Object.keys(picked).forEach(en => { if (!list.some(w => w.en === en)) delete picked[en]; });
+  $('count').textContent = list.length + (list.length === 1 ? ' word' : ' words');
+  const n = pickedWords().length;
+  $('learnBtn').disabled = !n;
+  $('learnBtn').textContent = n ? 'Mark ' + n + ' learned' : 'Mark learned';
+  $('copyBtn').disabled = !list.length;
+  $('allBtn').disabled = !list.length;
+  $('allBtn').textContent = list.length && n === list.length ? 'Clear selection' : 'Select all';
+  $('copyLbl').textContent = n ? 'Copy ' + n + ' for chat' : 'Copy for chat';
+  if (!list.length){
+    $('list').innerHTML = '<div class="st-empty">Nothing here yet. Practise in <a href="vocabulary.html">Vocabulary</a>: a word you know on two different days shows up here by itself.</div>';
+    return;
+  }
+  $('list').innerHTML = list.map(itemHTML).join('');
+}
+
+function flash(text){
+  const m = $('msg');
+  m.textContent = text; m.hidden = false;
+  clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, 3200);
+}
+
+$('list').addEventListener('change', e => {
+  const cb = e.target.closest('.st-pick'); if (!cb) return;
+  const w = WORDS[+cb.closest('.st-item').dataset.i];
+  if (cb.checked) picked[w.en] = true; else delete picked[w.en];
+  render();
+});
+$('list').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const w = WORDS[+b.closest('.st-item').dataset.i];
+  if (b.dataset.a === 'open'){ openWordModal(w); return; }
+  if (b.dataset.a === 'learn'){ toggleHidden(w.en); delete picked[w.en]; flash('"' + w.en + '" moved to Review.'); render(); return; }
+  if (b.dataset.a === 'drop'){ toggleFlag(w.en); delete picked[w.en]; render(); }
+});
+$('allBtn').addEventListener('click', () => {
+  const list = pool();
+  const all = list.length && pickedWords().length === list.length;
+  picked = {};
+  if (!all) list.forEach(w => { picked[w.en] = true; });
+  render();
+});
+$('learnBtn').addEventListener('click', () => {
+  const list = pickedWords(); if (!list.length) return;
+  list.forEach(w => { toggleHidden(w.en); delete picked[w.en]; });
+  flash(list.length + (list.length === 1 ? ' word' : ' words') + ' moved to Review.');
+  render();
+});
+$('copyBtn').addEventListener('click', () => {
+  const list = pickedWords().length ? pickedWords() : pool();
+  if (!list.length) return;
+  const text = 'Sentence practice. For each word, give me a short situation and let me write a sentence; then correct it.\n\n' +
+    list.map(w => '- ' + w.en + ' (' + w.tr + ')').join('\n');
+  const done = () => { $('copyLbl').textContent = 'Copied'; setTimeout(render, 1600); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  else fallback(text, done);
+});
+function fallback(text, cb){
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+mountFilter($('filterMount'), render, ['groups']);
+window.addEventListener('ns-state-changed', render);
+render();
+</script>
+</body>
+</html>
