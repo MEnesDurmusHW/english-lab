@@ -1,6 +1,6 @@
 # Öğrenme akışı — plan
 
-Durum: **uygulanıyor** · Başlangıç: 2026-10-04
+Durum: **tamamlandı** · Başlangıç: 2026-10-04
 
 Sitede 8 sayfa eşit ağırlıkta duruyordu. Bu plan onları tek bir akışa
 oturtuyor: kelime B1'den girer, Review'dan çıkmaz.
@@ -100,4 +100,4 @@ Eski `ns-review` / `ns-review-stats` artık okunmaz; kullanıcı onayıyla temiz
 - [x] 5. `index.html`: Flow / Library bölümleri, altta "How the flow works" düğmesi
 - [x] 6. `flow.html`: akışı anlatan sayfa (İngilizce)
 - [x] 7. `sw.js`: yeni dosyalar, sürüm artışı
-- [ ] 8. Eski Review verisini temizle (kullanıcı onayıyla) ve `review-gap` skill'ini kaldır
+- [x] 8. Eski Review verisini temizle (kullanıcı onayıyla) ve `review-gap` skill'ini kaldır

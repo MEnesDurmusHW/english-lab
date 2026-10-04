@@ -28,9 +28,15 @@
   var _setItem = localStorage.setItem.bind(localStorage);
   var _removeItem = localStorage.removeItem.bind(localStorage);
 
+  /* Eski Review Deck'in depoları (2026-10'da ns-journey'e geçildi). Ne
+     okunur ne senkronlanır; her açılışta yerelden silinir ki geride kalmış
+     bir cihaz onları buluta geri yazmasın. */
+  var RETIRED = { 'ns-review': 1, 'ns-review-stats': 1 };
+  Object.keys(RETIRED).forEach(function (k) { try { _removeItem(k); } catch (e) {} });
+
   /* ns-sync-* ve cihaza özel tercihler buluta gitmez. */
   function syncable(k) {
-    return /^ns-/.test(k) && !/^ns-sync/.test(k) && k !== 'ns-theme' && k !== 'ns-a2hs-hint';
+    return /^ns-/.test(k) && !/^ns-sync/.test(k) && k !== 'ns-theme' && k !== 'ns-a2hs-hint' && !RETIRED[k];
   }
 
   /* Düz map ise nesneyi, değilse null döner — dizi ve skalerler
