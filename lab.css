@@ -506,7 +506,7 @@
 
   /* kart üst şeridi */
   .card-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;margin:4px 0 18px}
-  .card-topbar .topbar-right{flex-wrap:nowrap}
+  .card-topbar .topbar-right{flex-wrap:nowrap;margin-left:auto}
   .card-topbar .seg{flex:0 0 auto}
   .card-topbar .assess-badge{flex:0 0 auto}
 

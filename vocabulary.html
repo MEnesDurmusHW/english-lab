@@ -78,10 +78,6 @@
   <!-- KARTLAR -->
   <div class="cards-view" id="view-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
     <div class="card-topbar">
-      <div class="seg" role="group" aria-label="Yön">
-        <button id="dir-en" aria-selected="false">EN → TR</button>
-        <button id="dir-tr" aria-selected="true">TR → EN</button>
-      </div>
       <div class="topbar-right">
         <span class="assess-badge" id="cardBadge"></span>
         <button class="flag-btn" id="flagBtn" type="button" aria-pressed="false" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım (L)">
@@ -409,8 +405,9 @@ const cardEl=document.getElementById('card'), sideTag=document.getElementById('s
   promptEl=document.getElementById('prompt'), promptType=document.getElementById('promptType'), promptHint=document.getElementById('promptHint'),
   aTerm=document.getElementById('aTerm'), cardIpa=document.getElementById('cardIpa'), aTr=document.getElementById('aTr'),
   cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), facesEl=document.querySelector('.faces'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
-  detailBtn=document.getElementById('detailBtn'), dirEnBtn=document.getElementById('dir-en'), dirTrBtn=document.getElementById('dir-tr');
-let order=[], cardPos=0, flipped=false, dirEN=false;
+  detailBtn=document.getElementById('detailBtn');
+let order=[], cardPos=0, flipped=false;
+const dirEN=false;   // kartlar yalnızca TR -> EN (akış kararı); EN -> TR dalı ileride gerekirse diye duruyor
 function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
 function curCard(){ return WORDS[order[cardPos]]; }
 function renderCardBadge(){
@@ -459,8 +456,6 @@ document.getElementById('missBtn').addEventListener('click', ()=>rate(-1));
 detailBtn.addEventListener('click', toggleCardDetails);
 flagBtn.addEventListener('click', toggleCardFlag);
 hideBtn.addEventListener('click', hideCurrentCard);
-dirEnBtn.addEventListener('click', ()=>{ dirEN=true; dirEnBtn.setAttribute('aria-selected','true'); dirTrBtn.setAttribute('aria-selected','false'); renderCard(); });
-dirTrBtn.addEventListener('click', ()=>{ dirEN=false; dirTrBtn.setAttribute('aria-selected','true'); dirEnBtn.setAttribute('aria-selected','false'); renderCard(); });
 
 /* ============ QUIZ ============ */
 const qPrompt=document.getElementById('qPrompt'), qSub=document.getElementById('qSub'), qOptions=document.getElementById('qOptions'),

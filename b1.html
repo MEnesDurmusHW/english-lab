@@ -82,7 +82,6 @@
 
   <div class="b1-context">
     <span class="b1-scope" id="scope"></span>
-    <button class="b1-dir" id="dirBtn" type="button" aria-label="Yön: Türkçeden İngilizceye. Değiştirmek için dokun.">TR→EN</button>
     <button class="b1-mode" id="modeBtn" type="button" aria-pressed="false" aria-label="Liste görünümüne geç">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       <span id="modeLabel">Liste</span>
@@ -231,10 +230,6 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
     Bu kelimenin skorunu sıfırla
   </button>
-  <button type="button" class="js-dir">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-    <span id="moreDirLabel">Yön: EN→TR yap</span>
-  </button>
   <a href="b1-unknown.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     Bilinemeyenler
@@ -261,16 +256,17 @@ const app = $('app'), card = $('card'), faces = $('faces'), empty = $('empty'),
       fPos = $('fPos'), fTerm = $('fTerm'), fNote = $('fNote'),
       bPos = $('bPos'), bAnswer = $('bAnswer'), bNote = $('bNote'),
       bIpa = $('bIpa'),
-      dirBtn = $('dirBtn'), revealBtn = $('revealBtn'),
+      revealBtn = $('revealBtn'),
       revealLabel = $('revealLabel'),
       strip = $('strip'), segKnown = $('segKnown'), segShaky = $('segShaky'), segWeak = $('segWeak'),
       backdrop = $('backdrop'), progressSheet = $('progressSheet'), moreSheet = $('moreSheet'),
-      moreBtn = $('moreBtn'), moreDirLabel = $('moreDirLabel'),
+      moreBtn = $('moreBtn'),
       modeBtn = $('modeBtn'), modeLabel = $('modeLabel'),
       listView = $('listView'), listRows = $('listRows'), listCount = $('listCount'),
       copyBtn = $('copyBtn'), copyLabel = $('copyLabel');
 
-let order = [], pos = 0, flipped = false, dirTR = true, lastSig = null;
+let order = [], pos = 0, flipped = false, lastSig = null;
+const dirTR = true;   // kartlar yalnızca TR -> EN (akış kararı)
 let listing = false;                      // liste görünümü açık mı
 let sessCards = 0, sessHits = 0;          // yalnızca bellekte — seans sayacı
 
@@ -532,15 +528,6 @@ function syncToggleBtns(){
   all('.js-learn').forEach(b => { b.classList.toggle('is-learned', !!le); b.setAttribute('aria-pressed', le ? 'true' : 'false'); });
   all('.js-reset').forEach(b => { b.disabled = !has || b1Tries(cur().en) === 0; });
 }
-function setDir(tr){
-  dirTR = tr;
-  dirBtn.textContent = tr ? 'TR→EN' : 'EN→TR';
-  dirBtn.setAttribute('aria-label', tr
-    ? 'Yön: Türkçeden İngilizceye. Değiştirmek için dokun.'
-    : 'Yön: İngilizceden Türkçeye. Değiştirmek için dokun.');
-  moreDirLabel.textContent = tr ? 'Yön: EN→TR yap' : 'Yön: TR→EN yap';
-  renderCard();
-}
 
 /* ---- alt sayfalar ---- */
 function openSheet(el){
@@ -576,8 +563,6 @@ all('.js-flag').forEach(b => b.addEventListener('click', toggleFlag));
 all('.js-learn').forEach(b => b.addEventListener('click', toggleLearned));
 all('.js-hit').forEach(b => b.addEventListener('click', () => rate(true, b)));
 all('.js-miss').forEach(b => b.addEventListener('click', () => rate(false, b)));
-all('.js-dir').forEach(b => b.addEventListener('click', () => { setDir(!dirTR); closeSheets(); }));
-dirBtn.addEventListener('click', () => setDir(!dirTR));
 $('emptyClear').addEventListener('click', () => { b1ClearFilter(); onFilterChange(); });
 
 modeBtn.addEventListener('click', () => setMode(!listing));
