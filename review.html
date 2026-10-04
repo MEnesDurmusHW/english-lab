@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Review Deck — NS's English Lab</title>
-<meta name="description" content="A global review list that sits above Vocabulary and B1: Turkish-to-English flashcards for words you already learned, readiness tracking and a to-study pile.">
+<title>Review — NS's English Lab</title>
+<meta name="description" content="The last stop of the flow: words you learned in Vocabulary, each on its own calendar for flashcards and for sentence practice.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
@@ -17,8 +17,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NS's English Lab">
 <meta property="og:locale" content="en">
-<meta property="og:title" content="Review Deck">
-<meta property="og:description" content="One review list, so what you learned stays learned.">
+<meta property="og:title" content="Review">
+<meta property="og:description" content="What you learned, back on the right day.">
 <meta property="og:url" content="https://menesdurmushw.github.io/english-lab/review.html">
 <meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -27,7 +27,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
 <script src="store.js"></script>
-<script src="review-core.js"></script>
+<script src="journey-core.js"></script>
 <script src="flashcard.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
@@ -40,177 +40,122 @@
 <link rel="stylesheet" href="lab.css">
 <link rel="stylesheet" href="flashcard.css">
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<!-- appbar.js KULLANILMIYOR: bu alan Vocabulary/Collocations gezintisinin
-     dışında, kendi başına duran global bir liste. Bölüm rengini elle veriyoruz. -->
+<!-- appbar.js KULLANILMIYOR: Review akışın son durağı, kendi başına duruyor. Bölüm rengini elle veriyoruz. -->
 <script>document.documentElement.setAttribute('data-section','review');</script>
 <style>
-  /* ===== bölüm rengi: turuncu — diğer altı alanın hiçbirinde yok ===== */
   [data-section="review"]{--accent:#EA580C;--accent-2:#F97316;--accent-soft:rgba(234,88,12,.10);--accent-glow:rgba(234,88,12,.18)}
   [data-theme="dark"][data-section="review"]{--accent:#FB923C;--accent-2:#FDBA74;--accent-soft:rgba(251,146,60,.16);--accent-glow:rgba(251,146,60,.22)}
-
   :root{ --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
   [data-theme="dark"]{ --ok:#6fbf7f; --mid:#d8ac5c; --bad:#e0765a; }
 
+  .rv-wrap [hidden]{display:none !important}
   .rv-wrap{max-width:900px;margin:0 auto;padding:26px clamp(14px,4vw,32px) 120px}
-
   .rv-head{margin-bottom:22px}
   .rv-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
   .rv-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:62ch}
+  .rv-head a{color:var(--accent);font-weight:600;text-decoration:none}
+  .rv-head a:hover{text-decoration:underline}
 
-  /* ---- özet kutucukları: aynı zamanda filtre düğmeleri ---- */
-  .rv-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 18px}
-  .rv-tile{appearance:none;cursor:pointer;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;transition:border-color .16s,transform .16s,background .16s}
-  .rv-tile:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .rv-tile[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
-  .rv-tile b{display:block;font-family:var(--mono,monospace);font-size:1.5rem;font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--text)}
-  .rv-tile span{display:block;margin-top:6px;font-size:.76rem;font-weight:600;letter-spacing:.04em;color:var(--text-muted)}
-  .rv-tile.is-gap b{color:var(--mid)}
-  .rv-tile.is-study b{color:var(--bad)}
-  .rv-tile.is-ready b{color:var(--ok)}
-  @media (max-width:560px){ .rv-tiles{grid-template-columns:repeat(2,1fr)} }
+  .rv-sec-title{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:30px 0 12px}
 
-  /* ---- hazırlık çubuğu: hazır / eksik oranı ---- */
-  .rv-bar{height:6px;border-radius:999px;background:var(--border);overflow:hidden;display:flex;margin-bottom:6px}
-  .rv-bar i{display:block;height:100%;transition:width .3s cubic-bezier(.4,0,.2,1)}
-  .rv-bar .f-ready{background:var(--ok)}
-  .rv-bar .f-gap{background:var(--mid)}
-  .rv-barnote{font-size:.8rem;color:var(--text-muted);margin:0 0 22px;line-height:1.5}
-  .rv-barnote b{color:var(--text)}
+  /* ---- bugün: iki kutu ---- */
+  .rv-today{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:680px){ .rv-today{grid-template-columns:1fr} }
+  .rv-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .rv-box h2{margin:0;font-size:1rem;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+  .rv-big{display:flex;align-items:baseline;gap:10px}
+  .rv-big b{font-family:var(--mono,monospace);font-size:2.2rem;font-weight:700;line-height:1;letter-spacing:-.03em;color:var(--accent)}
+  .rv-big span{font-size:.88rem;color:var(--text-dim)}
+  .rv-box .sub{margin:0;font-size:.84rem;color:var(--text-muted);line-height:1.5}
 
-  /* ---- eylem satırı ---- */
-  .rv-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
-  .rv-cta{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:9px;background:var(--accent);border:1px solid var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.95rem;padding:12px 24px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.09);transition:transform .18s,box-shadow .18s,opacity .18s}
-  .rv-cta:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.14)}
-  .rv-cta:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-  .rv-cta svg{width:16px;height:16px}
-  .rv-cta .n{font-family:var(--mono,monospace);font-size:.78rem;font-weight:700;opacity:.75}
-  .rv-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.88rem;padding:11px 18px;border-radius:999px;transition:.15s}
+  .rv-cta{appearance:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--accent);border:1px solid var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.93rem;padding:11px 22px;border-radius:999px;transition:transform .18s,opacity .18s}
+  .rv-cta:hover:not(:disabled){transform:translateY(-1px)}
+  .rv-cta:disabled{opacity:.4;cursor:not-allowed}
+  .rv-cta svg{width:15px;height:15px}
+  .rv-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface-2,var(--bg));border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.86rem;padding:9px 15px;border-radius:999px;transition:.15s}
   .rv-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
   .rv-btn:disabled{opacity:.4;cursor:not-allowed}
-  .rv-btn svg{width:15px;height:15px}
+  .rv-btn svg{width:14px;height:14px}
+  .rv-row-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-  /* ---- arama ---- */
-  .rv-search{position:relative;margin-bottom:14px}
-  .rv-search input{width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px 12px 40px;font-family:var(--sans);font-size:.95rem;color:var(--text)}
-  .rv-search input:focus{outline:none;border-color:var(--accent)}
-  .rv-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-muted);pointer-events:none}
+  /* cümle listesi: işaretlenebilir */
+  .rv-checks{display:flex;flex-direction:column;gap:2px;max-height:240px;overflow-y:auto;margin:0 -6px;padding:0 6px}
+  .rv-check{display:flex;align-items:baseline;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer;font-size:.9rem}
+  .rv-check:hover{background:var(--accent-soft)}
+  .rv-check input{accent-color:var(--accent);margin:0;transform:translateY(1px)}
+  .rv-check b{font-weight:600;color:var(--text)}
+  .rv-check span{color:var(--text-muted);font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .rv-done-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .rv-done-row label{font-size:.8rem;color:var(--text-muted)}
+  .rv-date{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:7px 10px;font-family:var(--sans);font-size:.88rem;color:var(--text)}
+  .rv-date:focus{outline:none;border-color:var(--accent)}
+  .rv-msg{font-size:.84rem;color:var(--ok);margin:0}
 
-  /* ---- ekleme formu ---- */
-  .rv-add{border:1px solid var(--border);border-radius:14px;background:var(--surface);margin-bottom:18px;overflow:hidden}
-  .rv-add > summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:.92rem;color:var(--accent);display:flex;align-items:center;gap:9px}
-  .rv-add > summary::-webkit-details-marker{display:none}
-  .rv-add > summary svg{width:15px;height:15px}
-  .rv-add-body{padding:4px 16px 16px;border-top:1px solid var(--border)}
-  .rv-field{margin-top:12px}
-  .rv-field label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-  .rv-field input,.rv-field select,.rv-field textarea{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:.94rem;color:var(--text);line-height:1.5}
-  .rv-field textarea{resize:vertical;min-height:64px}
-  .rv-field select{cursor:pointer}
-  .rv-field input:focus,.rv-field select:focus,.rv-field textarea:focus{outline:none;border-color:var(--accent)}
-  .rv-field .hint{margin:6px 0 0;font-size:.79rem;color:var(--text-muted);line-height:1.5}
-  .rv-add-foot{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
-  .rv-err{font-size:.84rem;color:var(--bad);margin:0}
-  .rv-field code{font-family:var(--mono,monospace);font-size:.92em;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1px 5px}
-  .rv-preview{margin:12px 0 0;padding:10px 13px;border-radius:10px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);font-size:.86rem;line-height:1.55;color:var(--text-dim)}
-  .rv-preview b{color:var(--text)}
-  .rv-preview.none{background:var(--surface);border-color:var(--border)}
+  /* ---- önümüzdeki 7 gün ---- */
+  .rv-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+  .rv-day{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;min-width:0}
+  .rv-day .dn{font-family:var(--mono,monospace);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+  .rv-day .dc{display:block;font-family:var(--mono,monospace);font-size:1.15rem;font-weight:700;color:var(--text);margin-top:4px}
+  .rv-day .ds{display:block;font-size:.68rem;color:var(--text-muted);margin-top:2px;min-height:1em}
+  .rv-day.zero .dc{color:var(--text-muted);opacity:.5}
+  @media (max-width:520px){ .rv-week{gap:4px} .rv-day{padding:8px 2px} .rv-day .dc{font-size:1rem} }
 
   /* ---- liste ---- */
-  .rv-list{display:flex;flex-direction:column;gap:9px}
-  .rv-row{border:1px solid var(--border);border-radius:13px;background:var(--surface);overflow:hidden}
-  .rv-row.is-gap{border-left:3px solid var(--mid)}
-  .rv-row.is-ready{border-left:3px solid var(--ok)}
-  .rv-main{display:flex;align-items:center;gap:12px;padding:12px 14px}
+  .rv-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .rv-search{position:relative;flex:1 1 220px}
+  .rv-search input{width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px 10px 38px;font-family:var(--sans);font-size:.93rem;color:var(--text)}
+  .rv-search input:focus{outline:none;border-color:var(--accent)}
+  .rv-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none}
+  .rv-seg{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
+  .rv-seg button{appearance:none;border:0;background:transparent;cursor:pointer;font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--text-muted);padding:6px 11px;border-radius:8px;transition:.14s}
+  .rv-seg button:hover{color:var(--text)}
+  .rv-seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+
+  .rv-list{display:flex;flex-direction:column;gap:8px}
+  .rv-item{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:11px 14px}
+  .rv-item.p-high{border-left:3px solid var(--bad)}
+  .rv-item.p-med{border-left:3px solid var(--mid)}
+  .rv-item.p-low{border-left:3px solid var(--ok)}
   .rv-text{flex:1 1 12rem;min-width:0}
-  .rv-en{display:block;overflow-wrap:anywhere;font-weight:700;font-size:1.02rem;color:var(--text);letter-spacing:-.01em}
-  .rv-tr{display:block;font-size:.9rem;color:var(--text-dim);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rv-tr.empty{color:var(--mid);font-style:italic}
-  .rv-chips{display:flex;gap:6px;align-items:center;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end}
-  .rv-chip{font-family:var(--mono,monospace);font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--border);color:var(--text-muted);white-space:nowrap}
-  .rv-chip.st-known{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 34%,transparent)}
-  .rv-chip.st-shaky{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 34%,transparent)}
-  .rv-chip.st-weak{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 34%,transparent)}
-  .rv-chip.st-fresh{border-style:dashed}
-  .rv-chip.pos{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 30%,transparent);background:var(--accent-soft)}
-  .rv-chip.miss{color:var(--mid);border-color:color-mix(in srgb,var(--mid) 44%,transparent);background:color-mix(in srgb,var(--mid) 9%,transparent)}
-  .rv-acts{display:flex;gap:4px;flex:0 0 auto}
-  .rv-icon{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0;transition:.14s}
-  .rv-icon:hover{border-color:var(--border);color:var(--accent);background:var(--bg)}
-  .rv-icon.danger:hover{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
-  .rv-icon svg{width:15px;height:15px}
-  .rv-note{padding:0 14px 12px;font-size:.87rem;color:var(--text-dim);line-height:1.55}
-  .rv-note.empty{color:var(--mid);font-style:italic}
-  .rv-edit{padding:4px 14px 16px;border-top:1px solid var(--border);margin-top:2px}
-
-  .rv-empty{text-align:center;padding:52px 20px;color:var(--text-muted)}
-  .rv-empty svg{width:34px;height:34px;opacity:.45;margin-bottom:14px}
-  .rv-empty p{margin:0 0 6px;font-size:.95rem;line-height:1.6}
-
-  @media (max-width:640px){
-    .rv-main{flex-wrap:wrap;gap:8px}
-    .rv-text{flex:1 1 100%;order:1}
-    .rv-chips{order:2;justify-content:flex-start;flex:1 1 auto}
-    .rv-acts{order:3}
+  .rv-en{display:block;font-weight:700;font-size:1rem;color:var(--text);overflow-wrap:anywhere}
+  .rv-tr{display:block;font-size:.86rem;color:var(--text-dim);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rv-when{display:flex;flex-direction:column;gap:2px;font-size:.76rem;color:var(--text-muted);text-align:right;flex:0 0 auto;font-variant-numeric:tabular-nums}
+  .rv-when .due{color:var(--accent);font-weight:700}
+  .rv-pri{display:inline-flex;background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:9px;padding:2px;gap:2px;flex:0 0 auto}
+  .rv-pri button{appearance:none;border:0;background:transparent;cursor:pointer;font-family:var(--mono,monospace);font-size:.66rem;font-weight:700;letter-spacing:.06em;color:var(--text-muted);padding:5px 7px;border-radius:7px;transition:.14s}
+  .rv-pri button:hover{color:var(--text)}
+  .rv-pri button.on.low{background:var(--ok);color:#fff}
+  .rv-pri button.on.med{background:var(--mid);color:#fff}
+  .rv-pri button.on.high{background:var(--bad);color:#fff}
+  @media (max-width:600px){
+    .rv-item{flex-wrap:wrap;gap:8px}
+    .rv-text{flex:1 1 100%}
+    .rv-when{text-align:left;flex-direction:row;gap:12px;flex:1 1 auto}
     .rv-tr{white-space:normal}
   }
+  .rv-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:.93rem;line-height:1.6;border:1px dashed var(--border);border-radius:14px}
+  .rv-empty a{color:var(--accent);font-weight:600}
 
-  /* ===== çalışma katmanı: tam ekran, TR -> EN ===== */
+  /* ===== çalışma katmanı ===== */
   .sv{position:fixed;inset:0;z-index:1200;background:var(--bg);display:flex;flex-direction:column;overscroll-behavior:contain}
   .sv[hidden]{display:none}
   body.sv-open{overflow:hidden}
   .sv-head{flex:0 0 auto;padding:calc(14px + env(safe-area-inset-top)) clamp(14px,4vw,26px) 0}
   .sv-head-in{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:14px}
-  .sv-title{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .sv-count{margin-left:auto;font-family:var(--mono,monospace);font-size:.74rem;font-weight:600;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .sv-title{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted)}
+  .sv-count{margin-left:auto;font-family:var(--mono,monospace);font-size:.74rem;font-weight:600;color:var(--text-muted);font-variant-numeric:tabular-nums}
   .sv-exit{appearance:none;flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--surface);color:var(--text-dim);cursor:pointer;transition:.15s}
   .sv-exit:hover{border-color:var(--accent);color:var(--accent)}
   .sv-exit svg{width:15px;height:15px}
   .sv-track{max-width:660px;margin:13px auto 0;height:3px;border-radius:999px;background:var(--border);overflow:hidden}
   .sv-fill{height:100%;width:0;border-radius:999px;background:var(--accent);transition:width .32s cubic-bezier(.4,0,.2,1)}
   .sv-body{flex:1 1 auto;overflow-y:auto;display:flex;padding:26px clamp(14px,4vw,26px)}
-  /* Kartın kutusu iki yüzde de birebir aynı kalmalı: cevap yüzü IPA satırı ve
-     fazladan bir <em> satırı getirdiği için ortalanmış kart büyüyor, kalın
-     terim gözle görülür biçimde zıplıyordu. Yükseklik sabit, içerik tepeden
-     dizili; taşan açıklama kartı büyütmek yerine kendi içinde kayıyor. */
-  .sv-card{width:100%;max-width:560px;margin:auto;text-align:center;display:flex;flex-direction:column;height:clamp(300px,52vh,420px)}
-  /* Sonuç ekranı aynı kutuyu kullanıyor ama üç kısa satırdan oluşuyor:
-     sabit yükseklik onu boşluğa yayardı. */
-  .sv-card.is-result{height:auto;justify-content:center}
-  .sv-pos{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;min-height:1em}
-  /* HER ZAMAN üç satırlık, sabit yükseklikte kutu (3 × line-height 1.15).
-     Yükseklik kutuda, yazı boyu içerideki başlıkta: uzun metinde punto
-     düşerse kutu küçülmesin. Üç satır, destedeki en uzun Türkçe karşılığı
-     (60 karakter) tam puntoda aldığı için normal kayıtlarda küçültme hiç
-     devreye girmiyor.
-     Metin TEPEDEN hizalı — ortalanmış olsaydı tek satırlık bir terim üç
-     satırlıktan aşağıda başlar, kalın ifadenin üste mesafesi değişirdi.
-     Böylece hem terimin hem de altındaki açıklamanın üste mesafesi iki
-     yüzde de birebir aynı kalıyor. */
-  .sv-termbox{flex:0 0 auto;height:calc(3.45 * clamp(1.6rem,6vw,2.4rem));display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
-  .sv-term{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin:0}
-  /* Emniyet supabı: ileride üç satıra da sığmayacak bir kayıt gelirse
-     satır eklemek yerine punto düşsün, kutu sabit kalsın. */
-  .sv-term.is-long{font-size:clamp(1.2rem,4.4vw,1.8rem)}
-  /* IPA yalnızca cevap yüzünde dolu; yine de iki yüzde de yer tutmalı ki
-     altındaki açıklama aşağı kaymasın. */
-  .sv-ipa{flex:0 0 auto;font-family:var(--mono,monospace);font-size:.9rem;color:var(--text-muted);margin:10px 0 0;min-height:1.2em}
-  .sv-hint{flex:1 1 auto;min-height:0;overflow-y:auto;margin:22px auto 0;max-width:46ch;font-size:.92rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:18px}
-  .sv-hint em{font-style:normal;color:var(--text-muted);font-size:.86rem}
-  .sv-foot{flex:0 0 auto;padding:0 clamp(14px,4vw,26px) calc(18px + env(safe-area-inset-bottom))}
-  .sv-foot-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-  .sv-reveal{appearance:none;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px;font-family:var(--sans);font-weight:600;font-size:.96rem;color:var(--text-dim);transition:.15s}
-  .sv-reveal:hover{border-color:var(--accent);color:var(--accent)}
-  .sv-reveal svg{width:17px;height:17px}
-  .sv-rate{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .sv-rate button{appearance:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:.96rem;color:#fff;border:1px solid transparent;transition:.15s}
-  .sv-miss{background:var(--bad)}
-  .sv-hit{background:var(--ok)}
-  .sv-rate button:hover{filter:brightness(1.07)}
-  .sv-rate button svg{width:17px;height:17px}
-  .sv-kbd{display:none;text-align:center;font-family:var(--mono,monospace);font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:2px 0 0}
-  @media (hover:hover) and (min-width:640px){ .sv-kbd{display:block} }
+  .sv-result{width:100%;max-width:560px;margin:auto;text-align:center}
   .sv-done{font-family:var(--display,var(--sans));font-size:clamp(2.2rem,8vw,3rem);font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--text)}
   .sv-pct{font-family:var(--mono,monospace);font-size:.82rem;font-weight:700;letter-spacing:.14em;color:var(--accent);margin:12px 0 16px}
+  .sv-note{font-size:.93rem;line-height:1.6;color:var(--text-dim);margin:0 auto;max-width:44ch}
+  .sv-foot{flex:0 0 auto;padding:0 clamp(14px,4vw,26px) calc(18px + env(safe-area-inset-bottom))}
+  .sv-foot-in{max-width:560px;margin:0 auto;display:flex;gap:10px;justify-content:center}
 </style>
 </head>
 <body>
@@ -221,7 +166,7 @@
     <a class="brand" href="index.html" aria-label="Back to the English Lab home">
       <span class="brand-mark">NS</span>
       <span class="brand-text">
-        <span class="brand-name">Review Deck</span>
+        <span class="brand-name">Review</span>
         <span class="brand-sub">English Lab</span>
       </span>
     </a>
@@ -239,96 +184,71 @@
 </header>
 
 <div class="rv-wrap">
-
   <header class="rv-head">
-    <h1>Review Deck</h1>
-    <p>One list that sits above Vocabulary and B1. The point is not learning new words but not losing the ones you already know. Add from either area or from here; cards run Turkish to English only.</p>
+    <h1>Review</h1>
+    <p>The last stop of the flow. A word lands here when you mark it <b>Learned</b> in Vocabulary. Each word has two calendars, one for flashcards and one for sentence practice, and its priority decides how often it comes back. <a href="flow.html">How the flow works</a></p>
   </header>
 
-  <div class="rv-bar" aria-hidden="true">
-    <i class="f-ready" id="barReady"></i>
-    <i class="f-gap" id="barGap"></i>
-  </div>
-  <p class="rv-barnote" id="barNote"></p>
+  <h2 class="rv-sec-title">Today</h2>
+  <div class="rv-today">
+    <section class="rv-box" aria-labelledby="cardsTitle">
+      <h2 id="cardsTitle">Flashcards</h2>
+      <div class="rv-big"><b id="cardsN">0</b><span id="cardsLbl">cards due</span></div>
+      <p class="sub" id="cardsSub"></p>
+      <div class="rv-row-acts">
+        <button class="rv-cta" type="button" id="startBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start
+        </button>
+      </div>
+    </section>
 
-  <div class="rv-tiles" role="group" aria-label="Filter">
-    <button class="rv-tile" type="button" id="tileAll"   data-f="all"   aria-pressed="true"><b id="nAll">0</b><span>All</span></button>
-    <button class="rv-tile is-ready" type="button" id="tileReady" data-f="ready" aria-pressed="false"><b id="nReady">0</b><span>Ready</span></button>
-    <button class="rv-tile is-gap" type="button" id="tileGap"   data-f="gap"   aria-pressed="false"><b id="nGap">0</b><span>Missing</span></button>
-    <button class="rv-tile is-study" type="button" id="tileStudy" data-f="study" aria-pressed="false"><b id="nStudy">0</b><span>To study</span></button>
+    <section class="rv-box" aria-labelledby="sentTitle">
+      <h2 id="sentTitle">Sentence practice</h2>
+      <div class="rv-big"><b id="sentN">0</b><span>words due</span></div>
+      <p class="sub" id="sentSub"></p>
+      <div class="rv-checks" id="sentList"></div>
+      <div class="rv-row-acts" id="sentActs">
+        <button class="rv-btn" type="button" id="copyBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="copyLbl">Copy for chat</span>
+        </button>
+      </div>
+      <div class="rv-done-row" id="doneRow">
+        <label for="doneDate">Practised on</label>
+        <input class="rv-date" type="date" id="doneDate">
+        <button class="rv-cta" type="button" id="doneBtn">Mark done</button>
+      </div>
+      <p class="rv-msg" id="doneMsg" hidden></p>
+    </section>
   </div>
 
-  <div class="rv-actions">
-    <button class="rv-cta" type="button" id="studyBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Study <span class="n" id="studyN"></span>
-    </button>
-    <button class="rv-btn" type="button" id="gapCopyBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      <span id="gapCopyLabel">Copy the gaps for chat</span>
-    </button>
-  </div>
+  <h2 class="rv-sec-title">Next 7 days</h2>
+  <div class="rv-week" id="week"></div>
 
-  <details class="rv-add" id="addBox">
-    <summary>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add one word
-    </summary>
-    <div class="rv-add-body">
-      <div class="rv-field">
-        <label for="addEn">English</label>
-        <input id="addEn" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. resilient">
-      </div>
-      <div class="rv-field">
-        <label for="addTr">Turkish meaning</label>
-        <input id="addTr" type="text" autocomplete="off" placeholder="e.g. dayanıklı, çabuk toparlanan">
-      </div>
-      <div class="rv-field">
-        <label for="addNote">Distinguishing note</label>
-        <textarea id="addNote" placeholder="What sets this word apart from its near synonyms?"></textarea>
-        <p class="hint">You can leave this empty — the entry is marked <b>Missing</b> and you can fill it in bulk later from chat.</p>
-      </div>
-      <div class="rv-add-foot">
-        <button class="rv-cta" type="button" id="addBtn">Add to deck</button>
-        <p class="rv-err" id="addErr" hidden></p>
-      </div>
+  <h2 class="rv-sec-title">All words <span id="allN"></span></h2>
+  <div class="rv-tools">
+    <div class="rv-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="search" placeholder="Search…" autocomplete="off">
     </div>
-  </details>
-
-  <details class="rv-add" id="bulkBox">
-    <summary>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      Paste a list
-    </summary>
-    <div class="rv-add-body">
-      <div class="rv-field">
-        <label for="bulkText">One entry per line</label>
-        <textarea id="bulkText" rows="7" spellcheck="false" placeholder="resilient&#10;ponder&#10;wary&#10;&#10;…or with its fields:&#10;resilient | dayanıklı | Zorluktan sonra çabuk toparlanır; tough fiziksel dayanıklılıktır."></textarea>
-        <p class="hint">Paste a plain word list straight from Vocabulary or B1 — the fields stay empty and the entries are marked <b>Missing</b>. Once chat has filled them in, paste the returned <code>word | Turkish | note</code> lines into this same box; existing entries are updated, nothing is duplicated.</p>
-      </div>
-      <p class="rv-preview" id="bulkPreview" hidden></p>
-      <div class="rv-add-foot">
-        <button class="rv-cta" type="button" id="bulkBtn" disabled>Apply list</button>
-        <button class="rv-btn" type="button" id="bulkClear">Clear box</button>
-      </div>
+    <div class="rv-seg" role="group" aria-label="Priority filter" id="priFilter">
+      <button type="button" data-p="" aria-pressed="true">All</button>
+      <button type="button" data-p="high" aria-pressed="false">High</button>
+      <button type="button" data-p="med" aria-pressed="false">Medium</button>
+      <button type="button" data-p="low" aria-pressed="false">Low</button>
     </div>
-  </details>
-
-  <div class="rv-search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="search" type="search" placeholder="Search the deck…" autocomplete="off">
   </div>
-
   <div class="rv-list" id="list"></div>
 </div>
 
-<!-- ===== çalışma katmanı ===== -->
-<div class="sv" id="study" hidden role="dialog" aria-modal="true" aria-label="Study">
+<!-- ===== kart oturumu ===== -->
+<div class="sv" id="study" hidden role="dialog" aria-modal="true" aria-label="Flashcards">
   <div class="sv-head">
     <div class="sv-head-in">
-      <span class="sv-title" id="svTitle">Study</span>
+      <span class="sv-title">Flashcards · TR → EN</span>
       <span class="sv-count" id="svCount"></span>
-      <button class="sv-exit" id="svExit" type="button" aria-label="Close study">
+      <button class="sv-exit" id="svExit" type="button" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </div>
@@ -338,253 +258,136 @@
   <div class="sv-foot"><div class="sv-foot-in" id="svFoot"></div></div>
 </div>
 
+<script src="data.js"></script>
 <script>
 /* ============================================================
-   Review Deck — sayfa mantığı
-   Veri + durum: review-core.js (window.NSReview)
-   data.js / b1-data.js YÜKLENMEZ: bu liste kendi kayıtlarını taşır,
-   kaynak dosyalara bağlı değildir. Kelime buraya kopyalanarak girer.
+   Review — sayfa mantığı
+   Takvim ve aşamalar: journey-core.js (window.NSJourney)
+   Kelime içeriği: data.js (Review kendi kopyasını tutmaz)
+   Geri düşmede Vocabulary'nin Learned / cümle işaretleri buradan
+   güncellenir; lab-core.js bu sayfada yüklü değil, depoları doğrudan açıyoruz.
    ============================================================ */
 'use strict';
 
 const $ = id => document.getElementById(id);
-const R = window.NSReview;
-const esc = R.escapeHTML;
+const J = window.NSJourney;
+const BY_EN = {};
+WORDS.forEach(w => { BY_EN[w.en] = w; });
 
-let filter = 'all';
-let query = '';
-let editing = null;          // düzenlenmekte olan kelime (tek seferde bir tane)
+const HIDDEN = {}, FLAGS = {};
+const HIDE_STORE = NSStore.map('ns-vocab-hidden', HIDDEN);
+const FLAG_STORE = NSStore.map('ns-vocab-flag', FLAGS);
 
-/* ---------- ikonlar ---------- */
-const I_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
-const I_DEL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
-
-const SRC_LABEL = { vocab:'Vocabulary', b1:'B1', custom:'Manual' };
-/* Tür listesi tek yerde: hem düzenleme açılır listesi hem de kart buradan
-   beslenir. Çok kelimeli kayıtlar için son üçü var. */
-const POS_LIST = ['noun','verb','adjective','adverb','phrasal verb','idiom','phrase'];
-
-/* ---------- liste ---------- */
-function visible(){
-  let arr;
-  if (filter === 'ready') arr = R.ready();
-  else if (filter === 'gap') arr = R.gaps();
-  else if (filter === 'study') arr = R.toStudy();
-  else arr = R.all();
-  if (query){
-    const q = query.toLowerCase();
-    arr = arr.filter(it => it.en.indexOf(q) >= 0 || (it.tr||'').toLowerCase().indexOf(q) >= 0);
+/* Learned işaretli olup akış kaydı olmayanlar (akıştan önce işaretlenmiş,
+   Vocabulary henüz açılmamış): içeri al. lab-core.js ile aynı tek seferlik adım. */
+try {
+  if (!localStorage.getItem('ns-journey-adopted')) {
+    J.adopt(Object.keys(HIDDEN), Object.keys(FLAGS).filter(en => !HIDDEN[en]));
+    localStorage.setItem('ns-journey-adopted', '1');
   }
-  return arr;
+} catch (e) {}
+
+const TYPE_EN = {'kelime':'Word','sıfat':'Adjective','kalıp':'Phrase','deyim':'Idiom','phrasal fiil':'Phrasal verb','cümle':'Sentence'};
+const PRI = ['low', 'med', 'high'];
+const PRI_SHORT = { low: 'LOW', med: 'MED', high: 'HIGH' };
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function words(list){ return list.filter(en => BY_EN[en]); }   // data.js'ten çıkmış kelime gösterilmez
+
+function rel(date){
+  const d = J.daysBetween(J.today(), date);
+  if (d < 0) return (-d) + 'd overdue';
+  if (d === 0) return 'today';
+  if (d === 1) return 'tomorrow';
+  return 'in ' + d + 'd';
+}
+function shortDate(s){
+  const p = s.split('-');
+  return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
 }
 
-function missChip(it){
-  const m = R.missingOf(it);
-  if (!m.length) return '';
-  const txt = m.length === 2 ? 'meaning + note missing'
-    : m[0] === 'tr' ? 'meaning missing' : 'note missing';
-  return '<span class="rv-chip miss">' + txt + '</span>';
+/* ---------- bugün: kartlar ---------- */
+function renderCards(){
+  const due = words(J.cardsDue());
+  $('cardsN').textContent = due.length;
+  $('cardsLbl').textContent = due.length === 1 ? 'card due' : 'cards due';
+  $('startBtn').disabled = !due.length;
+  const all = words(J.reviewWords());
+  if (!all.length) { $('cardsSub').textContent = 'No words in Review yet.'; return; }
+  if (due.length) {
+    const hi = due.filter(en => J.get(en).pri === 'high').length;
+    $('cardsSub').textContent = hi ? hi + ' of them high priority. Those come first.' : 'High-priority words come first.';
+  } else {
+    const next = all.map(en => J.get(en).card.due).sort()[0];
+    $('cardsSub').textContent = 'All caught up. Next cards: ' + rel(next) + '.';
+  }
 }
 
-function rowHTML(it){
-  const ready = R.isReady(it);
-  const st = R.statusOf(it.en);
-  const t = R.tries(it.en);
-  const isEditing = editing === it.en;
-  return '<div class="rv-row ' + (ready ? 'is-ready' : 'is-gap') + '" data-en="' + esc(it.en) + '">' +
-    '<div class="rv-main">' +
-      '<span class="rv-text">' +
-        '<span class="rv-en">' + esc(it.en) + '</span>' +
-        '<span class="rv-tr' + (it.tr ? '' : ' empty') + '">' + (it.tr ? esc(it.tr) : 'No Turkish meaning yet') + '</span>' +
-      '</span>' +
-      '<span class="rv-chips">' +
-        /* Tür rozeti: alan boşsa hiç basılmaz, boş bir kutu göstermek
-           gezinirken gürültüden başka bir şey değil. */
-        (it.pos ? '<span class="rv-chip pos">' + esc(it.pos) + '</span>' : '') +
-        missChip(it) +
-        (ready ? '<span class="rv-chip st-' + st + '">' + R.STATUS_LABEL[st] + (t ? ' · ' + R.accText(it.en) : '') + '</span>' : '') +
-        '<span class="rv-chip">' + (SRC_LABEL[it.src] || it.src) + '</span>' +
-      '</span>' +
-      '<span class="rv-acts">' +
-        '<button type="button" class="rv-icon" data-a="edit" aria-label="Edit" title="Edit">' + I_EDIT + '</button>' +
-        '<button type="button" class="rv-icon danger" data-a="del" aria-label="Remove from deck" title="Remove from deck">' + I_DEL + '</button>' +
-      '</span>' +
-    '</div>' +
-    (isEditing ? editHTML(it)
-      : '<p class="rv-note' + (it.note ? '' : ' empty') + '">' + (it.note ? esc(it.note) : 'No distinguishing note yet — this entry is not ready to study.') + '</p>') +
-  '</div>';
+/* ---------- bugün: cümle ---------- */
+let sentPicked = {};
+function renderSent(){
+  const due = words(J.sentencesDue());
+  $('sentN').textContent = due.length;
+  const has = due.length > 0;
+  $('sentList').hidden = !has;
+  $('sentActs').hidden = !has;
+  $('doneRow').hidden = !has;
+  if (!has) {
+    const all = words(J.reviewWords());
+    const next = all.map(en => J.get(en).sent.due).sort()[0];
+    $('sentSub').textContent = all.length ? 'Nothing due. Next: ' + rel(next) + '.' : 'No words in Review yet.';
+    return;
+  }
+  $('sentSub').textContent = 'Copy the list, write sentences in chat, then mark the ones you practised.';
+  due.forEach(en => { if (!(en in sentPicked)) sentPicked[en] = true; });
+  $('sentList').innerHTML = due.map(en => {
+    const w = BY_EN[en];
+    return '<label class="rv-check"><input type="checkbox" data-en="' + esc(en) + '"' + (sentPicked[en] ? ' checked' : '') + '>' +
+      '<b>' + esc(en) + '</b><span>' + esc(w.tr) + '</span></label>';
+  }).join('');
+  const t = J.today();
+  $('doneDate').max = t;
+  if (!$('doneDate').value) $('doneDate').value = t;
+  syncDoneBtn();
 }
-
-function editHTML(it){
-  const cur = (it.pos || '').toLowerCase();
-  /* Listede olmayan bir tür (başka alandan gelmiş kısaltma vb.) seçenek
-     olarak eklenir: kaydı düzenlemek onu sessizce silmesin. */
-  const opts = POS_LIST.indexOf(cur) < 0 && cur ? POS_LIST.concat([cur]) : POS_LIST;
-  return '<div class="rv-edit">' +
-    '<div class="rv-field"><label>Part of speech</label>' +
-      '<select data-e="pos">' +
-        '<option value="">— not set —</option>' +
-        opts.map(p => '<option value="' + esc(p) + '"' + (p === cur ? ' selected' : '') + '>' + esc(p) + '</option>').join('') +
-      '</select></div>' +
-    '<div class="rv-field"><label>Turkish meaning</label>' +
-      '<input type="text" data-e="tr" value="' + esc(it.tr || '') + '"></div>' +
-    '<div class="rv-field"><label>Distinguishing note</label>' +
-      '<textarea data-e="note">' + esc(it.note || '') + '</textarea></div>' +
-    '<div class="rv-add-foot">' +
-      '<button type="button" class="rv-cta" data-a="save">Save</button>' +
-      '<button type="button" class="rv-btn" data-a="cancel">Cancel</button>' +
-    '</div>' +
-  '</div>';
+function pickedDue(){ return words(J.sentencesDue()).filter(en => sentPicked[en]); }
+function syncDoneBtn(){
+  const n = pickedDue().length;
+  $('doneBtn').disabled = !n;
+  $('doneBtn').textContent = n ? 'Mark ' + n + ' done' : 'Mark done';
 }
-
-function emptyHTML(){
-  const msg = R.count() === 0
-    ? 'The deck is empty. Add words with the <b>review</b> button on the Vocabulary or B1 pages, or enter them above.'
-    : (filter === 'gap' ? 'Nothing is missing — every entry is ready to study.'
-      : filter === 'study' ? 'Nothing to study. Words that turn out Weak or Shaky show up here.'
-      : filter === 'ready' ? 'No entry is ready yet. Fill in the missing fields first.'
-      : 'No word matches that search.');
-  return '<div class="rv-empty">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>' +
-    '<p>' + msg + '</p></div>';
-}
-
-function renderList(){
-  const arr = visible();
-  $('list').innerHTML = arr.length ? arr.map(rowHTML).join('') : emptyHTML();
-}
-
-function renderSummary(){
-  const s = R.summary();
-  $('nAll').textContent = s.total;
-  $('nReady').textContent = s.ready;
-  $('nGap').textContent = s.gap;
-  $('nStudy').textContent = s.study;
-
-  const n = s.total || 1;
-  $('barReady').style.width = (s.ready / n * 100).toFixed(2) + '%';
-  $('barGap').style.width = (s.gap / n * 100).toFixed(2) + '%';
-  $('barNote').innerHTML = s.total === 0
-    ? 'No words yet.'
-    : (s.gap === 0
-        ? 'All <b>' + s.ready + '</b> entries are ready to study.'
-        : '<b>' + s.ready + '</b> ready · <b>' + s.gap + '</b> still missing a Turkish meaning or a distinguishing note. Copy that gap into chat and have it filled.');
-
-  /* Düğme, o an hangi havuz çalışılacaksa ona bakmalı. "To study"
-     sekmesindeyken Ready sayısına bakmak, hazır kelime varken çalışılacak
-     yokken düğmeyi açık gösterip tıklamayı boşa düşürüyordu. */
-  const poolSize = studyPool().length;
-  $('studyN').textContent = poolSize ? poolSize + '' : '';
-  $('studyBtn').disabled = poolSize === 0;
-  $('gapCopyBtn').disabled = s.gap === 0;
-
-  ['all','ready','gap','study'].forEach(f => {
-    const el = $('tile' + f.charAt(0).toUpperCase() + f.slice(1));
-    if (el) el.setAttribute('aria-pressed', filter === f ? 'true' : 'false');
+$('sentList').addEventListener('change', e => {
+  const cb = e.target.closest('input[type="checkbox"]'); if (!cb) return;
+  sentPicked[cb.dataset.en] = cb.checked;
+  syncDoneBtn();
+});
+$('copyBtn').addEventListener('click', () => {
+  const list = pickedDue();
+  if (!list.length) return;
+  const txt = 'Sentence practice. For each word, give me a short situation and let me write a sentence; then correct it.\n\n' +
+    list.map(en => '- ' + en + ' (' + BY_EN[en].tr + ')').join('\n');
+  copyText(txt, () => {
+    $('copyLbl').textContent = 'Copied';
+    setTimeout(() => { $('copyLbl').textContent = 'Copy for chat'; }, 1600);
   });
-}
-
-function render(){ renderSummary(); renderList(); }
-
-/* ---------- etkileşim ---------- */
-document.querySelectorAll('.rv-tile').forEach(b => {
-  b.addEventListener('click', () => { filter = b.dataset.f; editing = null; render(); });
 });
-$('search').addEventListener('input', e => { query = e.target.value.trim(); renderList(); });
-
-$('list').addEventListener('click', e => {
-  const row = e.target.closest('.rv-row'); if (!row) return;
-  const en = row.dataset.en;
-  const btn = e.target.closest('[data-a]'); if (!btn) return;
-  const a = btn.dataset.a;
-
-  if (a === 'edit'){ editing = editing === en ? null : en; renderList(); return; }
-  if (a === 'del'){
-    if (confirm('Remove "' + en + '" from the deck? Its review history goes with it.')){
-      R.remove(en);
-      if (editing === en) editing = null;
-      render();
-    }
-    return;
-  }
-  if (a === 'cancel'){ editing = null; renderList(); return; }
-  if (a === 'save'){
-    const tr = row.querySelector('[data-e="tr"]').value;
-    const note = row.querySelector('[data-e="note"]').value;
-    const pos = row.querySelector('[data-e="pos"]').value;
-    R.set(en, { tr: tr, note: note, pos: pos });
-    editing = null;
-    render();
-    return;
-  }
-});
-
-/* ---- elle ekleme ---- */
-$('addBtn').addEventListener('click', () => {
-  const en = $('addEn').value.trim();
-  const err = $('addErr');
-  if (!en){ err.textContent = 'The English word is required.'; err.hidden = false; $('addEn').focus(); return; }
-  if (R.has(en)){ err.textContent = '"' + en.toLowerCase() + '" is already in the deck.'; err.hidden = false; return; }
-  err.hidden = true;
-  R.add({ en: en, tr: $('addTr').value, note: $('addNote').value, src: 'custom' });
-  $('addEn').value = ''; $('addTr').value = ''; $('addNote').value = '';
-  filter = 'all'; query = ''; $('search').value = '';
+$('doneBtn').addEventListener('click', () => {
+  const list = pickedDue();
+  if (!list.length) return;
+  let d = $('doneDate').value || J.today();
+  if (d > J.today()) d = J.today();
+  list.forEach(en => { J.sentenceDone(en, d); delete sentPicked[en]; });
+  const m = $('doneMsg');
+  m.textContent = list.length + (list.length === 1 ? ' word' : ' words') + ' marked as practised on ' + shortDate(d) + '.';
+  m.hidden = false;
+  setTimeout(() => { m.hidden = true; }, 3200);
   render();
 });
-$('addEn').addEventListener('keydown', e => { if (e.key === 'Enter') $('addTr').focus(); });
-$('addTr').addEventListener('keydown', e => { if (e.key === 'Enter') $('addNote').focus(); });
-
-/* ---- liste olarak ekle ----
-   Uygulamadan önce ne olacağı yazılır: kaç yeni, kaç güncelleme, kaçı
-   gerçekten bir boşluğu dolduruyor. Körlemesine uygulanmasın. */
-function bulkPreview(){
-  const txt = $('bulkText').value;
-  const box = $('bulkPreview'), btn = $('bulkBtn');
-  if (!txt.trim()){ box.hidden = true; btn.disabled = true; return; }
-  const p = R.previewList(txt);
-  btn.disabled = p.total === 0;
-  box.hidden = false;
-  box.classList.toggle('none', p.total === 0);
-  if (!p.total){
-    box.innerHTML = 'No word found in that text.' +
-      (p.skipped ? ' <b>' + p.skipped + '</b> line(s) skipped.' : '');
-    return;
-  }
-  const bits = ['<b>' + p.total + '</b> word(s) recognised'];
-  if (p.fresh) bits.push('<b>' + p.fresh + '</b> new');
-  if (p.existing) bits.push('<b>' + p.existing + '</b> already here (will be updated)');
-  if (p.fills) bits.push('<b>' + p.fills + '</b> gap(s) will be filled');
-  if (p.skipped) bits.push('<b>' + p.skipped + '</b> line(s) skipped');
-  box.innerHTML = bits.join(' · ');
+function copyText(text, cb){
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(cb, () => fallbackCopy(text, cb));
+  } else fallbackCopy(text, cb);
 }
-$('bulkText').addEventListener('input', bulkPreview);
-$('bulkClear').addEventListener('click', () => { $('bulkText').value = ''; bulkPreview(); $('bulkText').focus(); });
-$('bulkBtn').addEventListener('click', () => {
-  const p = R.previewList($('bulkText').value);
-  if (!p.total) return;
-  const res = R.addMany(p.items, 'custom');
-  $('bulkText').value = '';
-  bulkPreview();
-  filter = 'all'; query = ''; $('search').value = '';
-  render();
-  const box = $('bulkPreview');
-  box.hidden = false; box.classList.remove('none');
-  box.innerHTML = '<b>' + res.added + '</b> added, <b>' + res.updated + '</b> updated.';
-});
-
-/* ---- eksikleri kopyala ---- */
-$('gapCopyBtn').addEventListener('click', () => {
-  const txt = R.gapReport();
-  if (!txt) return;
-  const done = () => {
-    const l = $('gapCopyLabel'), old = l.textContent;
-    l.textContent = 'Copied';
-    setTimeout(() => { l.textContent = old; }, 1600);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(done, () => fallbackCopy(txt, done));
-  } else fallbackCopy(txt, done);
-});
 function fallbackCopy(text, cb){
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -593,113 +396,158 @@ function fallbackCopy(text, cb){
   document.body.removeChild(ta);
 }
 
+/* ---------- önümüzdeki 7 gün ---------- */
+function renderWeek(){
+  $('week').innerHTML = J.upcoming(7).map(d => {
+    const p = d.date.split('-');
+    const day = new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' });
+    return '<div class="rv-day' + (d.cards ? '' : ' zero') + '" title="' + shortDate(d.date) + '">' +
+      '<span class="dn">' + day + '</span>' +
+      '<span class="dc">' + d.cards + '</span>' +
+      '<span class="ds">' + (d.sents ? d.sents + ' sent.' : '') + '</span></div>';
+  }).join('');
+}
+
+/* ---------- tüm kelimeler ---------- */
+let query = '', priFilter = '';
+function renderList(){
+  let list = words(J.reviewWords());
+  $('allN').textContent = list.length ? '· ' + list.length : '';
+  if (priFilter) list = list.filter(en => J.get(en).pri === priFilter);
+  if (query) {
+    const q = query.toLowerCase();
+    list = list.filter(en => en.toLowerCase().indexOf(q) >= 0 || BY_EN[en].tr.toLowerCase().indexOf(q) >= 0);
+  }
+  list.sort((a, b) => { const A = J.get(a).card.due, B = J.get(b).card.due; return A < B ? -1 : A > B ? 1 : a.localeCompare(b); });
+  if (!list.length) {
+    $('list').innerHTML = J.reviewWords().length
+      ? '<div class="rv-empty">No word matches.</div>'
+      : '<div class="rv-empty">Review is empty. Mark words as <b>Learned</b> in <a href="vocabulary.html">Vocabulary</a> and they show up here.</div>';
+    return;
+  }
+  const t = J.today();
+  $('list').innerHTML = list.map(en => {
+    const j = J.get(en), w = BY_EN[en];
+    return '<div class="rv-item p-' + j.pri + '" data-en="' + esc(en) + '">' +
+      '<span class="rv-text"><span class="rv-en">' + esc(en) + '</span><span class="rv-tr">' + esc(w.tr) + '</span></span>' +
+      '<span class="rv-when">' +
+        '<span' + (j.card.due <= t ? ' class="due"' : '') + '>Card ' + rel(j.card.due) + '</span>' +
+        '<span' + (j.sent.due <= t ? ' class="due"' : '') + '>Sentence ' + rel(j.sent.due) + '</span>' +
+      '</span>' +
+      '<span class="rv-pri" role="group" aria-label="Priority">' +
+        PRI.map(p => '<button type="button" class="' + p + (j.pri === p ? ' on' : '') + '" data-p="' + p + '" aria-pressed="' + (j.pri === p) + '" title="' + J.PRI_LABEL[p] + ' priority">' + PRI_SHORT[p] + '</button>').join('') +
+      '</span>' +
+    '</div>';
+  }).join('');
+}
+$('list').addEventListener('click', e => {
+  const b = e.target.closest('.rv-pri button'); if (!b) return;
+  J.setPriority(b.closest('.rv-item').dataset.en, b.dataset.p);
+  render();
+});
+$('search').addEventListener('input', e => { query = e.target.value.trim(); renderList(); });
+$('priFilter').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  priFilter = b.dataset.p;
+  $('priFilter').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  renderList();
+});
+
+function render(){ renderCards(); renderSent(); renderWeek(); renderList(); }
+
 /* ============================================================
-   ÇALIŞMA KATMANI — yalnızca TR -> EN
-   Kaynak küme: "Çalışılacak" sekmesi açıkken sallantıdakiler,
-   aksi halde hazır olanların tamamı. Hazır olmayan kayıt asla
-   karta girmez: eksik açıklamayla sınamak yanıltıcı olurdu.
+   KART OTURUMU — TR -> EN, yalnızca bugün sırası gelenler
    ============================================================ */
-const sv = $('study'), svBody = $('svBody'), svFoot = $('svFoot'),
-      svCount = $('svCount'), svFill = $('svFill'), svTitle = $('svTitle');
-let ses = null, svOpen = false;
+const sv = $('study'), svBody = $('svBody'), svFoot = $('svFoot');
+let ses = null, fc = null;
 
-function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-
-/* Çalışılacak havuz tek yerden: hem düğmenin açık/kapalı hâli hem de
-   oturumun kendisi buradan beslenir, ikisi ayrışmasın. */
-function studyPool(){ return filter === 'study' ? R.toStudy() : R.ready(); }
+/* Soru yüzünde ipucundaki başlık kelimesi maskelenir, yoksa cevabı ele verir. */
+function mask(html, en){
+  if (!html) return '';
+  const re = new RegExp('\\b' + en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[a-z]*', 'gi');
+  return html.replace(re, '<span class="masked" title="hidden">·····</span>');
+}
 
 function openStudy(){
-  const pool = studyPool();
-  if (!pool.length) return;
-  ses = { items: shuffle(pool), i: 0, hit: 0 };
-  svTitle.textContent = filter === 'study' ? 'To study' : 'Study';
-  sv.hidden = false; svOpen = true;
+  const due = words(J.cardsDue());
+  if (!due.length) return;
+  ses = { items: due, i: 0, hit: 0, back: [] };
+  sv.hidden = false;
   document.body.classList.add('sv-open');
   renderStudy();
 }
 function closeStudy(){
-  sv.hidden = true; svOpen = false;
+  sv.hidden = true;
   document.body.classList.remove('sv-open');
-  ses = null;
-  render();                      // skorlar değişmiş olabilir
-  $('studyBtn').focus();
+  ses = null; fc = null;
+  render();
+  $('startBtn').focus();
 }
-
-/* Kartın kendisi artık ortak bileşen (flashcard.js): iskelet, çevirme ve
-   puanlama her alanda aynı. Burada yalnızca hangi verinin hangi yüze
-   gideceği ve oturum akışı kalıyor. */
-let fc = null;
 function ensureCard(){
   if (fc) return fc;
   fc = NSFlash.mount(svBody, {
-    labels: { reveal:'Show answer', hide:'Hide answer', miss:"Didn't know",
-              hit:'Knew it', tap:'tap to flip', kbd:'Space flip · N / M rate · Esc exit' },
+    labels: { reveal:'Show answer', hide:'Hide answer', miss:"Didn't know", hit:'Knew it', tap:'tap to flip', kbd:'Space flip · N / M rate · Esc exit' },
     onRate: hit => rate(hit)
   });
   return fc;
 }
-
 function renderStudy(){
   const n = ses.items.length;
-  if (ses.i >= n){ renderStudyDone(); return; }
-  const it = ses.items[ses.i];
-  svCount.textContent = (ses.i + 1) + ' / ' + n;
-  svFill.style.width = (ses.i / n * 100) + '%';
-  /* Soru yüzünde ipucundaki başlık kelimesi maskelenir, yoksa cevabı
-     ele verir; cevap yüzünde maskeye gerek yok. */
+  if (ses.i >= n) { renderDone(); return; }
+  const en = ses.items[ses.i], w = BY_EN[en], j = J.get(en);
+  $('svCount').textContent = (ses.i + 1) + ' / ' + n;
+  $('svFill').style.width = (ses.i / n * 100) + '%';
+  const clue = w.hint || w.detail || '';
   ensureCard().show({
-    pos: it.pos || '',
-    idx: (ses.i + 1) + ' / ' + n,
-    term: it.tr,  ipa: '',          hint: R.maskHead(it.note, it.en),
-    answer: it.en, answerIpa: it.ipa || '',
-    answerHint: esc(it.note) + '<br><em>' + esc(it.tr) + '</em>'
+    pos: TYPE_EN[w.type] || w.type || '',
+    badge: J.PRI_LABEL[j.pri], idx: (ses.i + 1) + ' / ' + n,
+    term: w.tr, ipa: '', hint: mask(clue, en),
+    answer: en, answerIpa: w.uk || w.us || '',
+    answerHint: clue + (w.ex ? '<br><em>' + w.ex + '</em>' : '')
   });
   svFoot.innerHTML = '';
 }
-
-function renderStudyDone(){
-  const n = ses.items.length, pct = Math.round(ses.hit / n * 100);
-  svCount.textContent = n + ' / ' + n;
-  svFill.style.width = '100%';
-  const msg = pct === 100 ? 'All correct. Clean round.'
-    : pct >= 70 ? 'Going well. The ones you missed dropped into <b>To study</b>.'
-    : 'Worth another round through these.';
-  fc = null;   // sonuç ekranı bileşeni değiştiriyor, sonraki turda yeniden kurulsun
-  svBody.innerHTML = '<div class="sv-card is-result">' +
-    '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
-    '<div class="sv-pct">' + pct + '% CORRECT</div>' +
-    '<p class="sv-hint" style="border:0;padding-top:0">' + msg + '</p></div>';
-  svFoot.innerHTML =
-    '<div class="sv-rate">' +
-      '<button class="sv-reveal" id="svBack" type="button" style="border-radius:14px">Back to deck</button>' +
-      '<button class="sv-reveal" id="svAgain" type="button" style="border-radius:14px;background:var(--accent);border-color:var(--accent);color:#fff">Again</button>' +
-    '</div>';
-  $('svBack').addEventListener('click', closeStudy);
-  $('svAgain').addEventListener('click', openStudy);
-}
-
-/* Ses ve HUD artık bileşenin işi — burada yalnızca skor ve ilerleme var. */
 function rate(hit){
   if (!ses || ses.i >= ses.items.length) return;
-  R.addResult(ses.items[ses.i].en, hit);
+  const en = ses.items[ses.i];
+  const res = J.rateCard(en, hit);
+  if (res === 'fallback') {
+    /* üst üste 2 kez bilemedi: Learned kalkar, cümle listesine döner */
+    delete HIDDEN[en]; HIDE_STORE.touch(en).commit();
+    FLAGS[en] = 1; FLAG_STORE.touch(en).commit();
+    ses.back.push(en);
+  }
   if (hit) ses.hit++;
   ses.i++;
   renderStudy();
 }
-
-$('studyBtn').addEventListener('click', openStudy);
+function renderDone(){
+  const n = ses.items.length, pct = Math.round(ses.hit / n * 100);
+  $('svCount').textContent = n + ' / ' + n;
+  $('svFill').style.width = '100%';
+  fc = null;
+  let note = pct === 100 ? 'All correct. Each word moved one step further out.'
+    : 'The ones you missed come back tomorrow.';
+  if (ses.back.length) note += ' <b>' + ses.back.map(esc).join(', ') + '</b> ' +
+    (ses.back.length === 1 ? 'was' : 'were') + ' missed twice in a row and went back to sentence practice in Vocabulary.';
+  svBody.innerHTML = '<div class="sv-result">' +
+    '<div class="sv-done">' + ses.hit + '<span style="opacity:.35"> / ' + n + '</span></div>' +
+    '<div class="sv-pct">' + pct + '% CORRECT</div>' +
+    '<p class="sv-note">' + note + '</p></div>';
+  svFoot.innerHTML = '<button class="rv-cta" id="svBack" type="button">Back to Review</button>';
+  $('svBack').addEventListener('click', closeStudy);
+}
+$('startBtn').addEventListener('click', openStudy);
 $('svExit').addEventListener('click', closeStudy);
 document.addEventListener('keydown', e => {
-  if (!svOpen || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.key === 'Escape'){ e.preventDefault(); closeStudy(); return; }
+  if (sv.hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'Escape') { e.preventDefault(); closeStudy(); return; }
   if (!ses || ses.i >= ses.items.length) return;
-  /* Çevirme ve puanlama kısayolları bileşenden; Esc sayfanın kendi işi. */
   if (fc && fc.handleKey(e)) e.preventDefault();
 });
 
-/* Başka sekme ya da bulut listeyi değiştirdiyse ekranı tazele. */
-window.addEventListener('ns-state-changed', () => { if (!svOpen) render(); });
+/* Başka sekme ya da bulut değiştirdiyse tazele (oturum açıkken değil). */
+window.addEventListener('ns-state-changed', () => { if (sv.hidden) render(); });
 
 render();
 </script>

@@ -93,11 +93,11 @@ Eski `ns-review` / `ns-review-stats` artık okunmaz; kullanıcı onayıyla temiz
 
 ## Adımlar
 
-- [ ] 1. `journey-core.js`: aşamalar, sayaç, takvimler, geçiş
-- [ ] 2. `lab-core.js` bağlantıları: `addScore` → sayaç, `toggleHidden` → Learned/geri alma
-- [ ] 3. Vocabulary & B1: "Review'a ekle" düğmelerini kaldır, `review-core.js` bağımlılığını sil
-- [ ] 4. `review.html` baştan: Today (kart + cümle), liste, öncelik, kart oturumu
-- [ ] 5. `index.html`: Flow / Library bölümleri, altta "How the flow works" düğmesi
-- [ ] 6. `flow.html`: akışı anlatan sayfa (İngilizce)
-- [ ] 7. `sw.js`: yeni dosyalar, sürüm artışı
+- [x] 1. `journey-core.js`: aşamalar, sayaç, takvimler, geçiş
+- [x] 2. `lab-core.js` bağlantıları: `addScore` → sayaç, `toggleHidden` → Learned/geri alma
+- [x] 3. Vocabulary & B1: "Review'a ekle" düğmelerini kaldır, `review-core.js` bağımlılığını sil
+- [x] 4. `review.html` baştan: Today (kart + cümle), liste, öncelik, kart oturumu
+- [x] 5. `index.html`: Flow / Library bölümleri, altta "How the flow works" düğmesi
+- [x] 6. `flow.html`: akışı anlatan sayfa (İngilizce)
+- [x] 7. `sw.js`: yeni dosyalar, sürüm artışı
 - [ ] 8. Eski Review verisini temizle (kullanıcı onayıyla) ve `review-gap` skill'ini kaldır

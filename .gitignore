@@ -9,5 +9,8 @@ node_modules
 # kişisel Claude Code ayarları (skill'ler paylaşılır, bu dosya paylaşılmaz)
 .claude/settings.local.json
 
+# Claude'un geçici scriptleri
+tmp/
+
 # copyrighted source material — do not publish
 *.pdf

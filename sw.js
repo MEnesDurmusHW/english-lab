@@ -11,7 +11,7 @@
      everything else  untouched — Firebase auth/Firestore and the
                       analytics beacon must go straight to the network
    ============================================================ */
-const VERSION = '2026-10-03a';
+const VERSION = '2026-10-04a';
 const SHELL = `nsel-shell-${VERSION}`;
 const RUNTIME = `nsel-runtime-${VERSION}`;
 const FONTS = `nsel-fonts-${VERSION}`;
@@ -29,13 +29,14 @@ const PRECACHE = [
   'b1.html',
   'b1-unknown.html',
   'review.html',
+  'flow.html',
   'progress.html',
   'styles.css',
   'lab.css',
   'b1.css',
   'flashcard.css',
   'store.js',
-  'review-core.js',
+  'journey-core.js',
   'flashcard.js',
   'theme.js',
   'share.js',

@@ -126,7 +126,11 @@ function resetScoresForGroups(ids){
   WORDS.forEach(function(w){ if(ids.indexOf(w.grp)>=0){ delete SCORES[w.en]; SCORE_STORE.touch(w.en); } });
   saveScores();
 }
-function addScore(en, d){ let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores(); }
+function addScore(en, d){
+  let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores();
+  // akış sayacı ayrı tutulur: farklı 2 günde doğru -> cümle aşaması (bkz. journey-core.js)
+  if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence' && !isFlagged(en)) toggleFlag(en);
+}
 function statusOf(en){ const s=getScore(en); if(s>=KNOWN_AT) return 'known'; if(s<0) return 'weak'; return 'shaky'; }
 function scoreText(sc){ return sc>0 ? '+'+sc : ''+sc; }
 
@@ -149,7 +153,20 @@ let HIDDEN={};
 const HIDE_STORE = NSStore.map(HIDE_KEY, HIDDEN);
 function saveHidden(){ HIDE_STORE.commit(); }
 function isHidden(en){ return !!HIDDEN[en]; }
-function toggleHidden(en){ if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; HIDE_STORE.touch(en); saveHidden(); }
+function toggleHidden(en){
+  if(HIDDEN[en]) delete HIDDEN[en]; else HIDDEN[en]=1; HIDE_STORE.touch(en); saveHidden();
+  // Learned = Review'a giriş; geri almak Review'dan çıkarır
+  if(typeof NSJourney!=='undefined'){ if(HIDDEN[en]) NSJourney.learn(en); else NSJourney.unlearn(en); }
+}
+
+/* akıştan önce işaretlenmiş kelimeler bir kez içeri alınır (Learned -> review, cümle listesi -> sentence) */
+const JOURNEY_ADOPT_KEY='ns-journey-adopted';
+try{
+  if(typeof NSJourney!=='undefined' && !localStorage.getItem(JOURNEY_ADOPT_KEY)){
+    NSJourney.adopt(Object.keys(HIDDEN), Object.keys(FLAGS).filter(en=>!HIDDEN[en]));
+    localStorage.setItem(JOURNEY_ADOPT_KEY, '1');
+  }
+}catch(e){}
 
 /* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.

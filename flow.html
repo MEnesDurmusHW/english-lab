@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How the Flow Works — NS's English Lab</title>
+<meta name="description" content="How a word travels through the English Lab: B1 Recall, Vocabulary, Articles, Collocations, sentence practice and Review.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="How the Flow Works">
+<meta property="og:description" content="From a missed B1 card to a word you can use.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/flow.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  :root{ --ok:#5c8a4a; --mid:#c68a2e; --bad:#c0552f; }
+  [data-theme="dark"]{ --ok:#6fbf7f; --mid:#d8ac5c; --bad:#e0765a; }
+  .fl-wrap{max-width:760px;margin:0 auto;padding:30px clamp(16px,4vw,32px) 120px}
+  .fl-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.8rem,5.4vw,2.5rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .fl-head p{margin:12px 0 0;color:var(--text-dim);font-size:1rem;line-height:1.65;max-width:60ch}
+
+  .fl-h2{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:44px 0 16px}
+
+  /* ---- adımlar: dikey çizgi üstünde ---- */
+  .fl-steps{list-style:none;margin:0;padding:0;position:relative}
+  .fl-steps::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;width:2px;background:var(--border);border-radius:2px}
+  .fl-step{position:relative;display:grid;grid-template-columns:36px 1fr;gap:16px;padding:0 0 22px}
+  .fl-step:last-child{padding-bottom:0}
+  .fl-dot{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:2px solid var(--c);color:var(--c);font-family:var(--mono,monospace);font-weight:700;font-size:.82rem;position:relative;z-index:1}
+  .fl-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;min-width:0}
+  .fl-card h3{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fl-card h3 a{color:inherit;text-decoration:none}
+  .fl-card h3 a:hover{color:var(--c)}
+  .fl-tag{font-family:var(--mono,monospace);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px solid var(--border);color:var(--text-muted)}
+  .fl-card p{margin:6px 0 0;font-size:.92rem;color:var(--text-dim);line-height:1.6}
+  .fl-gate{margin:10px 0 0;font-size:.84rem;color:var(--text);background:color-mix(in srgb,var(--c) 9%,transparent);border:1px solid color-mix(in srgb,var(--c) 26%,transparent);border-radius:10px;padding:8px 11px;line-height:1.5}
+  .fl-gate b{color:var(--c)}
+
+  /* ---- kurallar ---- */
+  .fl-rules{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:620px){ .fl-rules{grid-template-columns:1fr} }
+  .fl-rule{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+  .fl-rule h3{margin:0 0 6px;font-size:.95rem;font-weight:700}
+  .fl-rule p{margin:0;font-size:.88rem;color:var(--text-dim);line-height:1.6}
+
+  /* ---- takvim tablosu ---- */
+  .fl-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+  .fl-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:440px}
+  .fl-table th,.fl-table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  .fl-table tr:last-child td{border-bottom:0}
+  .fl-table th{font-family:var(--mono,monospace);font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+  .fl-table td{font-family:var(--mono,monospace);color:var(--text-dim);font-variant-numeric:tabular-nums}
+  .fl-table td:first-child{font-family:var(--sans);font-weight:700;color:var(--text)}
+  .pri-high{color:var(--bad) !important}
+  .pri-med{color:var(--mid) !important}
+  .pri-low{color:var(--ok) !important}
+  .fl-note{font-size:.84rem;color:var(--text-muted);line-height:1.6;margin:10px 2px 0}
+
+  .fl-lib{font-size:.93rem;color:var(--text-dim);line-height:1.65;margin:0}
+  .fl-lib a{color:var(--accent);font-weight:600;text-decoration:none}
+  .fl-lib a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="appbar">
+  <div class="appbar-inner solo">
+    <a class="brand" href="index.html" aria-label="Back to the English Lab home">
+      <span class="brand-mark">NS</span>
+      <span class="brand-text">
+        <span class="brand-name">How the flow works</span>
+        <span class="brand-sub">English Lab</span>
+      </span>
+    </a>
+    <div class="appbar-tools">
+      <button class="tool-btn" type="button" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <span id="syncHost" class="sync-host"></span>
+    </div>
+  </div>
+</header>
+
+<main class="fl-wrap">
+  <header class="fl-head">
+    <h1>From a missed card to a word you use</h1>
+    <p>Recognising a word and using it are two different skills. Recognition comes first and is quick to train. Using the word takes practice of its own. The flow trains them in that order, then keeps bringing each word back just before you would forget it.</p>
+  </header>
+
+  <h2 class="fl-h2">The path</h2>
+  <ol class="fl-steps">
+    <li class="fl-step" style="--c:#059669">
+      <span class="fl-dot">1</span>
+      <div class="fl-card">
+        <h3><a href="b1.html">B1 Recall</a> <span class="fl-tag">collect</span></h3>
+        <p>Play the B1 flashcards. The words you miss pile up in the <a href="b1-unknown.html">unknown list</a>.</p>
+        <p class="fl-gate">When about <b>30</b> have piled up, pick the ones worth learning and turn them into a new Vocabulary group in chat.</p>
+      </div>
+    </li>
+    <li class="fl-step" style="--c:#4F46E5">
+      <span class="fl-dot">2</span>
+      <div class="fl-card">
+        <h3><a href="vocabulary.html">Vocabulary</a> <span class="fl-tag">recognise</span></h3>
+        <p>Work the group with the list, flashcards, quiz and fill-in. The practice score is yours to play with. Reset a group and run it again as often as you like; the flow keeps its own record.</p>
+        <p class="fl-gate">Know a word on <b>two different days</b> and it moves to sentence practice by itself. Two right answers in the same session only count once, because remembering something you saw five minutes ago is short-term memory. A wrong answer starts the count over.</p>
+      </div>
+    </li>
+    <li class="fl-step" style="--c:#0D9488">
+      <span class="fl-dot">3</span>
+      <div class="fl-card">
+        <h3><a href="articles.html">Articles</a> <span class="fl-tag">context</span></h3>
+        <p>Each group's article uses its harder words, the 10–20 that still need context. Read it once you know the meanings and before you write sentences.</p>
+      </div>
+    </li>
+    <li class="fl-step" style="--c:#7C3AED">
+      <span class="fl-dot">4</span>
+      <div class="fl-card">
+        <h3><a href="collocations.html">Collocations</a> <span class="fl-tag">patterns</span></h3>
+        <p>Which words each word keeps company with. Go over them right before writing sentences so the patterns are fresh.</p>
+      </div>
+    </li>
+    <li class="fl-step" style="--c:#C026D3">
+      <span class="fl-dot">5</span>
+      <div class="fl-card">
+        <h3>Sentence practice <span class="fl-tag">use</span></h3>
+        <p>The words that passed step 2 sit in Vocabulary's <b>Sentences</b> tab. Copy them into a chat, write your own sentences and get them corrected.</p>
+        <p class="fl-gate">Once you have used a word in your own sentences, mark it <b>Learned</b>. It moves to Review.</p>
+      </div>
+    </li>
+    <li class="fl-step" style="--c:#EA580C">
+      <span class="fl-dot">6</span>
+      <div class="fl-card">
+        <h3><a href="review.html">Review</a> <span class="fl-tag">keep</span></h3>
+        <p>Each word gets two calendars: flashcards (Turkish to English) and sentence practice. The Review page lists what is due today. For sentences, copy the list, practise in chat, then come back and mark the date.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h2 class="fl-h2">Rules worth knowing</h2>
+  <div class="fl-rules">
+    <div class="fl-rule">
+      <h3>Shortcut for easy words</h3>
+      <p>If a word is obvious, mark it Learned straight away. It skips sentence practice and enters Review at <b>Low</b> priority.</p>
+    </div>
+    <div class="fl-rule">
+      <h3>Falling back</h3>
+      <p>Miss a Review card <b>twice in a row</b> and the word goes back to sentence practice, with its Learned mark removed. Using a forgotten word again fixes it better than seeing it on a card.</p>
+    </div>
+    <div class="fl-rule">
+      <h3>Priority</h3>
+      <p>Words arrive in Review at <b>Medium</b>. Raise the hard and useful ones to <b>High</b>, drop the simple ones to <b>Low</b>. Priority sets the spacing, and High words come first on a busy day.</p>
+    </div>
+    <div class="fl-rule">
+      <h3>Undoing Learned</h3>
+      <p>Remove the Learned mark in Vocabulary and the word leaves Review. It goes back to sentence practice.</p>
+    </div>
+  </div>
+
+  <h2 class="fl-h2">The calendars</h2>
+  <div class="fl-table-wrap">
+    <table class="fl-table">
+      <thead><tr><th>Priority</th><th>Flashcards (days)</th><th>Sentences (days)</th></tr></thead>
+      <tbody>
+        <tr><td class="pri-high">High</td><td>1 · 3 · 7 · 14 · 30 · 60</td><td>3 · 7 · 14 · 30 · 60 · 120</td></tr>
+        <tr><td class="pri-med">Medium</td><td>2 · 5 · 12 · 25 · 50 · 100</td><td>7 · 14 · 30 · 60 · 120 · 240</td></tr>
+        <tr><td class="pri-low">Low</td><td>4 · 10 · 25 · 60 · 120 · 240</td><td>14 · 30 · 60 · 120 · 240 · 365</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fl-note">Every success moves a word one step to the right; the last step repeats. A missed flashcard goes back to the first step and returns the next day. Changing priority recalculates the next date from the last time you reviewed the word.</p>
+
+  <h2 class="fl-h2">Outside the flow</h2>
+  <p class="fl-lib"><a href="synonyms.html">Synonym Constellation</a>, <a href="grammar.html">Grammar Patterns</a> and <a href="book.html">Collocations in Use</a> are the library. They are not steps. Open them when a word or a pattern needs a closer look.</p>
+</main>
+</body>
+</html>

@@ -52,6 +52,13 @@
   .lab-card .arrow{position:absolute;right:22px;bottom:20px;font-size:20px;color:var(--c,var(--accent));opacity:.4;transition:opacity .22s,transform .22s}
   .lab-card:hover .arrow{opacity:1;transform:translateX(4px)}
   .lab-card.wide{grid-column:1 / -1}
+  .home-sec + .home-sec{margin-top:56px}
+  .home-sec-head{margin-bottom:18px}
+  .home-sec-title{font-family:var(--display);font-size:1.5rem;font-weight:700;letter-spacing:-.025em;margin:0;color:var(--text)}
+  .home-sec-head p{margin:6px 0 0;font-size:.93rem;color:var(--text-dim);line-height:1.55}
+  .home-flow-link{margin-top:56px;text-align:center}
+  .flow-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.92rem;text-decoration:none;transition:border-color .18s,color .18s}
+  .flow-btn:hover{border-color:var(--accent);color:var(--accent)}
   @media (max-width:640px){ .cards{grid-template-columns:1fr} .lab-card.wide{grid-column:auto} }
 </style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -77,55 +84,74 @@
     <p>A small workshop for the parts of English that only stick with practice — the words, their neighbours, and the patterns that hold them together.</p>
   </header>
 
-  <div class="cards">
-    <a class="lab-card" href="vocabulary.html" style="--c:#4F46E5;--c2:#6366F1">
-      <span class="num">01</span>
-      <h2>Vocabulary</h2>
-      <p>Words with IPA, nuance and examples. List, flashcards, quiz, fill-in and sentence practice — with progress tracking.</p>
+  <section class="home-sec" aria-labelledby="secFlow">
+    <div class="home-sec-head">
+      <h2 class="home-sec-title" id="secFlow">Flow</h2>
+      <p>One path, in this order. A word enters at B1 Recall and ends up in Review.</p>
+    </div>
+    <div class="cards">
+    <a class="lab-card" href="b1.html" style="--c:#059669;--c2:#10B981">
+      <span class="num">STEP 1</span>
+      <h2>B1 Recall</h2>
+      <p>All the B1 words in one place. Turkish first, you recall the English. The ones you miss are candidates for a new Vocabulary group.</p>
       <span class="arrow" aria-hidden="true">&rarr;</span>
     </a>
-    <a class="lab-card" href="collocations.html" style="--c:#7C3AED;--c2:#8B5CF6">
-      <span class="num">02</span>
-      <h2>Collocations</h2>
-      <p>The words each word likes to keep company with. Browse, write your own examples, then test yourself with match and fill.</p>
+    <a class="lab-card" href="vocabulary.html" style="--c:#4F46E5;--c2:#6366F1">
+      <span class="num">STEP 2</span>
+      <h2>Vocabulary</h2>
+      <p>Your word groups with IPA, nuance and examples. Practise freely. Knowing a word on two different days moves it to sentence practice.</p>
       <span class="arrow" aria-hidden="true">&rarr;</span>
     </a>
     <a class="lab-card" href="articles.html" style="--c:#0D9488;--c2:#14B8A6">
-      <span class="num">03</span>
+      <span class="num">STEP 3</span>
       <h2>Articles</h2>
-      <p>Short reading passages where your words appear in context. Hover a highlighted word to see its meaning.</p>
+      <p>Short passages with the harder words of a group in context. Read them between flashcards and sentence practice.</p>
       <span class="arrow" aria-hidden="true">&rarr;</span>
     </a>
-    <a class="lab-card" href="synonyms.html" style="--c:#D97706;--c2:#F59E0B">
-      <span class="num">04</span>
-      <h2>Synonym Constellation</h2>
-      <p>Turkish meanings orbited by their English synonyms — closest sit innermost. Hover to read how each one differs.</p>
-      <span class="arrow" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lab-card" href="grammar.html" style="--c:#E11D48;--c2:#F43F5E">
-      <span class="num">05</span>
-      <h2>Grammar Patterns</h2>
-      <p>Dependent prepositions, verb patterns, subject–verb agreement, tense, adverbial order, articles, phrasal verb word order and word form confusion. Notes plus a full-screen quiz per topic.</p>
-      <span class="arrow" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lab-card" href="book.html" style="--c:#0284C7;--c2:#38BDF8">
-      <span class="num">06</span>
-      <h2>Collocations in Use</h2>
-      <p>Units 1–10 of the Cambridge advanced collocations book: what collocations are, how they're classified, plus metaphor, adverbs, make-verbs, communicating and phrasal verbs. Learn tab and Practice quiz.</p>
-      <span class="arrow" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lab-card" href="b1.html" style="--c:#059669;--c2:#10B981">
-      <span class="num">07</span>
-      <h2>B1 Recall</h2>
-      <p>All the B1 words in one place. The Turkish shows first — you recall the English, then flip. Know it / don't know it, accuracy score, learned pile, and filters by pack, word type and status.</p>
+    <a class="lab-card" href="collocations.html" style="--c:#7C3AED;--c2:#8B5CF6">
+      <span class="num">STEP 4</span>
+      <h2>Collocations</h2>
+      <p>The words each word keeps company with. Material for the sentences you write.</p>
       <span class="arrow" aria-hidden="true">&rarr;</span>
     </a>
     <a class="lab-card wide" href="review.html" style="--c:#EA580C;--c2:#F97316">
-      <span class="num">08</span>
-      <h2>Review Deck</h2>
-      <p>The one list that sits above the rest: words you have already learned and don't want to lose. Add from Vocabulary, from B1, or by hand. Turkish-to-English cards only, plus a readiness view that shows exactly which entries are still missing a meaning or a distinguishing note.</p>
+      <span class="num">STEP 5</span>
+      <h2>Review</h2>
+      <p>Words you marked Learned. Each one has a flashcard calendar and a sentence calendar; priority sets how often it returns.</p>
       <span class="arrow" aria-hidden="true">&rarr;</span>
     </a>
+    </div>
+  </section>
+
+  <section class="home-sec" aria-labelledby="secLib">
+    <div class="home-sec-head">
+      <h2 class="home-sec-title" id="secLib">Library</h2>
+      <p>Reference material outside the flow. Open it when you need it.</p>
+    </div>
+    <div class="cards">
+    <a class="lab-card" href="synonyms.html" style="--c:#D97706;--c2:#F59E0B">
+      <span class="num">LIBRARY</span>
+      <h2>Synonym Constellation</h2>
+      <p>Turkish meanings orbited by their English synonyms. Closest sit innermost. Hover to read how each one differs.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="lab-card" href="grammar.html" style="--c:#E11D48;--c2:#F43F5E">
+      <span class="num">LIBRARY</span>
+      <h2>Grammar Patterns</h2>
+      <p>Dependent prepositions, verb patterns, agreement, tense, adverb order, articles, phrasal verb order and word form. Notes plus a quiz per topic.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="lab-card wide" href="book.html" style="--c:#0284C7;--c2:#38BDF8">
+      <span class="num">LIBRARY</span>
+      <h2>Collocations in Use</h2>
+      <p>Units 1–10 of the Cambridge advanced collocations book, with a Learn tab and a Practice quiz.</p>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    </div>
+  </section>
+
+  <div class="home-flow-link">
+    <a class="flow-btn" href="flow.html">How the flow works <span aria-hidden="true">&rarr;</span></a>
   </div>
 </div>
 
