@@ -1,21 +1,20 @@
 /* ============================================================
-   English Lab — shared top app bar (two-tier navigation)
+   English Lab — shared top app bar
    Set window.LAB_SECTION before this script loads:
      'vocabulary' | 'collocations' | 'articles' | 'progress'
-   Injects: brand · main sections · tools (Progress/share/theme/sync).
+   Injects: brand (page name) · tools (Stats/share/theme/sync).
    Also tags <html data-section> so lab.css can recolor per section.
    Sub-tabs live in each page (a .subbar row), wired by that page.
+
+   Bölümler arası sekme yok: sayfalar tek bir akışın adımları, aralarında
+   ana sayfa ve flow.html üzerinden geçiliyor (bkz. docs/PLAN-flow.md).
    ============================================================ */
 (function () {
   'use strict';
   var S = window.LAB_SECTION || 'vocabulary';
   document.documentElement.setAttribute('data-section', S);
 
-  var MAIN = [
-    { id: 'vocabulary',   label: 'Vocabulary',   href: 'vocabulary.html' },
-    { id: 'collocations', label: 'Collocations', href: 'collocations.html' },
-    { id: 'articles',     label: 'Articles',     href: 'articles.html' }
-  ];
+  var NAME = { vocabulary: 'Vocabulary', collocations: 'Collocations', articles: 'Articles', progress: 'Progress' };
 
   var ICON = {
     progress: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
@@ -28,21 +27,14 @@
     sun:      '<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
   };
 
-  var nav = MAIN.map(function (m) {
-    var on = m.id === S;
-    return '<a class="mtab' + (on ? ' active' : '') + '" href="' + m.href + '"' +
-           (on ? ' aria-current="page"' : '') + '>' + m.label + '</a>';
-  }).join('');
-
   var bar = document.createElement('header');
   bar.className = 'appbar';
   bar.innerHTML =
-    '<div class="appbar-inner">' +
-      '<a class="brand" href="index.html" aria-label="English Lab home">' +
+    '<div class="appbar-inner solo">' +
+      '<a class="brand" href="index.html" aria-label="Back to the English Lab home">' +
         '<span class="brand-mark">NS</span>' +
-        '<span class="brand-text"><span class="brand-name">English Lab</span><span class="brand-sub">by NS</span></span>' +
+        '<span class="brand-text"><span class="brand-name">' + (NAME[S] || 'English Lab') + '</span><span class="brand-sub">English Lab</span></span>' +
       '</a>' +
-      '<nav class="mainnav" aria-label="Sections">' + nav + '</nav>' +
       '<div class="appbar-tools">' +
         '<div class="more-menu" id="statsMenu">' +
           '<button class="more-btn" id="statsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Statistics">' +
