@@ -186,19 +186,22 @@ function toggleHidden(en){
    Gruplar/durumlar kendi içinde VEYA, fasetler arası VE ile birleşir. */
 const FILTER_KEY='ns-vocab-filter';
 let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned' (dahil) veya '!flagged'/'!learned' (hariç)
+let selAbove=null;                              // skor > selAbove olanlar (null: kısıt yok)
 let selBelow=null;                              // skor < selBelow olanlar (null: kısıt yok)
+const ABOVE_MIN=-3, ABOVE_MAX=4;                // skor > -3 / > 4 hâlâ anlamlı (-2..5 aralığını verir)
 const BELOW_MIN=-2, BELOW_MAX=5;                // skor -3..5 aralığında; <-2 ve <6 anlamsız
 try{
   const f=JSON.parse(localStorage.getItem(FILTER_KEY))||{};
   if(Array.isArray(f.g)) selGroups=f.g.slice();
   if(Array.isArray(f.s)) selStatus=f.s.slice();
   if(Array.isArray(f.v)) selSaved=f.v.slice();
+  if(typeof f.a==='number' && f.a>=ABOVE_MIN && f.a<=ABOVE_MAX) selAbove=f.a;
   if(typeof f.b==='number' && f.b>=BELOW_MIN && f.b<=BELOW_MAX) selBelow=f.b;
 }catch(e){}
 if(typeof WORD_GROUPS!=='undefined') selGroups=selGroups.filter(id=>WORD_GROUPS.some(g=>g.id===id));   // geçersiz grupları at
-function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow})); }catch(e){} }
-function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow]); }   // torba/önbellek kimliği
-function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; saveFilter(); }
+function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow,a:selAbove})); }catch(e){} }
+function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow,selAbove]); }   // torba/önbellek kimliği
+function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; selAbove=null; saveFilter(); }
 
 function matchesGroup(w){ return selGroups.length===0 || selGroups.indexOf(w.grp)>=0; }
 /* 'kaydedilenler' fasetinin her satırı 3 durumlu: boş (kısıt yok) · dahil (yalnızca o) · hariç (o olmayanlar) */
@@ -213,6 +216,7 @@ function matchesFilter(w){
   if(!matchesSaved('flagged', isFlagged(w.en))) return false;
   if(selStatus.length && selStatus.indexOf(statusOf(w.en))<0) return false;
   if(selBelow!==null && getScore(w.en)>=selBelow) return false;
+  if(selAbove!==null && getScore(w.en)<=selAbove) return false;
   return true;
 }
 function activeWords(){ return WORDS.filter(matchesFilter); }
@@ -225,13 +229,13 @@ const FLT_EXC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const FLT_TXT = {
   tr: { filter:'Filtrele', panel:'Filtre', clear:'Temizle', groups:'Gruplar', group:'Grup ', reset:'Seçili grubun istatistiğini sıfırla',
         resetAsk:' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.', status:'Skor durumu',
-        weak:'Zayıf', shaky:'Sağlam değil', known:'Biliyorum', below:'Skoru şunun altında', belowGroup:'Skor üst sınırı',
-        dec:'Azalt', inc:'Artır', belowOff:'Skor sınırını kaldır', saved:'Kaydedilenler',
+        weak:'Zayıf', shaky:'Sağlam değil', known:'Biliyorum', below:'Skoru şunun altında', above:'Skoru şunun üstünde', aboveGroup:'Skor alt sınırı', belowGroup:'Skor üst sınırı',
+        dec:'Azalt', inc:'Artır', belowOff:'Skor sınırını kaldır', aboveOff:'Skor alt sınırını kaldır', saved:'Kaydedilenler',
         flagged:'Cümlede çalışacaklarım', learned:'Öğrendiklerim', include:'Dahil et', exclude:'Hariç tut', match:' kelime eşleşiyor' },
   en: { filter:'Filter', panel:'Filter', clear:'Clear', groups:'Groups', group:'Group ', reset:'Reset practice score for the selected groups',
         resetAsk:' words will lose their practice score. This cannot be undone. Continue?', status:'Practice score',
-        weak:'Weak', shaky:'Shaky', known:'Known', below:'Score below', belowGroup:'Score limit',
-        dec:'Decrease', inc:'Increase', belowOff:'Remove score limit', saved:'Marked',
+        weak:'Weak', shaky:'Shaky', known:'Known', below:'Score below', above:'Score above', aboveGroup:'Score minimum', belowGroup:'Score limit',
+        dec:'Decrease', inc:'Increase', belowOff:'Remove score limit', aboveOff:'Remove score minimum', saved:'Marked',
         flagged:'In Sentences', learned:'Learned', include:'Include', exclude:'Exclude', match:' words match' }
 };
 function _fltArr(kind){ return kind==='g'?selGroups : kind==='s'?selStatus : selSaved; }
@@ -248,6 +252,17 @@ function _fltTriRow(val,label,T){
       '<button type="button" class="flt-tri-btn exc'+(exc?' on':'')+'" data-v="'+val+'" data-m="exc" aria-pressed="'+(exc?'true':'false')+'" title="'+T.exclude+'" aria-label="'+T.exclude+'">'+FLT_EXC_ICON+'</button>'+
     '</div></div>';
 }
+/* skor sınırı satırı: etiket + [−] değer [+] + kaldır (kind: 'below' | 'above') */
+function _fltStep(kind,val,min,max,label,groupLabel,offLabel,T){
+  return '<div class="flt-below'+(val===null?'':' on')+'" data-kind="'+kind+'"><span class="flt-tri-label">'+label+'</span>'+
+    '<div class="flt-step" role="group" aria-label="'+groupLabel+'">'+
+      '<button type="button" class="flt-step-btn" data-d="-1" aria-label="'+T.dec+'"'+(val!==null&&val<=min?' disabled':'')+'>'+FLT_EXC_ICON+'</button>'+
+      '<span class="flt-step-val">'+(val===null?'—':scoreText(val))+'</span>'+
+      '<button type="button" class="flt-step-btn" data-d="1" aria-label="'+T.inc+'"'+(val!==null&&val>=max?' disabled':'')+'>'+FLT_INC_ICON+'</button>'+
+    '</div>'+
+    (val===null?'':'<button type="button" class="flt-step-off" data-kind="'+kind+'" aria-label="'+offLabel+'">&times;</button>')+
+  '</div>';
+}
 /* host: içine buton+panel basılacak eleman · onChange: değişince çağrılır · sections: ['groups','status','saved']
    count: o sayfanın listesinde kaç kelime kaldığını döner (varsayılan: activeWords).
    lang: 'tr' (varsayılan) | 'en' — panel metinlerinin dili.
@@ -261,12 +276,12 @@ function mountFilter(host, onChange, sections, count, lang){
   const has = k => sections.indexOf(k)>=0;
   function shownCount(){
     return (has('groups')?selGroups.length:0) +
-      (has('status')?selStatus.length+(selBelow===null?0:1):0) +
+      (has('status')?selStatus.length+((selBelow===null?0:1)+(selAbove===null?0:1)):0) +
       (has('saved')?selSaved.length:0);
   }
   function clearShown(){
     if(has('groups')) selGroups=[];
-    if(has('status')){ selStatus=[]; selBelow=null; }
+    if(has('status')){ selStatus=[]; selBelow=null; selAbove=null; }
     if(has('saved')) selSaved=[];
     saveFilter();
   }
@@ -294,14 +309,9 @@ function mountFilter(host, onChange, sections, count, lang){
     if(sections.indexOf('status')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">'+T.status+'</div><div class="flt-chips">'+
         _fltChip('s','weak',T.weak)+_fltChip('s','shaky',T.shaky)+_fltChip('s','known',T.known)+'</div>'+
-        '<div class="flt-below'+(selBelow===null?'':' on')+'"><span class="flt-tri-label">'+T.below+'</span>'+
-          '<div class="flt-step" role="group" aria-label="'+T.belowGroup+'">'+
-            '<button type="button" class="flt-step-btn" data-d="-1" aria-label="'+T.dec+'"'+(selBelow!==null&&selBelow<=BELOW_MIN?' disabled':'')+'>'+FLT_EXC_ICON+'</button>'+
-            '<span class="flt-step-val">'+(selBelow===null?'—':scoreText(selBelow))+'</span>'+
-            '<button type="button" class="flt-step-btn" data-d="1" aria-label="'+T.inc+'"'+(selBelow!==null&&selBelow>=BELOW_MAX?' disabled':'')+'>'+FLT_INC_ICON+'</button>'+
-          '</div>'+
-          (selBelow===null?'':'<button type="button" class="flt-step-off" id="fltBelowOff" aria-label="'+T.belowOff+'">&times;</button>')+
-        '</div></div>';
+        _fltStep('above',selAbove,ABOVE_MIN,ABOVE_MAX,T.above,T.aboveGroup,T.aboveOff,T)+
+        _fltStep('below',selBelow,BELOW_MIN,BELOW_MAX,T.below,T.belowGroup,T.belowOff,T)+
+        '</div>';
     }
     if(sections.indexOf('saved')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">'+T.saved+'</div><div class="flt-tri-list">'+
@@ -325,12 +335,20 @@ function mountFilter(host, onChange, sections, count, lang){
       }
       return;
     }
-    if(e.target.closest('#fltBelowOff')){ selBelow=null; apply(); return; }
+    const off=e.target.closest('.flt-step-off');
+    if(off){ if(off.getAttribute('data-kind')==='above') selAbove=null; else selBelow=null; apply(); return; }
     const step=e.target.closest('.flt-step-btn');
     if(step){
-      // ilk dokunuşta Biliyorum eşiğinin bir üstünden başla (+3 altı = +2 dahil herkes)
-      if(selBelow===null) selBelow=KNOWN_AT+1;
-      else selBelow=Math.max(BELOW_MIN, Math.min(BELOW_MAX, selBelow+(+step.getAttribute('data-d'))));
+      const d=+step.getAttribute('data-d');
+      if(step.closest('.flt-below').getAttribute('data-kind')==='above'){
+        // ilk dokunuşta 0'dan başla (skoru 0'ın üstünde olanlar)
+        if(selAbove===null) selAbove=0;
+        else selAbove=Math.max(ABOVE_MIN, Math.min(ABOVE_MAX, selAbove+d));
+      } else {
+        // ilk dokunuşta Biliyorum eşiğinin bir üstünden başla (+3 altı = +2 dahil herkes)
+        if(selBelow===null) selBelow=KNOWN_AT+1;
+        else selBelow=Math.max(BELOW_MIN, Math.min(BELOW_MAX, selBelow+d));
+      }
       apply();
       return;
     }
