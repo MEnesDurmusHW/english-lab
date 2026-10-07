@@ -402,7 +402,12 @@
   /* kartın kendisi ortak bileşen: flashcard.css */
   .fc-host{width:100%;max-width:520px}
   #view-cards{padding-bottom:170px}          /* altta sabit puanlama şeridi */
-  #view-cards .card-controls{margin-top:14px}
+  /* Önceki solda, Sonraki sağda sabit; Açıklama ortadaki kendi sütununda
+     belirir, yanındakileri itmez. */
+  #view-cards .card-controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;max-width:520px;margin-top:14px}
+  #view-cards #prevBtn{grid-column:1;justify-self:start}
+  #view-cards #detailBtn{grid-column:2}
+  #view-cards #nextBtn{grid-column:3;justify-self:end}
   #view-cards .card-controls button[hidden]{display:none}
   .card-more .more-btn{padding:8px 10px}
   .card-more .more-pop{min-width:250px}
