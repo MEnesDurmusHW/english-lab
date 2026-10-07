@@ -36,6 +36,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lab.css">
+<link rel="stylesheet" href="flashcard.css">
+<script src="flashcard.js"></script>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -89,30 +91,7 @@
       </div>
     </div>
 
-    <div class="card" id="card" tabindex="0" role="button" aria-label="Kartı çevir">
-      <span class="side-tag" id="sideTag">İngilizce</span>
-      <span class="idx-tag" id="idxTag"></span>
-      <div class="faces">
-        <div class="face face-front">
-          <div class="prompt" id="prompt"></div>
-          <div class="type-note" id="promptType"></div>
-          <div class="prompt-hint" id="promptHint"></div>
-        </div>
-        <div class="face face-back">
-          <div class="answer" id="answer">
-            <div class="a-term" id="aTerm"></div>
-            <div class="a-tr" id="aTr"></div>
-          </div>
-        </div>
-      </div>
-      <div class="card-ipa" id="cardIpa"></div>
-      <span class="flip-hint">çevirmek için dokun</span>
-    </div>
-
-    <div class="assess-actions">
-      <button class="btn assess-miss" id="missBtn" type="button">Bilemedim</button>
-      <button class="btn assess-hit" id="hitBtn" type="button">Bildim</button>
-    </div>
+    <div class="fc-host" id="fcHost"></div>
 
     <div class="card-controls">
       <button id="prevBtn" aria-label="Önceki">← Önceki</button>
@@ -402,13 +381,22 @@ window.addEventListener('ns-state-changed', function(){
 
 
 /* ============ FLASH KART ============ */
-const cardEl=document.getElementById('card'), sideTag=document.getElementById('sideTag'), idxTag=document.getElementById('idxTag'),
-  promptEl=document.getElementById('prompt'), promptType=document.getElementById('promptType'), promptHint=document.getElementById('promptHint'),
-  aTerm=document.getElementById('aTerm'), cardIpa=document.getElementById('cardIpa'), aTr=document.getElementById('aTr'),
-  cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), facesEl=document.querySelector('.faces'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
+const cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
   detailBtn=document.getElementById('detailBtn');
-let order=[], cardPos=0, flipped=false;
-const dirEN=false;   // kartlar yalnızca TR -> EN (akış kararı); EN -> TR dalı ileride gerekirse diye duruyor
+let order=[], cardPos=0;
+/* Kart ortak bileşen (flashcard.js): Review ile aynı iskelet, çevirme ve
+   puanlama. Yön yalnızca TR -> EN. Burada sadece hangi verinin hangi yüze
+   gideceği ve gezinme var. */
+const fc = NSFlash.mount(document.getElementById('fcHost'), {
+  labels: { kbd: '' },          // kısayollar kartın altındaki tam listede
+  onRate: hit => rate(hit ? 1 : -1)
+});
+/* soru yüzünde açıklamadaki İngilizce kelime cevabı ele vermesin */
+function maskWord(html, en){
+  if(!html) return '';
+  const re=new RegExp('\\b('+coreForms(en).map(reEscape).join('|')+')[a-z]*','gi');
+  return html.replace(re, '<span class="masked" title="gizlendi">·····</span>');
+}
 function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
 function curCard(){ return WORDS[order[cardPos]]; }
 function renderCardBadge(){
@@ -419,42 +407,40 @@ function renderCardBadge(){
   document.getElementById('cardFlow').innerHTML=flowBadgeHTML(w.en);
 }
 function renderCard(){
-  if(!order.length){ promptEl.textContent='…'; promptEl.classList.remove('small'); promptType.textContent=''; promptHint.textContent=''; promptHint.style.display='none'; cardIpa.textContent=''; idxTag.textContent='0 / 0'; sideTag.textContent=''; cardDetails.innerHTML=''; cardEl.classList.remove('flipped'); renderCardBadge(); updateFlagBtn(); updateCount(); return; }
-  const w=curCard(); flipped=false; cardEl.classList.remove('flipped'); cardEl.classList.toggle('dir-en',dirEN); cardEl.classList.toggle('dir-tr',!dirEN); cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false');
+  cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false');
+  if(!order.length){
+    fc.show({ term:'…', hint:'Bu filtrede kelime yok.' });
+    cardDetails.innerHTML=''; renderCardBadge(); updateFlagBtn(); updateCount(); return;
+  }
+  const w=curCard();
   cardDetails.innerHTML=cardDetailFields(w); renderCardBadge(); updateFlagBtn(); updateHideBtn();
-  idxTag.textContent=(cardPos+1)+' / '+order.length;
   const ipa=[w.uk&&'UK '+w.uk, w.us&&'US '+w.us].filter(Boolean).join('   ');
-  cardIpa.textContent=ipa;
-  if(dirEN){ sideTag.textContent='İngilizce'; promptEl.textContent=w.en; promptEl.classList.toggle('small',w.en.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.tr; aTr.textContent=w.en; }
-  else { sideTag.textContent='Türkçe'; promptEl.textContent=w.tr; promptEl.classList.toggle('small',w.tr.length>22); promptType.textContent=typeLabel(w.type); aTerm.textContent=w.en; aTr.textContent=w.tr; }
-  const showHint = (!dirEN && w.hint && w.hintCard);
-  promptHint.innerHTML = showHint ? w.hint : '';
-  promptHint.style.display = showHint ? '' : 'none';
+  const clue=w.hint || w.detail || '';
+  fc.show({
+    pos: typeLabel(w.type), idx: (cardPos+1)+' / '+order.length,
+    term: w.tr, ipa: '', hint: maskWord(clue, w.en),
+    answer: w.en, answerIpa: ipa,
+    answerHint: clue + (w.ex ? '<br><em>'+w.ex+'</em>' : '')
+  });
   updateCount();
 }
-function replayAnim(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
-function playEnter(dir){ if(facesEl) replayAnim(facesEl, dir>0?'enter-right':'enter-left'); }
-function flipCard(){ if(!order.length) return; flipped=!flipped; cardEl.classList.toggle('flipped',flipped); replayAnim(cardEl,'flip-anim'); }
+function flipCard(){ if(order.length) fc.flip(); }
 function nextCard(){
   if(!order.length) return;
   if(cardPos===order.length-1){ buildOrder(); } else { cardPos++; }
-  renderCard(); playEnter(1);
+  renderCard();
 }
-function prevCard(){ if(!order.length) return; cardPos=(cardPos-1+order.length)%order.length; renderCard(); playEnter(-1); }
-function shuffleCards(){ buildOrder(); renderCard(); playEnter(1); }
+function prevCard(){ if(!order.length) return; cardPos=(cardPos-1+order.length)%order.length; renderCard(); }
+function shuffleCards(){ buildOrder(); renderCard(); }
 function toggleCardDetails(){ const on=cardDetails.classList.toggle('show'); detailBtn.setAttribute('aria-pressed',on?'true':'false'); }
 function updateFlagBtn(){ const on=!!(order.length && isFlagged(curCard().en)); flagBtn.classList.toggle('on',on); flagBtn.setAttribute('aria-pressed',on?'true':'false'); }
 function toggleCardFlag(){ if(!order.length) return; toggleFlag(curCard().en); updateFlagBtn(); }
 function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.classList.toggle('on',on); hideBtn.setAttribute('aria-pressed',on?'true':'false'); hideBtn.title = on?'Geri getir':'Öğrendim, kaldır'; }
 function hideCurrentCard(){ if(!order.length) return; toggleHidden(curCard().en); order.splice(cardPos,1); if(cardPos>=order.length) cardPos=0; renderCard(); updateCount(); }
 function rate(delta){ if(!order.length) return; addScore(curCard().en, delta); nextCard(); }
-cardEl.addEventListener('click', flipCard);
-cardEl.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flipCard(); } });
 document.getElementById('nextBtn').addEventListener('click', nextCard);
 document.getElementById('prevBtn').addEventListener('click', prevCard);
 document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
-document.getElementById('hitBtn').addEventListener('click', ()=>rate(1));
-document.getElementById('missBtn').addEventListener('click', ()=>rate(-1));
 detailBtn.addEventListener('click', toggleCardDetails);
 flagBtn.addEventListener('click', toggleCardFlag);
 hideBtn.addEventListener('click', hideCurrentCard);
@@ -606,9 +592,7 @@ document.addEventListener('keydown', e=>{
   } else if(currentTab==='cards'){
     if(e.key==='ArrowRight'){ e.preventDefault(); nextCard(); }
     else if(e.key==='ArrowLeft'){ e.preventDefault(); prevCard(); }
-    else if(e.key===' '){ e.preventDefault(); flipCard(); }
-    else if(e.key.toLowerCase()==='n'){ e.preventDefault(); rate(-1); }
-    else if(e.key.toLowerCase()==='m'){ e.preventDefault(); rate(1); }
+    else if(order.length && fc.handleKey(e)){ e.preventDefault(); }
     else if(e.key.toLowerCase()==='b'){ e.preventDefault(); toggleCardDetails(); }
     else if(e.key.toLowerCase()==='l'){ e.preventDefault(); toggleCardFlag(); }
     else if(e.key.toLowerCase()==='g'){ e.preventDefault(); hideCurrentCard(); }

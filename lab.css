@@ -399,54 +399,8 @@
   .list-view.hidden{display:none}
 
   .dir-row{display:flex;justify-content:center;margin:4px 0 22px}
-  .card{
-    width:100%;max-width:560px;min-height:186px;border:1px solid var(--border);border-radius:var(--radius-lg);
-    background:var(--paper);cursor:pointer;position:relative;box-shadow:var(--shadow-md);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:34px 22px 38px;box-sizing:border-box;text-align:center;transition:border-color .2s,box-shadow .2s,transform .2s;
-    overflow:hidden;
-  }
-  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
-  .card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
-  .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  .card .side-tag{position:absolute;top:15px;left:18px;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted)}
-  .card .idx-tag{position:absolute;top:15px;right:18px;font-family:var(--mono);font-size:.68rem;color:var(--text-muted)}
-  .card .prompt{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.12;color:var(--text);letter-spacing:-.03em}
-  .card .prompt.small{font-size:clamp(1.1rem,3.8vw,1.5rem)}
-  .card .type-note{margin-top:12px;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-  .card .prompt-hint{margin-top:14px;max-width:34ch;font-size:.82rem;font-style:italic;line-height:1.5;color:var(--text-dim)}
-  .card .flip-hint{position:absolute;bottom:13px;font-size:.68rem;color:var(--text-muted)}
-
-  .faces{display:grid;width:100%}
-  /* Yüz geçişi: GELEN yüz solarak girer, GİDEN yüz anında kaybolur.
-     Geçiş iki yüzün ortak kuralında dururken giden yüz de solarak iniyordu,
-     yani opaklığı ~150ms boyunca sıfıra düşene kadar yalnızca visibility ile
-     gizleniyordu. visibility ana iş parçacığında, opaklık derleyicide
-     (compositor) uygulandığı için mobil Safari/WebView'de bu pencere
-     boyanabiliyor: sonraki karta geçerken cevap bir an görünüyordu.
-     Geçişi yalnızca "gelen" durumun kuralına koyunca giden yüzde boyanacak
-     bir şey kalmıyor. (Aynı düzeltme b1.css'te de var.) */
-  .faces > .face{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .face-front{transition:opacity .16s ease}
-  .face-back{opacity:0;visibility:hidden;transition:none}
-  .card.flipped .face-front{opacity:0;visibility:hidden;transition:none}
-  .card.flipped .face-back{opacity:1;visibility:visible;transition:opacity .16s ease}
-  .card.flipped .flip-hint{display:none}
-  .answer{width:100%}
-  .answer .a-term{font-family:var(--display);font-weight:700;font-size:clamp(1.35rem,4.5vw,1.9rem);line-height:1.12;color:var(--accent);letter-spacing:-.03em}
-  .answer .a-tr{font-size:.95rem;color:var(--text);margin-top:9px}
-  .card-ipa{margin-top:16px;font-family:var(--mono);font-size:.85rem;color:var(--text-dim);text-align:center;letter-spacing:.01em;visibility:hidden}
-  .card.dir-en .card-ipa{visibility:visible}
-  .card.dir-tr.flipped .card-ipa{visibility:visible}
-  .card-ipa:empty{display:none}
-
-  .faces.enter-right{animation:cardEnterRight .24s cubic-bezier(.22,.61,.36,1)}
-  .faces.enter-left{animation:cardEnterLeft .24s cubic-bezier(.22,.61,.36,1)}
-  @keyframes cardEnterRight{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
-  @keyframes cardEnterLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
-  .card.flip-anim{animation:cardFlip .3s ease}
-  @keyframes cardFlip{0%{transform:perspective(700px) rotateX(0)}45%{transform:perspective(700px) rotateX(12deg)}100%{transform:perspective(700px) rotateX(0)}}
-  @media (prefers-reduced-motion:reduce){ .faces.enter-right,.faces.enter-left,.card.flip-anim{animation:none} }
+  /* kartın kendisi ortak bileşen: flashcard.css */
+  .fc-host{width:100%;max-width:520px}
 
   .card-controls{display:flex;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
   .card-controls button{
@@ -513,15 +467,8 @@
   .card-topbar .seg{flex:0 0 auto}
   .card-topbar .assess-badge{flex:0 0 auto}
 
-  /* bildim / bilemedim */
-  .assess-actions{display:flex;gap:12px;justify-content:center;margin-top:18px}
-  .assess-actions .btn{min-width:150px}
-  .btn.assess-hit{border-color:var(--ok);color:var(--ok)}
-  .btn.assess-hit:hover{background:var(--ok);border-color:var(--ok);color:#fff}
-  .btn.assess-miss{border-color:var(--bad);color:var(--bad)}
-  .btn.assess-miss:hover{background:var(--bad);border-color:var(--bad);color:#fff}
+  /* masaüstünde gezinme düğmeleri yerine klavye */
   @media (hover:hover) and (pointer:fine){
-    #view-cards .assess-actions,
     #view-cards .card-controls{display:none}
   }
   @media (pointer:coarse){
