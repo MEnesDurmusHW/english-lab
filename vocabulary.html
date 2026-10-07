@@ -350,8 +350,8 @@ const filterHost = document.getElementById('filterHost');
 const ctlbarEl = document.querySelector('.ctlbar');
 function placeFilter(t){
   if(t==='cards'){
-    const tr = document.querySelector('#view-cards .topbar-right');
-    if(tr && filterHost.parentNode!==tr) tr.insertBefore(filterHost, tr.firstChild);
+    const tb = document.querySelector('#view-cards .card-topbar');   // filtre solda, rozetler + ⋯ sağda
+    if(tb && filterHost.parentNode!==tb) tb.insertBefore(filterHost, tb.firstChild);
     ctlbarEl.style.display='none';
   } else if(t==='quiz'){
     const dr = document.querySelector('#view-quiz .dir-row');

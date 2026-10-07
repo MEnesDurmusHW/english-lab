@@ -239,10 +239,10 @@
 
   /* mastery meter (3 dots) */
   .flow-badge{flex:0 0 auto;font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px dashed var(--border);color:var(--text-muted);white-space:nowrap}
-  .flow-badge.f-sentence{border-style:solid;color:#C026D3;border-color:rgba(192,38,211,.35);background:rgba(192,38,211,.08)}
-  .flow-badge.f-review{border-style:solid;color:#EA580C;border-color:rgba(234,88,12,.35);background:rgba(234,88,12,.08)}
-  [data-theme="dark"] .flow-badge.f-sentence{color:#E879F9;border-color:rgba(232,121,249,.35);background:rgba(232,121,249,.12)}
-  [data-theme="dark"] .flow-badge.f-review{color:#FB923C;border-color:rgba(251,146,60,.35);background:rgba(251,146,60,.12)}
+  .flow-badge.flow-sentence{border-style:solid;color:#C026D3;border-color:rgba(192,38,211,.35);background:rgba(192,38,211,.08)}
+  .flow-badge.flow-review{border-style:solid;color:#EA580C;border-color:rgba(234,88,12,.35);background:rgba(234,88,12,.08)}
+  [data-theme="dark"] .flow-badge.flow-sentence{color:#E879F9;border-color:rgba(232,121,249,.35);background:rgba(232,121,249,.12)}
+  [data-theme="dark"] .flow-badge.flow-review{color:#FB923C;border-color:rgba(251,146,60,.35);background:rgba(251,146,60,.12)}
   .eh-meter{display:inline-flex;gap:4px;flex:0 0 auto;align-items:center}
   .eh-meter i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background .2s}
   .eh-meter[data-st="weak"] i:nth-child(-n+1){background:var(--bad)}
@@ -478,6 +478,9 @@
   .card-topbar .topbar-right{flex-wrap:nowrap;margin-left:auto}
   .card-topbar .seg{flex:0 0 auto}
   .card-topbar .assess-badge{flex:0 0 auto}
+  .card-topbar{max-width:520px;margin:6px 0 14px}
+  .card-topbar .topbar-right{gap:8px}
+  .card-topbar .flow-badge{font-size:.62rem;padding:5px 10px}
 
   @media (pointer:coarse){
     #view-cards .kbd-hint{display:none}
@@ -578,6 +581,7 @@
   .sent-copy svg{width:15px;height:15px}
   .sent-copy:hover{border-color:var(--accent);color:var(--accent)}
   .sent-copy.done{border-color:var(--ok);color:var(--ok)}
+  .sent-copy[hidden]{display:none}
   .sent-copy:disabled{opacity:.4;cursor:default}
   .sent-copy:disabled:hover{border-color:var(--border);color:var(--text-dim)}
   .sent-item{border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-sm);padding:13px 15px;margin-bottom:10px}
@@ -678,7 +682,7 @@
   @media (max-width:600px){ .sync-pill--bar .sync-pill-text{display:none} .sync-pill--bar{padding:0;width:38px;flex:0 0 38px;justify-content:center} .sync-host{padding-left:8px} }
 
   /* page heading below the bar (brand moved up, so this is just the section title) */
-  .wrap{padding-top:16px}
+  .wrap{padding-top:10px}
   .page-head{margin-bottom:20px}
 
   @media (max-width:820px){
@@ -703,7 +707,7 @@
 .appbar-tools .more-pop{right:auto;left:0}
 
 /* secondary sub-tab row, sits under the app bar */
-.subbar{display:flex;justify-content:center;margin:8px 0 6px}
+.subbar{display:flex;justify-content:center;margin:0 0 6px}
 .subbar .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .subbar .seg::-webkit-scrollbar{display:none}
 

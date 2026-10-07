@@ -136,8 +136,8 @@ function addScore(en, d){
 function flowBadgeHTML(en){
   if(typeof NSJourney==='undefined') return '';
   const st=NSJourney.stageOf(en);
-  if(st==='review') return '<span class="flow-badge f-review" title="In Review">Review</span>';
-  if(st==='sentence') return '<span class="flow-badge f-sentence" title="Ready for sentence practice">Sentences</span>';
+  if(st==='review') return '<span class="flow-badge flow-review" title="In Review">Review</span>';
+  if(st==='sentence') return '<span class="flow-badge flow-sentence" title="Ready for sentence practice">Sentences</span>';
   const c=NSJourney.daysCount(en);
   return c ? '<span class="flow-badge" title="Known on '+c+' of '+NSJourney.NEED_DAYS+' different days">Day '+c+'/'+NSJourney.NEED_DAYS+'</span>' : '';
 }
