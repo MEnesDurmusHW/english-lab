@@ -11,7 +11,8 @@
        onFlip(flipped, card) {},    // isteğe bağlı
        labels: {...},               // isteğe bağlı metin değişiklikleri
        tappable: true,              // false ise kart tıklanmaz, yalnızca düğme
-       docked: false                // true ise çevir/puanla şeridi ekranın altına sabitlenir
+       docked: false,               // true ise çevir/puanla şeridi ekranın altına sabitlenir
+       onPrev() {}, onNext() {}     // isteğe bağlı: verilirse "Cevabı göster"in iki yanında gezinme düğmeleri
      });
      fc.show({ pos, term, ipa, hint, answer, answerIpa, answerHint, badge, idx });
      fc.flip() · fc.reset() · fc.isFlipped()
@@ -31,6 +32,8 @@
 
   var ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
   var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  var ICON_PREV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+  var ICON_NEXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   var ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
   var DEFAULTS = {
@@ -39,7 +42,9 @@
     miss: 'Bilemedim',
     hit: 'Bildim',
     tap: 'çevirmek için dokun',
-    kbd: 'Boşluk çevir · N bilemedim · M bildim'
+    kbd: 'Boşluk çevir · N bilemedim · M bildim',
+    prev: 'Önceki',
+    next: 'Sonraki'
   };
 
   function esc(s) {
@@ -67,12 +72,19 @@
     host.innerHTML =
       '<div class="fc-stage">' +
         '<article class="fc" tabindex="0" role="button" aria-label="Kartı çevir">' +
-          '<div class="fc-meta"><span class="fc-badge"></span><span class="fc-idx"></span></div>' +
+          /* rozet (durum/öncelik) sağ üstte, sayaç sağ altta */
+          '<div class="fc-meta"><span class="fc-badge"></span></div>' +
           '<div class="fc-faces">' + faceHTML('front') + faceHTML('back') + '</div>' +
-          '<span class="fc-flip-hint">' + esc(L.tap) + '</span>' +
+          '<div class="fc-foot"><span class="fc-flip-hint">' + esc(L.tap) + '</span><span class="fc-idx"></span></div>' +
         '</article>' +
         '<div class="fc-dock">' +
-          '<button class="fc-reveal" type="button">' + ICON_EYE + '<span class="fc-reveal-label">' + esc(L.reveal) + '</span></button>' +
+          ((opts.onPrev || opts.onNext)
+            ? '<div class="fc-navrow">' +
+                '<button class="fc-nav fc-prev" type="button" aria-label="' + esc(L.prev) + '">' + ICON_PREV + '<span>' + esc(L.prev) + '</span></button>' +
+                '<button class="fc-reveal" type="button">' + ICON_EYE + '<span class="fc-reveal-label">' + esc(L.reveal) + '</span></button>' +
+                '<button class="fc-nav fc-next" type="button" aria-label="' + esc(L.next) + '"><span>' + esc(L.next) + '</span>' + ICON_NEXT + '</button>' +
+              '</div>'
+            : '<button class="fc-reveal" type="button">' + ICON_EYE + '<span class="fc-reveal-label">' + esc(L.reveal) + '</span></button>') +
           '<div class="fc-rate">' +
             '<button class="fc-miss" type="button">' + ICON_X + esc(L.miss) + '</button>' +
             '<button class="fc-hit" type="button">' + ICON_OK + esc(L.hit) + '</button>' +
@@ -136,6 +148,8 @@
       });
     }
     revealBtn.addEventListener('click', flip);
+    if (opts.onPrev) host.querySelector('.fc-prev').addEventListener('click', function () { opts.onPrev(); });
+    if (opts.onNext) host.querySelector('.fc-next').addEventListener('click', function () { opts.onNext(); });
     host.querySelector('.fc-miss').addEventListener('click', function () { rate(false); });
     host.querySelector('.fc-hit').addEventListener('click', function () { rate(true); });
 

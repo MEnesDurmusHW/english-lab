@@ -81,7 +81,6 @@
     <div class="card-topbar">
       <div class="topbar-right">
         <span id="cardFlow"></span>
-        <span class="assess-badge" id="cardBadge"></span>
         <div class="more-menu card-more" id="cardMore">
           <button class="more-btn" id="cardMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Diğer seçenekler" title="Diğer seçenekler"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
           <div class="more-pop" id="cardMorePop" role="menu" hidden>
@@ -96,9 +95,7 @@
     <div class="fc-host" id="fcHost"></div>
 
     <div class="card-controls">
-      <button id="prevBtn" aria-label="Önceki">← Önceki</button>
       <button id="detailBtn" class="primary" aria-pressed="false" hidden>Açıklama</button>
-      <button id="nextBtn" aria-label="Sonraki">Sonraki →</button>
     </div>
 
     <div class="card-details" id="cardDetails"></div>
@@ -350,8 +347,8 @@ const filterHost = document.getElementById('filterHost');
 const ctlbarEl = document.querySelector('.ctlbar');
 function placeFilter(t){
   if(t==='cards'){
-    const tb = document.querySelector('#view-cards .card-topbar');   // filtre solda, rozetler + ⋯ sağda
-    if(tb && filterHost.parentNode!==tb) tb.insertBefore(filterHost, tb.firstChild);
+    const tr = document.querySelector('#view-cards .topbar-right');
+    if(tr && filterHost.parentNode!==tr) tr.insertBefore(filterHost, document.getElementById('cardMore'));
     ctlbarEl.style.display='none';
   } else if(t==='quiz'){
     const dr = document.querySelector('#view-quiz .dir-row');
@@ -382,7 +379,7 @@ window.addEventListener('ns-state-changed', function(){
 
 
 /* ============ FLASH KART ============ */
-const cardDetails=document.getElementById('cardDetails'), cardBadge=document.getElementById('cardBadge'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
+const cardDetails=document.getElementById('cardDetails'), flagBtn=document.getElementById('flagBtn'), hideBtn=document.getElementById('hideBtn'),
   detailBtn=document.getElementById('detailBtn');
 let order=[], cardPos=0;
 /* Kart ortak bileşen (flashcard.js): Review ile aynı iskelet, çevirme ve
@@ -391,6 +388,7 @@ let order=[], cardPos=0;
 const fc = NSFlash.mount(document.getElementById('fcHost'), {
   labels: { kbd: '' },          // kısayollar kartın altındaki tam listede
   docked: true,                 // çevir/puanla şeridi ekranın altında sabit
+  onPrev: () => prevCard(), onNext: () => nextCard(),
   onRate: hit => rate(hit ? 1 : -1),
   onFlip: flipped => {          // Açıklama yalnızca cevap görülünce
     detailBtn.hidden = !flipped || !order.length;
@@ -406,11 +404,7 @@ function maskWord(html, en){
 function buildOrder(){ order = shuffle(activeWords().map(w=>w._i)); cardPos=0; }
 function curCard(){ return WORDS[order[cardPos]]; }
 function renderCardBadge(){
-  if(!order.length){ cardBadge.className='assess-badge'; cardBadge.textContent=''; document.getElementById('cardFlow').innerHTML=''; return; }
-  const w=curCard(), st=statusOf(w.en);
-  cardBadge.className='assess-badge st-'+st;
-  cardBadge.textContent=STATUS_LABEL[st]+' · '+scoreText(getScore(w.en));
-  document.getElementById('cardFlow').innerHTML=flowBadgeHTML(w.en);
+  document.getElementById('cardFlow').innerHTML = order.length ? flowBadgeHTML(curCard().en) : '';
 }
 function renderCard(){
   cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false'); detailBtn.hidden=true;
@@ -422,8 +416,10 @@ function renderCard(){
   cardDetails.innerHTML=cardDetailFields(w); renderCardBadge(); updateFlagBtn(); updateHideBtn();
   const ipa=[w.uk&&'UK '+w.uk, w.us&&'US '+w.us].filter(Boolean).join('   ');
   const clue=w.hint || w.detail || '';
+  const st=statusOf(w.en);
   fc.show({
     pos: typeLabel(w.type), idx: (cardPos+1)+' / '+order.length,
+    badge: STATUS_LABEL[st]+' · '+scoreText(getScore(w.en)), badgeClass: 'st-'+st,
     term: w.tr, ipa: '', hint: maskWord(clue, w.en),
     answer: w.en, answerIpa: ipa,
     answerHint: clue + (w.ex ? '<br><em>'+w.ex+'</em>' : '')
@@ -444,8 +440,6 @@ function toggleCardFlag(){ if(!order.length) return; toggleFlag(curCard().en); u
 function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.setAttribute('aria-selected',on?'true':'false'); document.getElementById('hideLbl').textContent = on?'Öğrendim işaretini kaldır':'Öğrendim, Review\'a gönder'; }
 function hideCurrentCard(){ if(!order.length) return; toggleHidden(curCard().en); order.splice(cardPos,1); if(cardPos>=order.length) cardPos=0; renderCard(); updateCount(); }
 function rate(delta){ if(!order.length) return; addScore(curCard().en, delta); nextCard(); }
-document.getElementById('nextBtn').addEventListener('click', nextCard);
-document.getElementById('prevBtn').addEventListener('click', prevCard);
 document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
 detailBtn.addEventListener('click', toggleCardDetails);
 flagBtn.addEventListener('click', toggleCardFlag);
