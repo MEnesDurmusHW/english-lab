@@ -10,7 +10,8 @@
        onRate(hit, card) {},        // Bildim / Bilemedim
        onFlip(flipped, card) {},    // isteğe bağlı
        labels: {...},               // isteğe bağlı metin değişiklikleri
-       tappable: true               // false ise kart tıklanmaz, yalnızca düğme
+       tappable: true,              // false ise kart tıklanmaz, yalnızca düğme
+       docked: false                // true ise çevir/puanla şeridi ekranın altına sabitlenir
      });
      fc.show({ pos, term, ipa, hint, answer, answerIpa, answerHint, badge, idx });
      fc.flip() · fc.reset() · fc.isFlipped()
@@ -80,6 +81,7 @@
         '</div>' +
       '</div>';
 
+    if (opts.docked) host.querySelector('.fc-stage').classList.add('is-docked');
     var card = host.querySelector('.fc');
     var badgeEl = host.querySelector('.fc-badge');
     var idxEl = host.querySelector('.fc-idx');

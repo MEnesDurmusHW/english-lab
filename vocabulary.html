@@ -82,12 +82,14 @@
       <div class="topbar-right">
         <span id="cardFlow"></span>
         <span class="assess-badge" id="cardBadge"></span>
-        <button class="flag-btn" id="flagBtn" type="button" aria-pressed="false" aria-label="Cümlede çalışacaklarıma ekle" title="Cümlede çalışacaklarım (L)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        </button>
-        <button class="flag-btn" id="hideBtn" type="button" aria-pressed="false" aria-label="Öğrendim olarak işaretle" title="Öğrendim, kaldır (G)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </button>
+        <div class="more-menu card-more" id="cardMore">
+          <button class="more-btn" id="cardMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Diğer seçenekler" title="Diğer seçenekler"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+          <div class="more-pop" id="cardMorePop" role="menu" hidden>
+            <button class="more-item" type="button" role="menuitem" id="shuffleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg><span>Karıştır</span><kbd>S</kbd></button>
+            <button class="more-item" type="button" role="menuitem" id="flagBtn" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="flagLbl">Cümle listesine ekle</span><kbd>L</kbd></button>
+            <button class="more-item" type="button" role="menuitem" id="hideBtn" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span id="hideLbl">Öğrendim, Review'a gönder</span><kbd>G</kbd></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -95,8 +97,7 @@
 
     <div class="card-controls">
       <button id="prevBtn" aria-label="Önceki">← Önceki</button>
-      <button id="detailBtn" class="primary" aria-pressed="false">Açıklama</button>
-      <button id="shuffleBtn" aria-label="Karıştır">Karıştır</button>
+      <button id="detailBtn" class="primary" aria-pressed="false" hidden>Açıklama</button>
       <button id="nextBtn" aria-label="Sonraki">Sonraki →</button>
     </div>
 
@@ -389,7 +390,12 @@ let order=[], cardPos=0;
    gideceği ve gezinme var. */
 const fc = NSFlash.mount(document.getElementById('fcHost'), {
   labels: { kbd: '' },          // kısayollar kartın altındaki tam listede
-  onRate: hit => rate(hit ? 1 : -1)
+  docked: true,                 // çevir/puanla şeridi ekranın altında sabit
+  onRate: hit => rate(hit ? 1 : -1),
+  onFlip: flipped => {          // Açıklama yalnızca cevap görülünce
+    detailBtn.hidden = !flipped || !order.length;
+    if(!flipped){ cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false'); }
+  }
 });
 /* soru yüzünde açıklamadaki İngilizce kelime cevabı ele vermesin */
 function maskWord(html, en){
@@ -407,7 +413,7 @@ function renderCardBadge(){
   document.getElementById('cardFlow').innerHTML=flowBadgeHTML(w.en);
 }
 function renderCard(){
-  cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false');
+  cardDetails.classList.remove('show'); detailBtn.setAttribute('aria-pressed','false'); detailBtn.hidden=true;
   if(!order.length){
     fc.show({ term:'…', hint:'Bu filtrede kelime yok.' });
     cardDetails.innerHTML=''; renderCardBadge(); updateFlagBtn(); updateCount(); return;
@@ -433,9 +439,9 @@ function nextCard(){
 function prevCard(){ if(!order.length) return; cardPos=(cardPos-1+order.length)%order.length; renderCard(); }
 function shuffleCards(){ buildOrder(); renderCard(); }
 function toggleCardDetails(){ const on=cardDetails.classList.toggle('show'); detailBtn.setAttribute('aria-pressed',on?'true':'false'); }
-function updateFlagBtn(){ const on=!!(order.length && isFlagged(curCard().en)); flagBtn.classList.toggle('on',on); flagBtn.setAttribute('aria-pressed',on?'true':'false'); }
+function updateFlagBtn(){ const on=!!(order.length && isFlagged(curCard().en)); flagBtn.setAttribute('aria-selected',on?'true':'false'); document.getElementById('flagLbl').textContent = on?'Cümle listesinden çıkar':'Cümle listesine ekle'; }
 function toggleCardFlag(){ if(!order.length) return; toggleFlag(curCard().en); updateFlagBtn(); }
-function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.classList.toggle('on',on); hideBtn.setAttribute('aria-pressed',on?'true':'false'); hideBtn.title = on?'Geri getir':'Öğrendim, kaldır'; }
+function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.setAttribute('aria-selected',on?'true':'false'); document.getElementById('hideLbl').textContent = on?'Öğrendim işaretini kaldır':'Öğrendim, Review\'a gönder'; }
 function hideCurrentCard(){ if(!order.length) return; toggleHidden(curCard().en); order.splice(cardPos,1); if(cardPos>=order.length) cardPos=0; renderCard(); updateCount(); }
 function rate(delta){ if(!order.length) return; addScore(curCard().en, delta); nextCard(); }
 document.getElementById('nextBtn').addEventListener('click', nextCard);
@@ -444,6 +450,14 @@ document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
 detailBtn.addEventListener('click', toggleCardDetails);
 flagBtn.addEventListener('click', toggleCardFlag);
 hideBtn.addEventListener('click', hideCurrentCard);
+(function(){
+  const btn=document.getElementById('cardMoreBtn'), pop=document.getElementById('cardMorePop');
+  function close(){ pop.hidden=true; btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', e=>{ e.stopPropagation(); const open=pop.hidden; pop.hidden=!open; btn.setAttribute('aria-expanded', open?'true':'false'); });
+  pop.addEventListener('click', e=>{ if(e.target.closest('.more-item')) close(); });
+  document.addEventListener('click', e=>{ if(!e.target.closest('#cardMore')) close(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+})();
 
 /* ============ QUIZ ============ */
 const qPrompt=document.getElementById('qPrompt'), qSub=document.getElementById('qSub'), qOptions=document.getElementById('qOptions'),
@@ -593,7 +607,7 @@ document.addEventListener('keydown', e=>{
     if(e.key==='ArrowRight'){ e.preventDefault(); nextCard(); }
     else if(e.key==='ArrowLeft'){ e.preventDefault(); prevCard(); }
     else if(order.length && fc.handleKey(e)){ e.preventDefault(); }
-    else if(e.key.toLowerCase()==='b'){ e.preventDefault(); toggleCardDetails(); }
+    else if(e.key.toLowerCase()==='b'){ e.preventDefault(); if(!detailBtn.hidden) toggleCardDetails(); }
     else if(e.key.toLowerCase()==='l'){ e.preventDefault(); toggleCardFlag(); }
     else if(e.key.toLowerCase()==='g'){ e.preventDefault(); hideCurrentCard(); }
     else if(e.key.toLowerCase()==='s'){ e.preventDefault(); shuffleCards(); }

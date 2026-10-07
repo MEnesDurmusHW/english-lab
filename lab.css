@@ -401,6 +401,13 @@
   .dir-row{display:flex;justify-content:center;margin:4px 0 22px}
   /* kartın kendisi ortak bileşen: flashcard.css */
   .fc-host{width:100%;max-width:520px}
+  #view-cards{padding-bottom:170px}          /* altta sabit puanlama şeridi */
+  #view-cards .card-controls{margin-top:14px}
+  #view-cards .card-controls button[hidden]{display:none}
+  .card-more .more-btn{padding:8px 10px}
+  .card-more .more-pop{min-width:250px}
+  .card-more .more-item kbd{margin-left:auto;font-family:var(--mono);font-size:.68rem;color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+  .card-more .more-item[aria-selected="true"] span::after{content:" ✓"}
 
   .card-controls{display:flex;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
   .card-controls button{
@@ -467,10 +474,6 @@
   .card-topbar .seg{flex:0 0 auto}
   .card-topbar .assess-badge{flex:0 0 auto}
 
-  /* masaüstünde gezinme düğmeleri yerine klavye */
-  @media (hover:hover) and (pointer:fine){
-    #view-cards .card-controls{display:none}
-  }
   @media (pointer:coarse){
     #view-cards .kbd-hint{display:none}
   }
