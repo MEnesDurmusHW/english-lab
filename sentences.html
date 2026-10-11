@@ -51,7 +51,10 @@
   .st-btn svg{width:14px;height:14px}
   .st-cta{background:var(--accent);border-color:var(--accent);color:#fff}
   .st-cta:hover:not(:disabled){color:#fff;filter:brightness(1.06)}
-  .st-msg{font-size:.86rem;color:var(--ok,#5c8a4a);margin:0 0 12px}
+  .st-msg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--ok,#5c8a4a);margin:0 0 12px}
+  .st-msg[hidden]{display:none}
+  .st-msg.back{color:var(--text-dim)}
+  .st-undo{appearance:none;cursor:pointer;background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 
   .st-list{display:flex;flex-direction:column;gap:10px}
   .st-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
@@ -61,11 +64,12 @@
   .st-word{font-weight:700;font-size:1.06rem;color:var(--text);letter-spacing:-.01em}
   .st-tr{font-size:.88rem;color:var(--text-dim)}
   .st-type{font-family:var(--mono,monospace);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-  .st-acts{display:flex;gap:4px;grid-row:1}
-  .st-icon{appearance:none;cursor:pointer;width:32px;height:32px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--text-muted);display:grid;place-items:center;padding:0;transition:.14s}
-  .st-icon:hover{border-color:var(--border);color:var(--accent);background:var(--bg)}
-  .st-icon.learn:hover{color:var(--ok,#5c8a4a)}
-  .st-icon svg{width:16px;height:16px}
+  .st-acts{display:flex;gap:6px;grid-row:1}
+  .st-act{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:var(--sans);font-size:.8rem;font-weight:600;white-space:nowrap;transition:.14s}
+  .st-act:hover{border-color:var(--accent);color:var(--accent)}
+  .st-act.learn{border-color:color-mix(in srgb,var(--ok,#5c8a4a) 50%,var(--border));color:var(--ok,#5c8a4a)}
+  .st-act.learn:hover{background:var(--ok,#5c8a4a);border-color:var(--ok,#5c8a4a);color:#fff}
+  .st-act svg{width:13px;height:13px}
   .st-ex{grid-column:2 / -1;margin:6px 0 0;font-size:.9rem;line-height:1.55;color:var(--text-dim)}
   .st-ex p{margin:0 0 3px}
   .st-ex p::before{content:"“";color:var(--text-muted)}
@@ -89,7 +93,7 @@
 <div class="wrap">
   <header class="st-head">
     <h1>Sentences</h1>
-    <p>Words you recognised on two different days land here. Write your own sentences with each one and have them checked. When a word feels like yours, mark it <b>Learned</b> and it moves to <a href="review.html">Review</a>. <a href="flow.html">How the flow works</a></p>
+    <p>Words you recognised on two different days land here. Write your own sentences with each one and have them checked. When a word feels like yours, press <b>Learned</b> and it moves to <a href="review.html">Review</a>. Not ready for sentences yet? <b>Not yet</b> sends it back to <a href="vocabulary.html">Vocabulary</a> practice, and it returns here once you know it on two different days again. Tick several words to mark them together. <a href="flow.html">How the flow works</a></p>
   </header>
 
   <div class="st-bar">
@@ -100,7 +104,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       <span id="copyLbl">Copy for chat</span>
     </button>
-    <button class="st-btn st-cta" type="button" id="learnBtn">Mark learned</button>
+    <button class="st-btn st-cta" type="button" id="learnBtn">Mark selected learned</button>
   </div>
   <p class="st-msg" id="msg" hidden></p>
 
@@ -119,9 +123,7 @@
 'use strict';
 
 const $ = id => document.getElementById(id);
-const ICON_LEARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-const ICON_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
-const ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const ICON_LEARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
 let picked = {};
 
@@ -139,9 +141,9 @@ function itemHTML(w){
       '<span class="st-type">' + typeLabel(w.type) + '</span>' +
       (typeof w.grp === 'number' ? '<span class="st-type" style="color:var(--text-muted)">Group ' + w.grp + '</span>' : '') + '</div>' +
     '<div class="st-acts">' +
-      '<button type="button" class="st-icon" data-a="open" title="Details" aria-label="Details">' + ICON_OPEN + '</button>' +
-      '<button type="button" class="st-icon learn" data-a="learn" title="Learned: send to Review" aria-label="Mark learned">' + ICON_LEARN + '</button>' +
-      '<button type="button" class="st-icon" data-a="drop" title="Remove from this list" aria-label="Remove from this list">' + ICON_X + '</button>' +
+      '<button type="button" class="st-act" data-a="open" title="Meaning, examples and notes">Details</button>' +
+      '<button type="button" class="st-act" data-a="drop" title="Back to Vocabulary practice; returns here after two more days of knowing it">Not yet</button>' +
+      '<button type="button" class="st-act learn" data-a="learn" title="Move to Review">' + ICON_LEARN + 'Learned</button>' +
     '</div>' +
     '<div class="st-ex">' + ex + '</div>' +
     (coll ? '<div class="st-coll">' + coll + '</div>' : '') +
@@ -154,7 +156,7 @@ function render(){
   $('count').textContent = list.length + (list.length === 1 ? ' word' : ' words');
   const n = pickedWords().length;
   $('learnBtn').disabled = !n;
-  $('learnBtn').textContent = n ? 'Mark ' + n + ' learned' : 'Mark learned';
+  $('learnBtn').textContent = n ? 'Mark ' + n + ' learned' : 'Mark selected learned';
   $('copyBtn').disabled = !list.length;
   $('allBtn').disabled = !list.length;
   $('allBtn').textContent = list.length && n === list.length ? 'Clear selection' : 'Select all';
@@ -166,10 +168,20 @@ function render(){
   $('list').innerHTML = list.map(itemHTML).join('');
 }
 
-function flash(text){
+/* Bildirim + Geri al: undo işlemi tersine çevirir, back nötr renk verir */
+function flash(text, undo, back){
   const m = $('msg');
-  m.textContent = text; m.hidden = false;
-  clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, 3200);
+  m.textContent = '';
+  m.classList.toggle('back', !!back);
+  const t = document.createElement('span'); t.textContent = text; m.appendChild(t);
+  if (undo){
+    const u = document.createElement('button');
+    u.type = 'button'; u.className = 'st-undo'; u.textContent = 'Undo';
+    u.onclick = () => { undo(); m.hidden = true; render(); };
+    m.appendChild(u);
+  }
+  m.hidden = false;
+  clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, undo ? 7000 : 3200);
 }
 
 $('list').addEventListener('change', e => {
@@ -182,8 +194,16 @@ $('list').addEventListener('click', e => {
   const b = e.target.closest('[data-a]'); if (!b) return;
   const w = WORDS[+b.closest('.st-item').dataset.i];
   if (b.dataset.a === 'open'){ openWordModal(w); return; }
-  if (b.dataset.a === 'learn'){ toggleHidden(w.en); delete picked[w.en]; flash('"' + w.en + '" moved to Review.'); render(); return; }
-  if (b.dataset.a === 'drop'){ toggleFlag(w.en); delete picked[w.en]; render(); }
+  if (b.dataset.a === 'learn'){
+    toggleHidden(w.en); delete picked[w.en];
+    flash('"' + w.en + '" moved to Review.', () => toggleHidden(w.en));
+    render(); return;
+  }
+  if (b.dataset.a === 'drop'){
+    toggleFlag(w.en); delete picked[w.en];
+    flash('"' + w.en + '" went back to Vocabulary practice. Know it on two different days and it returns here.', () => toggleFlag(w.en), true);
+    render();
+  }
 });
 $('allBtn').addEventListener('click', () => {
   const list = pool();
@@ -195,7 +215,7 @@ $('allBtn').addEventListener('click', () => {
 $('learnBtn').addEventListener('click', () => {
   const list = pickedWords(); if (!list.length) return;
   list.forEach(w => { toggleHidden(w.en); delete picked[w.en]; });
-  flash(list.length + (list.length === 1 ? ' word' : ' words') + ' moved to Review.');
+  flash(list.length + (list.length === 1 ? ' word' : ' words') + ' moved to Review.', () => list.forEach(w => toggleHidden(w.en)));
   render();
 });
 $('copyBtn').addEventListener('click', () => {
