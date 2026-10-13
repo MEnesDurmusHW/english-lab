@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Today — NS's English Lab</title>
+<meta name="description" content="Daily summary: flashcards answered in B1 Recall and Vocabulary, words that moved to sentence practice or to Review, and whether today's Review is done.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="Today">
+<meta property="og:description" content="What you studied today, at a glance.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/today.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="daylog.js"></script>
+<script src="journey-core.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  .td [hidden]{display:none !important}
+  .td-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .td-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .td-sub{margin:8px 0 0;color:var(--text-dim);font-size:.94rem;line-height:1.55}
+  .td-sub b{color:var(--text)}
+  .td-nav{display:inline-flex;align-items:center;gap:6px}
+  .td-nav button{appearance:none;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--surface);color:var(--text-dim);transition:.15s}
+  .td-nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .td-nav button:disabled{opacity:.35;cursor:not-allowed}
+  .td-nav svg{width:15px;height:15px}
+  .td-nav .td-todaybtn{width:auto;border-radius:999px;padding:0 12px;font-family:var(--sans);font-size:.8rem;font-weight:600}
+
+  .td-sec{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:32px 0 12px;display:flex;align-items:center;gap:10px}
+  .td-sec .td-link{margin-left:auto;font-family:var(--sans);letter-spacing:0;text-transform:none;font-size:.8rem;font-weight:600;color:var(--accent);background:none;border:0;cursor:pointer;padding:0;text-decoration:none}
+  .td-sec .td-link:hover{text-decoration:underline}
+
+  /* ---- hedefler ---- */
+  .td-goals{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 18px}
+  .td-goal{display:grid;grid-template-columns:22px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+  .td-goal:last-child{border-bottom:0}
+  .td-mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--border);color:transparent;grid-row:1 / span 2}
+  .td-mark svg{width:12px;height:12px}
+  .td-goal.done .td-mark{background:var(--ok);border-color:var(--ok);color:#fff}
+  .td-goal.na .td-mark{border-style:dashed}
+  .td-gname{font-weight:600;font-size:.95rem;color:var(--text)}
+  .td-gval{font-family:var(--mono,monospace);font-size:.85rem;font-weight:600;color:var(--text-dim);font-variant-numeric:tabular-nums;text-align:right}
+  .td-gnote{grid-column:2 / -1;font-size:.82rem;color:var(--text-muted);line-height:1.45}
+  .td-gnote a{color:var(--accent);font-weight:600;text-decoration:none}
+  .td-gnote a:hover{text-decoration:underline}
+  .td-track{grid-column:2 / -1;height:6px;border-radius:999px;background:var(--surface-2,var(--border));overflow:hidden}
+  .td-track i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .3s}
+  .td-goal.done .td-track i{background:var(--ok)}
+  .td-verdict{margin:12px 2px 0;font-size:.9rem;color:var(--text-dim)}
+  .td-verdict.ok{color:var(--ok);font-weight:600}
+  .td-edit{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:12px 2px 0;font-size:.86rem;color:var(--text-dim)}
+  .td-edit label{display:inline-flex;align-items:center;gap:8px}
+  .td-edit input{width:72px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:6px 9px;font-family:var(--mono,monospace);font-size:.88rem;color:var(--text)}
+  .td-edit input:focus{outline:none;border-color:var(--accent)}
+
+  /* ---- kutular ---- */
+  .td-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:680px){ .td-grid{grid-template-columns:1fr} }
+  .td-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+  .td-box h2{margin:0;font-size:.98rem;font-weight:700;letter-spacing:-.01em;color:var(--text);display:flex;align-items:center;gap:8px}
+  .td-box h2 a{color:inherit;text-decoration:none}
+  .td-box h2 a:hover{color:var(--accent)}
+  .td-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .td-big b{font-family:var(--mono,monospace);font-size:2.1rem;font-weight:700;line-height:1;letter-spacing:-.03em;color:var(--text)}
+  .td-big span{font-size:.86rem;color:var(--text-dim)}
+  .td-small{margin:0;font-size:.84rem;color:var(--text-muted);line-height:1.5}
+  .td-lbl{font-family:var(--mono,monospace);font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+  .td-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .td-chip{display:inline-flex;align-items:baseline;gap:6px;font-size:.82rem;color:var(--text);background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:999px;padding:3px 10px;max-width:100%}
+  .td-chip small{color:var(--text-muted);font-size:.74rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .td-chip em{font-style:normal;font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;color:var(--bad)}
+  .td-chip.tag-low{border-color:color-mix(in srgb,var(--ok) 45%,var(--border))}
+  .td-none{font-size:.84rem;color:var(--text-muted)}
+
+  /* ---- 14 gün ---- */
+  .td-chart{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 16px 12px;position:relative}
+  .td-bars{display:grid;grid-template-columns:repeat(14,1fr);gap:2px;align-items:end;height:120px;position:relative}
+  .td-bar{appearance:none;border:0;background:transparent;cursor:pointer;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;padding:0 2px;border-radius:6px;min-width:0}
+  .td-bar:hover,.td-bar:focus-visible{background:var(--accent-soft)}
+  .td-bar:focus{outline:none}
+  .td-bar i{display:block;background:var(--accent);border-radius:4px 4px 0 0;min-height:0;opacity:.85}
+  .td-bar.sel i{opacity:1}
+  .td-bar.sel{box-shadow:inset 0 -2px 0 var(--accent)}
+  .td-goalline{position:absolute;left:0;right:0;border-top:1px dashed var(--text-muted);opacity:.55;pointer-events:none}
+  .td-days{display:grid;grid-template-columns:repeat(14,1fr);gap:2px;margin-top:6px}
+  .td-days span{text-align:center;font-family:var(--mono,monospace);font-size:.6rem;color:var(--text-muted);line-height:1.5}
+  .td-days span b{display:block;height:8px;line-height:8px;font-size:.7rem;color:var(--ok)}
+  .td-legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 2px 0;font-size:.78rem;color:var(--text-muted)}
+  .td-legend span{display:inline-flex;align-items:center;gap:6px}
+  .td-legend .dash{width:16px;border-top:1px dashed var(--text-muted)}
+  .td-legend .dot{color:var(--ok);font-weight:700}
+  .td-tip{position:absolute;z-index:5;pointer-events:none;background:var(--text);color:var(--bg);font-size:.76rem;line-height:1.45;border-radius:8px;padding:6px 9px;white-space:nowrap;transform:translate(-50%,-100%);box-shadow:var(--shadow-sm)}
+  .td-tip b{font-weight:700}
+
+  .td-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+  .td-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.86rem;padding:9px 15px;border-radius:999px;transition:.15s}
+  .td-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .td-btn svg{width:14px;height:14px}
+  .td-note{font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:18px 2px 0}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='today';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap td">
+  <header class="td-head">
+    <div>
+      <h1 id="title">Today</h1>
+      <p class="td-sub" id="sub"></p>
+    </div>
+    <div class="td-nav">
+      <button type="button" id="prevDay" aria-label="Previous day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button type="button" class="td-todaybtn" id="toToday">Today</button>
+      <button type="button" id="nextDay" aria-label="Next day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+    </div>
+  </header>
+
+  <h2 class="td-sec">Daily goals <button type="button" class="td-link" id="editGoals">Edit goals</button></h2>
+  <div class="td-goals" id="goals"></div>
+  <div class="td-edit" id="goalEdit" hidden>
+    <label>B1 Recall correct <input type="number" min="0" max="999" id="gB1"></label>
+    <label>Vocabulary correct <input type="number" min="0" max="999" id="gV"></label>
+  </div>
+  <p class="td-verdict" id="verdict"></p>
+
+  <h2 class="td-sec">Practice</h2>
+  <div class="td-grid">
+    <section class="td-box" id="boxB1"></section>
+    <section class="td-box" id="boxV"></section>
+  </div>
+
+  <h2 class="td-sec">Flow</h2>
+  <div class="td-grid">
+    <section class="td-box" id="boxToS"></section>
+    <section class="td-box" id="boxLearn"></section>
+  </div>
+
+  <h2 class="td-sec">Review</h2>
+  <div class="td-grid">
+    <section class="td-box" id="boxRc"></section>
+    <section class="td-box" id="boxRs"></section>
+  </div>
+
+  <h2 class="td-sec">Last 14 days</h2>
+  <div class="td-chart" id="chart">
+    <div class="td-bars" id="bars"></div>
+    <div class="td-days" id="days"></div>
+    <div class="td-legend">
+      <span>Bars: correct answers in B1 Recall + Vocabulary</span>
+      <span><i class="dash"></i>Combined daily goal</span>
+      <span><i class="dot">●</i>Both practice goals met</span>
+    </div>
+  </div>
+
+  <div class="td-actions">
+    <button type="button" class="td-btn" id="copyBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copyLbl">Copy summary</span>
+    </button>
+  </div>
+  <p class="td-note">Every answer in B1 Recall and Vocabulary (flashcards, quiz, fill-in and the list buttons) is counted on the day it was given. Study on several devices and the day adds them up once they sync. Active time is approximate: it adds up the gaps between answers and leaves out breaks longer than five minutes.</p>
+</div>
+
+<script src="data.js"></script>
+<script src="b1-data.js"></script>
+<script>
+/* ============================================================
+   Today — günlük özet
+   Kayıt: daylog.js (NSDay, ns-day). Review'da bekleyenler canlı
+   olarak journey-core.js'ten okunur; geçmiş günler için yalnızca
+   o gün yapılanlar bilinir.
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const D = window.NSDay, J = window.NSJourney;
+const TR = {};
+B1.forEach(w => { TR['b1:' + w.en] = w.tr; });
+WORDS.forEach(w => { TR['v:' + w.en] = w.tr; });
+
+const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+let date = D.today();
+try { const q = new URLSearchParams(location.search).get('d'); if (/^\d{4}-\d{2}-\d{2}$/.test(q || '') && q <= D.today()) date = q; } catch (e) {}
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function plural(n, one, many){ return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
+function longDate(s){ const p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' }); }
+function shortDate(s){ const p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
+function dur(sec){
+  const m = Math.round(sec / 60);
+  if (m < 1) return sec ? 'under a minute' : '';
+  return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min';
+}
+function inData(en){ return ('v:' + en) in TR; }
+
+function chips(map, area, opts){
+  opts = opts || {};
+  let keys = Object.keys(map);
+  if (opts.byCount) keys.sort((a, b) => map[b] - map[a] || a.localeCompare(b));
+  else keys.sort();
+  if (!keys.length) return '<span class="td-none">' + (opts.empty || 'None') + '</span>';
+  const max = opts.max || 40, more = keys.length - max;
+  return '<div class="td-chips">' + keys.slice(0, max).map(en => {
+    const tr = TR[area + ':' + en];
+    const tag = opts.tag ? opts.tag(en, map[en]) : '';
+    return '<span class="td-chip' + (opts.cls ? ' ' + opts.cls(en, map[en]) : '') + '">' + esc(en) +
+      (tr ? '<small>' + esc(tr) + '</small>' : '') + tag + '</span>';
+  }).join('') + (more > 0 ? '<span class="td-chip"><small>+' + more + ' more</small></span>' : '') + '</div>';
+}
+
+/* Seri: bugünden (bugün henüz boşsa dünden) geriye kesintisiz aktif gün. */
+function streak(){
+  let d = D.today(), n = 0;
+  if (!D.active(D.day(d))) d = D.addDays(d, -1);
+  while (D.active(D.day(d))) { n++; d = D.addDays(d, -1); }
+  return n;
+}
+
+function goalRow(state, name, val, frac, note){
+  return '<div class="td-goal ' + state + '">' +
+    '<span class="td-mark">' + ICON_OK + '</span>' +
+    '<span class="td-gname">' + name + '</span>' +
+    '<span class="td-gval">' + val + '</span>' +
+    (frac != null ? '<span class="td-track"><i style="width:' + Math.min(100, frac * 100) + '%"></i></span>' : '') +
+    (note ? '<span class="td-gnote">' + note + '</span>' : '') +
+  '</div>';
+}
+
+function render(){
+  const isToday = date === D.today();
+  const d = D.day(date), g = D.goals();
+
+  /* başlık */
+  $('title').textContent = isToday ? 'Today' : longDate(date);
+  const st = streak(), parts = [];
+  if (isToday) parts.push(longDate(date));
+  if (d.t) parts.push('<b>' + dur(d.t) + '</b> active');
+  if (isToday && st) parts.push('<b>' + plural(st, 'day') + '</b> in a row');
+  $('sub').innerHTML = parts.join(' · ') || (D.active(d) ? '' : 'Nothing recorded on this day.');
+  $('nextDay').disabled = isToday;
+  $('toToday').hidden = isToday;
+  const first = D.firstDay();
+  $('prevDay').disabled = !first || date <= first;
+
+  /* hedefler */
+  const rcDue = isToday ? J.cardsDue().filter(inData).length : null;
+  const rsDue = isToday ? J.sentencesDue().filter(inData).length : null;
+  const rcDone = d.rc[0] + d.rc[1], rsDone = Object.keys(d.rs).length;
+  const b1ok = d.b1[0] >= g.b1, vok = d.v[0] >= g.v;
+  let h = '';
+  h += goalRow(b1ok ? 'done' : '', 'B1 Recall', d.b1[0] + ' / ' + g.b1 + ' correct', g.b1 ? d.b1[0] / g.b1 : 1);
+  h += goalRow(vok ? 'done' : '', 'Vocabulary', d.v[0] + ' / ' + g.v + ' correct', g.v ? d.v[0] / g.v : 1);
+  if (isToday) {
+    h += goalRow(rcDue ? '' : 'done', 'Review flashcards',
+      rcDue ? plural(rcDue, 'card') + ' left' : 'All done',
+      null,
+      rcDue ? (rcDone ? plural(rcDone, 'card') + ' rated so far. ' : '') + '<a href="review.html">Open Review</a>'
+            : (rcDone ? plural(rcDone, 'card') + ' rated today.' : 'Nothing was due today.'));
+    h += goalRow(rsDue ? '' : 'done', 'Review sentences',
+      rsDue ? plural(rsDue, 'word') + ' left' : 'All done',
+      null,
+      rsDue ? (rsDone ? plural(rsDone, 'word') + ' practised so far. ' : '') + '<a href="review.html">Open Review</a>'
+            : (rsDone ? plural(rsDone, 'word') + ' practised today.' : 'Nothing was due today.'));
+  } else {
+    h += goalRow('na', 'Review flashcards', plural(rcDone, 'card') + ' rated', null, 'What was due on a past day is not kept, only what was done.');
+    h += goalRow('na', 'Review sentences', plural(rsDone, 'word') + ' practised', null, '');
+  }
+  $('goals').innerHTML = h;
+
+  const v = $('verdict');
+  const allDone = b1ok && vok && (!isToday || (!rcDue && !rsDue));
+  v.className = 'td-verdict' + (allDone ? ' ok' : '');
+  if (allDone) v.textContent = isToday ? 'Enough for today. Every goal is met.' : 'Both practice goals were met on this day.';
+  else if (isToday) {
+    const left = [];
+    if (!b1ok) left.push((g.b1 - d.b1[0]) + ' more correct in B1 Recall');
+    if (!vok) left.push((g.v - d.v[0]) + ' more correct in Vocabulary');
+    if (rcDue) left.push(plural(rcDue, 'Review card'));
+    if (rsDue) left.push(plural(rsDue, 'Review sentence'));
+    v.textContent = 'Still to do: ' + left.join(', ') + '.';
+  } else v.textContent = 'Practice goals were not met on this day.';
+
+  /* pratik */
+  function practiceBox(area, name, href, p, missed){
+    const n = p[0] + p[1];
+    return '<h2><a href="' + href + '">' + name + '</a></h2>' +
+      '<div class="td-big"><b>' + p[0] + '</b><span>correct' + (n ? ' of ' + n + ' · ' + pct(p[0], n) + '%' : '') + '</span></div>' +
+      '<span class="td-lbl">Missed' + (Object.keys(missed).length ? ' · ' + Object.keys(missed).length : '') + '</span>' +
+      chips(missed, area, { byCount: true, max: 16, empty: n ? 'No misses.' : 'No answers yet.',
+        tag: (en, c) => c > 1 ? '<em>×' + c + '</em>' : '' });
+  }
+  $('boxB1').innerHTML = practiceBox('b1', 'B1 Recall', 'b1.html', d.b1, d.bx);
+  $('boxV').innerHTML = practiceBox('v', 'Vocabulary', 'vocabulary.html', d.v, d.vx);
+
+  /* akış */
+  const toS = Object.keys(d.toS).length, fall = Object.keys(d.fall).length, out = Object.keys(d.out).length;
+  $('boxToS').innerHTML = '<h2><a href="sentences.html">Reached Sentences</a></h2>' +
+    '<div class="td-big"><b>' + toS + '</b><span>' + (toS === 1 ? 'word' : 'words') + ' known on a second day</span></div>' +
+    chips(d.toS, 'v', { empty: 'None' }) +
+    (fall ? '<span class="td-lbl">Back from Review · ' + fall + '</span>' + chips(d.fall, 'v') : '') +
+    (out ? '<span class="td-lbl">Sent back to Vocabulary · ' + out + '</span>' + chips(d.out, 'v') : '');
+  const learnN = Object.keys(d.learn).length;
+  const shortcut = Object.keys(d.learn).filter(en => d.learn[en] === 'new').length;
+  $('boxLearn').innerHTML = '<h2><a href="review.html">Learned, moved to Review</a></h2>' +
+    '<div class="td-big"><b>' + learnN + '</b><span>' + (learnN === 1 ? 'word' : 'words') +
+      (shortcut ? ' · ' + shortcut + ' skipped sentences' : '') + '</span></div>' +
+    chips(d.learn, 'v', { empty: 'None', cls: (en, from) => from === 'new' ? 'tag-low' : '' }) +
+    (shortcut ? '<p class="td-small">Green outline: marked Learned straight from Vocabulary, so it entered Review at Low priority.</p>' : '');
+
+  /* review */
+  $('boxRc').innerHTML = '<h2><a href="review.html">Flashcards</a></h2>' +
+    '<div class="td-big"><b>' + d.rc[0] + '</b><span>correct' + (rcDone ? ' of ' + rcDone + ' · ' + pct(d.rc[0], rcDone) + '%' : '') + '</span></div>' +
+    '<p class="td-small">' + (isToday ? (rcDue ? plural(rcDue, 'card') + ' still due today.' : 'Nothing left for today.') : '') +
+      (fall ? ' ' + plural(fall, 'word') + ' missed twice in a row and went back to Sentences.' : '') + '</p>';
+  $('boxRs').innerHTML = '<h2><a href="review.html">Sentence practice</a></h2>' +
+    '<div class="td-big"><b>' + rsDone + '</b><span>' + (rsDone === 1 ? 'word' : 'words') + ' practised</span></div>' +
+    chips(d.rs, 'v', { empty: isToday && rsDue ? 'None yet.' : 'None' }) +
+    (isToday ? '<p class="td-small">' + (rsDue ? plural(rsDue, 'word') + ' still due today.' : 'Nothing left for today.') + '</p>' : '');
+
+  renderChart();
+}
+
+/* ---------- son 14 gün ---------- */
+let chartDays = [];
+function renderChart(){
+  const g = D.goals(), t = D.today();
+  chartDays = [];
+  for (let i = 13; i >= 0; i--) {
+    const day = D.addDays(t, -i), x = D.day(day);
+    chartDays.push({ date: day, b1: x.b1[0], v: x.v[0], met: x.b1[0] >= g.b1 && x.v[0] >= g.v, active: D.active(x) });
+  }
+  const goal = g.b1 + g.v;
+  const max = Math.max(goal, ...chartDays.map(c => c.b1 + c.v), 1);
+  $('bars').innerHTML = chartDays.map((c, i) => {
+    const sum = c.b1 + c.v;
+    return '<button type="button" class="td-bar' + (c.date === date ? ' sel' : '') + '" data-i="' + i + '" aria-label="' +
+      shortDate(c.date) + ': ' + c.b1 + ' B1, ' + c.v + ' Vocabulary correct">' +
+      '<i style="height:' + (sum / max * 100) + '%"></i></button>';
+  }).join('') + (goal ? '<span class="td-goalline" style="bottom:' + (goal / max * 100) + '%"></span>' : '');
+  $('days').innerHTML = chartDays.map(c => {
+    const p = c.date.split('-');
+    const lbl = c.date === t ? 'Tod' : new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' }).slice(0, 2);
+    return '<span><b>' + (c.met ? '●' : '') + '</b>' + lbl + '</span>';
+  }).join('');
+}
+let tip = null;
+function showTip(btn){
+  const c = chartDays[+btn.dataset.i]; if (!c) return;
+  if (!tip) { tip = document.createElement('div'); tip.className = 'td-tip'; $('chart').appendChild(tip); }
+  tip.innerHTML = '<b>' + shortDate(c.date) + '</b><br>B1 ' + c.b1 + ' · Vocabulary ' + c.v + (c.met ? '<br>Goals met' : '');
+  const box = $('chart').getBoundingClientRect(), r = btn.getBoundingClientRect();
+  const x = Math.min(Math.max(r.left + r.width / 2 - box.left, 60), box.width - 60);
+  tip.style.left = x + 'px';
+  tip.style.top = (r.top - box.top + 6) + 'px';
+  tip.hidden = false;
+}
+function hideTip(){ if (tip) tip.hidden = true; }
+$('bars').addEventListener('mouseover', e => { const b = e.target.closest('.td-bar'); if (b) showTip(b); });
+$('bars').addEventListener('mouseleave', hideTip);
+$('bars').addEventListener('focusin', e => { const b = e.target.closest('.td-bar'); if (b) showTip(b); });
+$('bars').addEventListener('focusout', hideTip);
+$('bars').addEventListener('click', e => {
+  const b = e.target.closest('.td-bar'); if (!b) return;
+  go(chartDays[+b.dataset.i].date);
+});
+
+/* ---------- gezinme ---------- */
+function go(d){
+  if (d > D.today()) d = D.today();
+  date = d;
+  try { history.replaceState(null, '', d === D.today() ? location.pathname : '?d=' + d); } catch (e) {}
+  render();
+}
+$('prevDay').addEventListener('click', () => go(D.addDays(date, -1)));
+$('nextDay').addEventListener('click', () => go(D.addDays(date, 1)));
+$('toToday').addEventListener('click', () => go(D.today()));
+
+/* ---------- hedefleri düzenle ---------- */
+$('editGoals').addEventListener('click', () => {
+  const ed = $('goalEdit'), open = ed.hidden;
+  ed.hidden = !open;
+  $('editGoals').textContent = open ? 'Done' : 'Edit goals';
+  if (open) { const g = D.goals(); $('gB1').value = g.b1; $('gV').value = g.v; $('gB1').focus(); }
+});
+$('gB1').addEventListener('change', e => { D.setGoal('b1', e.target.value); render(); });
+$('gV').addEventListener('change', e => { D.setGoal('v', e.target.value); render(); });
+
+/* ---------- özeti kopyala ---------- */
+$('copyBtn').addEventListener('click', () => {
+  const d = D.day(date), g = D.goals(), isToday = date === D.today();
+  const list = m => Object.keys(m).sort().join(', ') || '-';
+  const lines = [
+    'English Lab · ' + longDate(date),
+    'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]) + ' (goal ' + g.b1 + ')',
+    'Vocabulary: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]) + ' (goal ' + g.v + ')',
+    'Reached Sentences: ' + list(d.toS),
+    'Learned, moved to Review: ' + list(d.learn),
+    'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]) + (isToday ? ', ' + J.cardsDue().filter(inData).length + ' still due' : ''),
+    'Review sentences: ' + list(d.rs) + (isToday ? ', ' + J.sentencesDue().filter(inData).length + ' still due' : '')
+  ];
+  if (d.t) lines.splice(1, 0, 'Active: ' + dur(d.t));
+  const text = lines.join('\n');
+  const done = () => { $('copyLbl').textContent = 'Copied'; setTimeout(() => { $('copyLbl').textContent = 'Copy summary'; }, 1600); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  else fallback(text, done);
+});
+function fallback(text, cb){
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* Başka sekme ya da bulut kayıt ekledi; gün değiştiyse (gece yarısı) bugüne geç. */
+let lastToday = D.today();
+window.addEventListener('ns-state-changed', () => {
+  const t = D.today();
+  if (t !== lastToday) { if (date === lastToday) date = t; lastToday = t; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

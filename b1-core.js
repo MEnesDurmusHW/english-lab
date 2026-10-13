@@ -58,6 +58,7 @@ function b1AddResult(en, hit) {
   B1_STATS[en] = p;
   B1_STATS_STORE.touch(en);
   b1SaveStats();
+  if (typeof NSDay !== 'undefined') NSDay.answer('b1', en, hit);   // günlük özet (today.html)
 }
 function b1ResetWord(en) { delete B1_STATS[en]; B1_STATS_STORE.touch(en); b1SaveStats(); }
 

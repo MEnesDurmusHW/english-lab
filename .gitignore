@@ -11,6 +11,7 @@ node_modules
 
 # Claude'un geçici scriptleri
 tmp/
+.tmp/
 
 # copyrighted source material — do not publish
 *.pdf

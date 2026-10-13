@@ -1,7 +1,7 @@
 /* ============================================================
    English Lab — shared top app bar
    Set window.LAB_SECTION before this script loads:
-     'vocabulary' | 'collocations' | 'articles' | 'sentences' | 'progress'
+     'vocabulary' | 'collocations' | 'articles' | 'sentences' | 'progress' | 'today'
    Injects: brand (page name) · tools (Stats/share/theme/sync).
    Also tags <html data-section> so lab.css can recolor per section.
    Sub-tabs live in each page (a .subbar row), wired by that page.
@@ -14,13 +14,14 @@
   var S = window.LAB_SECTION || 'vocabulary';
   document.documentElement.setAttribute('data-section', S);
 
-  var NAME = { vocabulary: 'Vocabulary', collocations: 'Collocations', articles: 'Articles', sentences: 'Sentences', progress: 'Progress' };
+  var NAME = { vocabulary: 'Vocabulary', collocations: 'Collocations', articles: 'Articles', sentences: 'Sentences', progress: 'Progress', today: 'Today' };
 
   var ICON = {
     progress: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
     caret:    '<svg class="mm-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
     flag:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
     check:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
     award:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
     share:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',
     moon:     '<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
@@ -41,6 +42,7 @@
             ICON.progress + '<span>Stats</span>' + ICON.caret +
           '</button>' +
           '<div class="more-pop" id="statsPop" role="menu" hidden>' +
+            '<a class="more-item" role="menuitem" href="today.html">' + ICON.calendar + '<span>Today</span></a>' +
             '<a class="more-item" role="menuitem" href="progress.html">' + ICON.progress + '<span>General</span></a>' +
             '<a class="more-item" role="menuitem" href="sentences.html">' + ICON.flag + '<span>Sentences</span></a>' +
             '<a class="more-item" role="menuitem" href="vocabulary.html?filter=known">' + ICON.check + '<span>Known</span></a>' +
@@ -55,7 +57,7 @@
 
   document.body.insertBefore(bar, document.body.firstChild);
 
-  // Stats dropdown (General / Sentences / Known / Review)
+  // Stats dropdown (Today / General / Sentences / Known / Review)
   var sb = document.getElementById('statsBtn'), sp = document.getElementById('statsPop');
   if (sb && sp) {
     function closeStats() { sp.hidden = true; sb.setAttribute('aria-expanded', 'false'); }

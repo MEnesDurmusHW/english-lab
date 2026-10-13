@@ -128,6 +128,7 @@ function resetScoresForGroups(ids){
 }
 function addScore(en, d){
   let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores();
+  if(typeof NSDay!=='undefined') NSDay.answer('v', en, d>0);   // günlük özet (today.html)
   // akış sayacı ayrı tutulur: farklı 2 günde doğru -> cümle aşaması (bkz. journey-core.js)
   if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence') setFlag(en, true);
 }

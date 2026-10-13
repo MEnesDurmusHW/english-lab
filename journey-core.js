@@ -66,6 +66,9 @@
   function put(en, j) { DATA[en] = j; STORE.touch(en).commit(); }
   function copy(j) { return JSON.parse(JSON.stringify(j || { s: 'new', c: 0 })); }
 
+  /* Günlük kayıt (daylog.js) yüklüyse aşama değişimini o güne işler. */
+  function log(ev, en, from) { if (window.NSDay) window.NSDay.stage(ev, en, from); }
+
   /* ---- 1. new: pratik cevabı ----
      Yeni bir günde verilen doğru cevap sayacı artırır; aynı gün ikinci doğru
      sayılmaz (kısa süreli hafıza). Yanlış cevap sayacı sıfırlar.
@@ -78,7 +81,7 @@
       if (j.d === t) return null;
       j.c = (j.c || 0) + 1;
       j.d = t;
-      if (j.c >= NEED_DAYS) { j.s = 'sentence'; put(en, j); return 'sentence'; }
+      if (j.c >= NEED_DAYS) { j.s = 'sentence'; put(en, j); log('toS', en); return 'sentence'; }
     } else {
       if (!j.c) return null;
       j.c = 0;
@@ -102,6 +105,7 @@
     j.card = { step: 0, last: t, miss: 0, due: addDays(t, opts.startIn != null ? opts.startIn : iv(CARD_IV, pri, 0)) };
     j.sent = { step: 0, last: t, due: addDays(t, iv(SENT_IV, pri, 0)) };
     put(en, j);
+    log('learn', en, j.from);
     return j;
   }
 
@@ -113,6 +117,7 @@
     if (!j || j.s !== 'review') return stageOf(en);
     var back = j.from === 'new' ? { s: 'new', c: j.c || 0, d: j.d } : { s: 'sentence', c: NEED_DAYS, d: j.d || today() };
     put(en, back);
+    log('unlearn', en);
     return back.s;
   }
 
@@ -124,11 +129,13 @@
     if (j.s !== 'new') return;
     j.s = 'sentence';
     put(en, j);
+    log('toS', en);
   }
   function demote(en) {
     var j = DATA[en];
     if (!j || j.s !== 'sentence') return;
     put(en, { s: 'new', c: 0 });
+    log('out', en);
   }
 
   /* ---- 3. review: kart ----
@@ -138,6 +145,7 @@
     var j = copy(DATA[en]);
     if (j.s !== 'review') return null;
     var t = today();
+    if (window.NSDay) window.NSDay.answer('rc', en, hit);
     if (hit) {
       j.card.step = (j.card.step || 0) + 1;
       j.card.miss = 0;
@@ -149,6 +157,7 @@
     j.card.miss = (j.card.miss || 0) + 1;
     if (j.card.miss >= LAPSE_LIMIT) {
       put(en, { s: 'sentence', c: NEED_DAYS, d: t });
+      log('fall', en);
       return 'fallback';
     }
     j.card.step = 0;
@@ -167,6 +176,7 @@
     j.sent.last = d;
     j.sent.due = addDays(d, iv(SENT_IV, j.pri, j.sent.step));
     put(en, j);
+    if (window.NSDay) window.NSDay.sentencePractised(en, d);
   }
 
   /* Öncelik değişince sonraki tarihler son tekrar gününe yeni aralık
