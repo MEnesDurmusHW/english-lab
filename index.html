@@ -26,6 +26,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <script src="theme.js"></script>
 <script src="store.js"></script>
+<script src="daylog.js"></script>
+<script src="journey-core.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
 <link rel="stylesheet" href="styles.css">
@@ -60,7 +62,12 @@
   .flow-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.92rem;text-decoration:none;transition:border-color .18s,color .18s}
   .flow-btn:hover{border-color:var(--accent);color:var(--accent)}
   @media (max-width:640px){ .cards{grid-template-columns:1fr} .lab-card.wide{grid-column:auto} }
-</style>
+  .home-today{display:block;margin:-20px 0 56px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px 18px;text-decoration:none;color:inherit;box-shadow:var(--shadow-sm);transition:border-color .22s,box-shadow .22s}
+  .home-today:hover{border-color:color-mix(in srgb,var(--accent) 45%,transparent);box-shadow:var(--shadow-lg)}
+  .home-today-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .home-today-head .num{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;color:var(--accent)}
+  .home-today-head .go{font-size:.84rem;font-weight:600;color:var(--text-muted);transition:color .2s}
+  .home-today:hover .go{color:var(--accent)}</style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -82,8 +89,12 @@
     <p class="lab-eyebrow">NS's English Lab</p>
     <h1>Learn it. Then use it.</h1>
     <p>A small workshop for the parts of English that only stick with practice — the words, their neighbours, and the patterns that hold them together.</p>
-    <p style="margin-top:22px"><a class="flow-btn" href="today.html">Today's summary <span aria-hidden="true">&rarr;</span></a></p>
   </header>
+
+  <a class="home-today" href="today.html" aria-label="Today's summary">
+    <div class="home-today-head"><span class="num">TODAY</span><span class="go">Details <span aria-hidden="true">&rarr;</span></span></div>
+    <div id="todayScore"></div>
+  </a>
 
   <section class="home-sec" aria-labelledby="secFlow">
     <div class="home-sec-head">
@@ -163,5 +174,14 @@
 </div>
 
 <div class="home-logo" onclick="location.href='index.html'" role="link" tabindex="0"><span class="logo-text">NS's English Lab</span><span class="logo-author">by M. Enes Durmuş</span></div>
+
+<!-- data.js: Review'da bekleyenler Review sayfasıyla aynı süzgeçten geçsin diye (daylog.js) -->
+<script src="data.js"></script>
+<script>
+/* Günün puanı: başka sekme/bulut değiştirince ve sekme öne gelince tazelenir. */
+function renderToday(){ document.getElementById('todayScore').innerHTML = NSDay.scoreHTML(NSDay.score(NSDay.today())); }
+window.addEventListener('ns-state-changed', renderToday);
+renderToday();
+</script>
 </body>
 </html>

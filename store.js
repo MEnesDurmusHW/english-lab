@@ -34,9 +34,11 @@
        ns-journey, ns-journey-adopted, ns-vocab-hidden, ns-vocab-flag
                                     akışın ilk denemesi ve akış öncesi
                                     Learned / cümle işaretleri — akış
-                                    sıfırdan başladı (2026-10-04) */
+                                    sıfırdan başladı (2026-10-04)
+       ns-day-goal                  ayrı B1/Vocabulary hedefleri; yerini
+                                    günlük puan aldı (2026-10-13) */
   var RETIRED = {
-    'ns-review': 1, 'ns-review-stats': 1,
+    'ns-review': 1, 'ns-review-stats': 1, 'ns-day-goal': 1,
     'ns-journey': 1, 'ns-journey-adopted': 1, 'ns-vocab-hidden': 1, 'ns-vocab-flag': 1
   };
   Object.keys(RETIRED).forEach(function (k) { try { _removeItem(k); } catch (e) {} });

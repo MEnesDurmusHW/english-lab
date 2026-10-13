@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Today — NS's English Lab</title>
-<meta name="description" content="Daily summary: flashcards answered in B1 Recall and Vocabulary, words that moved to sentence practice or to Review, and whether today's Review is done.">
+<meta name="description" content="Daily summary: points earned in B1 Recall, Vocabulary, Sentences and Review, whether today's Review is done, and the last two weeks.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
@@ -51,32 +51,23 @@
   .td-nav svg{width:15px;height:15px}
   .td-nav .td-todaybtn{width:auto;border-radius:999px;padding:0 12px;font-family:var(--sans);font-size:.8rem;font-weight:600}
 
-  .td-sec{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:32px 0 12px;display:flex;align-items:center;gap:10px}
-  .td-sec .td-link{margin-left:auto;font-family:var(--sans);letter-spacing:0;text-transform:none;font-size:.8rem;font-weight:600;color:var(--accent);background:none;border:0;cursor:pointer;padding:0;text-decoration:none}
-  .td-sec .td-link:hover{text-decoration:underline}
+  .td-sec{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:32px 0 12px}
 
-  /* ---- hedefler ---- */
-  .td-goals{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 18px}
-  .td-goal{display:grid;grid-template-columns:22px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
-  .td-goal:last-child{border-bottom:0}
-  .td-mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--border);color:transparent;grid-row:1 / span 2}
-  .td-mark svg{width:12px;height:12px}
-  .td-goal.done .td-mark{background:var(--ok);border-color:var(--ok);color:#fff}
-  .td-goal.na .td-mark{border-style:dashed}
-  .td-gname{font-weight:600;font-size:.95rem;color:var(--text)}
-  .td-gval{font-family:var(--mono,monospace);font-size:.85rem;font-weight:600;color:var(--text-dim);font-variant-numeric:tabular-nums;text-align:right}
-  .td-gnote{grid-column:2 / -1;font-size:.82rem;color:var(--text-muted);line-height:1.45}
-  .td-gnote a{color:var(--accent);font-weight:600;text-decoration:none}
-  .td-gnote a:hover{text-decoration:underline}
-  .td-track{grid-column:2 / -1;height:6px;border-radius:999px;background:var(--surface-2,var(--border));overflow:hidden}
-  .td-track i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .3s}
-  .td-goal.done .td-track i{background:var(--ok)}
-  .td-verdict{margin:12px 2px 0;font-size:.9rem;color:var(--text-dim)}
+  /* ---- günlük puan ---- */
+  .td-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+  .td-verdict{margin:12px 2px 0;font-size:.9rem;color:var(--text-dim);line-height:1.5}
   .td-verdict.ok{color:var(--ok);font-weight:600}
-  .td-edit{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:12px 2px 0;font-size:.86rem;color:var(--text-dim)}
-  .td-edit label{display:inline-flex;align-items:center;gap:8px}
-  .td-edit input{width:72px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:6px 9px;font-family:var(--mono,monospace);font-size:.88rem;color:var(--text)}
-  .td-edit input:focus{outline:none;border-color:var(--accent)}
+  .td-verdict a{color:var(--accent);font-weight:600;text-decoration:none}
+  .td-verdict a:hover{text-decoration:underline}
+  .td-break{width:100%;border-collapse:collapse;margin-top:14px;font-size:.86rem}
+  .td-break td{padding:7px 0;border-top:1px solid var(--border);color:var(--text-dim);font-variant-numeric:tabular-nums}
+  .td-break td:first-child{display:flex;align-items:center;gap:8px;color:var(--text)}
+  .td-break td:nth-child(2){font-family:var(--mono,monospace);font-size:.8rem;text-align:right;padding-right:14px;color:var(--text-muted)}
+  .td-break td:last-child{font-family:var(--mono,monospace);font-weight:700;text-align:right;color:var(--text);width:3.5em}
+  .td-break .sw{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+  .td-break .sw.p{background:var(--pts-p)}
+  .td-break .sw.r{background:var(--pts-r)}
+  .td-break tr.zero td{opacity:.5}
 
   /* ---- kutular ---- */
   .td-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -100,20 +91,25 @@
   /* ---- 14 gün ---- */
   .td-chart{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 16px 12px;position:relative}
   .td-bars{display:grid;grid-template-columns:repeat(14,1fr);gap:2px;align-items:end;height:120px;position:relative}
-  .td-bar{appearance:none;border:0;background:transparent;cursor:pointer;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;padding:0 2px;border-radius:6px;min-width:0}
+  .td-bar{appearance:none;border:0;background:transparent;cursor:pointer;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;padding:0 2px;border-radius:6px;min-width:0}
   .td-bar:hover,.td-bar:focus-visible{background:var(--accent-soft)}
   .td-bar:focus{outline:none}
-  .td-bar i{display:block;background:var(--accent);border-radius:4px 4px 0 0;min-height:0;opacity:.85}
-  .td-bar.sel i{opacity:1}
-  .td-bar.sel{box-shadow:inset 0 -2px 0 var(--accent)}
-  .td-goalline{position:absolute;left:0;right:0;border-top:1px dashed var(--text-muted);opacity:.55;pointer-events:none}
+  .td-bar i{display:block;flex:0 0 auto}
+  .td-bar i.r{background:var(--pts-r)}
+  .td-bar i.p{background:var(--pts-p)}
+  .td-bar i:first-child{border-radius:4px 4px 0 0}
+  .td-bar.sel{box-shadow:inset 0 -2px 0 var(--text)}
+  .td-goalline{position:absolute;left:0;right:0;border-top:1px dashed var(--text-muted);opacity:.6;pointer-events:none}
   .td-days{display:grid;grid-template-columns:repeat(14,1fr);gap:2px;margin-top:6px}
   .td-days span{text-align:center;font-family:var(--mono,monospace);font-size:.6rem;color:var(--text-muted);line-height:1.5}
-  .td-days span b{display:block;height:8px;line-height:8px;font-size:.7rem;color:var(--ok)}
-  .td-legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 2px 0;font-size:.78rem;color:var(--text-muted)}
+  .td-days span b{display:block;height:9px;line-height:9px;font-size:.7rem;color:var(--ok)}
+  .td-legend{display:flex;gap:6px 16px;flex-wrap:wrap;margin:10px 2px 0;font-size:.78rem;color:var(--text-muted)}
   .td-legend span{display:inline-flex;align-items:center;gap:6px}
+  .td-legend .sw{width:10px;height:10px;border-radius:3px}
+  .td-legend .sw.p{background:var(--pts-p)}
+  .td-legend .sw.r{background:var(--pts-r)}
   .td-legend .dash{width:16px;border-top:1px dashed var(--text-muted)}
-  .td-legend .dot{color:var(--ok);font-weight:700}
+  .td-legend .dot{color:var(--ok);font-weight:700;font-style:normal}
   .td-tip{position:absolute;z-index:5;pointer-events:none;background:var(--text);color:var(--bg);font-size:.76rem;line-height:1.45;border-radius:8px;padding:6px 9px;white-space:nowrap;transform:translate(-50%,-100%);box-shadow:var(--shadow-sm)}
   .td-tip b{font-weight:700}
 
@@ -142,11 +138,10 @@
     </div>
   </header>
 
-  <h2 class="td-sec">Daily goals <button type="button" class="td-link" id="editGoals">Edit goals</button></h2>
-  <div class="td-goals" id="goals"></div>
-  <div class="td-edit" id="goalEdit" hidden>
-    <label>B1 Recall correct <input type="number" min="0" max="999" id="gB1"></label>
-    <label>Vocabulary correct <input type="number" min="0" max="999" id="gV"></label>
+  <h2 class="td-sec">Daily score</h2>
+  <div class="td-card">
+    <div id="score"></div>
+    <table class="td-break" id="breakdown"></table>
   </div>
   <p class="td-verdict" id="verdict"></p>
 
@@ -173,9 +168,10 @@
     <div class="td-bars" id="bars"></div>
     <div class="td-days" id="days"></div>
     <div class="td-legend">
-      <span>Bars: correct answers in B1 Recall + Vocabulary</span>
-      <span><i class="dash"></i>Combined daily goal</span>
-      <span><i class="dot">●</i>Both practice goals met</span>
+      <span><i class="sw p"></i>Practice points</span>
+      <span><i class="sw r"></i>Review points</span>
+      <span><i class="dash"></i><span id="goalLbl">100</span> points</span>
+      <span><i class="dot">●</i>Success</span>
     </div>
   </div>
 
@@ -185,7 +181,7 @@
       <span id="copyLbl">Copy summary</span>
     </button>
   </div>
-  <p class="td-note">Every answer in B1 Recall and Vocabulary (flashcards, quiz, fill-in and the list buttons) is counted on the day it was given. Study on several devices and the day adds them up once they sync. Active time is approximate: it adds up the gaps between answers and leaves out breaks longer than five minutes.</p>
+  <p class="td-note">A day counts as a success when it reaches <span id="goalNote">100</span> points <b>and</b> nothing is left in Review. Review is never optional: a day full of practice with Review still waiting stays unfinished. Every answer in B1 Recall and Vocabulary (flashcards, quiz, fill-in and the list buttons) is counted on the day it was given; studying on several devices adds up once they sync. Active time is approximate: it adds up the gaps between answers and leaves out breaks longer than five minutes.</p>
 </div>
 
 <script src="data.js"></script>
@@ -193,19 +189,17 @@
 <script>
 /* ============================================================
    Today — günlük özet
-   Kayıt: daylog.js (NSDay, ns-day). Review'da bekleyenler canlı
-   olarak journey-core.js'ten okunur; geçmiş günler için yalnızca
-   o gün yapılanlar bilinir.
+   Kayıt ve puan: daylog.js (NSDay). Review'da bekleyenler bugün
+   için canlı hesaplanır; geçmiş günde o günün son anlık görüntüsü.
    ============================================================ */
 'use strict';
 
 const $ = id => document.getElementById(id);
-const D = window.NSDay, J = window.NSJourney;
+const D = window.NSDay;
+const P = D.POINTS;
 const TR = {};
 B1.forEach(w => { TR['b1:' + w.en] = w.tr; });
 WORDS.forEach(w => { TR['v:' + w.en] = w.tr; });
-
-const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
 let date = D.today();
 try { const q = new URLSearchParams(location.search).get('d'); if (/^\d{4}-\d{2}-\d{2}$/.test(q || '') && q <= D.today()) date = q; } catch (e) {}
@@ -220,7 +214,7 @@ function dur(sec){
   if (m < 1) return sec ? 'under a minute' : '';
   return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min';
 }
-function inData(en){ return ('v:' + en) in TR; }
+function size(o){ return Object.keys(o).length; }
 
 function chips(map, area, opts){
   opts = opts || {};
@@ -237,84 +231,67 @@ function chips(map, area, opts){
   }).join('') + (more > 0 ? '<span class="td-chip"><small>+' + more + ' more</small></span>' : '') + '</div>';
 }
 
-/* Seri: bugünden (bugün henüz boşsa dünden) geriye kesintisiz aktif gün. */
+/* Seri: bugünden (bugün henüz başarılı değilse dünden) geriye kesintisiz başarılı gün. */
 function streak(){
   let d = D.today(), n = 0;
-  if (!D.active(D.day(d))) d = D.addDays(d, -1);
-  while (D.active(D.day(d))) { n++; d = D.addDays(d, -1); }
+  if (!D.score(d).success) d = D.addDays(d, -1);
+  while (D.score(d).success) { n++; d = D.addDays(d, -1); }
   return n;
-}
-
-function goalRow(state, name, val, frac, note){
-  return '<div class="td-goal ' + state + '">' +
-    '<span class="td-mark">' + ICON_OK + '</span>' +
-    '<span class="td-gname">' + name + '</span>' +
-    '<span class="td-gval">' + val + '</span>' +
-    (frac != null ? '<span class="td-track"><i style="width:' + Math.min(100, frac * 100) + '%"></i></span>' : '') +
-    (note ? '<span class="td-gnote">' + note + '</span>' : '') +
-  '</div>';
 }
 
 function render(){
   const isToday = date === D.today();
-  const d = D.day(date), g = D.goals();
+  const s = D.score(date), d = s.day;
 
   /* başlık */
   $('title').textContent = isToday ? 'Today' : longDate(date);
   const st = streak(), parts = [];
   if (isToday) parts.push(longDate(date));
   if (d.t) parts.push('<b>' + dur(d.t) + '</b> active');
-  if (isToday && st) parts.push('<b>' + plural(st, 'day') + '</b> in a row');
+  if (isToday && st) parts.push('<b>' + plural(st, 'successful day') + '</b> in a row');
   $('sub').innerHTML = parts.join(' · ') || (D.active(d) ? '' : 'Nothing recorded on this day.');
   $('nextDay').disabled = isToday;
   $('toToday').hidden = isToday;
   const first = D.firstDay();
   $('prevDay').disabled = !first || date <= first;
 
-  /* hedefler */
-  const rcDue = isToday ? J.cardsDue().filter(inData).length : null;
-  const rsDue = isToday ? J.sentencesDue().filter(inData).length : null;
-  const rcDone = d.rc[0] + d.rc[1], rsDone = Object.keys(d.rs).length;
-  const b1ok = d.b1[0] >= g.b1, vok = d.v[0] >= g.v;
-  let h = '';
-  h += goalRow(b1ok ? 'done' : '', 'B1 Recall', d.b1[0] + ' / ' + g.b1 + ' correct', g.b1 ? d.b1[0] / g.b1 : 1);
-  h += goalRow(vok ? 'done' : '', 'Vocabulary', d.v[0] + ' / ' + g.v + ' correct', g.v ? d.v[0] / g.v : 1);
-  if (isToday) {
-    h += goalRow(rcDue ? '' : 'done', 'Review flashcards',
-      rcDue ? plural(rcDue, 'card') + ' left' : 'All done',
-      null,
-      rcDue ? (rcDone ? plural(rcDone, 'card') + ' rated so far. ' : '') + '<a href="review.html">Open Review</a>'
-            : (rcDone ? plural(rcDone, 'card') + ' rated today.' : 'Nothing was due today.'));
-    h += goalRow(rsDue ? '' : 'done', 'Review sentences',
-      rsDue ? plural(rsDue, 'word') + ' left' : 'All done',
-      null,
-      rsDue ? (rsDone ? plural(rsDone, 'word') + ' practised so far. ' : '') + '<a href="review.html">Open Review</a>'
-            : (rsDone ? plural(rsDone, 'word') + ' practised today.' : 'Nothing was due today.'));
-  } else {
-    h += goalRow('na', 'Review flashcards', plural(rcDone, 'card') + ' rated', null, 'What was due on a past day is not kept, only what was done.');
-    h += goalRow('na', 'Review sentences', plural(rsDone, 'word') + ' practised', null, '');
-  }
-  $('goals').innerHTML = h;
+  /* puan */
+  $('score').innerHTML = D.scoreHTML(s);
+  const rows = [
+    ['p', 'B1 Recall correct', d.b1[0], P.b1, s.parts.b1],
+    ['p', 'Vocabulary correct', d.v[0], P.v, s.parts.v],
+    ['p', 'Reached Sentences', size(d.toS), P.toS, s.parts.toS],
+    ['p', 'Learned, moved to Review', size(d.learn), P.learn, s.parts.learn],
+    ['r', 'Review flashcards rated', d.rc[0] + d.rc[1], P.rc, s.parts.rc],
+    ['r', 'Review sentences practised', size(d.rs), P.rs, s.parts.rs]
+  ];
+  $('breakdown').innerHTML = rows.map(r =>
+    '<tr' + (r[4] ? '' : ' class="zero"') + '><td><i class="sw ' + r[0] + '"></i>' + r[1] + '</td>' +
+    '<td>' + r[2] + ' × ' + r[3] + '</td><td>' + r[4] + '</td></tr>').join('');
 
   const v = $('verdict');
-  const allDone = b1ok && vok && (!isToday || (!rcDue && !rsDue));
-  v.className = 'td-verdict' + (allDone ? ' ok' : '');
-  if (allDone) v.textContent = isToday ? 'Enough for today. Every goal is met.' : 'Both practice goals were met on this day.';
+  v.className = 'td-verdict' + (s.success ? ' ok' : '');
+  if (s.success) v.textContent = isToday ? 'Enough for today. Points reached and Review is done.' : 'This day was a success.';
   else if (isToday) {
     const left = [];
-    if (!b1ok) left.push((g.b1 - d.b1[0]) + ' more correct in B1 Recall');
-    if (!vok) left.push((g.v - d.v[0]) + ' more correct in Vocabulary');
-    if (rcDue) left.push(plural(rcDue, 'Review card'));
-    if (rsDue) left.push(plural(rsDue, 'Review sentence'));
-    v.textContent = 'Still to do: ' + left.join(', ') + '.';
-  } else v.textContent = 'Practice goals were not met on this day.';
+    if (s.total < D.GOAL) left.push((D.GOAL - s.total) + ' more points');
+    if (s.reviewDone === false) {
+      const b = [];
+      if (s.left[0]) b.push(plural(s.left[0], 'Review card'));
+      if (s.left[1]) b.push(plural(s.left[1], 'Review sentence'));
+      left.push(b.join(' and ') + ' (required)');
+    }
+    v.innerHTML = 'Still to do: ' + esc(left.join(', ')) + '.' + (s.reviewDone === false ? ' <a href="review.html">Open Review</a>' : '');
+  } else if (s.total < D.GOAL) v.textContent = 'This day stayed under ' + D.GOAL + ' points.';
+  else if (s.reviewDone === false) v.textContent = 'Points were reached, but Review was left unfinished.';
+  else v.textContent = 'Points were reached, but whether Review was finished is not recorded.';
 
   /* pratik */
   function practiceBox(area, name, href, p, missed){
     const n = p[0] + p[1];
     return '<h2><a href="' + href + '">' + name + '</a></h2>' +
       '<div class="td-big"><b>' + p[0] + '</b><span>correct' + (n ? ' of ' + n + ' · ' + pct(p[0], n) + '%' : '') + '</span></div>' +
-      '<span class="td-lbl">Missed' + (Object.keys(missed).length ? ' · ' + Object.keys(missed).length : '') + '</span>' +
+      '<span class="td-lbl">Missed' + (size(missed) ? ' · ' + size(missed) : '') + '</span>' +
       chips(missed, area, { byCount: true, max: 16, empty: n ? 'No misses.' : 'No answers yet.',
         tag: (en, c) => c > 1 ? '<em>×' + c + '</em>' : '' });
   }
@@ -322,13 +299,13 @@ function render(){
   $('boxV').innerHTML = practiceBox('v', 'Vocabulary', 'vocabulary.html', d.v, d.vx);
 
   /* akış */
-  const toS = Object.keys(d.toS).length, fall = Object.keys(d.fall).length, out = Object.keys(d.out).length;
+  const toS = size(d.toS), fall = size(d.fall), out = size(d.out);
   $('boxToS').innerHTML = '<h2><a href="sentences.html">Reached Sentences</a></h2>' +
     '<div class="td-big"><b>' + toS + '</b><span>' + (toS === 1 ? 'word' : 'words') + ' known on a second day</span></div>' +
     chips(d.toS, 'v', { empty: 'None' }) +
     (fall ? '<span class="td-lbl">Back from Review · ' + fall + '</span>' + chips(d.fall, 'v') : '') +
     (out ? '<span class="td-lbl">Sent back to Vocabulary · ' + out + '</span>' + chips(d.out, 'v') : '');
-  const learnN = Object.keys(d.learn).length;
+  const learnN = size(d.learn);
   const shortcut = Object.keys(d.learn).filter(en => d.learn[en] === 'new').length;
   $('boxLearn').innerHTML = '<h2><a href="review.html">Learned, moved to Review</a></h2>' +
     '<div class="td-big"><b>' + learnN + '</b><span>' + (learnN === 1 ? 'word' : 'words') +
@@ -337,48 +314,48 @@ function render(){
     (shortcut ? '<p class="td-small">Green outline: marked Learned straight from Vocabulary, so it entered Review at Low priority.</p>' : '');
 
   /* review */
+  const rcDone = d.rc[0] + d.rc[1], rsDone = size(d.rs);
+  const leftC = isToday && s.left ? s.left[0] : null, leftS = isToday && s.left ? s.left[1] : null;
   $('boxRc').innerHTML = '<h2><a href="review.html">Flashcards</a></h2>' +
     '<div class="td-big"><b>' + d.rc[0] + '</b><span>correct' + (rcDone ? ' of ' + rcDone + ' · ' + pct(d.rc[0], rcDone) + '%' : '') + '</span></div>' +
-    '<p class="td-small">' + (isToday ? (rcDue ? plural(rcDue, 'card') + ' still due today.' : 'Nothing left for today.') : '') +
+    '<p class="td-small">' + (leftC != null ? (leftC ? plural(leftC, 'card') + ' still due today.' : 'Nothing left for today.') : '') +
       (fall ? ' ' + plural(fall, 'word') + ' missed twice in a row and went back to Sentences.' : '') + '</p>';
   $('boxRs').innerHTML = '<h2><a href="review.html">Sentence practice</a></h2>' +
     '<div class="td-big"><b>' + rsDone + '</b><span>' + (rsDone === 1 ? 'word' : 'words') + ' practised</span></div>' +
-    chips(d.rs, 'v', { empty: isToday && rsDue ? 'None yet.' : 'None' }) +
-    (isToday ? '<p class="td-small">' + (rsDue ? plural(rsDue, 'word') + ' still due today.' : 'Nothing left for today.') + '</p>' : '');
+    chips(d.rs, 'v', { empty: leftS ? 'None yet.' : 'None' }) +
+    (leftS != null ? '<p class="td-small">' + (leftS ? plural(leftS, 'word') + ' still due today.' : 'Nothing left for today.') + '</p>' : '');
 
   renderChart();
 }
 
-/* ---------- son 14 gün ---------- */
+/* ---------- son 14 gün: pratik + review puanı, üst üste ---------- */
 let chartDays = [];
 function renderChart(){
-  const g = D.goals(), t = D.today();
+  const t = D.today();
   chartDays = [];
-  for (let i = 13; i >= 0; i--) {
-    const day = D.addDays(t, -i), x = D.day(day);
-    chartDays.push({ date: day, b1: x.b1[0], v: x.v[0], met: x.b1[0] >= g.b1 && x.v[0] >= g.v, active: D.active(x) });
-  }
-  const goal = g.b1 + g.v;
-  const max = Math.max(goal, ...chartDays.map(c => c.b1 + c.v), 1);
-  $('bars').innerHTML = chartDays.map((c, i) => {
-    const sum = c.b1 + c.v;
-    return '<button type="button" class="td-bar' + (c.date === date ? ' sel' : '') + '" data-i="' + i + '" aria-label="' +
-      shortDate(c.date) + ': ' + c.b1 + ' B1, ' + c.v + ' Vocabulary correct">' +
-      '<i style="height:' + (sum / max * 100) + '%"></i></button>';
-  }).join('') + (goal ? '<span class="td-goalline" style="bottom:' + (goal / max * 100) + '%"></span>' : '');
+  for (let i = 13; i >= 0; i--) chartDays.push(D.score(D.addDays(t, -i)));
+  const max = Math.max(D.GOAL, ...chartDays.map(c => c.total));
+  $('bars').innerHTML = chartDays.map((c, i) =>
+    '<button type="button" class="td-bar' + (c.date === date ? ' sel' : '') + '" data-i="' + i + '" aria-label="' +
+      shortDate(c.date) + ': ' + c.total + ' points' + (c.success ? ', success' : '') + '">' +
+      (c.review ? '<i class="r" style="height:' + (c.review / max * 100) + '%"></i>' : '') +
+      (c.practice ? '<i class="p" style="height:' + (c.practice / max * 100) + '%"></i>' : '') +
+    '</button>').join('') +
+    '<span class="td-goalline" style="bottom:' + (D.GOAL / max * 100) + '%"></span>';
   $('days').innerHTML = chartDays.map(c => {
     const p = c.date.split('-');
     const lbl = c.date === t ? 'Tod' : new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' }).slice(0, 2);
-    return '<span><b>' + (c.met ? '●' : '') + '</b>' + lbl + '</span>';
+    return '<span><b>' + (c.success ? '●' : '') + '</b>' + lbl + '</span>';
   }).join('');
 }
 let tip = null;
 function showTip(btn){
   const c = chartDays[+btn.dataset.i]; if (!c) return;
   if (!tip) { tip = document.createElement('div'); tip.className = 'td-tip'; $('chart').appendChild(tip); }
-  tip.innerHTML = '<b>' + shortDate(c.date) + '</b><br>B1 ' + c.b1 + ' · Vocabulary ' + c.v + (c.met ? '<br>Goals met' : '');
+  tip.innerHTML = '<b>' + shortDate(c.date) + ' · ' + c.total + ' pts</b><br>Practice ' + c.practice + ' · Review ' + c.review +
+    (c.success ? '<br>Success' : c.reviewDone === false ? '<br>Review unfinished' : '');
   const box = $('chart').getBoundingClientRect(), r = btn.getBoundingClientRect();
-  const x = Math.min(Math.max(r.left + r.width / 2 - box.left, 60), box.width - 60);
+  const x = Math.min(Math.max(r.left + r.width / 2 - box.left, 70), box.width - 70);
   tip.style.left = x + 'px';
   tip.style.top = (r.top - box.top + 6) + 'px';
   tip.hidden = false;
@@ -404,30 +381,22 @@ $('prevDay').addEventListener('click', () => go(D.addDays(date, -1)));
 $('nextDay').addEventListener('click', () => go(D.addDays(date, 1)));
 $('toToday').addEventListener('click', () => go(D.today()));
 
-/* ---------- hedefleri düzenle ---------- */
-$('editGoals').addEventListener('click', () => {
-  const ed = $('goalEdit'), open = ed.hidden;
-  ed.hidden = !open;
-  $('editGoals').textContent = open ? 'Done' : 'Edit goals';
-  if (open) { const g = D.goals(); $('gB1').value = g.b1; $('gV').value = g.v; $('gB1').focus(); }
-});
-$('gB1').addEventListener('change', e => { D.setGoal('b1', e.target.value); render(); });
-$('gV').addEventListener('change', e => { D.setGoal('v', e.target.value); render(); });
-
 /* ---------- özeti kopyala ---------- */
 $('copyBtn').addEventListener('click', () => {
-  const d = D.day(date), g = D.goals(), isToday = date === D.today();
+  const s = D.score(date), d = s.day;
   const list = m => Object.keys(m).sort().join(', ') || '-';
   const lines = [
     'English Lab · ' + longDate(date),
-    'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]) + ' (goal ' + g.b1 + ')',
-    'Vocabulary: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]) + ' (goal ' + g.v + ')',
+    'Score: ' + s.total + ' / ' + D.GOAL + ' (practice ' + s.practice + ', review ' + s.review + ')' + (s.success ? ' · success' : ''),
+    'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]),
+    'Vocabulary: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]),
     'Reached Sentences: ' + list(d.toS),
     'Learned, moved to Review: ' + list(d.learn),
-    'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]) + (isToday ? ', ' + J.cardsDue().filter(inData).length + ' still due' : ''),
-    'Review sentences: ' + list(d.rs) + (isToday ? ', ' + J.sentencesDue().filter(inData).length + ' still due' : '')
+    'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]),
+    'Review sentences: ' + list(d.rs),
+    'Review: ' + (s.reviewDone === true ? 'done' : s.reviewDone === false ? s.left[0] + ' cards, ' + s.left[1] + ' sentences left' : 'not recorded')
   ];
-  if (d.t) lines.splice(1, 0, 'Active: ' + dur(d.t));
+  if (d.t) lines.splice(2, 0, 'Active: ' + dur(d.t));
   const text = lines.join('\n');
   const done = () => { $('copyLbl').textContent = 'Copied'; setTimeout(() => { $('copyLbl').textContent = 'Copy summary'; }, 1600); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
@@ -448,6 +417,8 @@ window.addEventListener('ns-state-changed', () => {
   render();
 });
 
+$('goalLbl').textContent = D.GOAL;
+$('goalNote').textContent = D.GOAL;
 render();
 </script>
 </body>

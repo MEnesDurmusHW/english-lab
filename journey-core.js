@@ -63,7 +63,9 @@
   function inReview(en) { return stageOf(en) === 'review'; }
   function daysCount(en) { var j = DATA[en]; return j && j.s === 'new' ? (j.c || 0) : NEED_DAYS; }
 
-  function put(en, j) { DATA[en] = j; STORE.touch(en).commit(); }
+  /* Her değişiklikten sonra günlük kayda Review'da kalan iş yazılır
+     (günün başarısı Review'un bitmesine bağlı, bkz. daylog.js). */
+  function put(en, j) { DATA[en] = j; STORE.touch(en).commit(); if (window.NSDay) window.NSDay.noteReview(); }
   function copy(j) { return JSON.parse(JSON.stringify(j || { s: 'new', c: 0 })); }
 
   /* Günlük kayıt (daylog.js) yüklüyse aşama değişimini o güne işler. */

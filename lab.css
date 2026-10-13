@@ -817,3 +817,31 @@
 .flt-reset:hover{text-decoration:underline}
 .flt-foot{font-family:var(--sans);font-size:.78rem;color:var(--text-muted);padding-top:12px;border-top:1px solid var(--border)}
 
+/* ============================================================
+   Günlük puan çubuğu (daylog.js scoreHTML) — ana sayfa + today.html
+   Pratik ve Review ayrı renk; renkler bölüm vurgusundan bağımsız sabit.
+   ============================================================ */
+:root{--pts-p:#4F46E5;--pts-r:#EA580C}
+[data-theme="dark"]{--pts-p:#6366F1;--pts-r:#EA580C}
+.dscore{display:flex;flex-direction:column;gap:10px}
+.dscore-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dscore-num{font-size:.9rem;color:var(--text-dim)}
+.dscore-num b{font-family:var(--mono);font-size:2rem;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-right:2px}
+.dscore-badge{font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:999px;padding:4px 10px}
+.dscore.is-success .dscore-badge{color:#fff;background:var(--ok);border-color:var(--ok)}
+.dscore-bar{display:flex;gap:2px;height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.dscore-bar i{display:block;height:100%;min-width:4px}
+.dscore-bar i.p{background:var(--pts-p)}
+.dscore-bar i.r{background:var(--pts-r)}
+.dscore-bar i:last-child{border-radius:0 4px 4px 0}   /* sol uç çubuğun kendi yuvarlağıyla kırpılır */
+.dscore-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:.8rem;color:var(--text-dim)}
+.dscore-legend span{display:inline-flex;align-items:center;gap:6px}
+.dscore-legend .sw{width:10px;height:10px;border-radius:3px}
+.dscore-legend .sw.p{background:var(--pts-p)}
+.dscore-legend .sw.r{background:var(--pts-r)}
+.dscore-rv{margin-left:auto;font-weight:600}
+.dscore-rv.ok{color:var(--ok)}
+.dscore-rv.todo{color:var(--pts-r)}
+.dscore-rv.unk{color:var(--text-muted);font-weight:500}
+@media (max-width:520px){ .dscore-rv{margin-left:0;flex-basis:100%} }
+
