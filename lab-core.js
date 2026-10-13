@@ -126,9 +126,11 @@ function resetScoresForGroups(ids){
   WORDS.forEach(function(w){ if(ids.indexOf(w.grp)>=0){ delete SCORES[w.en]; SCORE_STORE.touch(w.en); } });
   saveScores();
 }
-function addScore(en, d){
+/* src: 'card' = flashcard. Günlük puanı yalnızca flashcard verir; quiz,
+   fill-in ve liste düğmeleri günlük özette ayrıca görünür (bkz. daylog.js). */
+function addScore(en, d, src){
   let v=(SCORES[en]||0)+d; v=Math.max(-3, Math.min(5, v)); SCORES[en]=v; SCORE_STORE.touch(en); saveScores();
-  if(typeof NSDay!=='undefined') NSDay.answer('v', en, d>0);   // günlük özet (today.html)
+  if(typeof NSDay!=='undefined') NSDay.answer(src==='card' ? 'v' : 'vq', en, d>0);
   // akış sayacı ayrı tutulur: farklı 2 günde doğru -> cümle aşaması (bkz. journey-core.js)
   if(typeof NSJourney!=='undefined' && NSJourney.recordPractice(en, d>0)==='sentence') setFlag(en, true);
 }

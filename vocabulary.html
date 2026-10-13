@@ -440,7 +440,7 @@ function updateFlagBtn(){ const on=!!(order.length && isFlagged(curCard().en)); 
 function toggleCardFlag(){ if(!order.length) return; toggleFlag(curCard().en); updateFlagBtn(); }
 function updateHideBtn(){ const on=!!(order.length && isHidden(curCard().en)); hideBtn.setAttribute('aria-selected',on?'true':'false'); document.getElementById('hideLbl').textContent = on?'Öğrendim işaretini kaldır':'Öğrendim, Review\'a gönder'; }
 function hideCurrentCard(){ if(!order.length) return; toggleHidden(curCard().en); order.splice(cardPos,1); if(cardPos>=order.length) cardPos=0; renderCard(); updateCount(); }
-function rate(delta){ if(!order.length) return; addScore(curCard().en, delta); nextCard(); }
+function rate(delta){ if(!order.length) return; addScore(curCard().en, delta, 'card'); nextCard(); }
 document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
 detailBtn.addEventListener('click', toggleCardDetails);
 flagBtn.addEventListener('click', toggleCardFlag);

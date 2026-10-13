@@ -7,7 +7,11 @@
 
    Depo (NSStore, girdi bazlı birleşir):
      ns-day { "<YYYY-MM-DD>~<cihaz>": {
-       b1:[doğru,yanlış]  v:[doğru,yanlış]  rc:[doğru,yanlış]   B1 · Vocabulary · Review kartı
+       b1:[doğru,yanlış]  v:[doğru,yanlış]  rc:[doğru,yanlış]   B1 · Vocabulary flashcard · Review kartı
+       vq:[doğru,yanlış]          Vocabulary quiz, fill-in, liste düğmeleri (puan vermez)
+       bp  vp                     puana sayılan doğrular (kelime başına günde en çok PER_WORD)
+       bc:{en:n}  vc:{en:n}       kelime başına doğru sayacı — yalnızca bugün için tutulur,
+                                  ertesi gün bu cihazın eski girdilerinden silinir (boyut)
        bx:{en:n}  vx:{en:n}       o gün yanlış bilinen kelimeler ve kaç kez
        toS:{en:1}                 cümle aşamasına geçenler
        out:{en:1}                 Sentences'tan "Not yet" ile geri gönderilenler
@@ -39,9 +43,10 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
+  var PER_WORD = 2;   // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
   var POINTS = {
     b1: 1,      // B1 Recall doğru cevap
-    v: 2,       // Vocabulary doğru cevap
+    v: 2,       // Vocabulary flashcard doğru cevap
     toS: 3,     // Sentences'a geçen kelime
     learn: 5,   // Learned, Review'a giren kelime
     rc: 2,      // Review kartı (bilse de bilmese de)
@@ -83,16 +88,48 @@
     STORE.touch(id).commit();
   }
 
-  /* ---- yazma ---- */
-  var AREAS = { b1: 'bx', v: 'vx', rc: null };
+  /* Kelime başına doğru sayaçları yalnızca bugün işe yarar; bu cihazın
+     eski günlerinden silinir ki depo (ve bulut belgesi) şişmesin.
+     Oturumda bir kez yeter. */
+  var pruned = false;
+  function prune() {
+    if (pruned) return;
+    pruned = true;
+    var t = today(), suf = '~' + DEV, ids = [];
+    Object.keys(DATA).forEach(function (id) {
+      var e = DATA[id];
+      if (id.slice(-suf.length) === suf && id.split('~')[0] < t && (e.bc || e.vc)) {
+        delete e.bc; delete e.vc;
+        ids.push(id);
+      }
+    });
+    if (ids.length) STORE.touch(ids).commit();
+  }
+
+  /* ---- yazma ----
+     alan: [doğru/yanlış sayacı, yanlış kelimeler, puan sayacı, kelime sayacı]
+     vq (quiz/fill-in/liste) yanlışları da görünür ama puan vermez. */
+  var AREAS = {
+    b1: ['b1', 'bx', 'bp', 'bc'],
+    v:  ['v',  'vx', 'vp', 'vc'],
+    vq: ['vq', 'vx', null, null],
+    rc: ['rc', null, null, null]
+  };
   function answer(area, en, hit) {
-    if (!(area in AREAS)) return;
+    var a = AREAS[area];
+    if (!a) return;
+    prune();
     edit(null, function (e) {
-      var p = e[area] || [0, 0];
+      var p = e[a[0]] || [0, 0];
       p[hit ? 0 : 1]++;
-      e[area] = p;
-      var mk = AREAS[area];
-      if (!hit && mk && en) { var m = e[mk] || (e[mk] = {}); m[en] = (m[en] || 0) + 1; }
+      e[a[0]] = p;
+      if (!hit && a[1] && en) { var m = e[a[1]] || (e[a[1]] = {}); m[en] = (m[en] || 0) + 1; }
+      if (hit && a[2]) {
+        var c = e[a[3]] || (e[a[3]] = {});
+        var n = c[en] || 0;
+        if (n < PER_WORD) e[a[2]] = (e[a[2]] || 0) + 1;
+        c[en] = n + 1;
+      }
     });
   }
 
@@ -150,12 +187,15 @@
 
   /* ---- okuma: bir günün bütün cihazlardaki girdileri toplanır ---- */
   function day(date) {
-    var out = { b1: [0, 0], v: [0, 0], rc: [0, 0], bx: {}, vx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null };
+    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], bp: 0, vp: 0, bx: {}, vx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null };
     var pre = date + '~';
     Object.keys(DATA).forEach(function (id) {
       if (id.indexOf(pre) !== 0) return;
       var e = DATA[id];
-      ['b1', 'v', 'rc'].forEach(function (k) { if (e[k]) { out[k][0] += e[k][0] || 0; out[k][1] += e[k][1] || 0; } });
+      ['b1', 'v', 'vq', 'rc'].forEach(function (k) { if (e[k]) { out[k][0] += e[k][0] || 0; out[k][1] += e[k][1] || 0; } });
+      /* bp/vp'siz girdi tavan kuralından önce yazıldı: her doğrusu sayılır */
+      out.bp += e.bp != null ? e.bp : (e.b1 ? e.b1[0] : 0);
+      out.vp += e.vp != null ? e.vp : (e.v ? e.v[0] : 0);
       ['bx', 'vx'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = (out[k][en] || 0) + e[k][en]; }); });
       ['toS', 'out', 'learn', 'fall', 'rs'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = e[k][en]; }); });
       out.t += e.t || 0;
@@ -164,7 +204,7 @@
     return out;
   }
   function active(d) {
-    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.rc[0] + d.rc[1] > 0 ||
+    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.vq[0] + d.vq[1] + d.rc[0] + d.rc[1] > 0 ||
       ['toS', 'out', 'learn', 'fall', 'rs'].some(function (k) { return size(d[k]) > 0; });
   }
   function firstDay() {
@@ -179,8 +219,8 @@
   function score(date) {
     var d = day(date);
     var parts = {
-      b1: d.b1[0] * POINTS.b1,
-      v: d.v[0] * POINTS.v,
+      b1: d.bp * POINTS.b1,
+      v: d.vp * POINTS.v,
       toS: size(d.toS) * POINTS.toS,
       learn: size(d.learn) * POINTS.learn,
       rc: (d.rc[0] + d.rc[1]) * POINTS.rc,
@@ -239,7 +279,7 @@
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD,
     today: today, addDays: addDays,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
     day: day, active: active, firstDay: firstDay,
