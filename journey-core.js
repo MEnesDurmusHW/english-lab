@@ -174,11 +174,12 @@
     var j = copy(DATA[en]);
     if (j.s !== 'review') return;
     var d = date || today();
+    var wasDue = j.sent.due <= d;      // geriye tarihli işarette o günün Review'u da düzelsin
     j.sent.step = (j.sent.step || 0) + 1;
     j.sent.last = d;
     j.sent.due = addDays(d, iv(SENT_IV, j.pri, j.sent.step));
     put(en, j);
-    if (window.NSDay) window.NSDay.sentencePractised(en, d);
+    if (window.NSDay) window.NSDay.sentencePractised(en, d, wasDue);
   }
 
   /* Öncelik değişince sonraki tarihler son tekrar gününe yeni aralık

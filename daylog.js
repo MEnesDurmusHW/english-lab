@@ -112,9 +112,17 @@
     });
   }
 
-  /* Review cümle pratiği geçmiş bir tarihe de işaretlenebilir: o güne yazılır. */
-  function sentencePractised(en, date) {
-    edit(date && date !== today() ? date : null, function (e) { setAdd(e, 'rs', en); });
+  /* Review cümle pratiği geçmiş bir tarihe de işaretlenebilir: o güne yazılır.
+     Kelime o gün zaten bekliyorduysa (wasDue) o günün son Review görüntüsünde
+     kalan cümle sayısı da bir azalır; yoksa gün "Review bitmedi" kalırdı. */
+  function sentencePractised(en, date, wasDue) {
+    var past = date && date !== today();
+    if (!past) { edit(null, function (e) { setAdd(e, 'rs', en); }); return; }
+    var last = day(date).rv;
+    edit(date, function (e) {
+      setAdd(e, 'rs', en);
+      if (wasDue && last && last[1] > 0) e.rv = [last[0], last[1] - 1, last[2] + 1];
+    });
   }
 
   /* ---- Review'da bekleyen iş ----
