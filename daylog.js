@@ -230,50 +230,67 @@
     var review = parts.rc + parts.rs;
     var left = (date === today() && liveReview()) || (d.rv ? [d.rv[0], d.rv[1]] : null);
     var reviewDone = left ? left[0] + left[1] === 0 : null;
+    /* Çubukta Review'a ayrılan pay: o günün bütün Review işi puan olarak
+       (yapılan + kalan). Pratiğe kalan pay GOAL - reviewSlot. Review bitince
+       kendi payını tam doldurur, yani "pratik payı doldu + Review bitti"
+       ile "toplam >= GOAL + Review bitti" aynı şey. */
+    var leftPts = left ? left[0] * POINTS.rc + left[1] * POINTS.rs : 0;
+    var reviewSlot = Math.min(GOAL, review + leftPts);
     return {
       date: date, day: d, parts: parts,
       practice: practice, review: review, total: practice + review,
       left: left, reviewDone: reviewDone,
+      reviewSlot: reviewSlot, practiceSlot: GOAL - reviewSlot,
       success: practice + review >= GOAL && reviewDone === true
     };
   }
 
   /* ---- ortak gösterim: puan çubuğu (ana sayfa kartı + today.html) ----
-     Stiller lab.css'te (.dscore). */
+     Tek çubuk, iki bölme: solda pratik, sağda Review'un sabit yeri.
+     Bölme genişliği payı (practiceSlot / reviewSlot) gösterir, her bölme
+     kendi payına göre dolar. Review işi olmayan günde de Review bölmesi
+     dar ama görünür kalır. Stiller lab.css'te (.dscore). */
+  var MIN_REVIEW_W = 12;   // %: Review bölmesinin en dar hâli
   function plural(n, one) { return n + ' ' + one + (n === 1 ? '' : 's'); }
   function scoreHTML(s) {
-    var scale = Math.max(GOAL, s.total);
     var isToday = s.date === today();
     var badge = s.success ? 'Success'
       : s.total >= GOAL ? 'Review left'
       : (GOAL - s.total) + ' to go';
+
+    var rw = Math.max(MIN_REVIEW_W, s.reviewSlot / GOAL * 100), pw = 100 - rw;
+    var pFill = s.practiceSlot ? Math.min(1, s.practice / s.practiceSlot) : 1;
+    var rFill = s.reviewSlot ? Math.min(1, s.review / s.reviewSlot) : (s.reviewDone === false ? 0 : 1);
+
     var rv, rvCls;
     if (s.reviewDone === true) {
       rvCls = 'ok';
-      rv = s.review || !isToday ? 'Review done' : 'Nothing due in Review today';
+      rv = s.reviewSlot ? 'done' : 'nothing due';
     } else if (s.reviewDone === false) {
       rvCls = 'todo';
       var bits = [];
       if (s.left[0]) bits.push(plural(s.left[0], 'card'));
       if (s.left[1]) bits.push(plural(s.left[1], 'sentence'));
-      rv = isToday ? 'Review is required: ' + bits.join(' and ') + ' left' : 'Review was not finished';
+      rv = isToday ? bits.join(' + ') + ' left (required)' : 'not finished';
     } else {
       rvCls = 'unk';
-      rv = 'Review status not recorded for this day';
+      rv = 'not recorded';
     }
+
     return '<div class="dscore' + (s.success ? ' is-success' : '') + '">' +
       '<div class="dscore-top">' +
         '<span class="dscore-num"><b>' + s.total + '</b> / ' + GOAL + ' points</span>' +
         '<span class="dscore-badge">' + badge + '</span>' +
       '</div>' +
-      '<div class="dscore-bar" role="img" aria-label="' + s.practice + ' practice points and ' + s.review + ' review points out of ' + GOAL + '">' +
-        (s.practice ? '<i class="p" style="width:' + (s.practice / scale * 100) + '%"></i>' : '') +
-        (s.review ? '<i class="r" style="width:' + (s.review / scale * 100) + '%"></i>' : '') +
+      '<div class="dscore-bar" role="img" aria-label="Practice ' + s.practice + ' of ' + s.practiceSlot +
+        ' points, Review ' + s.review + ' of ' + s.reviewSlot + ' points, review ' + rv + '">' +
+        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + (pFill * 100) + '%"></i></span>' +
+        '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + (rFill * 100) + '%"></i></span>' +
       '</div>' +
       '<div class="dscore-legend">' +
-        '<span><i class="sw p"></i>Practice ' + s.practice + '</span>' +
-        '<span><i class="sw r"></i>Review ' + s.review + '</span>' +
-        '<span class="dscore-rv ' + rvCls + '">' + rv + '</span>' +
+        '<span><i class="sw p"></i>Practice ' + s.practice + ' / ' + s.practiceSlot + '</span>' +
+        '<span class="dscore-rlab"><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
+          '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +
       '</div>' +
     '</div>';
   }

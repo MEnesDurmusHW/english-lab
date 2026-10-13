@@ -829,19 +829,23 @@
 .dscore-num b{font-family:var(--mono);font-size:2rem;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-right:2px}
 .dscore-badge{font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:999px;padding:4px 10px}
 .dscore.is-success .dscore-badge{color:#fff;background:var(--ok);border-color:var(--ok)}
-.dscore-bar{display:flex;gap:2px;height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
-.dscore-bar i{display:block;height:100%;min-width:4px}
-.dscore-bar i.p{background:var(--pts-p)}
-.dscore-bar i.r{background:var(--pts-r)}
-.dscore-bar i:last-child{border-radius:0 4px 4px 0}   /* sol uç çubuğun kendi yuvarlağıyla kırpılır */
-.dscore-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:.8rem;color:var(--text-dim)}
+/* iki bölme: solda pratik, sağda Review'un sabit yeri; aradaki boşluk ayraç */
+.dscore-bar{display:flex;gap:4px;height:14px}
+.dscore-seg{display:block;height:100%;min-width:0;background:var(--surface-2);overflow:hidden;flex-basis:0;flex-shrink:1}
+.dscore-seg.p{border-radius:999px 3px 3px 999px}
+.dscore-seg.r{border-radius:3px 999px 999px 3px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pts-r) 35%,transparent)}
+.dscore-seg i{display:block;height:100%;border-radius:0 4px 4px 0;transition:width .3s}
+.dscore-seg.p i{background:var(--pts-p)}
+.dscore-seg.r i{background:var(--pts-r)}
+.dscore-seg i[style^="width:100%"]{border-radius:0}
+.dscore-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .dscore-legend span{display:inline-flex;align-items:center;gap:6px}
-.dscore-legend .sw{width:10px;height:10px;border-radius:3px}
+.dscore-legend .sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
 .dscore-legend .sw.p{background:var(--pts-p)}
 .dscore-legend .sw.r{background:var(--pts-r)}
-.dscore-rv{margin-left:auto;font-weight:600}
+.dscore-rlab{text-align:right}
+.dscore-rv{font-weight:600}
 .dscore-rv.ok{color:var(--ok)}
 .dscore-rv.todo{color:var(--pts-r)}
 .dscore-rv.unk{color:var(--text-muted);font-weight:500}
-@media (max-width:520px){ .dscore-rv{margin-left:0;flex-basis:100%} }
 
