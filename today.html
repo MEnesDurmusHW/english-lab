@@ -283,8 +283,10 @@ function render(){
       if (s.left[1]) b.push(plural(s.left[1], 'Review sentence'));
       left.push(b.join(' and ') + ' (required)');
     }
-    v.innerHTML = 'Still to do: ' + esc(left.join(', ')) + '.' + (s.reviewDone === false ? ' <a href="review.html">Open Review</a>' : '');
+    if (!s.sentOk) left.push(plural(s.sentNeed - s.sentAdv, 'more Sentences word') + ' to Review (required)');
+    v.innerHTML = 'Still to do: ' + esc(left.join(', ')) + '.' + (s.reviewDone === false ? ' <a href="review.html">Open Review</a>' : '') + (!s.sentOk ? ' <a href="sentences.html">Open Sentences</a>' : '');
   } else if (s.total < D.GOAL) v.textContent = 'This day stayed under ' + D.GOAL + ' points.';
+  else if (!s.sentOk) v.textContent = 'Points were reached, but only ' + s.sentAdv + ' of ' + s.sentNeed + ' Sentences words were moved to Review.';
   else if (s.reviewDone === false) v.textContent = 'Points were reached, but Review was left unfinished.';
   else v.textContent = 'Points were reached, but whether Review was finished is not recorded.';
 
@@ -400,6 +402,7 @@ $('copyBtn').addEventListener('click', () => {
     'Learned, moved to Review: ' + list(d.learn),
     'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]),
     'Review sentences: ' + list(d.rs),
+    (s.sentNeed ? 'Sentences goal: ' + s.sentAdv + ' of ' + s.sentNeed + ' moved to Review\n' : '') +
     'Review: ' + (s.reviewDone === true ? 'done' : s.reviewDone === false ? s.left[0] + ' cards, ' + s.left[1] + ' sentences left' : 'not recorded')
   ];
   if (d.t) lines.splice(2, 0, 'Active: ' + dur(d.t));

@@ -197,6 +197,9 @@
   function reviewWords() {
     return Object.keys(DATA).filter(function (en) { return DATA[en].s === 'review'; });
   }
+  function sentenceWords() {
+    return Object.keys(DATA).filter(function (en) { return DATA[en].s === 'sentence'; });
+  }
   function byPriorityThenDate(field) {
     return function (a, b) {
       var A = DATA[a], B = DATA[b];
@@ -235,7 +238,7 @@
     recordPractice: recordPractice, learn: learn, unlearn: unlearn,
     promote: promote, demote: demote,
     rateCard: rateCard, sentenceDone: sentenceDone, setPriority: setPriority,
-    reviewWords: reviewWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
+    reviewWords: reviewWords, sentenceWords: sentenceWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
     upcoming: upcoming
   };
 })();

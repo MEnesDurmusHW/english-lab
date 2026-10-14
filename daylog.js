@@ -19,6 +19,7 @@
        fall:{en:1}                Review'da üst üste 2 kez bilinemeyip geri düşenler
        rs:{en:1}                  Review'da cümle pratiği işaretlenenler
        rv:[kart,cümle,ms]         o an Review'da bekleyen iş (son görülen durum)
+       sq:[kalan,ms]              o an Sentences aşamasında bekleyen kelime sayısı (son görülen durum)
        t:saniye  at:ms            yaklaşık aktif süre · son olayın zamanı
      } }
 
@@ -32,6 +33,11 @@
    değiştikçe rv anlık görüntüsü o güne yazılır, geçmiş gün onun en
    sonuncusuyla değerlendirilir.
 
+   Sentences hedefi: o gün Sentences'ta (ilerletilenler + kalanlar)
+   SENT_GOAL'den fazla kelime varsa, en az SENT_GOAL tanesi Review'a
+   ilerletilmeden (Learned) gün başarılı sayılmaz. sq kaydı olmayan eski
+   günler bu şarta takılmaz.
+
    store.js'ten SONRA, journey-core.js / lab-core.js / b1-core.js'ten
    ÖNCE, defer'siz yüklenmeli.
    ============================================================ */
@@ -43,6 +49,7 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
+  var SENT_GOAL = 20; // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
   var PER_WORD = 2;   // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
   var POINTS = {
     b1: 1,      // B1 Recall doğru cevap
@@ -174,20 +181,30 @@
     var f = function (en) { return known[en]; };
     return [J.cardsDue().filter(f).length, J.sentencesDue().filter(f).length];
   }
+  function liveSentences() {
+    var J = window.NSJourney;
+    if (!J || typeof WORDS === 'undefined' || !J.sentenceWords) return null;
+    if (!known) { known = {}; WORDS.forEach(function (w) { known[w.en] = 1; }); }
+    return J.sentenceWords().filter(function (en) { return known[en]; }).length;
+  }
   function noteReview() {
-    var live = liveReview();
+    var live = liveReview(), sent = liveSentences();
     if (!live) return;
-    var cur = DATA[today() + '~' + DEV];
-    cur = cur && cur.rv;
-    if (cur && cur[0] === live[0] && cur[1] === live[1]) return;
-    edit(null, function (e) { e.rv = [live[0], live[1], Date.now()]; }, true);
+    var cur = DATA[today() + '~' + DEV] || {};
+    var sameRv = cur.rv && cur.rv[0] === live[0] && cur.rv[1] === live[1];
+    var sameSq = sent == null || (cur.sq && cur.sq[0] === sent);
+    if (sameRv && sameSq) return;
+    edit(null, function (e) {
+      if (!sameRv) e.rv = [live[0], live[1], Date.now()];
+      if (!sameSq) e.sq = [sent, Date.now()];
+    }, true);
   }
   window.addEventListener('load', noteReview);
   window.addEventListener('ns-state-changed', noteReview);
 
   /* ---- okuma: bir günün bütün cihazlardaki girdileri toplanır ---- */
   function day(date) {
-    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], bp: 0, vp: 0, bx: {}, vx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null };
+    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], bp: 0, vp: 0, bx: {}, vx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null, sq: null };
     var pre = date + '~';
     Object.keys(DATA).forEach(function (id) {
       if (id.indexOf(pre) !== 0) return;
@@ -200,6 +217,7 @@
       ['toS', 'out', 'learn', 'fall', 'rs'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = e[k][en]; }); });
       out.t += e.t || 0;
       if (e.rv && (!out.rv || e.rv[2] > out.rv[2])) out.rv = e.rv;   // en son görülen durum
+      if (e.sq && (!out.sq || e.sq[1] > out.sq[1])) out.sq = e.sq;
     });
     return out;
   }
@@ -234,6 +252,12 @@
        (yapılan + kalan). Pratiğe kalan pay GOAL - reviewSlot. Review bitince
        kendi payını tam doldurur, yani "pratik payı doldu + Review bitti"
        ile "toplam >= GOAL + Review bitti" aynı şey. */
+    /* Sentences hedefi: Sentences'tan Review'a ilerletilen (learn değeri 'sentence') kelimeler */
+    var adv = Object.keys(d.learn).filter(function (en) { return d.learn[en] === 'sentence'; }).length;
+    var sq = date === today() && liveSentences() != null ? liveSentences() : (d.sq ? d.sq[0] : null);
+    var sentPool = sq == null ? null : adv + sq;
+    var sentNeed = sentPool != null && sentPool > SENT_GOAL ? SENT_GOAL : 0;
+    var sentOk = adv >= sentNeed;
     var leftPts = left ? left[0] * POINTS.rc + left[1] * POINTS.rs : 0;
     var reviewSlot = Math.min(GOAL, review + leftPts);
     return {
@@ -241,7 +265,8 @@
       practice: practice, review: review, total: practice + review,
       left: left, reviewDone: reviewDone,
       reviewSlot: reviewSlot, practiceSlot: GOAL - reviewSlot,
-      success: practice + review >= GOAL && reviewDone === true
+      sentAdv: adv, sentNeed: sentNeed, sentPool: sentPool, sentOk: sentOk,
+      success: practice + review >= GOAL && reviewDone === true && sentOk
     };
   }
 
@@ -255,6 +280,8 @@
   function scoreHTML(s) {
     var isToday = s.date === today();
     var badge = s.success ? 'Success'
+      : s.total >= GOAL && s.reviewDone !== true && s.sentOk ? 'Review left'
+      : s.total >= GOAL && !s.sentOk ? 'Sentences left'
       : s.total >= GOAL ? 'Review left'
       : (GOAL - s.total) + ' to go';
 
@@ -292,11 +319,14 @@
         '<span class="dscore-rlab"><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
           '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +
       '</div>' +
+      (s.sentNeed ? '<div class="dscore-legend"><span><i class="sw p"></i>Sentences to Review ' +
+        '<b class="dscore-rv ' + (s.sentOk ? 'ok' : 'todo') + '">' + Math.min(s.sentAdv, s.sentNeed) + ' / ' + s.sentNeed +
+        (s.sentOk ? '' : (isToday ? ' (required)' : ' · not reached')) + '</b></span></div>' : '') +
     '</div>';
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL,
     today: today, addDays: addDays,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
     day: day, active: active, firstDay: firstDay,
