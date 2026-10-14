@@ -52,9 +52,14 @@
   .st-btn svg{width:14px;height:14px}
   .st-cta{background:var(--accent);border-color:var(--accent);color:#fff}
   .st-cta:hover:not(:disabled){color:#fff;filter:brightness(1.06)}
-  .st-msg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--ok,#5c8a4a);margin:0 0 12px}
+  /* yüzen bildirim: akışta yer kaplamaz, listeyi kaydırmaz */
+  .st-msg{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;
+    display:flex;align-items:center;gap:12px;max-width:min(92vw,520px);margin:0;padding:10px 14px;border-radius:12px;
+    background:var(--surface-2,#fff);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.18);
+    font-size:.86rem;line-height:1.35;color:var(--ok,#5c8a4a)}
   .st-msg[hidden]{display:none}
   .st-msg.back{color:var(--text-dim)}
+  .st-msg .st-undo{flex:none}
   .st-undo{appearance:none;cursor:pointer;background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 
   .st-list{display:flex;flex-direction:column;gap:10px}
@@ -107,7 +112,7 @@
     </button>
     <button class="st-btn st-cta" type="button" id="learnBtn">Mark selected learned</button>
   </div>
-  <p class="st-msg" id="msg" hidden></p>
+  <p class="st-msg" id="msg" role="status" aria-live="polite" hidden></p>
 
   <div class="st-list" id="list"></div>
 </div>
