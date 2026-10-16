@@ -480,6 +480,7 @@ function ensureCard(){
   if (fc) return fc;
   fc = NSFlash.mount(svBody, {
     labels: { reveal:'Show answer', hide:'Hide answer', miss:"Didn't know", hit:'Knew it', tap:'tap to flip', kbd:'Space flip · N / M rate · Esc exit' },
+    docked: true,                 // Show answer + puanlama ekranın altında sabit (Vocabulary ile aynı)
     onRate: hit => rate(hit)
   });
   return fc;
