@@ -272,7 +272,7 @@ function render(){
     '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
       'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
-      'A short day adds half of its missing Flashcards + Sentences points to the next day; unfinished Review simply stays due.</td></tr>';
+      'A short day adds half of its missing Flashcards + Sentences points to the next day (up to ' + D.DEBT_CAP + ' in total); unfinished Review simply stays due.</td></tr>';
 
   const v = $('verdict');
   v.className = 'td-verdict' + (s.success ? ' ok' : '');

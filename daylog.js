@@ -49,7 +49,7 @@
      ertesi gün de bekler ve Review bölmesini büyütür; ayrıca eklenmez.
      Review dışı kısmın (Flashcards + Sentences) açığının yarısı borç olur.
      Borç birikmez-katlanmaz: her gün yalnızca kendi açığının yarısını
-     ekler; hedefi aşan puan borçtan düşer.
+     ekler; hedefi aşan puan borçtan düşer. En çok DEBT_CAP.
 
    Seri: başarılı günler; arada en çok STREAK_GRACE gün kaçırılabilir.
 
@@ -68,6 +68,7 @@
   var PER_WORD = 2;          // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
   var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
+  var DEBT_CAP = 400;        // birikebilecek en yüksek borç
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
     v: 0.5,        // Vocabulary flashcard doğru
@@ -77,7 +78,7 @@
     shortcut: 0,   // Vocabulary'den doğrudan Learned (cümle yazılmadı)
     rc: 1,         // Review kartı doğru
     rcMiss: -0.5,  // Review kartı yanlış
-    rs: 3          // Review cümle pratiği
+    rs: 2          // Review cümle pratiği
   };
   var IDLE_MS = 5 * 60 * 1000;   // iki olay arası bundan uzunsa mola sayılır, süreye eklenmez
 
@@ -333,7 +334,7 @@
       var earned = b.flash + b.sent;
       var shortBy = Math.max(0, nonReview - earned);
       var surplus = Math.max(0, earned - nonReview);
-      debt = Math.max(0, debt - surplus) + shortBy / 2;
+      debt = Math.min(DEBT_CAP, Math.max(0, debt - surplus) + shortBy / 2);
     }
     debtCache = { raw: raw, t: t, map: map };
     return map;
@@ -434,7 +435,7 @@
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP,
     today: today, addDays: addDays, r1: r1,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
     day: day, active: active, firstDay: firstDay,
