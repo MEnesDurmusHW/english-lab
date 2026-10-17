@@ -28,10 +28,11 @@
    durur (ns-sync-* buluta gitmez).
 
    ---- Günlük puan ----
-   Çubuk üç bölme: Flashcards · Sentences · Review. Günün hedefi
-   GOAL + borç. Review ve Sentences bölmeleri o günün kendi işi kadar
-   yer kaplar (Review: yapılan + kalan, Sentences: zorunlu kısım ya da
-   ilerletilen), Flashcards hedefin kalanını alır.
+   Çubuk üç bölme: Default · Sentences · Review. Günün hedefi GOAL + borç.
+   Review bölmesi o günün Review işi kadar (yapılan + kalan; kaçırılan
+   kartların kaybı düşülür), Sentences bölmesi yalnızca zorunlu kısım
+   (SENT_GOAL kelime). Default kalanı alır: flashcard'lar, zorunlunun
+   üstündeki cümleler ve Review kaybı orada kapanır.
    Gün başarılı = toplam >= hedef, Review bitmiş ve Sentences zorunluluğu
    karşılanmış.
 
@@ -277,8 +278,12 @@
   }
 
   /* ---- puan: borçsuz temel hesap ----
-     reviewRaw: o günün bütün Review işi puan olarak (yapılan + kalan,
-     hepsi doğru bilinse alınacak puan). sentRaw: Sentences bölmesi. */
+     reviewRaw: o günün Review bölmesi — bütün Review işi puan olarak
+       (yapılan + kalan, hepsi doğru bilinse alınacak puan), eksi
+       kaçırılan kartların kaybı. Kayıp (doğru puanı + ceza) Default
+       bölmesine geçer; böylece Review bitince bölmesi hep dolar.
+     sentRaw: Sentences bölmesi — yalnızca zorunlu kısım (SENT_GOAL x puan).
+       İlk SENT_GOAL kelime onu doldurur, fazlası Default'a sayılır. */
   function base(date) {
     var d = day(date);
     var adv = 0, shortcut = 0;
@@ -297,18 +302,22 @@
 
     var left = (date === today() && liveReview()) || (d.rv ? [d.rv[0], d.rv[1]] : null);
     var reviewDone = left ? left[0] + left[1] === 0 : null;
+    var reviewLoss = d.rc[1] * (POINTS.rc - POINTS.rcMiss);
     var reviewRaw = (d.rc[0] + d.rc[1] + (left ? left[0] : 0)) * POINTS.rc +
-                    (size(d.rs) + (left ? left[1] : 0)) * POINTS.rs;
+                    (size(d.rs) + (left ? left[1] : 0)) * POINTS.rs - reviewLoss;
 
     var sq = date === today() && liveSentences() != null ? liveSentences() : (d.sq ? d.sq[0] : null);
     var sentPool = sq == null ? null : adv + sq;
     var sentNeed = sentPool != null && sentPool > SENT_GOAL ? SENT_GOAL : 0;
-    var sentRaw = Math.max(sentNeed, adv) * POINTS.learn;
+    var sentRaw = sentNeed * POINTS.learn;
+    var sentIn = Math.min(adv, sentNeed) * POINTS.learn;   // Sentences bölmesine düşen
+    var sentExtra = sent - sentIn;                          // fazlası Default'a
 
     return {
       date: date, day: d, parts: parts,
       flash: flash, sent: sent, review: review,
-      left: left, reviewDone: reviewDone, reviewRaw: reviewRaw,
+      def: flash + sentExtra, sentIn: sentIn, sentExtra: sentExtra,
+      left: left, reviewDone: reviewDone, reviewRaw: reviewRaw, reviewLoss: reviewLoss,
       sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw
     };
   }
@@ -342,18 +351,19 @@
 
   /* ---- puan: günün tamamı ----
      Bölme payları hedefe (GOAL + borç) sığdırılır: önce Review, sonra
-     Sentences, kalan Flashcards. */
+     Sentences (zorunlu kısım), kalanı Default — flashcard'lar, zorunlunun
+     üstündeki cümleler ve Review'da kaçırılanların kaybı oradan kapanır. */
   function score(date) {
     var b = base(date);
     var debt = date >= DEBT_START ? (debtMap()[date] || 0) : 0;
     var target = GOAL + debt;
-    var reviewSlot = r1(Math.min(target, b.reviewRaw));
+    var reviewSlot = r1(Math.max(0, Math.min(target, b.reviewRaw)));
     var sentSlot = r1(Math.min(target - reviewSlot, b.sentRaw));
-    var flashSlot = r1(target - reviewSlot - sentSlot);
+    var defSlot = r1(target - reviewSlot - sentSlot);
     var total = r1(b.flash + b.sent + b.review);
-    b.flash = r1(b.flash); b.sent = r1(b.sent); b.review = r1(b.review);
+    ['flash', 'sent', 'review', 'def', 'sentIn', 'sentExtra', 'reviewLoss'].forEach(function (k) { b[k] = r1(b[k]); });
     b.debt = debt; b.target = r1(target); b.total = total;
-    b.flashSlot = flashSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
+    b.defSlot = defSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
     b.success = total >= b.target && b.reviewDone === true && b.sentOk;
     return b;
   }
@@ -372,7 +382,7 @@
   }
 
   /* ---- ortak gösterim: puan çubuğu (ana sayfa kartı + today.html) ----
-     Tek çubuk, üç bölme: Flashcards · Sentences · Review. Bölme genişliği
+     Tek çubuk, üç bölme: Default · Sentences · Review. Bölme genişliği
      payı gösterir, her bölme kendi payına göre dolar. Payı olmayan
      Sentences ve Review bölmeleri de dar ama görünür kalır.
      Stiller lab.css'te (.dscore). */
@@ -408,7 +418,7 @@
     if (s.sentNeed) {
       stCls = s.sentOk ? 'ok' : 'todo';
       st = s.sentOk ? 'done' : isToday ? (s.sentNeed - s.sentAdv) + ' more' : 'not reached';
-    } else { stCls = 'ok'; st = s.sentAdv ? 'done' : 'none required'; }
+    } else { stCls = 'ok'; st = 'none required'; }
 
     var head = '<b>' + s.total + '</b> / ' + s.target + ' points' +
       (s.debt ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.debt + ' carried over</span>' : '');
@@ -418,15 +428,15 @@
         '<span class="dscore-num">' + head + '</span>' +
         '<span class="dscore-badge">' + badge + '</span>' +
       '</div>' +
-      '<div class="dscore-bar" role="img" aria-label="Flashcards ' + s.flash + ' of ' + s.flashSlot +
-        ', Sentences ' + s.sent + ' of ' + s.sentSlot + ' (' + st + '), Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
-        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + fill(s.flash, s.flashSlot, true) * 100 + '%"></i></span>' +
-        '<span class="dscore-seg s ' + stCls + '" style="flex-grow:' + sw + '"><i style="width:' + fill(s.sent, s.sentSlot, s.sentOk) * 100 + '%"></i></span>' +
+      '<div class="dscore-bar" role="img" aria-label="Default ' + s.def + ' of ' + s.defSlot +
+        ', Sentences ' + s.sentIn + ' of ' + s.sentSlot + ' (' + st + '), Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
+        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + fill(s.def, s.defSlot, true) * 100 + '%"></i></span>' +
+        '<span class="dscore-seg s ' + stCls + '" style="flex-grow:' + sw + '"><i style="width:' + fill(s.sentIn, s.sentSlot, s.sentOk) * 100 + '%"></i></span>' +
         '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span>' +
       '</div>' +
       '<div class="dscore-legend">' +
-        '<span><i class="sw p"></i>Flashcards ' + s.flash + ' / ' + s.flashSlot + '</span>' +
-        '<span><i class="sw s"></i>Sentences ' + (s.sentSlot ? s.sent + ' / ' + s.sentSlot + ' · ' : '') +
+        '<span><i class="sw p"></i>Default ' + s.def + ' / ' + s.defSlot + '</span>' +
+        '<span><i class="sw s"></i>Sentences ' + (s.sentSlot ? s.sentIn + ' / ' + s.sentSlot + ' · ' : '') +
           '<b class="dscore-rv ' + stCls + '">' + st + '</b></span>' +
         '<span><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
           '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +

@@ -272,6 +272,8 @@ function render(){
     '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
       'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
+      'The Sentences part of the bar holds only the required ' + D.SENT_GOAL + ' words; sentences beyond that count toward Default. ' +
+      'A missed Review card costs 1.5 (the point it would have earned plus the penalty); that amount moves from Review to Default, so Review always fills once it is done. ' +
       'A short day adds half of its missing Flashcards + Sentences points to the next day (up to ' + D.DEBT_CAP + ' in total); unfinished Review simply stays due.</td></tr>';
 
   const v = $('verdict');
