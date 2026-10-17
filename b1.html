@@ -503,7 +503,17 @@ function slide(dir){
   void faces.offsetWidth;
   faces.classList.add(cls);
 }
-function next(){ if (!order.length) return; pos = (pos + 1) % order.length; renderCard(); slide(1); }
+function next(){
+  if (!order.length) return;
+  if (pos + 1 < order.length) pos++;
+  else {
+    /* tur bitti: yeni torba. Az önceki kart yeni turun ilk kartı olmasın. */
+    const last = order[pos];
+    buildOrder(false);
+    if (order.length > 1 && order[0] === last){ const j = 1 + Math.floor(Math.random() * (order.length - 1)); order[0] = order[j]; order[j] = last; }
+  }
+  renderCard(); slide(1);
+}
 function prev(){ if (!order.length) return; pos = (pos - 1 + order.length) % order.length; renderCard(); slide(-1); }
 function shuffleAll(){ if (!order.length) return; buildOrder(false); renderCard(); slide(1); }
 function rate(hit, btn){
