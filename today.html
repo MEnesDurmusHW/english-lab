@@ -64,8 +64,9 @@
   .td-break td:first-child{display:flex;align-items:center;gap:8px;color:var(--text)}
   .td-break td:nth-child(2){font-family:var(--mono,monospace);font-size:.8rem;text-align:right;padding-right:14px;color:var(--text-muted)}
   .td-break td:last-child{font-family:var(--mono,monospace);font-weight:700;text-align:right;color:var(--text);width:3.5em}
-  .td-break .sw{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+  .td-break .sw{width:8px;height:8px;border-radius:2px;flex:0 0 auto;background:var(--text-muted)}
   .td-break .sw.p{background:var(--pts-p)}
+  .td-break .sw.s{background:var(--pts-s)}
   .td-break .sw.r{background:var(--pts-r)}
   .td-break tr.zero td{opacity:.5}
   .td-break td.td-capnote{display:table-cell;font-family:var(--sans);font-size:.78rem;font-weight:400;text-align:left;color:var(--text-muted);width:auto;padding-top:10px}
@@ -98,6 +99,7 @@
   .td-bar i{display:block;flex:0 0 auto}
   .td-bar i.r{background:var(--pts-r)}
   .td-bar i.p{background:var(--pts-p)}
+  .td-bar i.s{background:var(--pts-s)}
   .td-bar i:first-child{border-radius:4px 4px 0 0}
   .td-bar.sel{box-shadow:inset 0 -2px 0 var(--text)}
   .td-goalline{position:absolute;left:0;right:0;border-top:1px dashed var(--text-muted);opacity:.6;pointer-events:none}
@@ -108,6 +110,7 @@
   .td-legend span{display:inline-flex;align-items:center;gap:6px}
   .td-legend .sw{width:10px;height:10px;border-radius:3px}
   .td-legend .sw.p{background:var(--pts-p)}
+  .td-legend .sw.s{background:var(--pts-s)}
   .td-legend .sw.r{background:var(--pts-r)}
   .td-legend .dash{width:16px;border-top:1px dashed var(--text-muted)}
   .td-legend .dot{color:var(--ok);font-weight:700;font-style:normal}
@@ -169,8 +172,9 @@
     <div class="td-bars" id="bars"></div>
     <div class="td-days" id="days"></div>
     <div class="td-legend">
-      <span><i class="sw p"></i>Practice points</span>
-      <span><i class="sw r"></i>Review points</span>
+      <span><i class="sw p"></i>Flashcards</span>
+      <span><i class="sw s"></i>Sentences</span>
+      <span><i class="sw r"></i>Review</span>
       <span><i class="dash"></i><span id="goalLbl">100</span> points</span>
       <span><i class="dot">●</i>Success</span>
     </div>
@@ -182,7 +186,7 @@
       <span id="copyLbl">Copy summary</span>
     </button>
   </div>
-  <p class="td-note">A day counts as a success when it reaches <span id="goalNote">100</span> points <b>and</b> nothing is left in Review. Review is never optional: a day full of practice with Review still waiting stays unfinished. Every answer is counted on the day it was given; studying on several devices adds up once they sync. Active time is approximate: it adds up the gaps between answers and leaves out breaks longer than five minutes.</p>
+  <p class="td-note">A day counts as a success when it reaches its target (<span id="goalNote">100</span> points plus anything carried over), nothing is left in Review and the Sentences requirement is met. Review is never optional: a day full of practice with Review still waiting stays unfinished. The streak survives up to <span id="graceNote">4</span> missed days in a row. Every answer is counted on the day it was given; studying on several devices adds up once they sync. Active time is approximate: it adds up the gaps between answers and leaves out breaks longer than five minutes.</p>
 </div>
 
 <script src="data.js"></script>
@@ -232,24 +236,16 @@ function chips(map, area, opts){
   }).join('') + (more > 0 ? '<span class="td-chip"><small>+' + more + ' more</small></span>' : '') + '</div>';
 }
 
-/* Seri: bugünden (bugün henüz başarılı değilse dünden) geriye kesintisiz başarılı gün. */
-function streak(){
-  let d = D.today(), n = 0;
-  if (!D.score(d).success) d = D.addDays(d, -1);
-  while (D.score(d).success) { n++; d = D.addDays(d, -1); }
-  return n;
-}
-
 function render(){
   const isToday = date === D.today();
   const s = D.score(date), d = s.day;
 
   /* başlık */
   $('title').textContent = isToday ? 'Today' : longDate(date);
-  const st = streak(), parts = [];
+  const st = D.streak(), parts = [];
   if (isToday) parts.push(longDate(date));
   if (d.t) parts.push('<b>' + dur(d.t) + '</b> active');
-  if (isToday && st) parts.push('<b>' + plural(st, 'successful day') + '</b> in a row');
+  if (isToday && st) parts.push('Streak: <b>' + plural(st, 'successful day') + '</b>');
   $('sub').innerHTML = parts.join(' · ') || (D.active(d) ? '' : 'Nothing recorded on this day.');
   $('nextDay').disabled = isToday;
   $('toToday').hidden = isToday;
@@ -259,24 +255,31 @@ function render(){
   /* puan */
   $('score').innerHTML = D.scoreHTML(s);
   const rows = [
-    ['p', 'B1 Recall correct', d.bp, P.b1, s.parts.b1],
-    ['p', 'Vocabulary flashcards correct', d.vp, P.v, s.parts.v],
-    ['p', 'Reached Sentences', size(d.toS), P.toS, s.parts.toS],
-    ['p', 'Learned, moved to Review', size(d.learn), P.learn, s.parts.learn],
-    ['r', 'Review flashcards rated', d.rc[0] + d.rc[1], P.rc, s.parts.rc],
-    ['r', 'Review sentences practised', size(d.rs), P.rs, s.parts.rs]
+    ['p', 'B1 Recall correct', d.bp, P.b1],
+    ['p', 'Vocabulary flashcards correct', d.vp, P.v],
+    ['p', 'Vocabulary flashcards missed', d.v[1], P.vMiss],
+    ['s', 'Sentence written, Learned', s.sentAdv, P.learn],
+    ['r', 'Review cards correct', d.rc[0], P.rc],
+    ['r', 'Review cards missed', d.rc[1], P.rcMiss],
+    ['r', 'Review sentences practised', size(d.rs), P.rs]
   ];
-  $('breakdown').innerHTML = rows.map(r =>
-    '<tr' + (r[4] ? '' : ' class="zero"') + '><td><i class="sw ' + r[0] + '"></i>' + r[1] + '</td>' +
-    '<td>' + r[2] + ' × ' + r[3] + '</td><td>' + r[4] + '</td></tr>').join('') +
-    '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t.</td></tr>';
+  $('breakdown').innerHTML = rows.map(r => {
+    const pts = D.r1(r[2] * r[3]);
+    return '<tr' + (pts ? '' : ' class="zero"') + '><td><i class="sw ' + r[0] + '"></i>' + r[1] + '</td>' +
+      '<td>' + r[2] + ' × ' + r[3] + '</td><td>' + pts + '</td></tr>';
+  }).join('') +
+    (s.debt ? '<tr><td><i class="sw"></i>Carried over from missed days</td><td></td><td>+' + s.debt + '</td></tr>' : '') +
+    '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
+      'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
+      'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
+      'A short day adds half of its missing Flashcards + Sentences points to the next day; unfinished Review simply stays due.</td></tr>';
 
   const v = $('verdict');
   v.className = 'td-verdict' + (s.success ? ' ok' : '');
   if (s.success) v.textContent = isToday ? 'Enough for today. Points reached and Review is done.' : 'This day was a success.';
   else if (isToday) {
     const left = [];
-    if (s.total < D.GOAL) left.push((D.GOAL - s.total) + ' more points');
+    if (s.total < s.target) left.push(D.r1(s.target - s.total) + ' more points');
     if (s.reviewDone === false) {
       const b = [];
       if (s.left[0]) b.push(plural(s.left[0], 'Review card'));
@@ -285,7 +288,7 @@ function render(){
     }
     if (!s.sentOk) left.push(plural(s.sentNeed - s.sentAdv, 'more Sentences word') + ' to Review (required)');
     v.innerHTML = 'Still to do: ' + esc(left.join(', ')) + '.' + (s.reviewDone === false ? ' <a href="review.html">Open Review</a>' : '') + (!s.sentOk ? ' <a href="sentences.html">Open Sentences</a>' : '');
-  } else if (s.total < D.GOAL) v.textContent = 'This day stayed under ' + D.GOAL + ' points.';
+  } else if (s.total < s.target) v.textContent = 'This day stayed under ' + s.target + ' points.';
   else if (!s.sentOk) v.textContent = 'Points were reached, but only ' + s.sentAdv + ' of ' + s.sentNeed + ' Sentences words were moved to Review.';
   else if (s.reviewDone === false) v.textContent = 'Points were reached, but Review was left unfinished.';
   else v.textContent = 'Points were reached, but whether Review was finished is not recorded.';
@@ -341,12 +344,14 @@ function renderChart(){
   const t = D.today();
   chartDays = [];
   for (let i = 13; i >= 0; i--) chartDays.push(D.score(D.addDays(t, -i)));
-  const max = Math.max(D.GOAL, ...chartDays.map(c => c.total));
+  const pos = n => Math.max(0, n);   // eksi puanlı bölüm çubukta görünmez
+  const max = Math.max(D.GOAL, ...chartDays.map(c => pos(c.flash) + pos(c.sent) + pos(c.review)));
   $('bars').innerHTML = chartDays.map((c, i) =>
     '<button type="button" class="td-bar' + (c.date === date ? ' sel' : '') + '" data-i="' + i + '" aria-label="' +
-      shortDate(c.date) + ': ' + c.total + ' points' + (c.success ? ', success' : '') + '">' +
-      (c.review ? '<i class="r" style="height:' + (c.review / max * 100) + '%"></i>' : '') +
-      (c.practice ? '<i class="p" style="height:' + (c.practice / max * 100) + '%"></i>' : '') +
+      shortDate(c.date) + ': ' + c.total + ' of ' + c.target + ' points' + (c.success ? ', success' : '') + '">' +
+      (pos(c.review) ? '<i class="r" style="height:' + (c.review / max * 100) + '%"></i>' : '') +
+      (pos(c.sent) ? '<i class="s" style="height:' + (c.sent / max * 100) + '%"></i>' : '') +
+      (pos(c.flash) ? '<i class="p" style="height:' + (c.flash / max * 100) + '%"></i>' : '') +
     '</button>').join('') +
     '<span class="td-goalline" style="bottom:' + (D.GOAL / max * 100) + '%"></span>';
   $('days').innerHTML = chartDays.map(c => {
@@ -359,8 +364,9 @@ let tip = null;
 function showTip(btn){
   const c = chartDays[+btn.dataset.i]; if (!c) return;
   if (!tip) { tip = document.createElement('div'); tip.className = 'td-tip'; $('chart').appendChild(tip); }
-  tip.innerHTML = '<b>' + shortDate(c.date) + ' · ' + c.total + ' pts</b><br>Practice ' + c.practice + ' · Review ' + c.review +
-    (c.success ? '<br>Success' : c.reviewDone === false ? '<br>Review unfinished' : '');
+  tip.innerHTML = '<b>' + shortDate(c.date) + ' · ' + c.total + ' / ' + c.target + ' pts</b><br>Flashcards ' + c.flash +
+    ' · Sentences ' + c.sent + ' · Review ' + c.review +
+    (c.success ? '<br>Success' : c.reviewDone === false ? '<br>Review unfinished' : !c.sentOk ? '<br>Sentences short' : '');
   const box = $('chart').getBoundingClientRect(), r = btn.getBoundingClientRect();
   const x = Math.min(Math.max(r.left + r.width / 2 - box.left, 70), box.width - 70);
   tip.style.left = x + 'px';
@@ -394,7 +400,8 @@ $('copyBtn').addEventListener('click', () => {
   const list = m => Object.keys(m).sort().join(', ') || '-';
   const lines = [
     'English Lab · ' + longDate(date),
-    'Score: ' + s.total + ' / ' + D.GOAL + ' (practice ' + s.practice + ', review ' + s.review + ')' + (s.success ? ' · success' : ''),
+    'Score: ' + s.total + ' / ' + s.target + (s.debt ? ' (' + D.GOAL + ' + ' + s.debt + ' carried over)' : '') +
+      ' · flashcards ' + s.flash + ', sentences ' + s.sent + ', review ' + s.review + (s.success ? ' · success' : ''),
     'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]),
     'Vocabulary flashcards: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]) +
       (d.vq[0] + d.vq[1] ? ' (+ quiz/fill-in ' + d.vq[0] + ' of ' + (d.vq[0] + d.vq[1]) + ')' : ''),
@@ -428,6 +435,8 @@ window.addEventListener('ns-state-changed', () => {
 
 $('goalLbl').textContent = D.GOAL;
 $('goalNote').textContent = D.GOAL;
+$('graceNote').textContent = D.STREAK_GRACE;
+D.noteReview();   // hiç açılmayan günler borçtan önce doldurulsun (load'u beklemeden)
 render();
 </script>
 </body>

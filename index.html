@@ -181,6 +181,7 @@
 /* Günün puanı: başka sekme/bulut değiştirince ve sekme öne gelince tazelenir. */
 function renderToday(){ document.getElementById('todayScore').innerHTML = NSDay.scoreHTML(NSDay.score(NSDay.today())); }
 window.addEventListener('ns-state-changed', renderToday);
+NSDay.noteReview();   // hiç açılmayan günler borçtan önce doldurulsun (load'u beklemeden)
 renderToday();
 </script>
 </body>

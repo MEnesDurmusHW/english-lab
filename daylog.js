@@ -27,16 +27,31 @@
    girdiler birbirini ezmez, okurken toplanır. Kimlik ns-sync-device'ta
    durur (ns-sync-* buluta gitmez).
 
-   Günlük puan: her iş POINTS'teki kadar puan getirir. Gün başarılı
-   sayılır = toplam >= GOAL ve o günün Review'u bitmiş. Review'un
-   bitip bitmediği geçmiş gün için bilinemez; bu yüzden Review durumu
-   değiştikçe rv anlık görüntüsü o güne yazılır, geçmiş gün onun en
-   sonuncusuyla değerlendirilir.
+   ---- Günlük puan ----
+   Çubuk üç bölme: Flashcards · Sentences · Review. Günün hedefi
+   GOAL + borç. Review ve Sentences bölmeleri o günün kendi işi kadar
+   yer kaplar (Review: yapılan + kalan, Sentences: zorunlu kısım ya da
+   ilerletilen), Flashcards hedefin kalanını alır.
+   Gün başarılı = toplam >= hedef, Review bitmiş ve Sentences zorunluluğu
+   karşılanmış.
 
-   Sentences hedefi: o gün Sentences'ta (ilerletilenler + kalanlar)
-   SENT_GOAL'den fazla kelime varsa, en az SENT_GOAL tanesi Review'a
-   ilerletilmeden (Learned) gün başarılı sayılmaz. sq kaydı olmayan eski
-   günler bu şarta takılmaz.
+   Review'un bitip bitmediği geçmiş gün için bilinemez; bu yüzden Review
+   durumu değiştikçe rv anlık görüntüsü o güne yazılır, geçmiş gün onun
+   en sonuncusuyla değerlendirilir. Hiç açılmayan günler için ilk açılışta
+   o günlerde bekleyen iş geriye dönük yazılır (backfill).
+
+   Sentences zorunluluğu: o gün Sentences'ta (ilerletilenler + kalanlar)
+   SENT_GOAL'den fazla kelime varsa en az SENT_GOAL tanesi Review'a
+   ilerletilmeli. sq kaydı olmayan eski günler bu şarta takılmaz.
+
+   Borç (DEBT_START'tan itibaren): eksik kalan gün ertesi güne taşınır.
+     Review kısmı tam taşınır — bu kendiliğinden olur, yapılmayan kartlar
+     ertesi gün de bekler ve Review bölmesini büyütür; ayrıca eklenmez.
+     Review dışı kısmın (Flashcards + Sentences) açığının yarısı borç olur.
+     Borç birikmez-katlanmaz: her gün yalnızca kendi açığının yarısını
+     ekler; hedefi aşan puan borçtan düşer.
+
+   Seri: başarılı günler; arada en çok STREAK_GRACE gün kaçırılabilir.
 
    store.js'ten SONRA, journey-core.js / lab-core.js / b1-core.js'ten
    ÖNCE, defer'siz yüklenmeli.
@@ -49,15 +64,20 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
-  var SENT_GOAL = 20; // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
-  var PER_WORD = 2;   // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
+  var SENT_GOAL = 20;        // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
+  var PER_WORD = 2;          // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
+  var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
+  var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var POINTS = {
-    b1: 1,      // B1 Recall doğru cevap
-    v: 2,       // Vocabulary flashcard doğru cevap
-    toS: 3,     // Sentences'a geçen kelime
-    learn: 5,   // Learned, Review'a giren kelime
-    rc: 2,      // Review kartı (bilse de bilmese de)
-    rs: 5       // Review cümle pratiği
+    b1: 0.5,       // B1 Recall doğru (yanlış: 0)
+    v: 0.5,        // Vocabulary flashcard doğru
+    vMiss: -0.5,   // Vocabulary flashcard yanlış
+    toS: 0,        // Sentences'a geçen kelime (Vocabulary'deki doğruların yan ürünü)
+    learn: 2,      // Sentences'ta cümlesi yazılıp Learned olan kelime
+    shortcut: 0,   // Vocabulary'den doğrudan Learned (cümle yazılmadı)
+    rc: 1,         // Review kartı doğru
+    rcMiss: -0.5,  // Review kartı yanlış
+    rs: 3          // Review cümle pratiği
   };
   var IDLE_MS = 5 * 60 * 1000;   // iki olay arası bundan uzunsa mola sayılır, süreye eklenmez
 
@@ -77,6 +97,7 @@
   function parse(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
   function addDays(s, n) { var d = parse(s); d.setDate(d.getDate() + n); return fmt(d); }
   function size(o) { return Object.keys(o).length; }
+  function r1(n) { return Math.round(n * 10) / 10; }   // yarım puanlar: tek ondalık
 
   /* Yazmadan önce diski yeniden oku: aynı cihazın başka bir sekmesi bu
      girdiye yazmış olabilir, sayaçlar eski bellekten artmasın.
@@ -169,27 +190,50 @@
     });
   }
 
-  /* ---- Review'da bekleyen iş ----
+  /* ---- Review / Sentences'ta bekleyen iş ----
      Review sayfası data.js'ten çıkmış kelimeleri göstermiyor; aynı süzgeç
      burada da olmalı, yoksa bitirilemeyecek bir iş "bekliyor" görünür.
      WORDS (data.js) ve NSJourney olmayan sayfada bilinemez: null. */
   var known = null;
-  function liveReview() {
+  function isKnown(en) {
+    if (!known) { known = {}; WORDS.forEach(function (w) { known[w.en] = 1; }); }
+    return known[en];
+  }
+  function liveReview(on) {
     var J = window.NSJourney;
     if (!J || typeof WORDS === 'undefined') return null;
-    if (!known) { known = {}; WORDS.forEach(function (w) { known[w.en] = 1; }); }
-    var f = function (en) { return known[en]; };
-    return [J.cardsDue().filter(f).length, J.sentencesDue().filter(f).length];
+    return [J.cardsDue(on).filter(isKnown).length, J.sentencesDue(on).filter(isKnown).length];
   }
   function liveSentences() {
     var J = window.NSJourney;
     if (!J || typeof WORDS === 'undefined' || !J.sentenceWords) return null;
-    if (!known) { known = {}; WORDS.forEach(function (w) { known[w.en] = 1; }); }
-    return J.sentenceWords().filter(function (en) { return known[en]; }).length;
+    return J.sentenceWords().filter(isKnown).length;
   }
+
+  /* Hiç açılmayan günler: o günlerde ne beklediği, ilk açılışta bugünkü
+     takvimden çıkarılır — arada iş yapılmadığı için tarihler değişmedi.
+     Zaman damgası 0: o gün başka bir cihazda gerçekten görülen durum
+     senkronla gelirse o kazanır. En çok 60 gün geriye. */
+  function backfill(sent) {
+    var t = today(), seen = {}, last = null;
+    Object.keys(DATA).forEach(function (id) {
+      var d = id.split('~')[0];
+      seen[d] = 1;
+      if (d < t && (!last || d > last)) last = d;
+    });
+    if (!last) return;
+    var from = addDays(t, -60);
+    for (var d = addDays(last, 1), i = 0; d < t && i < 60; d = addDays(d, 1), i++) {
+      if (seen[d] || d < from) continue;
+      var rv = liveReview(d);
+      edit(d, function (e) { e.rv = [rv[0], rv[1], 0]; if (sent != null) e.sq = [sent, 0]; }, true);
+    }
+  }
+
   function noteReview() {
     var live = liveReview(), sent = liveSentences();
     if (!live) return;
+    backfill(sent);
     var cur = DATA[today() + '~' + DEV] || {};
     var sameRv = cur.rv && cur.rv[0] === live[0] && cur.rv[1] === live[1];
     var sameSq = sent == null || (cur.sq && cur.sq[0] === sent);
@@ -231,105 +275,169 @@
     return min;
   }
 
-  /* ---- puan ----
-     left: [kart, cümle] Review'da kalan; bugün canlı hesaplanır.
-     reviewDone: true / false / null (bilinmiyor) */
-  function score(date) {
+  /* ---- puan: borçsuz temel hesap ----
+     reviewRaw: o günün bütün Review işi puan olarak (yapılan + kalan,
+     hepsi doğru bilinse alınacak puan). sentRaw: Sentences bölmesi. */
+  function base(date) {
     var d = day(date);
+    var adv = 0, shortcut = 0;
+    Object.keys(d.learn).forEach(function (en) { if (d.learn[en] === 'new') shortcut++; else adv++; });
     var parts = {
       b1: d.bp * POINTS.b1,
-      v: d.vp * POINTS.v,
+      v: d.vp * POINTS.v + d.v[1] * POINTS.vMiss,
       toS: size(d.toS) * POINTS.toS,
-      learn: size(d.learn) * POINTS.learn,
-      rc: (d.rc[0] + d.rc[1]) * POINTS.rc,
+      learn: adv * POINTS.learn + shortcut * POINTS.shortcut,
+      rc: d.rc[0] * POINTS.rc + d.rc[1] * POINTS.rcMiss,
       rs: size(d.rs) * POINTS.rs
     };
-    var practice = parts.b1 + parts.v + parts.toS + parts.learn;
+    var flash = parts.b1 + parts.v + parts.toS;
+    var sent = parts.learn;
     var review = parts.rc + parts.rs;
+
     var left = (date === today() && liveReview()) || (d.rv ? [d.rv[0], d.rv[1]] : null);
     var reviewDone = left ? left[0] + left[1] === 0 : null;
-    /* Çubukta Review'a ayrılan pay: o günün bütün Review işi puan olarak
-       (yapılan + kalan). Pratiğe kalan pay GOAL - reviewSlot. Review bitince
-       kendi payını tam doldurur, yani "pratik payı doldu + Review bitti"
-       ile "toplam >= GOAL + Review bitti" aynı şey. */
-    /* Sentences hedefi: Sentences'tan Review'a ilerletilen (learn değeri 'sentence') kelimeler */
-    var adv = Object.keys(d.learn).filter(function (en) { return d.learn[en] === 'sentence'; }).length;
+    var reviewRaw = (d.rc[0] + d.rc[1] + (left ? left[0] : 0)) * POINTS.rc +
+                    (size(d.rs) + (left ? left[1] : 0)) * POINTS.rs;
+
     var sq = date === today() && liveSentences() != null ? liveSentences() : (d.sq ? d.sq[0] : null);
     var sentPool = sq == null ? null : adv + sq;
     var sentNeed = sentPool != null && sentPool > SENT_GOAL ? SENT_GOAL : 0;
-    var sentOk = adv >= sentNeed;
-    var leftPts = left ? left[0] * POINTS.rc + left[1] * POINTS.rs : 0;
-    var reviewSlot = Math.min(GOAL, review + leftPts);
+    var sentRaw = Math.max(sentNeed, adv) * POINTS.learn;
+
     return {
       date: date, day: d, parts: parts,
-      practice: practice, review: review, total: practice + review,
-      left: left, reviewDone: reviewDone,
-      reviewSlot: reviewSlot, practiceSlot: GOAL - reviewSlot,
-      sentAdv: adv, sentNeed: sentNeed, sentPool: sentPool, sentOk: sentOk,
-      success: practice + review >= GOAL && reviewDone === true && sentOk
+      flash: flash, sent: sent, review: review,
+      left: left, reviewDone: reviewDone, reviewRaw: reviewRaw,
+      sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw
     };
   }
 
+  /* ---- borç ----
+     Her gün: Review dışı hedef = GOAL - o günün Review işi. Açığın yarısı
+     ertesi güne eklenir; hedefi aşan Review dışı puan önce borçtan düşer.
+     Sonuç ns-day değişmedikçe önbellekte. */
+  var debtCache = { raw: null, t: null, map: null };
+  function debtMap() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    var t = today();
+    if (debtCache.map && debtCache.raw === raw && debtCache.t === t) return debtCache.map;
+    var map = {}, debt = 0, first = firstDay();
+    if (!first) { debtCache = { raw: raw, t: t, map: map }; return map; }   // hiç kayıt yok: borç da yok
+    var d = first > DEBT_START ? first : DEBT_START;
+    for (var i = 0; d <= t && i < 3650; d = addDays(d, 1), i++) {
+      map[d] = r1(debt);
+      if (d === t) break;
+      var b = base(d);
+      var nonReview = Math.max(0, GOAL - Math.min(GOAL, b.reviewRaw));
+      var earned = b.flash + b.sent;
+      var shortBy = Math.max(0, nonReview - earned);
+      var surplus = Math.max(0, earned - nonReview);
+      debt = Math.max(0, debt - surplus) + shortBy / 2;
+    }
+    debtCache = { raw: raw, t: t, map: map };
+    return map;
+  }
+
+  /* ---- puan: günün tamamı ----
+     Bölme payları hedefe (GOAL + borç) sığdırılır: önce Review, sonra
+     Sentences, kalan Flashcards. */
+  function score(date) {
+    var b = base(date);
+    var debt = date >= DEBT_START ? (debtMap()[date] || 0) : 0;
+    var target = GOAL + debt;
+    var reviewSlot = r1(Math.min(target, b.reviewRaw));
+    var sentSlot = r1(Math.min(target - reviewSlot, b.sentRaw));
+    var flashSlot = r1(target - reviewSlot - sentSlot);
+    var total = r1(b.flash + b.sent + b.review);
+    b.flash = r1(b.flash); b.sent = r1(b.sent); b.review = r1(b.review);
+    b.debt = debt; b.target = r1(target); b.total = total;
+    b.flashSlot = flashSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
+    b.success = total >= b.target && b.reviewDone === true && b.sentOk;
+    return b;
+  }
+
+  /* Seri: bugünden geriye başarılı günler. Bugün henüz başarılı değilse
+     kaçırılmış sayılmaz. Arka arkaya STREAK_GRACE günden fazla kaçırınca biter. */
+  function streak() {
+    var t = today(), first = firstDay(), n = 0, miss = 0;
+    if (!first) return 0;
+    var d = score(t).success ? t : addDays(t, -1);
+    for (var i = 0; d >= first && i < 3650; d = addDays(d, -1), i++) {
+      if (score(d).success) { n++; miss = 0; }
+      else if (++miss > STREAK_GRACE) break;
+    }
+    return n;
+  }
+
   /* ---- ortak gösterim: puan çubuğu (ana sayfa kartı + today.html) ----
-     Tek çubuk, iki bölme: solda pratik, sağda Review'un sabit yeri.
-     Bölme genişliği payı (practiceSlot / reviewSlot) gösterir, her bölme
-     kendi payına göre dolar. Review işi olmayan günde de Review bölmesi
-     dar ama görünür kalır. Stiller lab.css'te (.dscore). */
-  var MIN_REVIEW_W = 12;   // %: Review bölmesinin en dar hâli
+     Tek çubuk, üç bölme: Flashcards · Sentences · Review. Bölme genişliği
+     payı gösterir, her bölme kendi payına göre dolar. Payı olmayan
+     Sentences ve Review bölmeleri de dar ama görünür kalır.
+     Stiller lab.css'te (.dscore). */
+  var MIN_W = 12;   // %: Sentences / Review bölmesinin en dar hâli
   function plural(n, one) { return n + ' ' + one + (n === 1 ? '' : 's'); }
+  function fill(got, slot, emptyFull) { return slot > 0 ? Math.max(0, Math.min(1, got / slot)) : (emptyFull ? 1 : 0); }
   function scoreHTML(s) {
     var isToday = s.date === today();
+    var miss = [];
+    if (s.reviewDone === false) miss.push('Review');
+    if (!s.sentOk) miss.push('Sentences');
     var badge = s.success ? 'Success'
-      : s.total >= GOAL && s.reviewDone !== true && s.sentOk ? 'Review left'
-      : s.total >= GOAL && !s.sentOk ? 'Sentences left'
-      : s.total >= GOAL ? 'Review left'
-      : (GOAL - s.total) + ' to go';
+      : s.total >= s.target && miss.length ? miss.join(' + ') + ' left'
+      : r1(s.target - s.total) + ' to go';
 
-    var rw = Math.max(MIN_REVIEW_W, s.reviewSlot / GOAL * 100), pw = 100 - rw;
-    var pFill = s.practiceSlot ? Math.min(1, s.practice / s.practiceSlot) : 1;
-    var rFill = s.reviewSlot ? Math.min(1, s.review / s.reviewSlot) : (s.reviewDone === false ? 0 : 1);
+    var rw = Math.max(MIN_W, s.reviewSlot / s.target * 100);
+    var sw = Math.max(MIN_W, s.sentSlot / s.target * 100);
+    var pw = Math.max(0, 100 - rw - sw);
 
+    /* Review durumu */
     var rv, rvCls;
-    if (s.reviewDone === true) {
-      rvCls = 'ok';
-      rv = s.reviewSlot ? 'done' : 'nothing due';
-    } else if (s.reviewDone === false) {
+    if (s.reviewDone === true) { rvCls = 'ok'; rv = s.reviewSlot ? 'done' : 'nothing due'; }
+    else if (s.reviewDone === false) {
       rvCls = 'todo';
       var bits = [];
       if (s.left[0]) bits.push(plural(s.left[0], 'card'));
       if (s.left[1]) bits.push(plural(s.left[1], 'sentence'));
-      rv = isToday ? bits.join(' + ') + ' left (required)' : 'not finished';
-    } else {
-      rvCls = 'unk';
-      rv = 'not recorded';
-    }
+      rv = isToday ? bits.join(' + ') + ' left' : 'not finished';
+    } else { rvCls = 'unk'; rv = 'not recorded'; }
+
+    /* Sentences durumu */
+    var st, stCls;
+    if (s.sentNeed) {
+      stCls = s.sentOk ? 'ok' : 'todo';
+      st = s.sentOk ? 'done' : isToday ? (s.sentNeed - s.sentAdv) + ' more' : 'not reached';
+    } else { stCls = 'ok'; st = s.sentAdv ? 'done' : 'none required'; }
+
+    var head = '<b>' + s.total + '</b> / ' + s.target + ' points' +
+      (s.debt ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.debt + ' carried over</span>' : '');
 
     return '<div class="dscore' + (s.success ? ' is-success' : '') + '">' +
       '<div class="dscore-top">' +
-        '<span class="dscore-num"><b>' + s.total + '</b> / ' + GOAL + ' points</span>' +
+        '<span class="dscore-num">' + head + '</span>' +
         '<span class="dscore-badge">' + badge + '</span>' +
       '</div>' +
-      '<div class="dscore-bar" role="img" aria-label="Practice ' + s.practice + ' of ' + s.practiceSlot +
-        ' points, Review ' + s.review + ' of ' + s.reviewSlot + ' points, review ' + rv + '">' +
-        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + (pFill * 100) + '%"></i></span>' +
-        '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + (rFill * 100) + '%"></i></span>' +
+      '<div class="dscore-bar" role="img" aria-label="Flashcards ' + s.flash + ' of ' + s.flashSlot +
+        ', Sentences ' + s.sent + ' of ' + s.sentSlot + ' (' + st + '), Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
+        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + fill(s.flash, s.flashSlot, true) * 100 + '%"></i></span>' +
+        '<span class="dscore-seg s ' + stCls + '" style="flex-grow:' + sw + '"><i style="width:' + fill(s.sent, s.sentSlot, s.sentOk) * 100 + '%"></i></span>' +
+        '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span>' +
       '</div>' +
       '<div class="dscore-legend">' +
-        '<span><i class="sw p"></i>Practice ' + s.practice + ' / ' + s.practiceSlot + '</span>' +
-        '<span class="dscore-rlab"><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
+        '<span><i class="sw p"></i>Flashcards ' + s.flash + ' / ' + s.flashSlot + '</span>' +
+        '<span><i class="sw s"></i>Sentences ' + (s.sentSlot ? s.sent + ' / ' + s.sentSlot + ' · ' : '') +
+          '<b class="dscore-rv ' + stCls + '">' + st + '</b></span>' +
+        '<span><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
           '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +
       '</div>' +
-      (s.sentNeed ? '<div class="dscore-legend"><span><i class="sw p"></i>Sentences to Review ' +
-        '<b class="dscore-rv ' + (s.sentOk ? 'ok' : 'todo') + '">' + Math.min(s.sentAdv, s.sentNeed) + ' / ' + s.sentNeed +
-        (s.sentOk ? '' : (isToday ? ' (required)' : ' · not reached')) + '</b></span></div>' : '') +
     '</div>';
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL,
-    today: today, addDays: addDays,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE,
+    today: today, addDays: addDays, r1: r1,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
     day: day, active: active, firstDay: firstDay,
-    score: score, scoreHTML: scoreHTML
+    score: score, streak: streak, scoreHTML: scoreHTML
   };
 })();
