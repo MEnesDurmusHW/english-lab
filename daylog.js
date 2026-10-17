@@ -435,7 +435,7 @@
         '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span>' +
       '</div>' +
       '<div class="dscore-legend">' +
-        '<span><i class="sw p"></i>Default ' + s.def + ' / ' + s.defSlot + '</span>' +
+        '<span><i class="sw p"></i>' + s.def + ' / ' + s.defSlot + '</span>' +   /* Default: adsız, yalnızca sayı */
         '<span><i class="sw s"></i>Sentences ' + (s.sentSlot ? s.sentIn + ' / ' + s.sentSlot + ' · ' : '') +
           '<b class="dscore-rv ' + stCls + '">' + st + '</b></span>' +
         '<span><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
