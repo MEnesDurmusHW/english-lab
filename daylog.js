@@ -31,7 +31,7 @@
    Çubuk üç bölme: Default · Sentences · Review. Günün hedefi GOAL + borç.
    Review bölmesi o günün Review işi kadar (yapılan + kalan; kaçırılan
    kartların kaybı düşülür), Sentences bölmesi yalnızca zorunlu kısım
-   (SENT_GOAL kelime). Default kalanı alır: flashcard'lar, zorunlunun
+   (SENT_GOAL kelime + taşınan). Default kalanı alır: flashcard'lar, zorunlunun
    üstündeki cümleler ve Review kaybı orada kapanır.
    Gün başarılı = toplam >= hedef, Review bitmiş ve Sentences zorunluluğu
    karşılanmış.
@@ -42,8 +42,9 @@
    o günlerde bekleyen iş geriye dönük yazılır (backfill).
 
    Sentences zorunluluğu: o gün Sentences'ta (ilerletilenler + kalanlar)
-   SENT_GOAL'den fazla kelime varsa en az SENT_GOAL tanesi Review'a
-   ilerletilmeli. sq kaydı olmayan eski günler bu şarta takılmaz.
+   SENT_GOAL'den fazla kelime varsa en az SENT_GOAL + taşınan kelime
+   kadarı (havuzdan fazla değil) Review'a ilerletilmeli. sq kaydı olmayan
+   eski günler bu şarta takılmaz.
 
    Borç (DEBT_START'tan itibaren): eksik kalan gün ertesi güne taşınır.
      Review kısmı tam taşınır — bu kendiliğinden olur, yapılmayan kartlar
@@ -51,6 +52,13 @@
      Review dışı kısmın (Flashcards + Sentences) açığının yarısı borç olur.
      Borç birikmez-katlanmaz: her gün yalnızca kendi açığının yarısını
      ekler; hedefi aşan puan borçtan düşer. En çok DEBT_CAP.
+     Sentences zorunluluğu da aynı tarzda, kelime cinsinden taşınır:
+     SENT_GOAL'e göre eksik kalan kelimelerin yarısı (yukarı yuvarlanır)
+     ertesi günün zorunluluğuna eklenir, SENT_GOAL'ü aşan ilerletmeler
+     taşınandan düşer. En çok SENT_CARRY_CAP. Zorunluluğu olmayan gün
+     (havuz SENT_GOAL'den küçük ya da eşit) taşınanı sıfırlar; sq kaydı
+     olmayan gün ona dokunmaz. Puan hedefi bundan etkilenmez: Sentences
+     bölmesi büyür, Default o kadar küçülür.
 
    Seri: başarılı günler; arada en çok STREAK_GRACE gün kaçırılabilir.
 
@@ -70,6 +78,7 @@
   var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
+  var SENT_CARRY_CAP = 80;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
     v: 0.5,        // Vocabulary flashcard doğru
@@ -282,9 +291,12 @@
        (yapılan + kalan, hepsi doğru bilinse alınacak puan), eksi
        kaçırılan kartların kaybı. Kayıp (doğru puanı + ceza) Default
        bölmesine geçer; böylece Review bitince bölmesi hep dolar.
-     sentRaw: Sentences bölmesi — yalnızca zorunlu kısım (SENT_GOAL x puan).
-       İlk SENT_GOAL kelime onu doldurur, fazlası Default'a sayılır. */
-  function base(date) {
+     sentRaw: Sentences bölmesi — yalnızca zorunlu kısım (sentNeed x puan).
+       İlk sentNeed kelime onu doldurur, fazlası Default'a sayılır.
+     sCarry: önceki günlerden taşınan zorunlu kelime (sentMap'ten; verilmezse 0).
+       Parametre olarak gelir ki taşıma döngüsü base'i kendi değeriyle
+       çağırabilsin, döngüsel bağımlılık olmasın. */
+  function base(date, sCarry) {
     var d = day(date);
     var adv = 0, shortcut = 0;
     Object.keys(d.learn).forEach(function (en) { if (d.learn[en] === 'new') shortcut++; else adv++; });
@@ -308,7 +320,7 @@
 
     var sq = date === today() && liveSentences() != null ? liveSentences() : (d.sq ? d.sq[0] : null);
     var sentPool = sq == null ? null : adv + sq;
-    var sentNeed = sentPool != null && sentPool > SENT_GOAL ? SENT_GOAL : 0;
+    var sentNeed = sentPool != null && sentPool > SENT_GOAL ? Math.min(SENT_GOAL + (sCarry || 0), sentPool) : 0;
     var sentRaw = sentNeed * POINTS.learn;
     var sentIn = Math.min(adv, sentNeed) * POINTS.learn;   // Sentences bölmesine düşen
     var sentExtra = sent - sentIn;                          // fazlası Default'a
@@ -318,43 +330,55 @@
       flash: flash, sent: sent, review: review,
       def: flash + sentExtra, sentIn: sentIn, sentExtra: sentExtra,
       left: left, reviewDone: reviewDone, reviewRaw: reviewRaw, reviewLoss: reviewLoss,
-      sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw
+      sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw,
+      sentCarry: sentNeed > SENT_GOAL ? sentNeed - SENT_GOAL : 0   // zorunluluğa fiilen eklenen taşınan kelime
     };
   }
 
   /* ---- borç ----
      Her gün: Review dışı hedef = GOAL - o günün Review işi. Açığın yarısı
      ertesi güne eklenir; hedefi aşan Review dışı puan önce borçtan düşer.
+     Aynı döngüde Sentences'a taşınan kelime de tutulur (sent): o günün
+     SENT_GOAL'e göre eksiğinin yarısı (yukarı yuvarlanır) eklenir, fazlası
+     düşülür; zorunluluk yoksa sıfırlanır, sq kaydı yoksa olduğu gibi kalır.
      Sonuç ns-day değişmedikçe önbellekte. */
-  var debtCache = { raw: null, t: null, map: null };
-  function debtMap() {
+  var debtCache = { raw: null, t: null, map: null, sent: null };
+  function carries() {
     var raw = null;
     try { raw = localStorage.getItem(KEY); } catch (e) {}
     var t = today();
-    if (debtCache.map && debtCache.raw === raw && debtCache.t === t) return debtCache.map;
-    var map = {}, debt = 0, first = firstDay();
-    if (!first) { debtCache = { raw: raw, t: t, map: map }; return map; }   // hiç kayıt yok: borç da yok
+    if (debtCache.map && debtCache.raw === raw && debtCache.t === t) return debtCache;
+    var map = {}, sent = {}, debt = 0, carry = 0, first = firstDay();
+    if (!first) { debtCache = { raw: raw, t: t, map: map, sent: sent }; return debtCache; }   // hiç kayıt yok: borç da yok
     var d = first > DEBT_START ? first : DEBT_START;
     for (var i = 0; d <= t && i < 3650; d = addDays(d, 1), i++) {
       map[d] = r1(debt);
+      sent[d] = carry;
       if (d === t) break;
-      var b = base(d);
+      var b = base(d, carry);
       var nonReview = Math.max(0, GOAL - Math.min(GOAL, b.reviewRaw));
       var earned = b.flash + b.sent;
       var shortBy = Math.max(0, nonReview - earned);
       var surplus = Math.max(0, earned - nonReview);
       debt = Math.min(DEBT_CAP, Math.max(0, debt - surplus) + shortBy / 2);
+      if (b.sentPool == null) continue;                      // havuz bilinmiyor: taşınan değişmez
+      if (b.sentPool <= SENT_GOAL) { carry = 0; continue; }  // zorunluluk yok: sıfırlanır
+      var sShort = Math.max(0, SENT_GOAL - b.sentAdv);
+      var sSurplus = Math.max(0, b.sentAdv - SENT_GOAL);
+      carry = Math.min(SENT_CARRY_CAP, Math.max(0, carry - sSurplus) + Math.ceil(sShort / 2));
     }
-    debtCache = { raw: raw, t: t, map: map };
-    return map;
+    debtCache = { raw: raw, t: t, map: map, sent: sent };
+    return debtCache;
   }
+  function debtMap() { return carries().map; }
+  function sentMap() { return carries().sent; }
 
   /* ---- puan: günün tamamı ----
      Bölme payları hedefe (GOAL + borç) sığdırılır: önce Review, sonra
      Sentences (zorunlu kısım), kalanı Default — flashcard'lar, zorunlunun
      üstündeki cümleler ve Review'da kaçırılanların kaybı oradan kapanır. */
   function score(date) {
-    var b = base(date);
+    var b = base(date, date >= DEBT_START ? (sentMap()[date] || 0) : 0);
     var debt = date >= DEBT_START ? (debtMap()[date] || 0) : 0;
     var target = GOAL + debt;
     var reviewSlot = r1(Math.max(0, Math.min(target, b.reviewRaw)));
@@ -419,6 +443,10 @@
       stCls = s.sentOk ? 'ok' : 'todo';
       st = s.sentOk ? 'done' : isToday ? (s.sentNeed - s.sentAdv) + ' more' : 'not reached';
     } else { stCls = 'ok'; st = 'none required'; }
+    /* Sentences kelime cinsinden gösterilir (puan değil): zorunlu
+       kısma sayılan ilerletme / zorunluluk; taşınan varsa ayrıca yazılır. */
+    var sentGot = Math.min(s.sentAdv, s.sentNeed);
+    var sentCarry = s.sentCarry ? SENT_GOAL + ' + ' + s.sentCarry + ' carried over' : '';
 
     var head = '<b>' + s.total + '</b> / ' + s.target + ' points' +
       (s.debt ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.debt + ' carried over</span>' : '');
@@ -429,15 +457,16 @@
         '<span class="dscore-badge">' + badge + '</span>' +
       '</div>' +
       '<div class="dscore-bar" role="img" aria-label="Default ' + s.def + ' of ' + s.defSlot +
-        ', Sentences ' + s.sentIn + ' of ' + s.sentSlot + ' (' + st + '), Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
+        ', Sentences ' + (s.sentNeed ? sentGot + ' of ' + s.sentNeed + ' words' + (sentCarry ? ', ' + sentCarry : '') + ' (' + st + ')' : st) + ', Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
         '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + fill(s.def, s.defSlot, true) * 100 + '%"></i></span>' +
         '<span class="dscore-seg s ' + stCls + '" style="flex-grow:' + sw + '"><i style="width:' + fill(s.sentIn, s.sentSlot, s.sentOk) * 100 + '%"></i></span>' +
         '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span>' +
       '</div>' +
       '<div class="dscore-legend">' +
         '<span><i class="sw p"></i>' + s.def + ' / ' + s.defSlot + '</span>' +   /* Default: adsız, yalnızca sayı */
-        '<span><i class="sw s"></i>Sentences ' + (s.sentSlot ? s.sentIn + ' / ' + s.sentSlot + ' · ' : '') +
-          '<b class="dscore-rv ' + stCls + '">' + st + '</b></span>' +
+        '<span><i class="sw s"></i>Sentences ' + (s.sentNeed ? sentGot + ' / ' + s.sentNeed + ' · ' : '') +
+          '<b class="dscore-rv ' + stCls + '">' + st + '</b>' +
+          (sentCarry ? '<span class="dscore-debt">' + sentCarry + '</span>' : '') + '</span>' +
         '<span><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
           '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +
       '</div>' +
@@ -445,7 +474,7 @@
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
     today: today, addDays: addDays, r1: r1,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
     day: day, active: active, firstDay: firstDay,

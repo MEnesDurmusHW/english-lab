@@ -272,7 +272,8 @@ function render(){
     '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
       'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
-      'The Sentences part of the bar holds only the required ' + D.SENT_GOAL + ' words; sentences beyond that count toward Default. ' +
+      'The Sentences part of the bar holds only the required words (' + D.SENT_GOAL + ', plus any carried over); sentences beyond that count toward Default. ' +
+      'Half of the required words left short carry over to the next day (up to ' + D.SENT_CARRY_CAP + '); words moved beyond ' + D.SENT_GOAL + ' pay that back. ' +
       'A missed Review card costs 1.5 (the point it would have earned plus the penalty); that amount moves from Review to Default, so Review always fills once it is done. ' +
       'A short day adds half of its missing Flashcards + Sentences points to the next day (up to ' + D.DEBT_CAP + ' in total); unfinished Review simply stays due.</td></tr>';
 
@@ -411,7 +412,8 @@ $('copyBtn').addEventListener('click', () => {
     'Learned, moved to Review: ' + list(d.learn),
     'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]),
     'Review sentences: ' + list(d.rs),
-    (s.sentNeed ? 'Sentences goal: ' + s.sentAdv + ' of ' + s.sentNeed + ' moved to Review\n' : '') +
+    (s.sentNeed ? 'Sentences goal: ' + s.sentAdv + ' of ' + s.sentNeed + ' moved to Review' +
+      (s.sentCarry ? ' (' + D.SENT_GOAL + ' + ' + s.sentCarry + ' carried over)' : '') + '\n' : '') +
     'Review: ' + (s.reviewDone === true ? 'done' : s.reviewDone === false ? s.left[0] + ' cards, ' + s.left[1] + ' sentences left' : 'not recorded')
   ];
   if (d.t) lines.splice(2, 0, 'Active: ' + dur(d.t));
