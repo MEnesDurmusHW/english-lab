@@ -269,11 +269,13 @@ function render(){
       '<td>' + r[2] + ' × ' + r[3] + '</td><td>' + pts + '</td></tr>';
   }).join('') +
     (s.debt ? '<tr><td><i class="sw"></i>Carried over from missed days</td><td></td><td>+' + s.debt + '</td></tr>' : '') +
+    (s.sentCarry ? '<tr><td><i class="sw"></i>Sentences carried over</td><td>' + s.sentCarry + ' × ' + P.learn + '</td><td>+' + D.r1(s.sentCarry * P.learn) + '</td></tr>' : '') +
     '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
       'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
       'The Sentences part of the bar holds only the required words (' + D.SENT_GOAL + ', plus any carried over); sentences beyond that count toward Default. ' +
       'Half of the required words left short carry over to the next day (up to ' + D.SENT_CARRY_CAP + '); words moved beyond ' + D.SENT_GOAL + ' pay that back. ' +
+      'Carried-over words also raise the day\'s target by their points, so they never squeeze Default. ' +
       'A missed Review card costs 1.5 (the point it would have earned plus the penalty); that amount moves from Review to Default, so Review always fills once it is done. ' +
       'A short day adds half of its missing Flashcards + Sentences points to the next day (up to ' + D.DEBT_CAP + ' in total); unfinished Review simply stays due.</td></tr>';
 
@@ -403,7 +405,7 @@ $('copyBtn').addEventListener('click', () => {
   const list = m => Object.keys(m).sort().join(', ') || '-';
   const lines = [
     'English Lab · ' + longDate(date),
-    'Score: ' + s.total + ' / ' + s.target + (s.debt ? ' (' + D.GOAL + ' + ' + s.debt + ' carried over)' : '') +
+    'Score: ' + s.total + ' / ' + s.target + (s.carried ? ' (' + D.GOAL + ' + ' + s.carried + ' carried over)' : '') +
       ' · flashcards ' + s.flash + ', sentences ' + s.sent + ', review ' + s.review + (s.success ? ' · success' : ''),
     'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]),
     'Vocabulary flashcards: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]) +

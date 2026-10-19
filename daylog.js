@@ -28,7 +28,8 @@
    durur (ns-sync-* buluta gitmez).
 
    ---- Günlük puan ----
-   Çubuk üç bölme: Default · Sentences · Review. Günün hedefi GOAL + borç.
+   Çubuk üç bölme: Default · Sentences · Review. Günün hedefi GOAL + borç
+   + Sentences'a taşınan kelimelerin puanı.
    Review bölmesi o günün Review işi kadar (yapılan + kalan; kaçırılan
    kartların kaybı düşülür), Sentences bölmesi yalnızca zorunlu kısım
    (SENT_GOAL kelime + taşınan). Default kalanı alır: flashcard'lar, zorunlunun
@@ -374,19 +375,23 @@
   function sentMap() { return carries().sent; }
 
   /* ---- puan: günün tamamı ----
-     Bölme payları hedefe (GOAL + borç) sığdırılır: önce Review, sonra
+     Hedef = GOAL + borç + Sentences'a taşınan kelimelerin puanı (taşınan
+     her eksik gün ~20 puan). Taşınan cümleler hedefe ayrıca eklenir ki
+     Default'un payını yemesin.
+     Bölme payları hedefe sığdırılır: önce Review, sonra
      Sentences (zorunlu kısım), kalanı Default — flashcard'lar, zorunlunun
      üstündeki cümleler ve Review'da kaçırılanların kaybı oradan kapanır. */
   function score(date) {
     var b = base(date, date >= DEBT_START ? (sentMap()[date] || 0) : 0);
     var debt = date >= DEBT_START ? (debtMap()[date] || 0) : 0;
-    var target = GOAL + debt;
+    var carried = r1(debt + b.sentCarry * POINTS.learn);   // GOAL'ün üstüne binen toplam
+    var target = GOAL + carried;
     var reviewSlot = r1(Math.max(0, Math.min(target, b.reviewRaw)));
     var sentSlot = r1(Math.min(target - reviewSlot, b.sentRaw));
     var defSlot = r1(target - reviewSlot - sentSlot);
     var total = r1(b.flash + b.sent + b.review);
     ['flash', 'sent', 'review', 'def', 'sentIn', 'sentExtra', 'reviewLoss'].forEach(function (k) { b[k] = r1(b[k]); });
-    b.debt = debt; b.target = r1(target); b.total = total;
+    b.debt = debt; b.carried = carried; b.target = r1(target); b.total = total;
     b.defSlot = defSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
     b.success = total >= b.target && b.reviewDone === true && b.sentOk;
     return b;
@@ -449,7 +454,7 @@
     var sentCarry = s.sentCarry ? SENT_GOAL + ' + ' + s.sentCarry + ' carried over' : '';
 
     var head = '<b>' + s.total + '</b> / ' + s.target + ' points' +
-      (s.debt ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.debt + ' carried over</span>' : '');
+      (s.carried ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.carried + ' carried over</span>' : '');
 
     return '<div class="dscore' + (s.success ? ' is-success' : '') + '">' +
       '<div class="dscore-top">' +
