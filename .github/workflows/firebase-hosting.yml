@@ -31,3 +31,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
           projectId: nss-english-lab
+          # 15.34.1 deploy öncesi serviceusage.services.get istiyor; servis hesabında bu izin yok (403)
+          firebaseToolsVersion: 15.34.0
