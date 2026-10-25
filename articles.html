@@ -42,13 +42,7 @@
   .ar-groups{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px}
   .ar-chip{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 13px;transition:.15s}
   .ar-chip:hover{border-color:var(--accent);color:var(--accent)}
-  .ar-chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-  .ar-chip small{font-family:var(--mono);font-size:.68rem;font-weight:600;opacity:.7;margin-left:4px}
-  .art-tags{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px}
-  .art-tags span{font-family:var(--mono);font-size:.64rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:999px;padding:2px 8px}
-  .art-tags span.on{color:var(--accent);border-color:var(--accent)}
-  .reading-view.by-group .artword{opacity:.55}
-  .reading-view.by-group .artword.on{opacity:1;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+  .art{scroll-margin-top:80px}
 </style>
 </head>
 <body>
@@ -63,7 +57,7 @@
       <span class="count" id="count"></span>
       <button class="btn" id="rdToggle" aria-pressed="false" style="margin-left:auto">Türkçeyi gizle</button>
     </div>
-    <div class="ar-groups" id="arGroups" role="group" aria-label="Gruba göre makaleler"></div>
+    <div class="ar-groups" id="arGroups" role="group" aria-label="Grubun makalelerine git"></div>
     <div id="rdList"></div>
   </div>
 
@@ -77,70 +71,53 @@ const readingView=document.getElementById('view-reading');
 const rdList=document.getElementById('rdList'), rdToggle=document.getElementById('rdToggle');
 const countEl=document.getElementById('count');
 const MARK_RE=/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g;
-function markBase(a,b){ return (b||a).trim().toLowerCase(); }
-function grpOf(base){ const e=LOOKUP[base]; return e && typeof e.grp==='number' ? e.grp : null; }
 
-/* Makalenin grubu elle yazılmaz: işaretli kelimelerin data.js'teki
-   grubundan sayılır. { 7:5, 8:5 } = 5 kelime grup 7'den, 5'i grup 8'den. */
-const ART_GRP = ARTICLES.map(a=>{
+/* Grup düğmeleri yalnızca kaydırır, listeyi süzmez. Makalenin grubu
+   elle yazılmaz: işaretli kelimelerinin çoğu hangi gruptansa odur
+   (data.js). Düğme, o grubun listedeki ilk makalesine iner. */
+function mainGroup(a){
   const c={};
-  a.en.replace(MARK_RE,(m,x,y)=>{ const g=grpOf(markBase(x,y)); if(g!=null) c[g]=(c[g]||0)+1; return m; });
-  return c;
-});
-const GROUPS = Array.from(new Set(ART_GRP.flatMap(c=>Object.keys(c).map(Number)))).sort((a,b)=>a-b);
-
-const GRP_KEY='nsel-articles-grp';   // nsel-*: buluta gitmez, cihazda kalır
-let selGrp=null;
-try{
-  const q=+new URLSearchParams(location.search).get('g');
-  const s=+localStorage.getItem(GRP_KEY);
-  selGrp = GROUPS.indexOf(q)>=0 ? q : GROUPS.indexOf(s)>=0 ? s : null;
-}catch(e){}
+  a.en.replace(MARK_RE,(m,x,y)=>{
+    const e=LOOKUP[(y||x).trim().toLowerCase()];
+    if(e && typeof e.grp==='number') c[e.grp]=(c[e.grp]||0)+1;
+    return m;
+  });
+  let best=null;
+  Object.keys(c).map(Number).sort((p,q)=>p-q).forEach(g=>{ if(best==null || c[g]>c[best]) best=g; });
+  return best;
+}
+const FIRST_OF={};   // grup -> ilk makalesinin sırası
+ARTICLES.forEach((a,i)=>{ const g=mainGroup(a); if(g!=null && !(g in FIRST_OF)) FIRST_OF[g]=i; });
 
 function renderArticleEN(text){
   return text.trim().split(/\n\s*\n/).map(p=>
     '<p>'+p.trim().replace(MARK_RE,(m,a,b)=>{
-      const base=markBase(a,b);
-      const on=selGrp!=null && grpOf(base)===selGrp;
-      return '<b class="artword wordref'+(on?' on':'')+'" data-w="'+base+'">'+a.trim()+'</b>';
+      const base=(b||a).trim().toLowerCase();
+      return '<b class="artword wordref" data-w="'+base+'">'+a.trim()+'</b>';
     })+'</p>'
   ).join('');
 }
 function renderArticleTR(text){
   return text.trim().split(/\n\s*\n/).map(p=>'<p>'+p.trim()+'</p>').join('');
 }
-function renderGroups(){
-  const n=g=>ART_GRP.filter(c=>c[g]).length;
-  document.getElementById('arGroups').innerHTML =
-    '<button type="button" class="ar-chip" data-g="" aria-pressed="'+(selGrp==null)+'">Tümü<small>'+ARTICLES.length+'</small></button>'+
-    GROUPS.map(g=>'<button type="button" class="ar-chip" data-g="'+g+'" aria-pressed="'+(selGrp===g)+'">Grup '+g+'<small>'+n(g)+'</small></button>').join('');
-}
 function renderReading(){
-  /* grup seçiliyse: o gruptan kelime geçenler, en çok geçen en üstte */
-  let idx=ARTICLES.map((a,i)=>i);
-  if(selGrp!=null) idx=idx.filter(i=>ART_GRP[i][selGrp]).sort((x,y)=>ART_GRP[y][selGrp]-ART_GRP[x][selGrp]);
-  readingView.classList.toggle('by-group', selGrp!=null);
-  rdList.innerHTML = idx.map(i=>{
-    const a=ARTICLES[i], c=ART_GRP[i];
-    const tags=Object.keys(c).map(Number).sort((x,y)=>x-y)
-      .map(g=>'<span'+(g===selGrp?' class="on"':'')+'>Grup '+g+' · '+c[g]+'</span>').join('');
-    return '<article class="art">'+
+  rdList.innerHTML = ARTICLES.map((a,i)=>
+    '<article class="art" id="art-'+i+'">'+
       '<h3 class="art-title">'+a.title+'</h3>'+
-      (tags?'<div class="art-tags">'+tags+'</div>':'')+
       '<div class="art-en">'+renderArticleEN(a.en)+'</div>'+
       '<div class="art-tr">'+renderArticleTR(a.tr)+'</div>'+
-    '</article>';
-  }).join('');
-  if(countEl) countEl.textContent = idx.length+' hikâye';
-  renderGroups();
+    '</article>'
+  ).join('');
+  if(countEl) countEl.textContent = ARTICLES.length+' hikâye';
+  document.getElementById('arGroups').innerHTML = Object.keys(FIRST_OF).map(Number).sort((p,q)=>p-q)
+    .map(g=>'<button type="button" class="ar-chip" data-g="'+g+'">Grup '+g+' ↓</button>').join('');
+}
+function goGroup(g, smooth){
+  const el=document.getElementById('art-'+FIRST_OF[g]);
+  if(el) el.scrollIntoView({behavior:smooth?'smooth':'auto', block:'start'});
 }
 document.getElementById('arGroups').addEventListener('click', e=>{
-  const b=e.target.closest('[data-g]'); if(!b) return;
-  selGrp = b.dataset.g==='' ? null : +b.dataset.g;
-  try{ if(selGrp==null) localStorage.removeItem(GRP_KEY); else localStorage.setItem(GRP_KEY, selGrp); }catch(err){}
-  try{ history.replaceState(null,'', selGrp==null ? location.pathname : '?g='+selGrp); }catch(err){}
-  renderReading();
-  rdList.scrollIntoView({behavior:'smooth', block:'start'});
+  const b=e.target.closest('[data-g]'); if(b) goGroup(+b.dataset.g, true);
 });
 rdToggle.addEventListener('click', ()=>{
   const hidden=readingView.classList.toggle('hide-tr');
@@ -148,6 +125,8 @@ rdToggle.addEventListener('click', ()=>{
   rdToggle.textContent = hidden ? 'Türkçeyi göster' : 'Türkçeyi gizle';
 });
 renderReading();
+/* ?g=7 (Shades'teki bağlantı): açılışta o grubun makalesine in */
+try{ const q=+new URLSearchParams(location.search).get('g'); if(q in FIRST_OF) setTimeout(()=>goGroup(q,false),0); }catch(e){}
 </script>
 </body>
 </html>
