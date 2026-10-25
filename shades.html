@@ -43,8 +43,6 @@
   .sh [hidden]{display:none !important}
   .sh-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
   .sh-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:64ch}
-  .sh-head a{color:var(--accent);font-weight:600;text-decoration:none}
-  .sh-head a:hover{text-decoration:underline}
   .sh-today{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 18px;font-size:.84rem;color:var(--text-muted)}
   .sh-today b{color:var(--text);font-family:var(--mono,monospace)}
   .sh-today a{color:var(--accent);font-weight:600;text-decoration:none;margin-left:auto}
@@ -182,6 +180,37 @@
   .sh-iacts button:hover{border-color:var(--accent);color:var(--accent)}
   .sh-iacts button.del:hover{border-color:var(--bad);color:var(--bad)}
   .sh-sec{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:30px 0 12px}
+  /* ---- Study ---- */
+  .sy-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .sy-fam{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.92rem;font-weight:600;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:9px 34px 9px 13px;background-image:linear-gradient(45deg,transparent 50%,var(--text-muted) 50%),linear-gradient(135deg,var(--text-muted) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat;max-width:100%}
+  .sy-prog{font-family:var(--mono,monospace);font-size:.74rem;color:var(--text-muted)}
+  .sy-steps{list-style:none;display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;padding:0}
+  .sy-steps button{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--text-muted);background:transparent;border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:.15s}
+  .sy-steps button:hover{border-color:var(--accent);color:var(--accent)}
+  .sy-steps button.past{color:var(--text-dim)}
+  .sy-steps button[aria-current="step"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  [data-theme="dark"] .sy-steps button[aria-current="step"]{color:#0B0E14}
+  .sy-word{font-family:var(--display,var(--sans));font-size:clamp(1.8rem,6vw,2.4rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1;color:var(--text)}
+  .sy-tr{margin:4px 0 10px;font-size:.95rem;color:var(--text-dim)}
+  .sy-cue{margin:12px 0 6px;font-size:1.08rem;line-height:1.5;color:var(--text);font-weight:600}
+  .sy-ex{margin:14px 0 0;padding:11px 14px;border-left:3px solid var(--accent);background:var(--surface-2,var(--bg));border-radius:0 10px 10px 0}
+  .sy-ex p{margin:0;font-size:.95rem;line-height:1.55;color:var(--text)}
+  .sy-ex p+p{margin-top:2px;font-size:.86rem;color:var(--text-muted)}
+  .sy-diff{margin-top:12px}
+  .sy-diff p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text)}
+  .sy-nav{display:flex;align-items:center;gap:8px;margin-top:18px}
+  .sy-nav .sh-cta{margin-left:auto}
+  .sy-dots{display:flex;gap:5px;margin-bottom:14px}
+  .sy-dots i{width:7px;height:7px;border-radius:50%;background:var(--border)}
+  .sy-dots i.on{background:var(--accent)}
+  .sy-h{font-family:var(--display,var(--sans));font-size:1.2rem;font-weight:700;margin:0 0 10px;color:var(--text)}
+  .sy-art .art-en p{line-height:1.75;margin:0 0 10px;color:var(--text)}
+  .sy-art .wordref{cursor:pointer}
+  .sy-art .artword{background:var(--accent-soft);border-radius:4px;padding:0 3px}
+  .sy-art details{margin-top:8px}
+  .sy-art summary{cursor:pointer;font-size:.86rem;font-weight:600;color:var(--text-dim)}
+  .sy-art details p{color:var(--text-dim);line-height:1.7;margin:8px 0 0;font-size:.92rem}
+  .sy-text{min-height:160px}
   .sh-msg{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:min(92vw,520px);margin:0;padding:10px 14px;border-radius:12px;background:var(--surface-2,#fff);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.86rem;color:var(--ok)}
 </style>
 </head>
@@ -193,21 +222,31 @@
 <div class="wrap sh">
   <header class="sh-head">
     <h1>Shades of Meaning</h1>
-    <p>Plain words like <i>happy</i>, <i>good</i>, <i>look</i> and <i>very</i> are never wrong, but they say little. Each family below replaces one of them with words that say exactly what you mean. Learn how they differ, test yourself on real situations, then write with them. Correct answers and every word you write count toward the day. To see them in context, read the stories for <a href="articles.html?g=7">Group 7</a> and <a href="articles.html?g=8">Group 8</a> in Articles.</p>
   </header>
 
   <div class="sh-today" id="today"></div>
 
   <div class="subbar">
     <div class="seg" role="tablist" aria-label="Shades modes">
-      <button type="button" role="tab" data-v="learn" aria-selected="true">Learn</button>
+      <button type="button" role="tab" data-v="study" aria-selected="true">Study</button>
+      <button type="button" role="tab" data-v="learn" aria-selected="false">Learn</button>
       <button type="button" role="tab" data-v="practice" aria-selected="false">Practice</button>
       <button type="button" role="tab" data-v="write" aria-selected="false">Write</button>
     </div>
   </div>
 
+  <!-- ============ STUDY ============ -->
+  <section id="v-study">
+    <div class="sy-top">
+      <select class="sy-fam" id="syFam" aria-label="Family"></select>
+      <span class="sy-prog" id="syProg"></span>
+    </div>
+    <ol class="sy-steps" id="sySteps"></ol>
+    <div class="sh-card" id="syCard"></div>
+  </section>
+
   <!-- ============ LEARN ============ -->
-  <section id="v-learn">
+  <section id="v-learn" hidden>
     <div class="sh-guide">
       <span class="sh-lbl">Choosing the word</span>
       <ol>
@@ -304,10 +343,10 @@ function renderToday(){
 }
 
 /* ---------- sekmeler ---------- */
-const VIEWS = ['learn', 'practice', 'write'];
-let view = 'learn';
+const VIEWS = ['study', 'learn', 'practice', 'write'];
+let view = 'study';
 function show(v){
-  view = VIEWS.indexOf(v) >= 0 ? v : 'learn';
+  view = VIEWS.indexOf(v) >= 0 ? v : 'study';
   VIEWS.forEach(x => { $('v-' + x).hidden = x !== view; });
   document.querySelectorAll('.subbar [data-v]').forEach(b => b.setAttribute('aria-selected', b.dataset.v === view ? 'true' : 'false'));
   if (view === 'practice' && !deck.length) newRound();
@@ -359,7 +398,7 @@ $('index').addEventListener('click', e => {
   const el = $('f-' + a.dataset.jump); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 document.addEventListener('click', e => {
-  const w = e.target.closest('[data-w].sh-w, [data-w].sh-tg');
+  const w = e.target.closest('[data-w].sh-w, [data-w].sh-tg, [data-w][data-sy="open"]');
   if (w && LOOKUP[w.dataset.w]) { openWordModal(LOOKUP[w.dataset.w]); return; }
   const p = e.target.closest('[data-practise]');
   if (p) { picked = [p.dataset.practise]; writePref(FAMS_KEY, picked); renderChips(); newRound(); show('practice'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -450,14 +489,201 @@ function renderSummary(){
   if (miss.length) $('againMissed').onclick = () => newRound(keys);
   $('againAll').onclick = () => newRound();
 }
+
+/* ============ STUDY ============
+   Bir aile, sırayla: kelimeler tek tek (farkıyla) → karşılaştırma →
+   kısa test → ailenin kelimelerinin geçtiği makale → yazma.
+   Yer (aile, adım, kelime) cihazda kalır; test puanı Practice ile aynı
+   anahtarla tutulur, günlük tavan ortaktır. */
+const STUDY_KEY = 'nsel-shades-study';
+const STEPS = [['words', 'Words'], ['compare', 'Compare'], ['check', 'Check'], ['read', 'Read'], ['write', 'Write']];
+const st = Object.assign({ f: 0, s: 0, w: 0, done: {}, drafts: {} }, readPref(STUDY_KEY, {}));
+if (!SHADES[st.f]) st.f = 0;
+let sq = null;   // testin o anki hâli: { items, pos, answered, ok }
+function saveStudy(){ writePref(STUDY_KEY, st); }
+function curFam(){ return SHADES[st.f]; }
+
+/* Bir ailenin kelimelerinin makalelerdeki sayısı: en çok geçen önce. */
+const MARK = /\{\{([^}|]+)(?:\|([^}]+))?\}\}/g;
+function storiesFor(f){
+  const ws = f.words.map(x => x.w);
+  return ARTICLES.map((a, i) => {
+    let n = 0;
+    a.en.replace(MARK, (m, x, y) => { if (ws.indexOf((y || x).trim().toLowerCase()) >= 0) n++; return m; });
+    return { i: i, n: n };
+  }).filter(r => r.n).sort((p, q) => q.n - p.n);
+}
+function storyHTML(a, f){
+  const ws = f.words.map(x => x.w);
+  const en = a.en.trim().split(/\n\s*\n/).map(p => '<p>' + esc(p.trim()).replace(MARK, (m, x, y) => {
+    const base = (y || x).trim().toLowerCase();
+    return ws.indexOf(base) >= 0
+      ? '<b class="artword wordref" data-w="' + esc(base) + '">' + esc(x.trim()) + '</b>'
+      : '<span class="wordref" data-w="' + esc(base) + '">' + esc(x.trim()) + '</span>';
+  }) + '</p>').join('');
+  const tr = a.tr.trim().split(/\n\s*\n/).map(p => '<p>' + esc(p.trim()) + '</p>').join('');
+  return '<div class="sy-art"><h3 class="sy-h">' + esc(a.title) + '</h3><div class="art-en">' + en + '</div>' +
+    '<details><summary>Türkçesi</summary>' + tr + '</details></div>';
+}
+function diffOf(w){
+  const e = LOOKUP[w]; if (!e || !e.similar) return '';
+  const m = e.similar.split(/\.\s*Fark:\s*/);
+  return m.length > 1 ? m[1] : '';
+}
+
+function renderStudy(){
+  const f = curFam();
+  $('syFam').innerHTML = SHADES.map((x, i) => '<option value="' + i + '"' + (i === st.f ? ' selected' : '') + '>' +
+    (st.done[x.id] ? '✓ ' : '') + 'Instead of "' + esc(x.plain) + '" · ' + esc(x.title) + '</option>').join('');
+  $('syProg').textContent = 'Family ' + (st.f + 1) + ' of ' + SHADES.length + ' · ' + Object.keys(st.done).length + ' done';
+  $('sySteps').innerHTML = STEPS.map((s, i) => '<li><button type="button" data-step="' + i + '"' +
+    (i === st.s ? ' aria-current="step"' : '') + (i < st.s ? ' class="past"' : '') + '>' + (i + 1) + ' · ' + s[1] + '</button></li>').join('');
+  const step = STEPS[st.s][0], box = $('syCard');
+
+  if (step === 'words') {
+    const x = f.words[st.w], e = LOOKUP[x.w] || {}, d = diffOf(x.w);
+    box.innerHTML = '<div class="sy-dots">' + f.words.map((y, i) => '<i' + (i <= st.w ? ' class="on"' : '') + '></i>').join('') + '</div>' +
+      '<p class="sy-word">' + esc(x.w) + '</p>' +
+      '<p class="sy-tr">' + esc(e.tr || '') + '</p>' +
+      '<div class="sh-meta">' + lvlHTML(x.level) + '<span class="sh-reg">' + x.reg + '</span></div>' +
+      '<p class="sy-cue">' + esc(x.cue) + '</p>' +
+      '<p class="sh-pat">' + collPhraseHTML(x.pat) + '</p>' +
+      (e.ex ? '<div class="sy-ex"><p>' + esc(e.ex) + '</p><p>' + esc(e.exTr || '') + '</p></div>' : '') +
+      (d ? '<div class="sh-box sy-diff"><span class="sh-lbl">How it differs</span><p>' + esc(d) + '</p></div>' : '') +
+      '<div class="sy-nav">' +
+        '<button type="button" class="sh-btn" data-sy="prev"' + (st.w ? '' : ' disabled') + '>← Back</button>' +
+        '<button type="button" class="sh-btn" data-w="' + esc(x.w) + '" data-sy="open">All details</button>' +
+        '<button type="button" class="sh-btn sh-cta" data-sy="next">' + (st.w + 1 < f.words.length ? 'Next word →' : 'Compare them →') + '</button>' +
+      '</div>';
+  } else if (step === 'compare') {
+    const fam = famHTML(f);   // Learn kartından yalnızca karşılaştırma kısımları
+    const tmp = document.createElement('div'); tmp.innerHTML = fam;
+    const parts = ['.sh-pair', '.sh-box:not(.trap)', '.sh-box.trap'].map(s => { const el = tmp.querySelector(s); return el ? el.outerHTML : ''; }).join('');
+    box.innerHTML = '<h3 class="sy-h">' + esc(f.question) + '</h3>' + parts +
+      '<div class="sy-nav"><button type="button" class="sh-btn" data-sy="prev">← Back</button>' +
+      '<button type="button" class="sh-btn sh-cta" data-sy="next">Test yourself →</button></div>';
+  } else if (step === 'check') {
+    if (!sq || sq.f !== f.id) sq = { f: f.id, items: f.quiz.map((q, i) => ({ q: q, key: f.id + ':' + i, opts: shuffle(f.words.map(x => x.w)) })), pos: 0, answered: null, ok: 0 };
+    if (sq.pos >= sq.items.length) {
+      box.innerHTML = '<div class="sh-sum"><h3>' + sq.ok + ' / ' + sq.items.length + ' correct</h3><p>Now see them in a story.</p></div>' +
+        '<div class="sy-nav"><button type="button" class="sh-btn" data-sy="retest">Try again</button>' +
+        '<button type="button" class="sh-btn sh-cta" data-sy="next">Read the story →</button></div>';
+    } else {
+      const it = sq.items[sq.pos], q = it.q, done = sq.answered != null;
+      const opts = it.opts.map((w, i) => {
+        let cls = '';
+        if (done) { if (w === q.a) cls = ' ok'; else if (w === sq.answered) cls = ' bad'; }
+        return '<button type="button" class="sh-opt' + cls + '" data-so="' + esc(w) + '"' + (done ? ' disabled' : '') + '><kbd>' + (i + 1) + '</kbd>' + esc(w) + '</button>';
+      }).join('');
+      let fb = '';
+      if (done) {
+        const hit = sq.answered === q.a;
+        fb = '<div class="sh-fb"><p class="sh-verdict ' + (hit ? 'ok' : 'bad') + '">' + (hit ? 'Right' : 'Not quite: <b>' + esc(q.a) + '</b>') +
+          (hit ? '<small>' + (it.counted ? '+' + D.POINTS.n : 'daily limit for this question reached') + '</small>' : '') + '</p>' +
+          '<p class="sh-why">' + esc(q.why) + '</p>' +
+          (hit ? '' : '<p class="sh-cmp"><b>' + esc(sq.answered) + '</b>: ' + esc(cueOf(f, sq.answered)) + '<br><b>' + esc(q.a) + '</b>: ' + esc(cueOf(f, q.a)) + '</p>') +
+          '<div class="sh-next"><button type="button" class="sh-btn sh-cta" data-sy="qnext" id="syNext">Next</button></div></div>';
+      }
+      box.innerHTML = '<div class="sh-prog"><span>' + (sq.pos + 1) + ' / ' + sq.items.length + '</span><span>' + sq.ok + ' correct</span></div>' +
+        '<p class="sh-scn">' + blank(q.s, done ? q.a : '') + '</p>' +
+        '<div class="sh-opts">' + opts + '</div>' + fb;
+      if (done) $('syNext').focus({ preventScroll: true });
+    }
+  } else if (step === 'read') {
+    const list = storiesFor(f), k = st.r || 0, r = list[k % (list.length || 1)];
+    box.innerHTML = (r ? storyHTML(ARTICLES[r.i], f) : '<p class="sh-none">No story uses these words yet.</p>') +
+      '<div class="sy-nav"><button type="button" class="sh-btn" data-sy="prev">← Back</button>' +
+      (list.length > 1 ? '<button type="button" class="sh-btn" data-sy="story">Another story</button>' : '') +
+      '<button type="button" class="sh-btn sh-cta" data-sy="next">Write with them →</button></div>';
+  } else {
+    const text = st.drafts[f.id] || '', n = D.countWords(text);
+    const pts = D.r1(n * D.POINTS.wr);
+    box.innerHTML = '<h3 class="sy-h">Your turn</h3>' +
+      '<p class="sh-task">Write a few sentences or a short paragraph about your own life. Use at least three of these, each where it fits best:</p>' +
+      '<div class="sh-targets" id="syTargets">' + f.words.map(x => '<button type="button" class="sh-tg' + (used(x.w, text) ? ' used' : '') + '" data-w="' + esc(x.w) + '">' + esc(x.w) + '</button>').join('') + '</div>' +
+      '<textarea class="sh-text sy-text" id="syText" placeholder="Start writing here…" aria-label="Your sentences">' + esc(text) + '</textarea>' +
+      '<div class="sy-nav"><button type="button" class="sh-btn" data-sy="prev">← Back</button>' +
+      '<span class="sh-stats" id="syStats" style="margin:0"><span><b>' + n + '</b> ' + (n === 1 ? 'word' : 'words') + '</span></span>' +
+      '<button type="button" class="sh-btn sh-cta" data-sy="save" id="sySave"' + (n ? '' : ' disabled') + '>' + (n ? 'Save · +' + pts + ' ' + (pts === 1 ? 'point' : 'points') : 'Save') + '</button></div>';
+  }
+}
+function studyGo(s){
+  st.s = Math.max(0, Math.min(STEPS.length - 1, s));
+  if (STEPS[st.s][0] === 'words' && st.w >= curFam().words.length) st.w = 0;
+  saveStudy(); renderStudy();
+  $('syCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function studyFam(i){
+  st.f = (i + SHADES.length) % SHADES.length; st.s = 0; st.w = 0; st.r = 0; sq = null;
+  saveStudy(); renderStudy();
+}
+function studyAnswer(w){
+  if (!sq || sq.answered != null || sq.pos >= sq.items.length) return;
+  const it = sq.items[sq.pos], hit = w === it.q.a;
+  sq.answered = w;
+  it.counted = D.answer('n', it.q.a, hit, it.key);
+  if (hit) { sq.ok++; if (window.successFX) successFX(); }
+  else if (window.failFX) failFX();
+  renderStudy(); renderToday();
+}
+$('syFam').addEventListener('change', e => studyFam(+e.target.value));
+$('sySteps').addEventListener('click', e => { const b = e.target.closest('[data-step]'); if (b) studyGo(+b.dataset.step); });
+$('syCard').addEventListener('click', e => {
+  const o = e.target.closest('[data-so]'); if (o) { studyAnswer(o.dataset.so); return; }
+  const b = e.target.closest('[data-sy]'); if (!b) return;
+  const a = b.dataset.sy, f = curFam();
+  if (a === 'open') return;   // data-w: ortak tıklama işleyicisi ayrıntıyı açar
+  if (a === 'next') {
+    if (STEPS[st.s][0] === 'words' && st.w + 1 < f.words.length) { st.w++; saveStudy(); renderStudy(); }
+    else studyGo(st.s + 1);
+  } else if (a === 'prev') {
+    if (STEPS[st.s][0] === 'words' && st.w > 0) { st.w--; saveStudy(); renderStudy(); }
+    else if (st.s === 1) { st.w = f.words.length - 1; studyGo(0); }
+    else studyGo(st.s - 1);
+  } else if (a === 'qnext') { sq.pos++; sq.answered = null; renderStudy(); }
+  else if (a === 'retest') { sq = null; renderStudy(); }
+  else if (a === 'story') { st.r = (st.r || 0) + 1; saveStudy(); renderStudy(); }
+  else if (a === 'save') {
+    const text = (st.drafts[f.id] || '').trim(), n = D.countWords(text);
+    if (!n) return;
+    D.saveWriting(text, 'study:' + f.id);
+    if (window.successFX) successFX();
+    delete st.drafts[f.id]; st.done[f.id] = 1; saveStudy();
+    renderSaved(); renderToday();
+    flash('Saved. +' + D.r1(n * D.POINTS.wr) + ' points added to today.');
+    $('syCard').innerHTML = '<div class="sh-sum"><h3>"' + esc(f.plain) + '" done</h3><p>' + plural(n, 'word') + ' saved to Your writing (Write tab).</p>' +
+      '<div class="sh-acts">' + (st.f + 1 < SHADES.length ? '<button type="button" class="sh-btn sh-cta" data-sy="nextfam">Next family: "' + esc(SHADES[st.f + 1].plain) + '" →</button>' : '<button type="button" class="sh-btn sh-cta" data-sy="nextfam">Start again from the first family</button>') + '</div></div>';
+  } else if (a === 'nextfam') studyFam(st.f + 1);
+});
+$('syCard').addEventListener('input', e => {
+  if (e.target.id !== 'syText') return;
+  const f = curFam(), text = e.target.value;
+  st.drafts[f.id] = text; saveStudy();
+  const n = D.countWords(text), pts = D.r1(n * D.POINTS.wr);
+  $('syStats').innerHTML = '<span><b>' + n + '</b> ' + (n === 1 ? 'word' : 'words') + '</span>';
+  $('sySave').disabled = !n;
+  $('sySave').textContent = n ? 'Save · +' + pts + ' ' + (pts === 1 ? 'point' : 'points') : 'Save';
+  $('syTargets').querySelectorAll('[data-w]').forEach(t => t.classList.toggle('used', used(t.dataset.w, text)));
+});
 $('pcard').addEventListener('click', e => {
   const o = e.target.closest('[data-o]'); if (o) { choose(o.dataset.o); return; }
   if (e.target.closest('#nextBtn')) next();
 });
 document.addEventListener('keydown', e => {
-  if (view !== 'practice' || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.target.closest && e.target.closest('input, textarea')) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest('input, textarea, select')) return;
   if (!$('wordModalBack').hidden) return;
+  if (view === 'study') {
+    if (STEPS[st.s][0] !== 'check' || !sq || sq.pos >= sq.items.length) return;
+    const cur = sq.items[sq.pos];
+    if (sq.answered == null && /^[1-9]$/.test(e.key)) {
+      const w = cur.opts[+e.key - 1]; if (w) { e.preventDefault(); studyAnswer(w); }
+    } else if (e.key === 'Enter' && sq.answered != null && document.activeElement && document.activeElement.id !== 'syNext') {
+      e.preventDefault(); sq.pos++; sq.answered = null; renderStudy();
+    }
+    return;
+  }
+  if (view !== 'practice') return;
   const it = deck[pos];
   if (it && answered == null && /^[1-9]$/.test(e.key)) {
     const w = it.opts[+e.key - 1]; if (w) { e.preventDefault(); choose(w); }
@@ -565,11 +791,19 @@ $('saveBtn').addEventListener('click', () => {
   flash('Saved. +' + D.r1(n * D.POINTS.wr) + ' points added to today.');
 });
 
+/* Kaydın görevi: Write görevi ya da Study'deki aile ("study:<aile>"). */
+function promptOf(id){
+  if (/^study:/.test(id || '')) {
+    const f = FAM[id.slice(6)];
+    return f ? { title: 'Study · instead of "' + f.plain + '"', task: 'Use these words where each fits best: ' + f.words.map(x => x.w).join(', ') + '.' } : null;
+  }
+  return SHADES_PROMPTS.find(x => x.id === id) || null;
+}
 function renderSaved(){
   const list = D.writings();
   $('savedHead').hidden = !list.length;
   $('saved').innerHTML = list.map(w => {
-    const p = SHADES_PROMPTS.find(x => x.id === w.p);
+    const p = promptOf(w.p);
     const short = w.text.length > 180 ? w.text.slice(0, 180).replace(/\s+\S*$/, '') + '…' : w.text;
     const date = new Date(w.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     return '<div class="sh-item" data-id="' + esc(w.id) + '">' +
@@ -583,7 +817,7 @@ $('saved').addEventListener('click', e => {
   const b = e.target.closest('[data-a]'); if (!b) return;
   const id = b.closest('.sh-item').dataset.id;
   const w = D.writings().find(x => x.id === id); if (!w) return;
-  if (b.dataset.a === 'copy') { copyText(feedbackText(w.text, SHADES_PROMPTS.find(x => x.id === w.p)), b, 'Copy for feedback'); return; }
+  if (b.dataset.a === 'copy') { copyText(feedbackText(w.text, promptOf(w.p)), b, 'Copy for feedback'); return; }
   if (b.dataset.a === 'del') {
     if (!confirm('Delete this text? Its ' + D.r1(w.n * D.POINTS.wr) + ' points will be removed from ' + w.d + '.')) return;
     D.deleteWriting(id); renderSaved(); renderToday();
@@ -593,7 +827,7 @@ $('saved').addEventListener('click', e => {
 /* ---------- açılış ---------- */
 $('ptsN').textContent = D.POINTS.n + ' point';
 $('capN').textContent = D.PER_WORD;
-renderLearn(); renderChips(); renderPrompts(); renderWriteStats(); renderSaved(); renderToday();
+renderStudy(); renderLearn(); renderChips(); renderPrompts(); renderWriteStats(); renderSaved(); renderToday();
 (function(){
   const h = (location.hash || '').slice(1);
   if (VIEWS.indexOf(h) >= 0) show(h);
