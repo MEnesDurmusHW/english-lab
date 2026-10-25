@@ -9,10 +9,13 @@
      ns-day { "<YYYY-MM-DD>~<cihaz>": {
        b1:[doğru,yanlış]  v:[doğru,yanlış]  rc:[doğru,yanlış]   B1 · Vocabulary flashcard · Review kartı
        vq:[doğru,yanlış]          Vocabulary quiz, fill-in, liste düğmeleri (puan vermez)
-       bp  vp                     puana sayılan doğrular (kelime başına günde en çok PER_WORD)
-       bc:{en:n}  vc:{en:n}       kelime başına doğru sayacı — yalnızca bugün için tutulur,
+       n:[doğru,yanlış]           Shades senaryo soruları
+       bp  vp  np                 puana sayılan doğrular (kelime / soru başına günde en çok PER_WORD)
+       bc:{en:n}  vc:{en:n}  nc:{soru:n}
+                                  doğru sayacı — yalnızca bugün için tutulur,
                                   ertesi gün bu cihazın eski girdilerinden silinir (boyut)
-       bx:{en:n}  vx:{en:n}       o gün yanlış bilinen kelimeler ve kaç kez
+       bx:{en:n}  vx:{en:n}  nx:{en:n}
+                                  o gün yanlış bilinen kelimeler ve kaç kez
        toS:{en:1}                 cümle aşamasına geçenler
        out:{en:1}                 Sentences'tan "Not yet" ile geri gönderilenler
        learn:{en:'new'|'sentence'} Review'a girenler (değer: geldiği aşama)
@@ -26,6 +29,12 @@
    Girdi anahtarında cihaz kimliği var: iki cihaz aynı gün çalışınca
    girdiler birbirini ezmez, okurken toplanır. Kimlik ns-sync-device'ta
    durur (ns-sync-* buluta gitmez).
+
+   Yazılan metinler (Shades > Write) ayrı depoda, metin başına bir girdi:
+     ns-write { "<ms>~<cihaz>": { d:'YYYY-MM-DD', at:ms, p:görev, text, n:kelime } }
+   Puanı d gününe yazılır: kelime başına POINTS.wr. Silinen metnin puanı
+   da gider. Metin kendi girdisinde durduğu için hangi cihazda yazıldığı
+   önemsizdir; her cihaz silebilir.
 
    ---- Günlük puan ----
    Çubuk üç bölme: Default · Sentences · Review. Günün hedefi GOAL + borç
@@ -89,8 +98,13 @@
     shortcut: 0,   // Vocabulary'den doğrudan Learned (cümle yazılmadı)
     rc: 1,         // Review kartı doğru
     rcMiss: -0.5,  // Review kartı yanlış
-    rs: 2          // Review cümle pratiği
+    rs: 2,         // Review cümle pratiği
+    n: 0.5,        // Shades senaryo sorusu doğru (yanlış: 0)
+    wr: 1          // Shades > Write: kaydedilen metindeki her kelime
   };
+  var WKEY = 'ns-write';
+  var WDATA = {};
+  var WSTORE = NSStore.map(WKEY, WDATA);
   var IDLE_MS = 5 * 60 * 1000;   // iki olay arası bundan uzunsa mola sayılır, süreye eklenmez
 
   var DEV = (function () {
@@ -138,8 +152,8 @@
     var t = today(), suf = '~' + DEV, ids = [];
     Object.keys(DATA).forEach(function (id) {
       var e = DATA[id];
-      if (id.slice(-suf.length) === suf && id.split('~')[0] < t && (e.bc || e.vc)) {
-        delete e.bc; delete e.vc;
+      if (id.slice(-suf.length) === suf && id.split('~')[0] < t && (e.bc || e.vc || e.nc)) {
+        delete e.bc; delete e.vc; delete e.nc;
         ids.push(id);
       }
     });
@@ -148,16 +162,20 @@
 
   /* ---- yazma ----
      alan: [doğru/yanlış sayacı, yanlış kelimeler, puan sayacı, kelime sayacı]
-     vq (quiz/fill-in/liste) yanlışları da görünür ama puan vermez. */
+     vq (quiz/fill-in/liste) yanlışları da görünür ama puan vermez.
+     key: tavan sayacının anahtarı (verilmezse en). Shades'te tavan soru
+     başına, yanlışlar ise doğru kelime adına tutulur. */
   var AREAS = {
     b1: ['b1', 'bx', 'bp', 'bc'],
     v:  ['v',  'vx', 'vp', 'vc'],
     vq: ['vq', 'vx', null, null],
-    rc: ['rc', null, null, null]
+    rc: ['rc', null, null, null],
+    n:  ['n',  'nx', 'np', 'nc']
   };
-  function answer(area, en, hit) {
-    var a = AREAS[area];
-    if (!a) return;
+  /* Puana sayıldıysa true döner (tavana takılan doğru: false). */
+  function answer(area, en, hit, key) {
+    var a = AREAS[area], counted = false;
+    if (!a) return counted;
     prune();
     edit(null, function (e) {
       var p = e[a[0]] || [0, 0];
@@ -165,12 +183,43 @@
       e[a[0]] = p;
       if (!hit && a[1] && en) { var m = e[a[1]] || (e[a[1]] = {}); m[en] = (m[en] || 0) + 1; }
       if (hit && a[2]) {
+        var k = key || en;
         var c = e[a[3]] || (e[a[3]] = {});
-        var n = c[en] || 0;
-        if (n < PER_WORD) e[a[2]] = (e[a[2]] || 0) + 1;
-        c[en] = n + 1;
+        var n = c[k] || 0;
+        if (n < PER_WORD) { e[a[2]] = (e[a[2]] || 0) + 1; counted = true; }
+        c[k] = n + 1;
       }
     });
+    return counted;
+  }
+
+  /* ---- yazılan metinler (ns-write) ----
+     Kelime sayısı kaydederken bir kez hesaplanır ve girdide durur:
+     puan sonradan sayma kuralı değişse de oynamaz. */
+  function countWords(text) {
+    var m = String(text || '').match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g);
+    return m ? m.length : 0;
+  }
+  function saveWriting(text, prompt) {
+    text = String(text || '').trim();
+    var n = countWords(text);
+    if (!n) return null;
+    WSTORE.refresh();
+    var now = Date.now(), id = now + '~' + DEV;
+    WDATA[id] = { d: today(), at: now, p: prompt || '', text: text, n: n };
+    WSTORE.touch(id).commit();
+    edit(null, function () {});   // aktif süre ve "son olay" bugüne işlensin
+    return id;
+  }
+  function deleteWriting(id) {
+    WSTORE.refresh();
+    if (!WDATA[id]) return;
+    delete WDATA[id];
+    WSTORE.touch(id).commit();
+  }
+  function writings() {
+    return Object.keys(WDATA).map(function (id) { var w = WDATA[id]; return { id: id, d: w.d, at: w.at, p: w.p, text: w.text, n: w.n || 0 }; })
+      .sort(function (a, b) { return b.at - a.at; });
   }
 
   function setHas(e, k, en) { return !!(e[k] && Object.prototype.hasOwnProperty.call(e[k], en)); }
@@ -260,30 +309,36 @@
 
   /* ---- okuma: bir günün bütün cihazlardaki girdileri toplanır ---- */
   function day(date) {
-    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], bp: 0, vp: 0, bx: {}, vx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null, sq: null };
+    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], n: [0, 0], bp: 0, vp: 0, np: 0, bx: {}, vx: {}, nx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null, sq: null, wr: 0, wrN: 0 };
     var pre = date + '~';
     Object.keys(DATA).forEach(function (id) {
       if (id.indexOf(pre) !== 0) return;
       var e = DATA[id];
-      ['b1', 'v', 'vq', 'rc'].forEach(function (k) { if (e[k]) { out[k][0] += e[k][0] || 0; out[k][1] += e[k][1] || 0; } });
+      ['b1', 'v', 'vq', 'rc', 'n'].forEach(function (k) { if (e[k]) { out[k][0] += e[k][0] || 0; out[k][1] += e[k][1] || 0; } });
       /* bp/vp'siz girdi tavan kuralından önce yazıldı: her doğrusu sayılır */
       out.bp += e.bp != null ? e.bp : (e.b1 ? e.b1[0] : 0);
       out.vp += e.vp != null ? e.vp : (e.v ? e.v[0] : 0);
-      ['bx', 'vx'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = (out[k][en] || 0) + e[k][en]; }); });
+      out.np += e.np || 0;
+      ['bx', 'vx', 'nx'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = (out[k][en] || 0) + e[k][en]; }); });
       ['toS', 'out', 'learn', 'fall', 'rs'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = e[k][en]; }); });
       out.t += e.t || 0;
       if (e.rv && (!out.rv || e.rv[2] > out.rv[2])) out.rv = e.rv;   // en son görülen durum
       if (e.sq && (!out.sq || e.sq[1] > out.sq[1])) out.sq = e.sq;
     });
+    Object.keys(WDATA).forEach(function (id) {
+      var w = WDATA[id];
+      if (w.d === date) { out.wr += w.n || 0; out.wrN++; }
+    });
     return out;
   }
   function active(d) {
-    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.vq[0] + d.vq[1] + d.rc[0] + d.rc[1] > 0 ||
+    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.vq[0] + d.vq[1] + d.rc[0] + d.rc[1] + d.n[0] + d.n[1] + d.wrN > 0 ||
       ['toS', 'out', 'learn', 'fall', 'rs'].some(function (k) { return size(d[k]) > 0; });
   }
   function firstDay() {
     var min = null;
     Object.keys(DATA).forEach(function (id) { var d = id.split('~')[0]; if (!min || d < min) min = d; });
+    Object.keys(WDATA).forEach(function (id) { var d = WDATA[id].d; if (d && (!min || d < min)) min = d; });
     return min;
   }
 
@@ -307,9 +362,12 @@
       toS: size(d.toS) * POINTS.toS,
       learn: adv * POINTS.learn + shortcut * POINTS.shortcut,
       rc: d.rc[0] * POINTS.rc + d.rc[1] * POINTS.rcMiss,
-      rs: size(d.rs) * POINTS.rs
+      rs: size(d.rs) * POINTS.rs,
+      n: d.np * POINTS.n,
+      wr: d.wr * POINTS.wr
     };
-    var flash = parts.b1 + parts.v + parts.toS;
+    /* flash = Default bölmesine düşen pratik: flashcard'lar + Shades */
+    var flash = parts.b1 + parts.v + parts.toS + parts.n + parts.wr;
     var sent = parts.learn;
     var review = parts.rc + parts.rs;
 
@@ -342,11 +400,11 @@
      Aynı döngüde Sentences'a taşınan kelime de tutulur (sent): o günün
      SENT_GOAL'e göre eksiğinin yarısı (yukarı yuvarlanır) eklenir, fazlası
      düşülür; zorunluluk yoksa sıfırlanır, sq kaydı yoksa olduğu gibi kalır.
-     Sonuç ns-day değişmedikçe önbellekte. */
+     Sonuç ns-day ve ns-write değişmedikçe önbellekte. */
   var debtCache = { raw: null, t: null, map: null, sent: null };
   function carries() {
     var raw = null;
-    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    try { raw = localStorage.getItem(KEY) + '|' + localStorage.getItem(WKEY); } catch (e) {}
     var t = today();
     if (debtCache.map && debtCache.raw === raw && debtCache.t === t) return debtCache;
     var map = {}, sent = {}, debt = 0, carry = 0, first = firstDay();
@@ -482,6 +540,7 @@
     KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
     today: today, addDays: addDays, r1: r1,
     answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
+    countWords: countWords, saveWriting: saveWriting, deleteWriting: deleteWriting, writings: writings,
     day: day, active: active, firstDay: firstDay,
     score: score, streak: streak, scoreHTML: scoreHTML
   };

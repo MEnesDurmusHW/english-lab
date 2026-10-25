@@ -72,6 +72,7 @@ const bt = s => '`' + String(s).replace(/\\/g, '\\\\').replace(/`/g, '\\`').repl
 const entries = payload.map(w => {
   const parts = ORDER.filter(k => w[k] != null && w[k] !== '').map(k => k + ':' + bt(w[k]));
   parts.push('grp:' + GRP);
+  if (w.hintCard) parts.push('hintCard:1');   // mevcut kayıtlardaki biçim
   return '{' + parts.join(', ') + '}';
 }).join(',  ');
 const collLines = payload.map(w =>

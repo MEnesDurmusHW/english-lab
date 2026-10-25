@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shades of Meaning — NS's English Lab</title>
+<meta name="description" content="Precise words instead of plain ones: how thrilled, relieved and content differ, scenario practice, and short writing that earns a point per word.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="Shades of Meaning">
+<meta property="og:description" content="Pick the precise word: learn the differences, practise them, write with them.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/shades.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="daylog.js"></script>
+<script src="journey-core.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  .sh [hidden]{display:none !important}
+  .sh-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .sh-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:64ch}
+  .sh-today{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 18px;font-size:.84rem;color:var(--text-muted)}
+  .sh-today b{color:var(--text);font-family:var(--mono,monospace)}
+  .sh-today a{color:var(--accent);font-weight:600;text-decoration:none;margin-left:auto}
+  .sh-today a:hover{text-decoration:underline}
+  .sh .subbar{margin:0 0 22px}
+  .sh-lbl{display:block;font-family:var(--mono,monospace);font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+
+  /* ---- Learn ---- */
+  .sh-guide{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+  .sh-guide ol{margin:4px 0 0;padding-left:20px;color:var(--text);font-size:.92rem;line-height:1.65}
+  .sh-guide ol span{color:var(--text-dim)}
+  .sh-guide .sh-legend{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:10px;font-size:.8rem;color:var(--text-muted)}
+  .sh-index{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+  .sh-index a{font-size:.82rem;font-weight:600;color:var(--text-dim);text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:.15s}
+  .sh-index a:hover{border-color:var(--accent);color:var(--accent)}
+  .sh-index a s{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--bad) 70%,transparent)}
+
+  .sh-fam{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px clamp(16px,3vw,24px);margin-bottom:16px;scroll-margin-top:80px;box-shadow:var(--shadow-sm)}
+  .sh-plain{font-family:var(--mono,monospace);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .sh-plain s{text-decoration-color:color-mix(in srgb,var(--bad) 70%,transparent)}
+  .sh-fam h2{font-family:var(--display,var(--sans));font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin:6px 0 4px;color:var(--text)}
+  .sh-q{margin:0 0 14px;font-size:.95rem;color:var(--text-dim)}
+  .sh-q b{color:var(--text)}
+
+  .sh-words{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+  .sh-word{border:1px solid var(--border);border-radius:13px;padding:12px 14px;background:var(--surface-2,var(--bg));display:flex;flex-direction:column;gap:5px;min-width:0}
+  .sh-wtop{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .sh-w{appearance:none;border:0;background:none;padding:0;cursor:pointer;font-family:var(--sans);font-size:1.08rem;font-weight:700;color:var(--text);letter-spacing:-.01em;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent);text-underline-offset:4px}
+  .sh-w:hover{color:var(--accent)}
+  .sh-tr{font-size:.82rem;color:var(--text-muted)}
+  .sh-meta{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--text-muted)}
+  .sh-lvl{letter-spacing:2px;color:var(--accent);font-size:.7rem}
+  .sh-lvl i{font-style:normal;opacity:.22}
+  .sh-reg{font-family:var(--mono,monospace);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);border-radius:999px;padding:1px 7px}
+  .sh-cue{margin:0;font-size:.9rem;color:var(--text);line-height:1.45}
+  .sh-pat{margin:0;font-size:.8rem;color:var(--text-dim);line-height:1.45}
+  .sh-pat .cw-key{color:var(--accent);font-weight:700}
+
+  .sh-box{margin-top:14px;padding:13px 15px;border-radius:12px;border-left:3px solid var(--accent);background:var(--accent-soft)}
+  .sh-box p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text)}
+  .sh-box.trap{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,transparent)}
+  .sh-pair{margin-top:14px;border:1px dashed var(--border);border-radius:12px;padding:13px 15px}
+  .sh-pair .sh-s{margin:0 0 8px;font-size:.98rem;color:var(--text);font-style:italic}
+  .sh-pair .sh-s u{text-decoration:none;border-bottom:2px solid var(--accent);padding:0 14px}
+  .sh-pair ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+  .sh-pair li{font-size:.9rem;line-height:1.5;color:var(--text-dim)}
+  .sh-pair li b{color:var(--text)}
+  .sh-pair li.no{opacity:.7}
+  .sh-pair li.no b{text-decoration:line-through;text-decoration-color:var(--bad)}
+  .sh-partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+  .sh-partners div{font-size:.88rem;color:var(--text-dim);line-height:1.5}
+  .sh-partners b{color:var(--text)}
+  .sh-famacts{display:flex;justify-content:flex-end;margin-top:14px}
+
+  .sh-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.86rem;padding:9px 15px;border-radius:999px;transition:.15s}
+  .sh-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .sh-btn:disabled{opacity:.4;cursor:not-allowed}
+  .sh-btn svg{width:14px;height:14px}
+  .sh-cta{background:var(--accent);border-color:var(--accent);color:#fff}
+  .sh-cta:hover:not(:disabled){color:#fff;filter:brightness(1.06)}
+  [data-theme="dark"] .sh-cta{color:#0B0E14}
+
+  /* ---- Practice ---- */
+  .sh-fams{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .sh-chip{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:.15s}
+  .sh-chip:hover{border-color:var(--accent);color:var(--accent)}
+  .sh-chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .sh-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px clamp(16px,3.5vw,28px);box-shadow:var(--shadow-md)}
+  .sh-prog{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono,monospace);font-size:.74rem;color:var(--text-muted);margin-bottom:14px}
+  .sh-scn{font-size:clamp(1.05rem,2.6vw,1.25rem);line-height:1.6;color:var(--text);margin:0 0 6px}
+  .sh-scn u{text-decoration:none;display:inline-block;min-width:70px;border-bottom:2px solid var(--accent);text-align:center;font-weight:700;color:var(--accent)}
+  .sh-famname{margin:0 0 16px;font-size:.82rem;color:var(--text-muted)}
+  .sh-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+  .sh-opt{appearance:none;cursor:pointer;text-align:left;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--text);background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:.14s}
+  .sh-opt:hover:not(:disabled){border-color:var(--accent)}
+  .sh-opt:disabled{cursor:default}
+  .sh-opt kbd{font-family:var(--mono,monospace);font-size:.66rem;color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:1px 6px;background:var(--surface)}
+  .sh-opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+  .sh-opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,transparent)}
+  .sh-fb{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+  .sh-verdict{margin:0 0 8px;font-weight:700;font-size:.98rem}
+  .sh-verdict.ok{color:var(--ok)}
+  .sh-verdict.bad{color:var(--bad)}
+  .sh-verdict small{font-weight:600;color:var(--text-muted);font-size:.8rem;margin-left:6px}
+  .sh-why{margin:0 0 6px;font-size:.92rem;color:var(--text);line-height:1.55}
+  .sh-cmp{margin:0;font-size:.86rem;color:var(--text-dim);line-height:1.55}
+  .sh-cmp b{color:var(--text)}
+  .sh-next{display:flex;justify-content:flex-end;margin-top:14px}
+  .sh-sum{text-align:center;padding:10px 0}
+  .sh-sum h3{font-family:var(--display,var(--sans));font-size:1.4rem;margin:0 0 6px}
+  .sh-sum p{color:var(--text-dim);margin:0 0 14px}
+  .sh-sum .sh-acts{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .sh-missed{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+  .sh-missed span{font-size:.82rem;background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--text)}
+  .sh-missed em{font-style:normal;font-family:var(--mono,monospace);font-size:.7rem;color:var(--bad);margin-left:4px}
+  .sh-keys{margin:12px 2px 0;font-size:.78rem;color:var(--text-muted)}
+
+  /* ---- Write ---- */
+  .sh-prompts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-bottom:14px}
+  .sh-prompt{appearance:none;cursor:pointer;text-align:left;font-family:var(--sans);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:.88rem;font-weight:600;color:var(--text-dim);transition:.14s}
+  .sh-prompt:hover{border-color:var(--accent);color:var(--text)}
+  .sh-prompt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+  .sh-task{margin:0 0 10px;font-size:.93rem;line-height:1.55;color:var(--text)}
+  .sh-targets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .sh-tg{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.8rem;color:var(--text-dim);background:var(--surface-2,var(--bg));border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .sh-tg.used{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 55%,var(--border));background:color-mix(in srgb,var(--ok) 10%,transparent);font-weight:600}
+  .sh-tg.used::before{content:"✓ "}
+  .sh-text{width:100%;box-sizing:border-box;min-height:260px;resize:vertical;font-family:var(--sans);font-size:1rem;line-height:1.65;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm)}
+  .sh-text:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .sh-stats{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;margin:10px 2px 0;font-size:.84rem;color:var(--text-muted)}
+  .sh-stats b{color:var(--text);font-family:var(--mono,monospace)}
+  .sh-wacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .sh-wacts .sh-cta{margin-left:auto}
+  .sh-plainbox{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px}
+  .sh-plainrow{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:6px 0;border-top:1px solid var(--border);font-size:.88rem}
+  .sh-plainrow:first-of-type{border-top:0}
+  .sh-plainrow .pw{font-weight:700;color:var(--bad);min-width:92px}
+  .sh-plainrow .pw em{font-style:normal;font-family:var(--mono,monospace);font-size:.72rem;margin-left:3px}
+  .sh-plainrow .alts{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+  .sh-plainrow a{font-size:.78rem;color:var(--accent);font-weight:600;text-decoration:none}
+  .sh-none{font-size:.86rem;color:var(--text-muted)}
+  .sh-saved{display:flex;flex-direction:column;gap:10px}
+  .sh-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px}
+  .sh-itop{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .sh-itop b{font-size:.95rem;color:var(--text)}
+  .sh-itop span{font-size:.8rem;color:var(--text-muted)}
+  .sh-itop .pts{font-family:var(--mono,monospace);color:var(--accent);font-weight:700}
+  .sh-item details{margin-top:6px}
+  .sh-item summary{cursor:pointer;font-size:.88rem;color:var(--text-dim);line-height:1.55;list-style:none}
+  .sh-item summary::-webkit-details-marker{display:none}
+  .sh-item[open] summary{display:none}
+  .sh-item .full{white-space:pre-wrap;font-size:.92rem;line-height:1.65;color:var(--text);margin:0}
+  .sh-iacts{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+  .sh-iacts button{appearance:none;cursor:pointer;height:28px;padding:0 11px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:var(--sans);font-size:.78rem;font-weight:600}
+  .sh-iacts button:hover{border-color:var(--accent);color:var(--accent)}
+  .sh-iacts button.del:hover{border-color:var(--bad);color:var(--bad)}
+  .sh-sec{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin:30px 0 12px}
+  .sh-msg{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:min(92vw,520px);margin:0;padding:10px 14px;border-radius:12px;background:var(--surface-2,#fff);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.86rem;color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='shades';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap sh">
+  <header class="sh-head">
+    <h1>Shades of Meaning</h1>
+    <p>Plain words like <i>happy</i>, <i>good</i>, <i>look</i> and <i>very</i> are never wrong, but they say little. Each family below replaces one of them with words that say exactly what you mean. Learn how they differ, test yourself on real situations, then write with them. Correct answers and every word you write count toward the day.</p>
+  </header>
+
+  <div class="sh-today" id="today"></div>
+
+  <div class="subbar">
+    <div class="seg" role="tablist" aria-label="Shades modes">
+      <button type="button" role="tab" data-v="learn" aria-selected="true">Learn</button>
+      <button type="button" role="tab" data-v="practice" aria-selected="false">Practice</button>
+      <button type="button" role="tab" data-v="write" aria-selected="false">Write</button>
+    </div>
+  </div>
+
+  <!-- ============ LEARN ============ -->
+  <section id="v-learn">
+    <div class="sh-guide">
+      <span class="sh-lbl">Choosing the word</span>
+      <ol>
+        <li>What <b>caused</b> it? <span>Relief comes after a fear, excitement after good news.</span></li>
+        <li>How <b>strong</b> is it, and how <b>long</b>? <span>Irritated is a spark, furious is a fire, resentful is the smoke that stays.</span></li>
+        <li>Who is <b>listening</b>? <span>Delighted and underscore suit an email to a client; thrilled and snag suit a friend.</span></li>
+      </ol>
+      <div class="sh-legend"><span><span class="sh-lvl">●<i>●●</i></span> mild → <span class="sh-lvl">●●●</span> strong</span><span><span class="sh-reg">casual</span> <span class="sh-reg">neutral</span> <span class="sh-reg">formal</span> register</span><span>Tap a word for meaning, examples and collocations.</span></div>
+    </div>
+    <nav class="sh-index" id="index" aria-label="Families"></nav>
+    <div id="fams"></div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section id="v-practice" hidden>
+    <div class="sh-fams" id="pfams" role="group" aria-label="Families to practise"></div>
+    <div class="sh-card" id="pcard"></div>
+    <p class="sh-keys">Keys: <b>1–4</b> to answer, <b>Enter</b> for the next one. A correct answer earns <span id="ptsN"></span>; the same question counts at most <span id="capN"></span> times a day.</p>
+  </section>
+
+  <!-- ============ WRITE ============ -->
+  <section id="v-write" hidden>
+    <div class="sh-prompts" id="prompts"></div>
+    <p class="sh-task" id="task"></p>
+    <div class="sh-targets" id="targets"></div>
+    <textarea class="sh-text" id="text" spellcheck="true" placeholder="Start writing here…" aria-label="Your text"></textarea>
+    <div class="sh-stats" id="stats"></div>
+    <div class="sh-wacts">
+      <button type="button" class="sh-btn" id="clearBtn">Clear</button>
+      <button type="button" class="sh-btn" id="copyBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copyLbl">Copy for feedback</span>
+      </button>
+      <button type="button" class="sh-btn sh-cta" id="saveBtn">Save</button>
+    </div>
+    <div class="sh-plainbox" id="plain"></div>
+
+    <h2 class="sh-sec" id="savedHead">Your writing</h2>
+    <div class="sh-saved" id="saved"></div>
+  </section>
+</div>
+<p class="sh-msg" id="msg" role="status" aria-live="polite" hidden></p>
+
+<script src="data.js"></script>
+<script src="shades-data.js"></script>
+<script src="lab-core.js"></script>
+<script>
+/* ============================================================
+   Shades of Meaning — joker kelimelerin yerine geçen aileler
+   Learn: farklar (shades-data.js) · Practice: senaryo soruları,
+   doğru başına POINTS.n (soru başına günde en çok PER_WORD) ·
+   Write: kaydedilen metindeki her kelime POINTS.wr (ns-write).
+   Puanlar daylog.js'te Default bölmesine sayılır.
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const D = window.NSDay;
+const FAM = {};
+SHADES.forEach(f => { FAM[f.id] = f; });
+const VIVID = [];
+SHADES.forEach(f => f.words.forEach(x => VIVID.push(x.w)));
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function plural(n, one, many){ return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+function trOf(w){ const e = LOOKUP[w]; return e ? e.tr : ''; }
+function lvlHTML(n){ return '<span class="sh-lvl" title="Intensity ' + n + ' of 3">' + '●'.repeat(n) + '<i>' + '●'.repeat(3 - n) + '</i></span>'; }
+function blank(s, fill){ return esc(s).replace('___', '<u>' + (fill ? esc(fill) : '&nbsp;') + '</u>'); }
+function readPref(k, def){ try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+function writePref(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }   /* nsel-*: buluta gitmez */
+
+function flash(text){
+  const m = $('msg'); m.textContent = text; m.hidden = false;
+  clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, 2600);
+}
+function copyText(text, lblEl, idle){
+  const done = () => { lblEl.textContent = 'Copied'; setTimeout(() => { lblEl.textContent = idle; }, 1600); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  else fallback(text, done);
+}
+function fallback(text, cb){
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* ---------- bugünün Shades puanı ---------- */
+function renderToday(){
+  const d = D.day(D.today()), P = D.POINTS;
+  const q = D.r1(d.np * P.n), w = D.r1(d.wr * P.wr);
+  $('today').innerHTML = 'Today: <b>' + d.n[0] + '</b> correct (+' + q + ') · <b>' + d.wr + '</b> words written (+' + w + ')' +
+    ' <a href="today.html">Daily score →</a>';
+}
+
+/* ---------- sekmeler ---------- */
+const VIEWS = ['learn', 'practice', 'write'];
+let view = 'learn';
+function show(v){
+  view = VIEWS.indexOf(v) >= 0 ? v : 'learn';
+  VIEWS.forEach(x => { $('v-' + x).hidden = x !== view; });
+  document.querySelectorAll('.subbar [data-v]').forEach(b => b.setAttribute('aria-selected', b.dataset.v === view ? 'true' : 'false'));
+  if (view === 'practice' && !deck.length) newRound();
+}
+document.querySelector('.subbar').addEventListener('click', e => {
+  const b = e.target.closest('[data-v]'); if (!b) return;
+  show(b.dataset.v);
+  try { history.replaceState(null, '', '#' + view); } catch (err) {}
+});
+
+/* ============ LEARN ============ */
+function famHTML(f){
+  const words = f.words.map(x =>
+    '<div class="sh-word">' +
+      '<div class="sh-wtop"><button type="button" class="sh-w" data-w="' + esc(x.w) + '">' + esc(x.w) + '</button><span class="sh-tr">' + esc(trOf(x.w)) + '</span></div>' +
+      '<div class="sh-meta">' + lvlHTML(x.level) + '<span class="sh-reg">' + x.reg + '</span></div>' +
+      '<p class="sh-cue">' + esc(x.cue) + '</p>' +
+      '<p class="sh-pat">' + collPhraseHTML(x.pat) + '</p>' +
+    '</div>').join('');
+  let pair = '';
+  if (f.pair) {
+    pair = '<div class="sh-pair"><span class="sh-lbl">Same sentence, different word</span><p class="sh-s">' + blank(f.pair.s) + '</p><ul>' +
+      Object.keys(f.pair.v).map(k => {
+        const t = f.pair.v[k], no = t.charAt(0) === '✗';
+        return '<li' + (no ? ' class="no"' : '') + '><b>' + esc(k) + '</b> — ' + esc(no ? t.replace(/^✗\s*/, '') : t) + '</li>';
+      }).join('') + '</ul></div>';
+  } else if (f.partners) {
+    pair = '<div class="sh-pair"><span class="sh-lbl">Typical partners</span><div class="sh-partners">' +
+      Object.keys(f.partners).map(k => '<div><b>' + esc(k) + '</b> ' + f.partners[k].map(esc).join(', ') + '</div>').join('') + '</div></div>';
+  }
+  return '<section class="sh-fam" id="f-' + f.id + '">' +
+    '<span class="sh-plain">Instead of <s>' + esc(f.plain) + '</s></span>' +
+    '<h2>' + esc(f.title) + '</h2>' +
+    '<p class="sh-q">Ask: <b>' + esc(f.question) + '</b></p>' +
+    '<div class="sh-words">' + words + '</div>' +
+    pair +
+    '<div class="sh-box"><span class="sh-lbl">Remember it</span><p>' + esc(f.remember) + '</p></div>' +
+    '<div class="sh-box trap"><span class="sh-lbl">Watch out</span><p>' + esc(f.trap) + '</p></div>' +
+    '<div class="sh-famacts"><button type="button" class="sh-btn" data-practise="' + f.id + '">Practise this family →</button></div>' +
+  '</section>';
+}
+function renderLearn(){
+  $('index').innerHTML = SHADES.map(f => '<a href="#f-' + f.id + '" data-jump="' + f.id + '"><s>' + esc(f.plain) + '</s></a>').join('');
+  $('fams').innerHTML = SHADES.map(famHTML).join('');
+}
+$('index').addEventListener('click', e => {
+  const a = e.target.closest('[data-jump]'); if (!a) return;
+  e.preventDefault();
+  const el = $('f-' + a.dataset.jump); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+document.addEventListener('click', e => {
+  const w = e.target.closest('[data-w].sh-w, [data-w].sh-tg');
+  if (w && LOOKUP[w.dataset.w]) { openWordModal(LOOKUP[w.dataset.w]); return; }
+  const p = e.target.closest('[data-practise]');
+  if (p) { picked = [p.dataset.practise]; writePref(FAMS_KEY, picked); renderChips(); newRound(); show('practice'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+/* ============ PRACTICE ============ */
+const FAMS_KEY = 'nsel-shades-fams';
+let picked = readPref(FAMS_KEY, []).filter(id => FAM[id]);   // boş: hepsi
+let deck = [], pos = 0, answered = null, round = { ok: 0, earned: 0, missed: {} };
+
+function renderChips(){
+  const all = !picked.length;
+  $('pfams').innerHTML = '<button type="button" class="sh-chip" data-f="" aria-pressed="' + all + '">All families</button>' +
+    SHADES.map(f => '<button type="button" class="sh-chip" data-f="' + f.id + '" aria-pressed="' + (picked.indexOf(f.id) >= 0) + '">' + esc(f.plain) + '</button>').join('');
+}
+$('pfams').addEventListener('click', e => {
+  const b = e.target.closest('[data-f]'); if (!b) return;
+  const id = b.dataset.f;
+  if (!id) picked = [];
+  else { const i = picked.indexOf(id); if (i >= 0) picked.splice(i, 1); else picked.push(id); }
+  if (picked.length === SHADES.length) picked = [];
+  writePref(FAMS_KEY, picked);
+  renderChips(); newRound();
+});
+
+function newRound(only){
+  const fams = picked.length ? picked.map(id => FAM[id]) : SHADES;
+  let items = [];
+  fams.forEach(f => f.quiz.forEach((q, i) => items.push({ f: f, q: q, key: f.id + ':' + i })));
+  if (only) items = items.filter(it => only[it.key]);
+  deck = shuffle(items).map(it => Object.assign(it, { opts: shuffle(it.f.words.map(x => x.w)) }));
+  pos = 0; answered = null; round = { ok: 0, earned: 0, missed: {}, missedKeys: {} };
+  renderCard();
+}
+function cueOf(f, w){ const x = f.words.find(y => y.w === w); return x ? x.cue : ''; }
+
+function renderCard(){
+  const box = $('pcard');
+  if (pos >= deck.length) { renderSummary(); return; }
+  const it = deck[pos], q = it.q;
+  const done = answered != null;
+  const opts = it.opts.map((w, i) => {
+    let cls = '';
+    if (done) { if (w === q.a) cls = ' ok'; else if (w === answered) cls = ' bad'; }
+    return '<button type="button" class="sh-opt' + cls + '" data-o="' + esc(w) + '"' + (done ? ' disabled' : '') + '><kbd>' + (i + 1) + '</kbd>' + esc(w) + '</button>';
+  }).join('');
+  let fb = '';
+  if (done) {
+    const hit = answered === q.a;
+    fb = '<div class="sh-fb">' +
+      '<p class="sh-verdict ' + (hit ? 'ok' : 'bad') + '">' + (hit ? 'Right' : 'Not quite: <b>' + esc(q.a) + '</b>') +
+        (hit ? '<small>' + (it.counted ? '+' + D.POINTS.n : 'daily limit for this question reached') + '</small>' : '') + '</p>' +
+      '<p class="sh-why">' + esc(q.why) + '</p>' +
+      (hit ? '' : '<p class="sh-cmp"><b>' + esc(answered) + '</b>: ' + esc(cueOf(it.f, answered)) + '<br><b>' + esc(q.a) + '</b>: ' + esc(cueOf(it.f, q.a)) + '</p>') +
+      '<div class="sh-next"><button type="button" class="sh-btn sh-cta" id="nextBtn">' + (pos + 1 < deck.length ? 'Next' : 'See results') + '</button></div>' +
+    '</div>';
+  }
+  box.innerHTML = '<div class="sh-prog"><span>' + (pos + 1) + ' / ' + deck.length + '</span><span>' + round.ok + ' correct</span></div>' +
+    '<p class="sh-scn">' + blank(q.s, done ? q.a : '') + '</p>' +
+    '<p class="sh-famname">' + esc(it.f.title) + ' · ' + esc(it.f.question) + '</p>' +
+    '<div class="sh-opts">' + opts + '</div>' + fb;
+  if (done) { const n = $('nextBtn'); if (n) n.focus({ preventScroll: true }); }
+}
+function choose(w){
+  if (answered != null || pos >= deck.length) return;
+  const it = deck[pos], hit = w === it.q.a;
+  answered = w;
+  it.counted = D.answer('n', it.q.a, hit, it.key);
+  if (hit) { round.ok++; if (it.counted) round.earned += D.POINTS.n; }
+  else { round.missed[it.q.a] = (round.missed[it.q.a] || 0) + 1; round.missedKeys[it.key] = 1; }
+  renderCard(); renderToday();
+}
+function next(){ if (answered == null) return; pos++; answered = null; renderCard(); }
+function renderSummary(){
+  const n = deck.length, miss = Object.keys(round.missed);
+  $('pcard').innerHTML = '<div class="sh-sum">' +
+    '<h3>' + round.ok + ' / ' + n + ' correct</h3>' +
+    '<p>' + (round.earned ? '+' + D.r1(round.earned) + ' points this round.' : 'No new points this round.') + '</p>' +
+    (miss.length ? '<span class="sh-lbl">Worth another look</span><div class="sh-missed">' +
+      miss.map(w => '<span>' + esc(w) + (round.missed[w] > 1 ? '<em>×' + round.missed[w] + '</em>' : '') + '</span>').join('') + '</div>' : '') +
+    '<div class="sh-acts">' +
+      (miss.length ? '<button type="button" class="sh-btn" id="againMissed">Only the missed ones</button>' : '') +
+      '<button type="button" class="sh-btn sh-cta" id="againAll">New round</button>' +
+    '</div></div>';
+  const keys = round.missedKeys;
+  if (miss.length) $('againMissed').onclick = () => newRound(keys);
+  $('againAll').onclick = () => newRound();
+}
+$('pcard').addEventListener('click', e => {
+  const o = e.target.closest('[data-o]'); if (o) { choose(o.dataset.o); return; }
+  if (e.target.closest('#nextBtn')) next();
+});
+document.addEventListener('keydown', e => {
+  if (view !== 'practice' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest('input, textarea')) return;
+  if (!$('wordModalBack').hidden) return;
+  const it = deck[pos];
+  if (it && answered == null && /^[1-9]$/.test(e.key)) {
+    const w = it.opts[+e.key - 1]; if (w) { e.preventDefault(); choose(w); }
+  } else if (e.key === 'Enter' && answered != null && document.activeElement && document.activeElement.id !== 'nextBtn') {
+    e.preventDefault(); next();
+  }
+});
+
+/* ============ WRITE ============ */
+const DRAFT_KEY = 'nsel-shades-draft';
+const draft = readPref(DRAFT_KEY, { p: 'day', text: '' });
+let prompt = SHADES_PROMPTS.find(p => p.id === draft.p) || SHADES_PROMPTS[0];
+$('text').value = draft.text || '';
+
+/* Kelimenin çekimli hâllerini de yakalar: stare → stared/staring,
+   snag → snagged, stride → strode. Öbekler olduğu gibi aranır. */
+const IRREG = { stride: ['strode', 'stridden'] };
+const formRe = {};
+function reFor(w){
+  if (formRe[w]) return formRe[w];
+  const e = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let src;
+  if (/\s/.test(w)) src = e(w).replace(/\s+/g, '\\s+');
+  else {
+    const stem = w.replace(/e$/, ''), last = w.slice(-1);
+    const alts = [e(stem) + '(?:e|es|s|ed|d|ing)?', e(w) + '(?:s|d)?', e(w + last) + '(?:ed|ing)'];
+    (IRREG[w] || []).forEach(x => alts.push(e(x)));
+    src = '(?:' + alts.join('|') + ')';
+  }
+  return (formRe[w] = new RegExp('\\b' + src + '\\b', 'i'));
+}
+function used(w, text){ return reFor(w).test(text); }
+function plainHits(text){
+  const out = [];
+  SHADES.forEach(f => {
+    const m = text.match(new RegExp('\\b(?:' + f.plainRe + ')\\b', 'gi'));
+    if (m) out.push({ f: f, n: m.length, words: Array.from(new Set(m.map(x => x.toLowerCase()))) });
+  });
+  return out.sort((a, b) => b.n - a.n);
+}
+
+function renderPrompts(){
+  $('prompts').innerHTML = SHADES_PROMPTS.map(p => '<button type="button" class="sh-prompt" data-p="' + p.id + '" aria-pressed="' + (p.id === prompt.id) + '">' + esc(p.title) + '</button>').join('');
+  $('task').textContent = prompt.task;
+}
+function renderWriteStats(){
+  const text = $('text').value, n = D.countWords(text);
+  const vivid = VIVID.filter(w => used(w, text));
+  $('targets').innerHTML = prompt.targets.length
+    ? '<span class="sh-lbl" style="width:100%;margin:0">Try to use</span>' + prompt.targets.map(w => '<button type="button" class="sh-tg' + (used(w, text) ? ' used' : '') + '" data-w="' + esc(w) + '">' + esc(w) + '</button>').join('')
+    : '';
+  $('stats').innerHTML = '<span><b>' + n + '</b> ' + (n === 1 ? 'word' : 'words') + '</span>' +
+    '<span><b>' + vivid.length + '</b> precise ' + (vivid.length === 1 ? 'word' : 'words') + ' from the families</span>';
+  const pts = D.r1(n * D.POINTS.wr);
+  $('saveBtn').disabled = !n;
+  $('saveBtn').textContent = n ? 'Save · +' + pts + ' ' + (pts === 1 ? 'point' : 'points') : 'Save';
+  $('copyBtn').disabled = !n;
+  $('clearBtn').disabled = !text;
+
+  const hits = plainHits(text);
+  $('plain').innerHTML = '<span class="sh-lbl">Plain words in your text</span>' + (hits.length
+    ? hits.map(h => '<div class="sh-plainrow"><span class="pw">' + esc(h.words.join(', ')) + (h.n > 1 ? '<em>×' + h.n + '</em>' : '') + '</span>' +
+        '<span class="alts">' + h.f.words.map(x => '<button type="button" class="sh-tg' + (used(x.w, text) ? ' used' : '') + '" data-w="' + esc(x.w) + '" title="' + esc(x.cue) + '">' + esc(x.w) + '</button>').join('') + '</span>' +
+        '<a href="#f-' + h.f.id + '" data-learn="' + h.f.id + '">How they differ</a></div>').join('')
+    : '<span class="sh-none">' + (n ? 'None found. Nicely varied.' : 'Plain words like very, good, look or happy show up here with better options as you type.') + '</span>');
+}
+function saveDraft(){ writePref(DRAFT_KEY, { p: prompt.id, text: $('text').value }); }
+
+$('prompts').addEventListener('click', e => {
+  const b = e.target.closest('[data-p]'); if (!b) return;
+  prompt = SHADES_PROMPTS.find(p => p.id === b.dataset.p) || prompt;
+  saveDraft(); renderPrompts(); renderWriteStats();
+});
+let typeTimer = null;
+$('text').addEventListener('input', () => {
+  clearTimeout(typeTimer);
+  typeTimer = setTimeout(() => { saveDraft(); renderWriteStats(); }, 200);
+});
+$('plain').addEventListener('click', e => {
+  const a = e.target.closest('[data-learn]'); if (!a) return;
+  e.preventDefault();
+  show('learn');
+  try { history.replaceState(null, '', '#learn'); } catch (err) {}
+  const el = $('f-' + a.dataset.learn); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+$('clearBtn').addEventListener('click', () => {
+  if (!$('text').value || !confirm('Clear the text? It has not been saved.')) return;
+  $('text').value = ''; saveDraft(); renderWriteStats();
+});
+function feedbackText(text, p){
+  return 'Please check this short text for vocabulary variety and word choice. Point out plain or repeated words and suggest more precise alternatives (explain the difference), then correct any grammar mistakes.' +
+    (p && p.task ? '\n\nTask: ' + p.task : '') + '\n\n' + text;
+}
+$('copyBtn').addEventListener('click', () => {
+  const text = $('text').value.trim(); if (!text) return;
+  copyText(feedbackText(text, prompt), $('copyLbl'), 'Copy for feedback');
+});
+$('saveBtn').addEventListener('click', () => {
+  const text = $('text').value.trim(), n = D.countWords(text);
+  if (!n) return;
+  D.saveWriting(text, prompt.id);
+  $('text').value = ''; saveDraft();
+  renderWriteStats(); renderSaved(); renderToday();
+  flash('Saved. +' + D.r1(n * D.POINTS.wr) + ' points added to today.');
+});
+
+function renderSaved(){
+  const list = D.writings();
+  $('savedHead').hidden = !list.length;
+  $('saved').innerHTML = list.map(w => {
+    const p = SHADES_PROMPTS.find(x => x.id === w.p);
+    const short = w.text.length > 180 ? w.text.slice(0, 180).replace(/\s+\S*$/, '') + '…' : w.text;
+    const date = new Date(w.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return '<div class="sh-item" data-id="' + esc(w.id) + '">' +
+      '<div class="sh-itop"><b>' + esc(p ? p.title : 'Writing') + '</b><span>' + date + '</span><span>' + plural(w.n, 'word') + '</span><span class="pts">+' + D.r1(w.n * D.POINTS.wr) + '</span></div>' +
+      '<details><summary>' + esc(short) + '</summary><p class="full">' + esc(w.text) + '</p></details>' +
+      '<div class="sh-iacts"><button type="button" data-a="copy">Copy for feedback</button><button type="button" class="del" data-a="del">Delete</button></div>' +
+    '</div>';
+  }).join('');
+}
+$('saved').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const id = b.closest('.sh-item').dataset.id;
+  const w = D.writings().find(x => x.id === id); if (!w) return;
+  if (b.dataset.a === 'copy') { copyText(feedbackText(w.text, SHADES_PROMPTS.find(x => x.id === w.p)), b, 'Copy for feedback'); return; }
+  if (b.dataset.a === 'del') {
+    if (!confirm('Delete this text? Its ' + D.r1(w.n * D.POINTS.wr) + ' points will be removed from ' + w.d + '.')) return;
+    D.deleteWriting(id); renderSaved(); renderToday();
+  }
+});
+
+/* ---------- açılış ---------- */
+$('ptsN').textContent = D.POINTS.n + ' point';
+$('capN').textContent = D.PER_WORD;
+renderLearn(); renderChips(); renderPrompts(); renderWriteStats(); renderSaved(); renderToday();
+(function(){
+  const h = (location.hash || '').slice(1);
+  if (VIEWS.indexOf(h) >= 0) show(h);
+  else if (h.indexOf('f-') === 0) { const el = $(h); if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 0); }
+})();
+window.addEventListener('ns-state-changed', () => { renderSaved(); renderToday(); });
+</script>
+</body>
+</html>

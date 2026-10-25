@@ -726,6 +726,8 @@
 [data-theme="dark"][data-section="sentences"]{--accent:#E879F9;--accent-2:#F0ABFC;--accent-soft:rgba(232,121,249,.16);--accent-glow:rgba(232,121,249,.22)}
 [data-section="b1"]{--accent:#059669;--accent-2:#10B981;--accent-soft:rgba(5,150,105,.10);--accent-glow:rgba(5,150,105,.18)}
 [data-theme="dark"][data-section="b1"]{--accent:#34D399;--accent-2:#6EE7B7;--accent-soft:rgba(52,211,153,.16);--accent-glow:rgba(52,211,153,.22)}
+[data-section="shades"]{--accent:#4D7C0F;--accent-2:#65A30D;--accent-soft:rgba(77,124,15,.10);--accent-glow:rgba(77,124,15,.18)}
+[data-theme="dark"][data-section="shades"]{--accent:#A3E635;--accent-2:#BEF264;--accent-soft:rgba(163,230,53,.14);--accent-glow:rgba(163,230,53,.20)}
 
 /* ============================================================
    Filtre butonu + panel (gruplar · skor · kaydedilenler)

@@ -153,6 +153,8 @@
   <div class="td-grid">
     <section class="td-box" id="boxB1"></section>
     <section class="td-box" id="boxV"></section>
+    <section class="td-box" id="boxN"></section>
+    <section class="td-box" id="boxW"></section>
   </div>
 
   <h2 class="td-sec">Flow</h2>
@@ -172,7 +174,7 @@
     <div class="td-bars" id="bars"></div>
     <div class="td-days" id="days"></div>
     <div class="td-legend">
-      <span><i class="sw p"></i>Flashcards</span>
+      <span><i class="sw p"></i>Practice</span>
       <span><i class="sw s"></i>Sentences</span>
       <span><i class="sw r"></i>Review</span>
       <span><i class="dash"></i><span id="goalLbl">100</span> points</span>
@@ -204,7 +206,7 @@ const D = window.NSDay;
 const P = D.POINTS;
 const TR = {};
 B1.forEach(w => { TR['b1:' + w.en] = w.tr; });
-WORDS.forEach(w => { TR['v:' + w.en] = w.tr; });
+WORDS.forEach(w => { TR['v:' + w.en] = w.tr; TR['n:' + w.en] = w.tr; });
 
 let date = D.today();
 try { const q = new URLSearchParams(location.search).get('d'); if (/^\d{4}-\d{2}-\d{2}$/.test(q || '') && q <= D.today()) date = q; } catch (e) {}
@@ -258,6 +260,8 @@ function render(){
     ['p', 'B1 Recall correct', d.bp, P.b1],
     ['p', 'Vocabulary flashcards correct', d.vp, P.v],
     ['p', 'Vocabulary flashcards missed', d.v[1], P.vMiss],
+    ['p', 'Shades practice correct', d.np, P.n],
+    ['p', 'Words written in Shades', d.wr, P.wr],
     ['s', 'Sentence written, Learned', s.sentAdv, P.learn],
     ['r', 'Review cards correct', d.rc[0], P.rc],
     ['r', 'Review cards missed', d.rc[1], P.rcMiss],
@@ -270,8 +274,9 @@ function render(){
   }).join('') +
     (s.debt ? '<tr><td><i class="sw"></i>Carried over from missed days</td><td></td><td>+' + s.debt + '</td></tr>' : '') +
     (s.sentCarry ? '<tr><td><i class="sw"></i>Sentences carried over</td><td>' + s.sentCarry + ' × ' + P.learn + '</td><td>+' + D.r1(s.sentCarry * P.learn) + '</td></tr>' : '') +
-    '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day. ' +
-      'Only Vocabulary flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
+    '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day (in Shades, each question). ' +
+      'In Vocabulary only flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
+      'A text saved in Shades earns ' + P.wr + ' point per word and counts toward Default. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
       'The Sentences part of the bar holds only the required words (' + D.SENT_GOAL + ', plus any carried over); sentences beyond that count toward Default. ' +
       'Half of the required words left short carry over to the next day (up to ' + D.SENT_CARRY_CAP + '); words moved beyond ' + D.SENT_GOAL + ' pay that back. ' +
@@ -312,6 +317,11 @@ function render(){
   const vqN = d.vq[0] + d.vq[1];
   $('boxV').innerHTML = practiceBox('v', 'Vocabulary flashcards', 'vocabulary.html', d.v, d.vx,
     vqN ? '<p class="td-small">Quiz, fill-in and list: ' + d.vq[0] + ' correct of ' + vqN + ' (no points)</p>' : '');
+  $('boxN').innerHTML = practiceBox('n', 'Shades practice', 'shades.html#practice', d.n, d.nx);
+  $('boxW').innerHTML = '<h2><a href="shades.html#write">Shades writing</a></h2>' +
+    '<div class="td-big"><b>' + d.wr + '</b><span>' + (d.wr === 1 ? 'word' : 'words') + ' written' +
+      (d.wrN ? ' · ' + plural(d.wrN, 'text') : '') + '</span></div>' +
+    '<p class="td-small">' + (d.wrN ? '+' + D.r1(d.wr * P.wr) + ' points, one per word.' : 'Nothing saved on this day. Each saved text earns a point per word.') + '</p>';
 
   /* akış */
   const toS = size(d.toS), fall = size(d.fall), out = size(d.out);
@@ -369,7 +379,7 @@ let tip = null;
 function showTip(btn){
   const c = chartDays[+btn.dataset.i]; if (!c) return;
   if (!tip) { tip = document.createElement('div'); tip.className = 'td-tip'; $('chart').appendChild(tip); }
-  tip.innerHTML = '<b>' + shortDate(c.date) + ' · ' + c.total + ' / ' + c.target + ' pts</b><br>Flashcards ' + c.flash +
+  tip.innerHTML = '<b>' + shortDate(c.date) + ' · ' + c.total + ' / ' + c.target + ' pts</b><br>Practice ' + c.flash +
     ' · Sentences ' + c.sent + ' · Review ' + c.review +
     (c.success ? '<br>Success' : c.reviewDone === false ? '<br>Review unfinished' : !c.sentOk ? '<br>Sentences short' : '');
   const box = $('chart').getBoundingClientRect(), r = btn.getBoundingClientRect();
@@ -410,6 +420,7 @@ $('copyBtn').addEventListener('click', () => {
     'B1 Recall: ' + d.b1[0] + ' correct of ' + (d.b1[0] + d.b1[1]),
     'Vocabulary flashcards: ' + d.v[0] + ' correct of ' + (d.v[0] + d.v[1]) +
       (d.vq[0] + d.vq[1] ? ' (+ quiz/fill-in ' + d.vq[0] + ' of ' + (d.vq[0] + d.vq[1]) + ')' : ''),
+    'Shades practice: ' + d.n[0] + ' correct of ' + (d.n[0] + d.n[1]) + ' · writing: ' + d.wr + ' words' + (d.wrN ? ' in ' + d.wrN + ' texts' : ''),
     'Reached Sentences: ' + list(d.toS),
     'Learned, moved to Review: ' + list(d.learn),
     'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]),
