@@ -31,6 +31,7 @@
 <script src="journey-core.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
+<script src="success-fx.js" defer></script>
 <link rel="stylesheet" href="styles.css">
 <script src="sync.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -427,6 +428,8 @@ function choose(w){
   const it = deck[pos], hit = w === it.q.a;
   answered = w;
   it.counted = D.answer('n', it.q.a, hit, it.key);
+  if (hit) { if (window.successFX) successFX(); }
+  else if (window.failFX) failFX();
   if (hit) { round.ok++; if (it.counted) round.earned += D.POINTS.n; }
   else { round.missed[it.q.a] = (round.missed[it.q.a] || 0) + 1; round.missedKeys[it.key] = 1; }
   renderCard(); renderToday();
@@ -556,6 +559,7 @@ $('saveBtn').addEventListener('click', () => {
   const text = $('text').value.trim(), n = D.countWords(text);
   if (!n) return;
   D.saveWriting(text, prompt.id);
+  if (window.successFX) successFX();
   $('text').value = ''; saveDraft();
   renderWriteStats(); renderSaved(); renderToday();
   flash('Saved. +' + D.r1(n * D.POINTS.wr) + ' points added to today.');
