@@ -152,104 +152,64 @@ Herkes ona pes etmesini söyledi, ama Marco üç hafta boyunca zamana karşı ç
 Bu deneyim onu daha dikkatli, ve garip bir şekilde daha dayanıklı biri haline getirdi. Fabrika ayakta kaldı ve Marco o günden sonra tüm ekibin tetikte kalmasını sağladı.`
 },
 { title:`Launch Day`,
-  en:`The night before the launch, Priya couldn't sleep. She wasn't exactly afraid, but she felt {{anxious}} about everything that could still go wrong, and a vague, {{uneasy}} feeling followed her into the office the next morning.
+  en:`The night before the launch, Priya felt {{anxious}} about everything that could still go wrong, and an {{uneasy}} feeling followed her into the office the next morning.
 
-At nine o'clock the team hit the first {{snag}}: the payment page refused to load on older phones. It was a minor {{setback}}, not a disaster, and the developers fixed it with a quick {{tweak}} to the code. The bigger {{hurdle}} came at noon, when a major retailer asked for changes to the sign-up flow. Six months earlier, a request like that would have meant a complete {{overhaul}}; this time the design was flexible enough to adapt in an afternoon.
+At nine the team hit the first {{snag}}: the payment page wouldn't load on older phones. It was a minor {{setback}}, fixed with a quick {{tweak}} to the code. The bigger {{hurdle}} came at noon, when a major retailer asked for changes. Six months earlier, that would have meant a complete {{overhaul}}; this time it took an afternoon.
 
-By evening, the first reviews were coming in, and several called the app {{outstanding}}. Priya's manager was {{thrilled}}: he kept refreshing the download chart and grinning at the numbers. Priya, on the other hand, simply felt {{relieved}}. She didn't care much about records; she was just glad that nothing had broken.
+By evening, reviews were calling the app {{outstanding}}. Her manager was {{thrilled}} and kept refreshing the download chart. Priya simply felt {{relieved}}. "Calm," she said, "is what happens when the worst doesn't happen."`,
+  tr:`Lansmandan önceki gece Priya hâlâ ters gidebilecek her şey için kaygılıydı; huzursuz bir his ertesi sabah ofise kadar peşini bırakmadı.
 
-"You look calm," her manager said. "I am," she replied. "Calm is what happens when the worst doesn't happen."`,
-  tr:`Lansmandan önceki gece Priya uyuyamadı. Tam olarak korkmuyordu ama hâlâ ters gidebilecek her şey için kaygılıydı; ertesi sabah ofise giderken de belli belirsiz, huzursuz bir his peşini bırakmadı.
+Saat dokuzda ekip ilk pürüze takıldı: ödeme sayfası eski telefonlarda açılmıyordu. Küçük bir aksilikti, kodda ufak bir ayarla çözüldü. Asıl büyük engel öğlen geldi: büyük bir perakendeci değişiklik istedi. Altı ay önce bu, baştan aşağı yenileme demek olurdu; bu kez bir öğleden sonra yetti.
 
-Saat dokuzda ekip ilk pürüze takıldı: ödeme sayfası eski telefonlarda açılmıyordu. Bu bir felaket değil, küçük bir aksilikti ve geliştiriciler kodda ufak bir ayarla sorunu çözdü. Asıl büyük engel öğlen geldi: büyük bir perakendeci, kayıt akışında değişiklik istedi. Altı ay önce böyle bir talep baştan aşağı yenileme anlamına gelirdi; bu kez tasarım bir öğleden sonrada uyum sağlayacak kadar esnekti.
-
-Akşama doğru ilk yorumlar gelmeye başladı ve birçoğu uygulamayı olağanüstü diye niteledi. Priya'nın yöneticisi heyecandan yerinde duramıyordu: indirme grafiğini sürekli yenileyip rakamlara sırıtıyordu. Priya ise sadece rahatlamıştı. Rekorlar pek umurunda değildi; yalnızca hiçbir şeyin bozulmamış olmasına seviniyordu.
-
-"Sakin görünüyorsun," dedi yöneticisi. "Öyleyim," diye cevap verdi Priya. "En kötüsü olmayınca insan sakin oluyor."`
+Akşama doğru yorumlar uygulamayı olağanüstü diye nitelemeye başladı. Yöneticisi heyecandan yerinde duramıyor, indirme grafiğini durmadan yeniliyordu. Priya ise sadece rahatlamıştı. "Sakinlik," dedi, "en kötüsü olmayınca gelir."`
 },
 { title:`Reading the Numbers`,
-  en:`Every quarter, the analytics team presents a report that the whole company pretends to understand. This time, however, the numbers told a story no one could ignore.
+  en:`Online orders {{surged|surge}} in March after a video about the brand went viral, and for three weeks sales seemed to {{soar}} without limit. Then they {{plummeted|plummet}} as the trend faded, while foot traffic in the stores kept {{dwindling|dwindle}} month after month.
 
-Online orders {{surged|surge}} in March after a single video about the brand went viral, and for three weeks daily sales seemed to {{soar}} without limit. Then, just as quickly, they {{plummeted|plummet}} when the trend faded. Meanwhile, foot traffic in physical stores kept {{dwindling|dwindle}}, slowly but steadily, month after month.
+The quarterly report {{revealed|reveal}} a surprise: almost forty percent of the new customers had come back. The analysts {{highlighted|highlight}} this on the first slide, because it {{demonstrated|demonstrate}} that viral attention could turn into real loyalty. A {{significant}} share of them were under twenty-five.
 
-The report {{revealed|reveal}} something more surprising: almost forty percent of the new customers had come back a second time. The analysts {{highlighted|highlight}} this in bold on the first slide, because it {{demonstrated|demonstrate}} that viral attention could turn into real loyalty. A {{significant}} share of these returning buyers were under twenty-five.
+Results in the north, however, were {{dismal}}, and the director {{underscored|underscore}} the point by placing that chart next to the best one. The conclusion was clear: the company needed a {{shift}} away from costly shop rents and towards its new online audience.`,
+  tr:`Markayla ilgili bir video viral olunca mart ayında çevrimiçi siparişler birden fırladı ve üç hafta boyunca satışlar sınırsızca yükseliyor gibiydi. Akım sönünce satışlar çakıldı; mağazalardaki müşteri trafiği ise ay be ay erimeye devam etti.
 
-Not everything was good news. Results in the northern region were {{dismal}}, and the director {{underscored|underscore}} the point by putting that chart right next to the company's best one.
+Çeyrek raporu bir sürprizi de ortaya çıkardı: yeni müşterilerin neredeyse yüzde kırkı geri dönmüştü. Analistler bunu ilk slaytta öne çıkardı, çünkü viral ilginin gerçek bir sadakate dönüşebileceğini kanıtlıyordu. Bu müşterilerin kayda değer bir kısmı yirmi beş yaşın altındaydı.
 
-The conclusion was clear: the company needed a {{shift}} in strategy, away from expensive shop rents and towards the online audience that had appeared almost by accident.`,
-  tr:`Analitik ekibi her çeyrekte, tüm şirketin anlıyormuş gibi yaptığı bir rapor sunar. Ancak bu kez rakamlar kimsenin görmezden gelemeyeceği bir hikâye anlatıyordu.
-
-Markayla ilgili tek bir video viral olunca mart ayında çevrimiçi siparişler birden fırladı ve üç hafta boyunca günlük satışlar sınırsızca yükseliyor gibiydi. Sonra akım sönünce satışlar aynı hızla çakıldı. Bu arada fiziksel mağazalardaki müşteri trafiği ay be ay, yavaş ama istikrarlı biçimde erimeye devam etti.
-
-Rapor daha şaşırtıcı bir şeyi de ortaya çıkardı: yeni müşterilerin neredeyse yüzde kırkı ikinci kez alışveriş yapmıştı. Analistler bunu ilk slaytta kalın harflerle öne çıkardı, çünkü viral ilginin gerçek bir sadakate dönüşebileceğini kanıtlıyordu. Geri dönen bu alıcıların kayda değer bir kısmı yirmi beş yaşın altındaydı.
-
-Her şey iyi haber değildi. Kuzey bölgesindeki sonuçlar içler acısıydı ve direktör, o grafiği şirketin en iyi grafiğinin hemen yanına koyarak bu noktanın altını çizdi.
-
-Sonuç açıktı: şirketin stratejisinde bir değişime ihtiyacı vardı; pahalı mağaza kiralarından uzaklaşıp neredeyse tesadüfen ortaya çıkan çevrimiçi kitleye yönelmesi gerekiyordu.`
+Ancak kuzeydeki sonuçlar içler acısıydı ve direktör o grafiği en iyisinin yanına koyarak bu noktanın altını çizdi. Sonuç açıktı: şirketin, pahalı mağaza kiralarından yeni çevrimiçi kitlesine doğru bir değişime ihtiyacı vardı.`
 },
 { title:`An Afternoon in Lisbon`,
-  en:`With no meetings and no plans, Tom decided to {{wander}} through the old part of Lisbon without a map. He {{strolled|stroll}} along the river first, stopping every few minutes to take photos, perfectly {{content}} to have nowhere to be.
+  en:`With no plans for the afternoon, Tom decided to {{wander}} through old Lisbon without a map. He {{strolled|stroll}} along the river, perfectly {{content}} to have nowhere to be. On the steep streets, tired tourists {{trudged|trudge}} past him, while a local woman {{strode|stride}} up the hill as if it were flat.
 
-The streets soon turned steep. A group of tourists with heavy backpacks {{trudged|trudge}} past him, looking exhausted, while a local woman {{strode|stride}} up the hill as if it were flat, her shopping bags swinging.
+At the top, he {{gazed|gaze}} at the red roofs and the river shining below. It was a {{remarkable}} view, and he was {{astonished}} that so few people bothered to climb up and see it.
 
-At the top, Tom stopped and {{gazed|gaze}} at the city below: red roofs, white walls and the river shining in the sun. It was a {{remarkable}} view, and he stood there for a long time. He was {{astonished}} that so few people had bothered to climb up and see it.
+On the way down, he {{glanced|glance}} into a tiny café where an old man was playing the guitar. Tom couldn't help but {{stare}} at his flying fingers. When he raised his phone to film, the waiter {{glared|glare}} at him, so he put it away, ordered a coffee and stayed for three more songs.`,
+  tr:`Öğleden sonra için hiçbir planı olmayan Tom, eski Lizbon'da haritasız dolaşmaya karar verdi. Nehir boyunca keyifle yürüdü; gidecek bir yerinin olmamasından tamamen memnundu. Dik sokaklarda yorgun turistler yanından ayaklarını sürüye sürüye geçerken yerel bir kadın yokuşu düz yolmuş gibi uzun, kararlı adımlarla çıktı.
 
-On the way down, he {{glanced|glance}} into a tiny café and saw an old man playing the guitar. Tom couldn't help but {{stare}}: the man's fingers moved impossibly fast. When Tom raised his phone to film, the waiter {{glared|glare}} at him, and he quickly put it away with an apologetic smile.
+Tepede, aşağıdaki kırmızı çatıları ve parlayan nehri uzun uzun seyretti. Dikkat çekici bir manzaraydı; bu kadar az insanın onu görmek için tırmanma zahmetine katlanmasına hayret etti.
 
-He ordered a coffee instead and stayed for three more songs.`,
-  tr:`Ne toplantısı ne de planı olan Tom, Lizbon'un eski kesiminde haritasız dolaşmaya karar verdi. Önce nehir boyunca keyifle yürüdü, birkaç dakikada bir fotoğraf çekmek için durdu; gidecek bir yerinin olmamasından tamamen memnundu.
-
-Sokaklar kısa sürede dikleşti. Ağır sırt çantalı bir grup turist bitkin görünerek yanından ayaklarını sürüye sürüye geçti; yerel bir kadın ise alışveriş torbalarını sallayarak yokuşu düz yolmuş gibi uzun, kararlı adımlarla çıktı.
-
-Tepede Tom durdu ve aşağıdaki şehri uzun uzun seyretti: kırmızı çatılar, beyaz duvarlar ve güneşte parlayan nehir. Dikkat çekici bir manzaraydı ve uzun süre orada kaldı. Bu kadar az insanın tırmanıp onu görme zahmetine katlanmasına hayret etmişti.
-
-Aşağı inerken minicik bir kafeye şöyle bir göz attı ve gitar çalan yaşlı bir adam gördü. Tom gözlerini ondan alamadı: adamın parmakları inanılmaz hızlı hareket ediyordu. Kaydetmek için telefonunu kaldırınca garson ona ters ters baktı, o da özür diler gibi gülümseyerek telefonu hemen kaldırdı.
-
-Onun yerine bir kahve söyledi ve üç şarkı daha dinlemek için kaldı.`
+Aşağı inerken gitar çalan yaşlı bir adamın olduğu minicik bir kafeye şöyle bir göz attı. Adamın uçuşan parmaklarından gözlerini alamadı. Kaydetmek için telefonunu kaldırınca garson ona ters ters baktı; o da telefonu kaldırdı, bir kahve söyledi ve üç şarkı daha dinlemek için kaldı.`
 },
 { title:`Sunday Dinner`,
-  en:`Sunday dinner at the Demir house usually starts well. This week it didn't.
+  en:`Selin arrived at Sunday dinner late, already {{irritated}} by the traffic. Her brother Emre had promised to cook, but the kitchen was empty, and their mother was {{fed up}}. When Emre finally showed up with takeaway boxes, their father was {{furious}}. Emre, who had expected a joke or two, was {{taken aback}}.
 
-Selin arrived late, already {{irritated}} by the traffic and by her phone, which wouldn't stop buzzing. Her brother Emre had promised to cook, but when she walked in, the kitchen was empty. Their mother, who had been waiting for an hour, was {{fed up}}. "Every week the same story," she said quietly.
+Later, washing the dishes, Selin admitted that she felt {{resentful}}: she always organised these dinners, yet Emre got the credit just for showing up. Her mother looked {{stunned}}; she had never noticed.
 
-When Emre finally appeared with takeaway boxes, their father was {{furious}}. He rarely shouted, so everyone went silent. Emre had clearly expected a joke or two, and he was {{taken aback}} by how serious the reaction was.
+Emre seemed {{deeply}} sorry. Selin was still {{wary}}, but she was {{delighted}} when, two days later, he wrote: "Next Sunday is mine. No takeaway." Their father, who had complained {{bitterly}} all evening, replied with a single thumbs-up.`,
+  tr:`Selin pazar akşam yemeğine geç geldi; trafikten zaten canı sıkılmıştı. Kardeşi Emre yemeği yapacağına söz vermişti ama mutfak bomboştu ve anneleri artık bıkıp usanmıştı. Emre sonunda paket yemek kutularıyla göründüğünde babaları öfkeden deliye döndü. Birkaç şaka bekleyen Emre afalladı.
 
-Later, while washing the dishes, Selin admitted something she had kept to herself for years: she felt {{resentful}} that she always organised these dinners while Emre got the credit just for showing up. Her mother looked {{stunned}}; she had never noticed.
+Sonra bulaşıkları yıkarken Selin içerlediğini itiraf etti: bu yemekleri hep kendisi organize ediyordu ama övgüyü sırf gelip oturan Emre topluyordu. Annesi şoke olmuştu; bunu hiç fark etmemişti.
 
-Emre apologised, and he seemed {{deeply}} sorry. Selin was still a little {{wary}}, since she had heard promises before, but she was {{delighted}} when, two days later, he sent a message: "Next Sunday is mine. Full menu. No takeaway."
-
-Their father, who had complained {{bitterly}} all evening, replied with a single thumbs-up.`,
-  tr:`Demirlerin evinde pazar akşam yemeği genelde iyi başlar. Bu hafta öyle olmadı.
-
-Selin geç geldi; trafikten ve susmak bilmeyen telefonundan zaten canı sıkılmıştı. Kardeşi Emre yemeği yapacağına söz vermişti ama Selin içeri girdiğinde mutfak bomboştu. Bir saattir bekleyen anneleri artık bıkıp usanmıştı. "Her hafta aynı hikâye," dedi sessizce.
-
-Emre sonunda paket yemek kutularıyla göründüğünde babaları öfkeden deliye dönmüştü. Nadiren bağırırdı, bu yüzden herkes sustu. Emre belli ki birkaç şaka bekliyordu ve tepkinin bu kadar ciddi olması karşısında afalladı.
-
-Sonra bulaşıkları yıkarken Selin yıllardır içinde tuttuğu bir şeyi itiraf etti: bu yemekleri hep kendisi organize ederken övgüyü sırf gelip oturan Emre'nin toplamasına içerliyordu. Annesi şoke olmuş görünüyordu; bunu hiç fark etmemişti.
-
-Emre özür diledi ve gerçekten derinden üzgün görünüyordu. Selin bu sözleri daha önce de duyduğu için hâlâ biraz temkinliydi; ama iki gün sonra Emre'den gelen mesaja çok sevindi: "Gelecek pazar benden. Tam menü. Paket yemek yok."
-
-Bütün akşam acı acı yakınan babaları ise tek bir başparmak emojisiyle cevap verdi.`
+Emre derinden üzgün görünüyordu. Selin hâlâ temkinliydi ama iki gün sonra gelen mesaja çok sevindi: "Gelecek pazar benden. Paket yemek yok." Bütün akşam acı acı yakınan babaları tek bir başparmak emojisiyle cevap verdi.`
 },
 { title:`The Turning Point`,
-  en:`Nobody expected much from the local club this season. The team had been {{decent}} for years, never bad and never great, and most fans simply hoped for a {{solid}} finish somewhere in the middle of the table.
+  en:`Nobody expected much from the local club this season. The team had been {{decent}} for years, and fans simply hoped for a {{solid}} mid-table finish. Then a new coach made {{sweeping}} changes, replacing half the starting line-up with young players. Many thought the plan was {{flawed}}, and after a month of {{appalling}} results, the local paper called it {{utterly}} hopeless.
 
-Then the new coach arrived and made {{sweeping}} changes: a new training schedule, a new diet, and half the starting line-up replaced by young players. Many supporters thought the plan was {{flawed}}, and after a first month of {{appalling}} results, the local newspaper called the whole project {{utterly}} hopeless.
+The {{pivotal}} moment came in November against the league leaders: at 1–1, with ten minutes left, an eighteen-year-old scored from thirty metres. The stadium exploded.
 
-The {{pivotal}} moment came in November, in a match against the league leaders. With ten minutes left and the score at 1–1, the youngest player on the pitch, just eighteen, scored from thirty metres. The stadium exploded.
+From then on, the players trusted the system, and the coach kept saying that patience was {{vital}}. By spring the club was third, experts called the coach {{highly}} talented, and the paper quietly printed a very different headline.`,
+  tr:`Bu sezon kimse yerel kulüpten pek bir şey beklemiyordu. Takım yıllardır fena değildi ve taraftarlar sadece ligin ortalarında sağlam bir bitiş umuyordu. Sonra yeni teknik direktör köklü değişiklikler yaptı ve ilk on birin yarısını genç oyuncularla değiştirdi. Pek çok kişi planın kusurlu olduğunu düşündü; bir aylık berbat sonuçların ardından yerel gazete projeyi tamamen umutsuz diye niteledi.
 
-From that night on, everything changed. The players began to trust the system, and the coach kept repeating the same message: patience is {{vital}}, and every training session counts.
+Dönüm noktası kasımda lider takıma karşı geldi: skor 1–1'ken, son on dakikada on sekiz yaşındaki bir oyuncu otuz metreden gol attı. Stadyum yıkıldı.
 
-By spring, the club was in third place. Experts who had laughed in autumn now described the coach as {{highly}} talented, and the newspaper quietly published an entirely different headline.`,
-  tr:`Bu sezon kimse yerel kulüpten pek bir şey beklemiyordu. Takım yıllardır fena değildi; hiçbir zaman ne kötü ne de harika olmuştu. Taraftarların çoğu sadece ligin ortalarında bir yerde sağlam bir bitiş umuyordu.
-
-Sonra yeni teknik direktör geldi ve köklü değişiklikler yaptı: yeni bir antrenman programı, yeni bir beslenme düzeni ve ilk on birin yarısının yerine genç oyuncular. Pek çok taraftar planın kusurlu olduğunu düşündü; ilk ayın berbat sonuçlarının ardından yerel gazete tüm projeyi tamamen umutsuz diye niteledi.
-
-Dönüm noktası kasım ayında, lider takıma karşı oynanan maçta geldi. Son on dakikaya girilirken skor 1–1'di ve sahadaki en genç oyuncu, henüz on sekiz yaşındaki çocuk, otuz metreden gol attı. Stadyum yıkıldı.
-
-O geceden sonra her şey değişti. Oyuncular sisteme güvenmeye başladı ve teknik direktör hep aynı mesajı tekrarladı: sabır hayati önem taşıyor ve her antrenman önemli.
-
-Bahara gelindiğinde kulüp üçüncü sıradaydı. Sonbaharda gülen uzmanlar artık teknik direktörü son derece yetenekli biri olarak tanımlıyordu ve gazete sessizce bambaşka bir manşet yayımladı.`
+O andan sonra oyuncular sisteme güvendi; teknik direktör de sabrın hayati önem taşıdığını tekrarlayıp durdu. Bahara gelindiğinde kulüp üçüncüydü, uzmanlar teknik direktörü son derece yetenekli diye niteliyordu ve gazete sessizce bambaşka bir manşet yayımladı.`
 }
 ];
 
