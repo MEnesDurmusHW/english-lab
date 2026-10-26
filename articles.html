@@ -31,6 +31,7 @@
 <script src="journey-core.js"></script>
 <script src="pwa.js" defer></script>
 <script src="share.js" defer></script>
+<script src="success-fx.js" defer></script>
 <link rel="stylesheet" href="styles.css">
 <script src="sync.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,6 +44,10 @@
   .ar-chip{appearance:none;cursor:pointer;font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 13px;transition:.15s}
   .ar-chip:hover{border-color:var(--accent);color:var(--accent)}
   .art{scroll-margin-top:80px}
+  .ar-done{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:var(--sans);font-size:.86rem;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:8px 16px}
+  .ar-done[aria-pressed="true"]{color:var(--ok);background:transparent;border-color:var(--ok)}
+  [data-theme="dark"] .ar-done[aria-pressed="false"]{color:#0B0E14}
+  .ar-done small{font-weight:500;opacity:.8}
 </style>
 </head>
 <body>
@@ -100,12 +105,23 @@ function renderArticleEN(text){
 function renderArticleTR(text){
   return text.trim().split(/\n\s*\n/).map(p=>'<p>'+p.trim()+'</p>').join('');
 }
+/* Çalıştım düğmesi: makalenin İngilizce kelime sayısı kadar puan (NSDay,
+   ar). Aynı makale günde bir kez sayılır; tekrar basmak bugünkü işareti
+   geri alır. */
+const WORDS_OF = ARTICLES.map(a => NSDay.countWords(a.en.replace(MARK_RE,(m,x)=>x)));
+function doneToday(){ return NSDay.day(NSDay.today()).ar; }
+function doneBtn(i){
+  const on = !!doneToday()[ARTICLES[i].title], n = WORDS_OF[i], pts = NSDay.r1(n*NSDay.POINTS.ar);
+  return '<button type="button" class="ar-done" data-done="'+i+'" aria-pressed="'+on+'">'+
+    (on ? '✓ Bugün çalışıldı <small>+'+pts+' puan · geri al</small>' : 'Çalıştım <small>· '+n+' kelime · +'+pts+' puan</small>')+'</button>';
+}
 function renderReading(){
   rdList.innerHTML = ARTICLES.map((a,i)=>
     '<article class="art" id="art-'+i+'">'+
       '<h3 class="art-title">'+a.title+'</h3>'+
       '<div class="art-en">'+renderArticleEN(a.en)+'</div>'+
       '<div class="art-tr">'+renderArticleTR(a.tr)+'</div>'+
+      doneBtn(i)+
     '</article>'
   ).join('');
   if(countEl) countEl.textContent = ARTICLES.length+' hikâye';
@@ -118,6 +134,17 @@ function goGroup(g, smooth){
 }
 document.getElementById('arGroups').addEventListener('click', e=>{
   const b=e.target.closest('[data-g]'); if(b) goGroup(+b.dataset.g, true);
+});
+rdList.addEventListener('click', e=>{
+  const b=e.target.closest('[data-done]'); if(!b) return;
+  const i=+b.dataset.done, on=b.getAttribute('aria-pressed')!=='true';
+  NSDay.articleDone(ARTICLES[i].title, WORDS_OF[i], on);
+  b.outerHTML=doneBtn(i);
+  if(on && window.successFX){ try{ window.successFX(); }catch(err){} }
+});
+/* başka sekmede/cihazda işaretlenirse düğmeler güncellensin */
+window.addEventListener('ns-state-changed', ()=>{
+  document.querySelectorAll('[data-done]').forEach(b=>{ b.outerHTML=doneBtn(+b.dataset.done); });
 });
 rdToggle.addEventListener('click', ()=>{
   const hidden=readingView.classList.toggle('hide-tr');
