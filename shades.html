@@ -73,10 +73,10 @@
   .sh-w{appearance:none;border:0;background:none;padding:0;cursor:pointer;font-family:var(--sans);font-size:1.08rem;font-weight:700;color:var(--text);letter-spacing:-.01em;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent);text-underline-offset:4px}
   .sh-w:hover{color:var(--accent)}
   .sh-tr{font-size:.82rem;color:var(--text-muted)}
-  .sh-meta{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--text-muted)}
+  .sh-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--text-muted)}
+  .sh-tag b{font-weight:600;color:var(--text-dim)}
   .sh-lvl{letter-spacing:2px;color:var(--accent);font-size:.7rem}
   .sh-lvl i{font-style:normal;opacity:.22}
-  .sh-reg{font-family:var(--mono,monospace);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);border-radius:999px;padding:1px 7px}
   .sh-cue{margin:0;font-size:.9rem;color:var(--text);line-height:1.45}
   .sh-pat{margin:0;font-size:.8rem;color:var(--text-dim);line-height:1.45}
   .sh-pat .cw-key{color:var(--accent);font-weight:700}
@@ -200,9 +200,7 @@
   .sy-diff p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text)}
   .sy-nav{display:flex;align-items:center;gap:8px;margin-top:18px}
   .sy-nav .sh-cta{margin-left:auto}
-  .sy-dots{display:flex;gap:5px;margin-bottom:14px}
-  .sy-dots i{width:7px;height:7px;border-radius:50%;background:var(--border)}
-  .sy-dots i.on{background:var(--accent)}
+  .sy-count{margin:0 0 10px;font-family:var(--mono,monospace);font-size:.74rem;color:var(--text-muted)}
   .sy-h{font-family:var(--display,var(--sans));font-size:1.2rem;font-weight:700;margin:0 0 10px;color:var(--text)}
   .sy-art .art-en p{line-height:1.75;margin:0 0 10px;color:var(--text)}
   .sy-art .wordref{cursor:pointer}
@@ -254,7 +252,7 @@
         <li>How <b>strong</b> is it, and how <b>long</b>? <span>Irritated is a spark, furious is a fire, resentful is the smoke that stays.</span></li>
         <li>Who is <b>listening</b>? <span>Delighted and underscore suit an email to a client; thrilled and snag suit a friend.</span></li>
       </ol>
-      <div class="sh-legend"><span><span class="sh-lvl">●<i>●●</i></span> mild → <span class="sh-lvl">●●●</span> strong</span><span><span class="sh-reg">casual</span> <span class="sh-reg">neutral</span> <span class="sh-reg">formal</span> register</span><span>Tap a word for meaning, examples and collocations.</span></div>
+      <div class="sh-legend"><span>Tap a word for meaning, examples and collocations.</span></div>
     </div>
     <nav class="sh-index" id="index" aria-label="Families"></nav>
     <div id="fams"></div>
@@ -313,7 +311,9 @@ SHADES.forEach(f => f.words.forEach(x => VIVID.push(x.w)));
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function plural(n, one, many){ return n + ' ' + (n === 1 ? one : (many || one + 's')); }
 function trOf(w){ const e = LOOKUP[w]; return e ? e.tr : ''; }
-function lvlHTML(n){ return '<span class="sh-lvl" title="Intensity ' + n + ' of 3">' + '●'.repeat(n) + '<i>' + '●'.repeat(3 - n) + '</i></span>'; }
+/* Güç ve ton düz yazıyla: noktalar tek başına anlaşılmıyordu */
+function lvlHTML(n){ return '<span class="sh-tag">Strength: <span class="sh-lvl">' + '●'.repeat(n) + '<i>' + '●'.repeat(3 - n) + '</i></span> <b>' + ['mild', 'medium', 'strong'][n - 1] + '</b></span>'; }
+function regHTML(r){ return '<span class="sh-tag">Tone: <b>' + r + '</b></span>'; }
 function blank(s, fill){ return esc(s).replace('___', '<u>' + (fill ? esc(fill) : '&nbsp;') + '</u>'); }
 function readPref(k, def){ try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
 function writePref(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }   /* nsel-*: buluta gitmez */
@@ -362,7 +362,7 @@ function famHTML(f){
   const words = f.words.map(x =>
     '<div class="sh-word">' +
       '<div class="sh-wtop"><button type="button" class="sh-w" data-w="' + esc(x.w) + '">' + esc(x.w) + '</button><span class="sh-tr">' + esc(trOf(x.w)) + '</span></div>' +
-      '<div class="sh-meta">' + lvlHTML(x.level) + '<span class="sh-reg">' + x.reg + '</span></div>' +
+      '<div class="sh-meta">' + lvlHTML(x.level) + regHTML(x.reg) + '</div>' +
       '<p class="sh-cue">' + esc(x.cue) + '</p>' +
       '<p class="sh-pat">' + collPhraseHTML(x.pat) + '</p>' +
     '</div>').join('');
@@ -542,10 +542,10 @@ function renderStudy(){
 
   if (step === 'words') {
     const x = f.words[st.w], e = LOOKUP[x.w] || {}, d = diffOf(x.w);
-    box.innerHTML = '<div class="sy-dots">' + f.words.map((y, i) => '<i' + (i <= st.w ? ' class="on"' : '') + '></i>').join('') + '</div>' +
+    box.innerHTML = '<p class="sy-count">Word ' + (st.w + 1) + ' of ' + f.words.length + '</p>' +
       '<p class="sy-word">' + esc(x.w) + '</p>' +
       '<p class="sy-tr">' + esc(e.tr || '') + '</p>' +
-      '<div class="sh-meta">' + lvlHTML(x.level) + '<span class="sh-reg">' + x.reg + '</span></div>' +
+      '<div class="sh-meta">' + lvlHTML(x.level) + regHTML(x.reg) + '</div>' +
       '<p class="sy-cue">' + esc(x.cue) + '</p>' +
       '<p class="sh-pat">' + collPhraseHTML(x.pat) + '</p>' +
       (e.ex ? '<div class="sy-ex"><p>' + esc(e.ex) + '</p><p>' + esc(e.exTr || '') + '</p></div>' : '') +
