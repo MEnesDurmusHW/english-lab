@@ -415,6 +415,7 @@ function scopeLabel(n){
   if (b1SelStatus.length) parts.push(b1SelStatus.map(s => B1_STATUS_LABEL[s]).join(', '));
   if (b1SelSaved.indexOf('flagged') >= 0) parts.push('Flagged');
   if (b1SelSaved.indexOf('learned') >= 0) parts.push('Hidden');
+  if (b1SelSaved.indexOf('vocab') >= 0) parts.push('In Vocabulary');
   parts.push(n + (n === 1 ? ' word' : ' words'));
   return parts.join(' · ');
 }

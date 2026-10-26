@@ -146,12 +146,12 @@ const RESTORE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 
 function unknownWords(){
   return B1.filter(w => {
-    if (b1IsHidden(w.en)) return false;
+    if (b1IsHidden(w.en) || b1InVocab(w.en)) return false;   // Vocabulary'ye taşınanlar orada çalışılıyor
     const st = b1StatusOf(w.en);
     return mode === 'weak' ? st === 'weak' : (st === 'weak' || st === 'shaky');
   });
 }
-function knownWords(){ return B1.filter(w => !b1IsHidden(w.en) && b1StatusOf(w.en) === 'known'); }
+function knownWords(){ return B1.filter(w => !b1IsHidden(w.en) && !b1InVocab(w.en) && b1StatusOf(w.en) === 'known'); }
 function hiddenWords(){ return B1.filter(w => b1IsHidden(w.en)); }
 const SOURCE = { unknown: unknownWords, known: knownWords, hidden: hiddenWords };
 

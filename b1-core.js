@@ -116,9 +116,19 @@ function b1FilterCount() { return b1SelPacks.length + b1SelPos.length + b1SelSta
 function b1FilterSig() { return JSON.stringify([b1SelPacks, b1SelPos, b1SelStatus, b1SelSaved]); }
 function b1ClearFilter() { b1SelPacks = []; b1SelPos = []; b1SelStatus = []; b1SelSaved = []; b1SaveFilter(); }
 
+/* Vocabulary'ye taşınmış kelimeler (data.js WORDS) orada derinlemesine
+   çalışılıyor; B1'de varsayılan olarak gizli, "In Vocabulary" ile görünür.
+   data.js yüklü değilse küme boş kalır, hiçbir şey gizlenmez. */
+const B1_VOCAB = new Set();
+if (typeof WORDS !== 'undefined') WORDS.forEach(w => String(w.en).split(' / ').forEach(x => B1_VOCAB.add(x.trim().toLowerCase())));
+function b1InVocab(en) { return B1_VOCAB.has(en); }
+
 function b1Matches(w) {
   if (b1SelPacks.length && b1SelPacks.indexOf(w.pack) < 0) return false;
   if (b1SelPos.length && b1SelPos.indexOf(w.pos) < 0) return false;
+  const inVocab = b1InVocab(w.en);
+  if (b1SelSaved.indexOf('vocab') >= 0) { if (!inVocab) return false; }   // yalnızca Vocabulary'dekiler
+  else if (inVocab) return false;                                         // normalde gizli
   const learned = b1IsHidden(w.en);
   if (b1SelSaved.indexOf('learned') >= 0) { if (!learned) return false; }   // yalnızca öğrenilenler
   else if (learned) return false;                                          // öğrenilenler normalde gizli
@@ -184,6 +194,7 @@ function b1MountFilter(host, onChange) {
       '</div></div>';
     h += '<div class="flt-sec"><div class="flt-lbl">Saved</div><div class="flt-chips">' +
       b1FltChip('v', 'flagged', 'Flagged') + b1FltChip('v', 'learned', 'Hidden') +
+      b1FltChip('v', 'vocab', 'In Vocabulary <i>' + B1.filter(w => b1InVocab(w.en)).length + '</i>') +
       '</div></div>';
     h += '<div class="flt-foot"><button type="button" class="flt-clear" id="b1FltClear">Clear filters</button>' +
       '<span class="flt-count" id="b1FltCount"></span></div>';
