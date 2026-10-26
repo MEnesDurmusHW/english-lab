@@ -187,7 +187,9 @@ function toggleHidden(en){
 /* ============ FİLTRE (faset: gruplar + skor + kaydedilenler) ============
    Üç bağımsız faset. Her faset boşsa o boyutta kısıt yoktur.
    Gruplar/durumlar kendi içinde VEYA, fasetler arası VE ile birleşir. */
-const FILTER_KEY='ns-vocab-filter';
+/* Sayfa kendi filtresini isterse lab-core'dan önce window.LAB_FILTER_KEY
+   koyar (Sentences); yoksa Vocabulary ile ortak. */
+const FILTER_KEY=window.LAB_FILTER_KEY||'ns-vocab-filter';
 let selGroups=[], selStatus=[], selSaved=[];   // grp id'leri · 'weak'/'shaky'/'known' · 'flagged'/'learned' (dahil) veya '!flagged'/'!learned' (hariç)
 let selAbove=null;                              // skor > selAbove olanlar (null: kısıt yok)
 let selBelow=null;                              // skor < selBelow olanlar (null: kısıt yok)
