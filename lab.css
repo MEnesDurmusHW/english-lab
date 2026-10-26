@@ -449,7 +449,7 @@
   }
   .filter-sel:focus-visible{outline:2px solid var(--accent)}
   .tabs .count{margin-left:0}
-  .tabs .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
   .tabs .seg::-webkit-scrollbar{display:none}
   .tabs .seg button{white-space:nowrap;padding:8px 15px}
 
@@ -710,7 +710,7 @@
 
 /* secondary sub-tab row, sits under the app bar */
 .subbar{display:flex;justify-content:center;margin:0 0 6px}
-.subbar .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.subbar .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
 .subbar .seg::-webkit-scrollbar{display:none}
 
 

@@ -69,9 +69,13 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 100;
-  opacity: 0;
+  display: none;   /* not opacity:0 — an invisible full-screen layer still taxes every repaint */
 }
-[data-theme="dark"] .grain { opacity: 1; }
+[data-theme="dark"] .grain { display: block; }
+
+/* Every tap is a click: no double-tap-to-zoom swallowing a quick second tap
+   (pinch zoom still works). */
+html { touch-action: manipulation; }
 
 /* --- Sticky toolbar buttons (home, theme, share) --- */
 .theme-toggle,

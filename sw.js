@@ -6,12 +6,12 @@
 
    Strategies
      navigations      network first, cached page as the offline fallback
-     same-origin GET  stale-while-revalidate (fast, self-healing)
+     same-origin GET  network first, cache as the offline fallback
      Google Fonts     cache first (they never change under a given URL)
      everything else  untouched — Firebase auth/Firestore and the
                       analytics beacon must go straight to the network
    ============================================================ */
-const VERSION = '2026-10-25e';
+const VERSION = '2026-10-26a';
 const SHELL = `nsel-shell-${VERSION}`;
 const RUNTIME = `nsel-runtime-${VERSION}`;
 const FONTS = `nsel-fonts-${VERSION}`;
@@ -128,7 +128,7 @@ async function handleNavigation(event) {
     const preloaded = await event.preloadResponse;
     let response = preloaded && preloaded.type !== 'opaqueredirect'
       ? preloaded
-      : await fetch(request.url, { credentials: 'same-origin', redirect: 'follow' });
+      : await fetch(request.url, { credentials: 'same-origin', redirect: 'follow', cache: 'no-cache' });
 
     if (response.redirected) {
       response = new Response(await response.blob(), {
@@ -162,20 +162,29 @@ async function handleNavigation(event) {
   }
 }
 
-/* Serve from cache immediately, refresh it in the background. */
-async function staleWhileRevalidate(request, cacheName) {
+/* Network first, cache as the offline fallback. Pages are network first too,
+   so a page and its scripts always come from the same deploy. Serving scripts
+   from cache under a fresh page (the old stale-while-revalidate) mixed two
+   versions: a handler ran halfway and threw, so a tab switched but never got
+   marked as selected, or a counter stopped one short. no-cache revalidates
+   with the server (a cheap 304) instead of trusting the HTTP cache's hour. */
+const NET_TIMEOUT = 4000;
+async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
-  const hit = await cache.match(request);
-  const network = fetch(request)
-    .then((response) => {
-      if (cacheable(response)) cachePut(cache, request.url, response).catch(() => {});
-      return response;
-    })
-    .catch(() => null);
+  const network = fetch(request, { cache: 'no-cache' }).then((response) => {
+    if (cacheable(response)) cachePut(cache, request.url, response).catch(() => {});
+    return response;
+  });
+  network.catch(() => {});   // the race below may stop listening to it
+  // A dead-slow connection shouldn't hang the page when a copy is on hand.
+  const slow = new Promise((resolve) => setTimeout(resolve, NET_TIMEOUT, null));
+  try {
+    const fresh = await Promise.race([network, slow]);
+    if (fresh) return fresh;
+  } catch (err) { /* offline: fall through to the cache */ }
+  const hit = await cache.match(request) || await caches.match(request);
   if (hit) return hit;
-  const fresh = await network;
-  if (fresh) return fresh;
-  throw new Error('offline and not cached: ' + request.url);
+  return network;   // nothing cached: keep waiting on the network after all
 }
 
 async function handleFont(request) {
@@ -212,7 +221,7 @@ self.addEventListener('fetch', (event) => {
     const cacheName = PRECACHE.some((p) => new URL(p, self.location.href).pathname === url.pathname)
       ? SHELL
       : RUNTIME;
-    event.respondWith(staleWhileRevalidate(request, cacheName).catch(() => fetch(request)));
+    event.respondWith(networkFirst(request, cacheName).catch(() => fetch(request)));
   }
 
   // Anything else (Firebase SDK, auth, Firestore, GoatCounter) falls through untouched.
