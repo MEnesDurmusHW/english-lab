@@ -48,6 +48,10 @@
   .ar-done[aria-pressed="true"]{color:var(--ok);background:transparent;border-color:var(--ok)}
   [data-theme="dark"] .ar-done[aria-pressed="false"]{color:#0B0E14}
   .ar-done small{font-weight:500;opacity:.8}
+  .ar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .ar-head .art-title{flex:1;min-width:0}
+  .ar-head .btn{flex:none;padding:6px 12px;font-size:.8rem}
+  .art.hide-tr .art-tr{display:none}
 </style>
 </head>
 <body>
@@ -60,7 +64,6 @@
   <div class="reading-view" id="view-reading">
     <div class="rd-controls">
       <span class="count" id="count"></span>
-      <button class="btn" id="rdToggle" aria-pressed="false" style="margin-left:auto">Türkçeyi gizle</button>
     </div>
     <div class="ar-groups" id="arGroups" role="group" aria-label="Grubun makalelerine git"></div>
     <div id="rdList"></div>
@@ -72,8 +75,7 @@
 <script src="lab-core.js"></script>
 <script>
 /* ============ OKUMA (hikâyeler) ============ */
-const readingView=document.getElementById('view-reading');
-const rdList=document.getElementById('rdList'), rdToggle=document.getElementById('rdToggle');
+const rdList=document.getElementById('rdList');
 const countEl=document.getElementById('count');
 const MARK_RE=/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g;
 
@@ -105,20 +107,25 @@ function renderArticleEN(text){
 function renderArticleTR(text){
   return text.trim().split(/\n\s*\n/).map(p=>'<p>'+p.trim()+'</p>').join('');
 }
-/* Çalıştım düğmesi: makalenin İngilizce kelime sayısı kadar puan (NSDay,
-   ar). Aynı makale günde bir kez sayılır; tekrar basmak bugünkü işareti
-   geri alır. */
-const WORDS_OF = ARTICLES.map(a => NSDay.countWords(a.en.replace(MARK_RE,(m,x)=>x)));
+/* Çalıştım düğmesi: makaledeki Vocabulary kelimesi (işaretli, farklı)
+   sayısı kadar puan (NSDay, ar). Aynı makale günde bir kez sayılır; tekrar
+   basmak bugünkü işareti geri alır. */
+const WORDS_OF = ARTICLES.map(a => {
+  const s = new Set();
+  a.en.replace(MARK_RE,(m,x,y)=>{ s.add((y||x).trim().toLowerCase()); return m; });
+  return s.size;
+});
 function doneToday(){ return NSDay.day(NSDay.today()).ar; }
 function doneBtn(i){
   const on = !!doneToday()[ARTICLES[i].title], n = WORDS_OF[i], pts = NSDay.r1(n*NSDay.POINTS.ar);
   return '<button type="button" class="ar-done" data-done="'+i+'" aria-pressed="'+on+'">'+
-    (on ? '✓ Bugün çalışıldı <small>+'+pts+' puan · geri al</small>' : 'Çalıştım <small>· '+n+' kelime · +'+pts+' puan</small>')+'</button>';
+    (on ? '✓ Bugün çalışıldı <small>+'+pts+' puan · geri al</small>' : 'Çalıştım <small>· '+n+' Vocabulary kelimesi · +'+pts+' puan</small>')+'</button>';
 }
 function renderReading(){
   rdList.innerHTML = ARTICLES.map((a,i)=>
     '<article class="art" id="art-'+i+'">'+
-      '<h3 class="art-title">'+a.title+'</h3>'+
+      '<div class="ar-head"><h3 class="art-title">'+a.title+'</h3>'+
+        '<button type="button" class="btn" data-tr aria-pressed="false">Türkçeyi gizle</button></div>'+
       '<div class="art-en">'+renderArticleEN(a.en)+'</div>'+
       '<div class="art-tr">'+renderArticleTR(a.tr)+'</div>'+
       doneBtn(i)+
@@ -136,6 +143,13 @@ document.getElementById('arGroups').addEventListener('click', e=>{
   const b=e.target.closest('[data-g]'); if(b) goGroup(+b.dataset.g, true);
 });
 rdList.addEventListener('click', e=>{
+  const t=e.target.closest('[data-tr]');
+  if(t){   // Türkçe her makalede ayrı gizlenir
+    const hidden=t.closest('.art').classList.toggle('hide-tr');
+    t.setAttribute('aria-pressed', hidden?'true':'false');
+    t.textContent = hidden ? 'Türkçeyi göster' : 'Türkçeyi gizle';
+    return;
+  }
   const b=e.target.closest('[data-done]'); if(!b) return;
   const i=+b.dataset.done, on=b.getAttribute('aria-pressed')!=='true';
   NSDay.articleDone(ARTICLES[i].title, WORDS_OF[i], on);
@@ -145,11 +159,6 @@ rdList.addEventListener('click', e=>{
 /* başka sekmede/cihazda işaretlenirse düğmeler güncellensin */
 window.addEventListener('ns-state-changed', ()=>{
   document.querySelectorAll('[data-done]').forEach(b=>{ b.outerHTML=doneBtn(+b.dataset.done); });
-});
-rdToggle.addEventListener('click', ()=>{
-  const hidden=readingView.classList.toggle('hide-tr');
-  rdToggle.setAttribute('aria-pressed', hidden?'true':'false');
-  rdToggle.textContent = hidden ? 'Türkçeyi göster' : 'Türkçeyi gizle';
 });
 renderReading();
 /* ?g=7 (Shades'teki bağlantı): açılışta o grubun makalesine in */
