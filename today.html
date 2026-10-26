@@ -426,7 +426,7 @@ $('copyBtn').addEventListener('click', () => {
     'Review flashcards: ' + d.rc[0] + ' correct of ' + (d.rc[0] + d.rc[1]),
     'Review sentences: ' + list(d.rs),
     (s.sentNeed ? 'Sentences goal: ' + s.sentAdv + ' of ' + s.sentNeed + ' moved to Review' +
-      (s.sentCarry ? ' (' + D.SENT_GOAL + ' + ' + s.sentCarry + ' carried over)' : '') + '\n' : '') +
+      (s.sentCarry ? ' (' + s.sentGoal + ' + ' + s.sentCarry + ' carried over)' : '') + '\n' : '') +
     'Review: ' + (s.reviewDone === true ? 'done' : s.reviewDone === false ? s.left[0] + ' cards, ' + s.left[1] + ' sentences left' : 'not recorded')
   ];
   if (d.t) lines.splice(2, 0, 'Active: ' + dur(d.t));

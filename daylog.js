@@ -83,12 +83,16 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
-  var SENT_GOAL = 20;        // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
+  var SENT_GOAL = 5;         // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
+  var SENT_GOAL_FROM = '2026-10-26';   // 5 bu günden itibaren; öncesi 20 ile oynandı, geçmiş günler öyle kalır
+  var SENT_GOAL_OLD = 20;
   var PER_WORD = 2;          // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
   var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
-  var SENT_CARRY_CAP = 80;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
+  var SENT_CARRY_CAP = 4 * SENT_GOAL;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
+  function sentGoal(date) { return date < SENT_GOAL_FROM ? SENT_GOAL_OLD : SENT_GOAL; }
+  function sentCap(date) { return 4 * sentGoal(date); }
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
     v: 0.5,        // Vocabulary flashcard doğru
@@ -379,7 +383,8 @@
 
     var sq = date === today() && liveSentences() != null ? liveSentences() : (d.sq ? d.sq[0] : null);
     var sentPool = sq == null ? null : adv + sq;
-    var sentNeed = sentPool != null && sentPool > SENT_GOAL ? Math.min(SENT_GOAL + (sCarry || 0), sentPool) : 0;
+    var goal = sentGoal(date);
+    var sentNeed = sentPool != null && sentPool > goal ? Math.min(goal + (sCarry || 0), sentPool) : 0;
     var sentRaw = sentNeed * POINTS.learn;
     var sentIn = Math.min(adv, sentNeed) * POINTS.learn;   // Sentences bölmesine düşen
     var sentExtra = sent - sentIn;                          // fazlası Default'a
@@ -390,7 +395,8 @@
       def: flash + sentExtra, sentIn: sentIn, sentExtra: sentExtra,
       left: left, reviewDone: reviewDone, reviewRaw: reviewRaw, reviewLoss: reviewLoss,
       sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw,
-      sentCarry: sentNeed > SENT_GOAL ? sentNeed - SENT_GOAL : 0   // zorunluluğa fiilen eklenen taşınan kelime
+      sentGoal: goal,
+      sentCarry: sentNeed > goal ? sentNeed - goal : 0   // zorunluluğa fiilen eklenen taşınan kelime
     };
   }
 
@@ -412,6 +418,8 @@
     var d = first > DEBT_START ? first : DEBT_START;
     for (var i = 0; d <= t && i < 3650; d = addDays(d, 1), i++) {
       map[d] = r1(debt);
+      // 20'li günlerden kalan taşınan 5'li güne aynı oranda küçülerek geçer
+      if (i && sentGoal(d) !== sentGoal(addDays(d, -1))) carry = Math.ceil(carry * sentGoal(d) / sentGoal(addDays(d, -1)));
       sent[d] = carry;
       if (d === t) break;
       var b = base(d, carry);
@@ -421,10 +429,10 @@
       var surplus = Math.max(0, earned - nonReview);
       debt = Math.min(DEBT_CAP, Math.max(0, debt - surplus) + shortBy / 2);
       if (b.sentPool == null) continue;                      // havuz bilinmiyor: taşınan değişmez
-      if (b.sentPool <= SENT_GOAL) { carry = 0; continue; }  // zorunluluk yok: sıfırlanır
-      var sShort = Math.max(0, SENT_GOAL - b.sentAdv);
-      var sSurplus = Math.max(0, b.sentAdv - SENT_GOAL);
-      carry = Math.min(SENT_CARRY_CAP, Math.max(0, carry - sSurplus) + Math.ceil(sShort / 2));
+      if (b.sentPool <= b.sentGoal) { carry = 0; continue; }  // zorunluluk yok: sıfırlanır
+      var sShort = Math.max(0, b.sentGoal - b.sentAdv);
+      var sSurplus = Math.max(0, b.sentAdv - b.sentGoal);
+      carry = Math.min(sentCap(d), Math.max(0, carry - sSurplus) + Math.ceil(sShort / 2));
     }
     debtCache = { raw: raw, t: t, map: map, sent: sent };
     return debtCache;
@@ -434,7 +442,7 @@
 
   /* ---- puan: günün tamamı ----
      Hedef = GOAL + borç + Sentences'a taşınan kelimelerin puanı (taşınan
-     her eksik gün ~20 puan). Taşınan cümleler hedefe ayrıca eklenir ki
+     kelime başına POINTS.learn). Taşınan cümleler hedefe ayrıca eklenir ki
      Default'un payını yemesin.
      Bölme payları hedefe sığdırılır: önce Review, sonra
      Sentences (zorunlu kısım), kalanı Default — flashcard'lar, zorunlunun
@@ -509,7 +517,7 @@
     /* Sentences kelime cinsinden gösterilir (puan değil): zorunlu
        kısma sayılan ilerletme / zorunluluk; taşınan varsa ayrıca yazılır. */
     var sentGot = Math.min(s.sentAdv, s.sentNeed);
-    var sentCarry = s.sentCarry ? SENT_GOAL + ' + ' + s.sentCarry + ' carried over' : '';
+    var sentCarry = s.sentCarry ? s.sentGoal + ' + ' + s.sentCarry + ' carried over' : '';
 
     var head = '<b>' + s.total + '</b> / ' + s.target + ' points' +
       (s.carried ? ' <span class="dscore-debt">' + GOAL + ' + ' + s.carried + ' carried over</span>' : '');

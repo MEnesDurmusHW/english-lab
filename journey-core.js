@@ -31,15 +31,18 @@
   var LAPSE_LIMIT = 2;      // review kartında üst üste bilememe -> geri düşme
 
   /* Basamaklı aralıklar (gün). Son basamakta sabit kalır. */
+  /* 2026-10-26: Sentences zorunluluğu 20'den 5'e indi; kelime başına
+     daha çok tekrar için kartlar ~2 kat, cümleler ~1.5 kat sıklaştı.
+     Planlanmış tarihler değişmez, yeni aralık sonraki cevapla başlar. */
   var CARD_IV = {
-    high: [1, 3, 7, 14, 30, 60],
-    med:  [2, 5, 12, 25, 50, 100],
-    low:  [4, 10, 25, 60, 120, 240]
+    high: [1, 2, 4, 8, 16, 35],
+    med:  [1, 3, 6, 12, 25, 50],
+    low:  [2, 5, 12, 25, 50, 100]
   };
   var SENT_IV = {
-    high: [3, 7, 14, 30, 60, 120],
-    med:  [7, 14, 30, 60, 120, 240],
-    low:  [14, 30, 60, 120, 240, 365]
+    high: [2, 5, 10, 20, 40, 80],
+    med:  [4, 9, 20, 40, 80, 160],
+    low:  [9, 20, 40, 80, 160, 300]
   };
   var PRI_ORDER = { high: 0, med: 1, low: 2 };
   var PRI_LABEL = { low: 'Low', med: 'Medium', high: 'High' };
