@@ -75,18 +75,23 @@
   .home-today .dscore-go{position:relative;z-index:1}
   .home-today .dscore-bar{pointer-events:none}
   .home-today .dscore-hit[href]{pointer-events:auto}
-  /* Masaüstü: başlık solda, Today kartı sağda tek satır — kartlar ilk ekranda görünsün.
-     Üst boşluk sağ üstteki sabit araç çubuğunun (38px + 18px) altında kalır. */
+  /* Masaüstü: daha geniş sütun; etiket + başlık en üstte, araç düğmeleriyle aynı satırda —
+     kartlar ilk ekranda görünsün. Başlığın sağındaki 240px pay sabit düğmelere yer bırakır:
+     sığmazsa başlık etiketin altına iner. */
   @media (min-width:900px){
-    .home-wrap{padding-top:72px}
-    .home-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:40px;align-items:center;margin-bottom:48px}
-    .lab-head{text-align:left;margin:0}
-    .lab-eyebrow{margin-bottom:12px}
+    .home-wrap{max-width:1200px;padding-top:26px}
+    .lab-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 20px;text-align:left;margin:0 0 22px}
+    .lab-head .lab-eyebrow{max-width:none;margin:0}
     .lab-eyebrow::before{display:none}
-    .lab-head h1{font-size:2.9rem;text-wrap:balance}
-    .lab-head p{margin:14px 0 0;font-size:.98rem}
-    .home-today{margin:0;padding:18px 22px 16px}
-    .home-today .dscore-legend{flex-direction:column;align-items:flex-start;gap:6px}
+    .lab-head h1{font-size:2.4rem;white-space:nowrap;margin-right:240px}
+    .lab-head h1 + p{flex-basis:100%;max-width:80ch;margin:0;font-size:.95rem;line-height:1.5}
+    .home-today{margin:0 0 44px}
+  }
+  /* Geniş ekranda bölüm kartları üç sütun; tek başına duran geniş kart tam satır kalır */
+  @media (min-width:1100px){
+    .cards{grid-template-columns:repeat(3,1fr)}
+    .lab-card.wide{grid-column:auto}
+    .lab-card.wide:only-child{grid-column:1 / -1}
   }</style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -105,7 +110,6 @@
 </div>
 
 <div class="home-wrap">
-  <div class="home-top">
   <header class="lab-head">
     <p class="lab-eyebrow">NS's English Lab</p>
     <h1>Learn it. Then use it.</h1>
@@ -115,7 +119,6 @@
   <div class="home-today">
     <div class="home-today-head"><span class="num">TODAY</span><a class="go" href="today.html" aria-label="Today's summary">Details <span aria-hidden="true">&rarr;</span></a></div>
     <div id="todayScore"></div>
-  </div>
   </div>
 
   <section class="home-sec" aria-labelledby="secFlow">
