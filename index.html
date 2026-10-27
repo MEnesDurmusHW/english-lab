@@ -67,7 +67,27 @@
   .home-today-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .home-today-head .num{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;color:var(--accent)}
   .home-today-head .go{font-size:.84rem;font-weight:600;color:var(--text-muted);transition:color .2s}
-  .home-today:hover .go{color:var(--accent)}</style>
+  .home-today:hover .go{color:var(--accent)}
+  /* Kartın tamamı today.html'e gider: "Details" bağlantısı kartı kaplar; çubuktaki Sentences/Review bağlantıları üstte kalır */
+  .home-today{position:relative}
+  .home-today .go{text-decoration:none}
+  .home-today .go::after{content:"";position:absolute;inset:0;border-radius:inherit}
+  .home-today .dscore-go{position:relative;z-index:1}
+  .home-today .dscore-bar{pointer-events:none}
+  .home-today .dscore-hit[href]{pointer-events:auto}
+  /* Masaüstü: başlık solda, Today kartı sağda tek satır — kartlar ilk ekranda görünsün.
+     Üst boşluk sağ üstteki sabit araç çubuğunun (38px + 18px) altında kalır. */
+  @media (min-width:900px){
+    .home-wrap{padding-top:72px}
+    .home-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:40px;align-items:center;margin-bottom:48px}
+    .lab-head{text-align:left;margin:0}
+    .lab-eyebrow{margin-bottom:12px}
+    .lab-eyebrow::before{display:none}
+    .lab-head h1{font-size:2.9rem;text-wrap:balance}
+    .lab-head p{margin:14px 0 0;font-size:.98rem}
+    .home-today{margin:0;padding:18px 22px 16px}
+    .home-today .dscore-legend{flex-direction:column;align-items:flex-start;gap:6px}
+  }</style>
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -85,16 +105,18 @@
 </div>
 
 <div class="home-wrap">
+  <div class="home-top">
   <header class="lab-head">
     <p class="lab-eyebrow">NS's English Lab</p>
     <h1>Learn it. Then use it.</h1>
     <p>A small workshop for the parts of English that only stick with practice — the words, their neighbours, and the patterns that hold them together.</p>
   </header>
 
-  <a class="home-today" href="today.html" aria-label="Today's summary">
-    <div class="home-today-head"><span class="num">TODAY</span><span class="go">Details <span aria-hidden="true">&rarr;</span></span></div>
+  <div class="home-today">
+    <div class="home-today-head"><span class="num">TODAY</span><a class="go" href="today.html" aria-label="Today's summary">Details <span aria-hidden="true">&rarr;</span></a></div>
     <div id="todayScore"></div>
-  </a>
+  </div>
+  </div>
 
   <section class="home-sec" aria-labelledby="secFlow">
     <div class="home-sec-head">

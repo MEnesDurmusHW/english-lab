@@ -833,9 +833,21 @@
 .dscore-badge{font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:999px;padding:4px 10px}
 .dscore.is-success .dscore-badge{color:#fff;background:var(--ok);border-color:var(--ok)}
 .dscore-debt{display:inline-block;margin-left:6px;font-size:.78rem;color:var(--text-muted)}
-/* üç bölme: Flashcards · Sentences · Review; aradaki boşluk ayraç */
-.dscore-bar{display:flex;gap:4px;height:14px}
-.dscore-seg{display:block;height:100%;min-width:0;background:var(--surface-2);overflow:hidden;flex-basis:0;flex-shrink:1}
+/* üç bölme: Flashcards · Sentences · Review; aradaki boşluk ayraç.
+   dscore-hit bölmenin dokunma alanı: üstten/alttan 9px taşar (toplam 32px),
+   eksi margin yüzünden yerleşimi değiştirmez. Sentences ve Review'da bağlantı.
+   z-index: çubuğun alanı, altındaki açıklama bağlantılarının alanıyla çakışırsa çubuk kazansın. */
+.dscore-bar{display:flex;gap:4px;height:14px;position:relative;z-index:2}
+.dscore-hit{display:block;box-sizing:content-box;height:100%;padding:9px 0;margin:-9px 0;min-width:0;flex-basis:0;flex-shrink:1;-webkit-tap-highlight-color:transparent}
+a.dscore-hit{cursor:pointer}
+a.dscore-hit:focus{outline:none}
+a.dscore-hit:focus-visible .dscore-seg{outline:2px solid var(--accent);outline-offset:2px}
+@media (hover:hover){
+  a.dscore-hit:hover .dscore-seg.s{outline:2px solid var(--pts-s);outline-offset:2px}
+  a.dscore-hit:hover .dscore-seg.r{outline:2px solid var(--pts-r);outline-offset:2px}
+}
+a.dscore-hit:active .dscore-seg{opacity:.75}
+.dscore-seg{display:block;height:100%;min-width:0;background:var(--surface-2);overflow:hidden}
 .dscore-seg.p{border-radius:999px 3px 3px 999px}
 .dscore-seg.s{border-radius:3px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pts-s) 35%,transparent)}
 .dscore-seg.r{border-radius:3px 999px 999px 3px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pts-r) 35%,transparent)}
@@ -846,6 +858,12 @@
 .dscore-seg i[style^="width:100%"]{border-radius:0}
 .dscore-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .dscore-legend span{display:inline-flex;align-items:center;gap:6px}
+/* Sentences / Review adları kendi sayfasına bağlantı; dokunma alanı 7px taşar */
+.dscore-legend .dscore-go{display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;padding:7px 0;margin:-7px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dscore-go u{text-decoration:underline dotted;text-underline-offset:3px;text-decoration-color:var(--text-muted)}
+.dscore-go:focus{outline:none}
+.dscore-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (hover:hover){ .dscore-go:hover u{color:var(--accent);text-decoration-style:solid;text-decoration-color:currentColor} }
 .dscore-legend .sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
 .dscore-legend .sw.p{background:var(--pts-p)}
 .dscore-legend .sw.s{background:var(--pts-s)}

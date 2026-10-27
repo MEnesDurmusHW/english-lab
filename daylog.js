@@ -501,6 +501,9 @@
      Tek çubuk, üç bölme: Default · Sentences · Review. Bölme genişliği
      payı gösterir, her bölme kendi payına göre dolar. Payı olmayan
      Sentences ve Review bölmeleri de dar ama görünür kalır.
+     Sentences ve Review bölmeleri (ve göstergedeki adları) kendi sayfasına
+     bağlantı. Ana sayfada kart zaten today.html bağlantısı: içteki bağlantı
+     kendi sayfasına, kalan yer (Default dahil) today.html'e götürür.
      Stiller lab.css'te (.dscore). */
   var MIN_W = 12;   // %: Sentences / Review bölmesinin en dar hâli
   function plural(n, one) { return n + ' ' + one + (n === 1 ? '' : 's'); }
@@ -548,19 +551,20 @@
         '<span class="dscore-num">' + head + '</span>' +
         '<span class="dscore-badge">' + badge + '</span>' +
       '</div>' +
-      '<div class="dscore-bar" role="img" aria-label="Default ' + s.def + ' of ' + s.defSlot +
+      /* dscore-hit: bölmenin dokunma alanı (çubuktan yüksek), içindeki dscore-seg görünen bölme */
+      '<div class="dscore-bar" role="group" aria-label="Default ' + s.def + ' of ' + s.defSlot +
         ', Sentences ' + (s.sentNeed ? sentGot + ' of ' + s.sentNeed + ' words' + (sentCarry ? ', ' + sentCarry : '') + ' (' + st + ')' : st) + ', Review ' + s.review + ' of ' + s.reviewSlot + ' (' + rv + ')">' +
-        '<span class="dscore-seg p" style="flex-grow:' + pw + '"><i style="width:' + fill(s.def, s.defSlot, true) * 100 + '%"></i></span>' +
-        '<span class="dscore-seg s ' + stCls + '" style="flex-grow:' + sw + '"><i style="width:' + fill(s.sentIn, s.sentSlot, s.sentOk) * 100 + '%"></i></span>' +
-        '<span class="dscore-seg r ' + rvCls + '" style="flex-grow:' + rw + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span>' +
+        '<span class="dscore-hit" style="flex-grow:' + pw + '"><span class="dscore-seg p"><i style="width:' + fill(s.def, s.defSlot, true) * 100 + '%"></i></span></span>' +
+        '<a class="dscore-hit" href="sentences.html" aria-label="Open Sentences" title="Open Sentences" style="flex-grow:' + sw + '"><span class="dscore-seg s ' + stCls + '"><i style="width:' + fill(s.sentIn, s.sentSlot, s.sentOk) * 100 + '%"></i></span></a>' +
+        '<a class="dscore-hit" href="review.html" aria-label="Open Review" title="Open Review" style="flex-grow:' + rw + '"><span class="dscore-seg r ' + rvCls + '"><i style="width:' + fill(s.review, s.reviewSlot, s.reviewDone !== false) * 100 + '%"></i></span></a>' +
       '</div>' +
       '<div class="dscore-legend">' +
         '<span><i class="sw p"></i>' + s.def + ' / ' + s.defSlot + '</span>' +   /* Default: adsız, yalnızca sayı */
-        '<span><i class="sw s"></i>Sentences ' + (s.sentNeed ? sentGot + ' / ' + s.sentNeed + ' · ' : '') +
+        '<a class="dscore-go" href="sentences.html" title="Open Sentences"><i class="sw s"></i><u>Sentences</u> ' + (s.sentNeed ? sentGot + ' / ' + s.sentNeed + ' · ' : '') +
           '<b class="dscore-rv ' + stCls + '">' + st + '</b>' +
-          (sentCarry ? '<span class="dscore-debt">' + sentCarry + '</span>' : '') + '</span>' +
-        '<span><i class="sw r"></i>Review ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
-          '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></span>' +
+          (sentCarry ? '<span class="dscore-debt">' + sentCarry + '</span>' : '') + '</a>' +
+        '<a class="dscore-go" href="review.html" title="Open Review"><i class="sw r"></i><u>Review</u> ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
+          '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></a>' +
       '</div>' +
     '</div>';
   }
