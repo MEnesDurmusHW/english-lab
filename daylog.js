@@ -98,12 +98,12 @@
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
     v: 0.5,        // Vocabulary flashcard doğru
-    vMiss: -0.5,   // Vocabulary flashcard yanlış
+    vMiss: -0.25,  // Vocabulary flashcard yanlış
     toS: 0,        // Sentences'a geçen kelime (Vocabulary'deki doğruların yan ürünü)
     learn: 2,      // Sentences'ta cümlesi yazılıp Learned olan kelime
     shortcut: 0,   // Vocabulary'den doğrudan Learned (cümle yazılmadı)
     rc: 1,         // Review kartı doğru
-    rcMiss: -0.5,  // Review kartı yanlış
+    rcMiss: -0.25, // Review kartı yanlış
     rs: 2,         // Review cümle pratiği
     n: 0.5,        // Shades senaryo sorusu doğru (yanlış: 0)
     wr: 1,         // Shades > Write: kaydedilen metindeki her kelime
@@ -130,7 +130,7 @@
   function parse(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
   function addDays(s, n) { var d = parse(s); d.setDate(d.getDate() + n); return fmt(d); }
   function size(o) { return Object.keys(o).length; }
-  function r1(n) { return Math.round(n * 10) / 10; }   // yarım puanlar: tek ondalık
+  function r1(n) { return Math.round(n * 100) / 100; }   // çeyrek puanlar: iki ondalık
 
   /* Yazmadan önce diski yeniden oku: aynı cihazın başka bir sekmesi bu
      girdiye yazmış olabilir, sayaçlar eski bellekten artmasın.
