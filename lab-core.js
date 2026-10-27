@@ -195,6 +195,12 @@ let selAbove=null;                              // skor > selAbove olanlar (null
 let selBelow=null;                              // skor < selBelow olanlar (null: kısıt yok)
 const ABOVE_MIN=-3, ABOVE_MAX=4;                // skor > -3 / > 4 hâlâ anlamlı (-2..5 aralığını verir)
 const BELOW_MIN=-2, BELOW_MAX=5;                // skor -3..5 aralığında; <-2 ve <6 anlamsız
+/* Review'dakileri gizle: yalnızca Vocabulary'de. Review kelimenin kartını ve
+   cümlesini zaten çalıştırıyor; collocation'larını değil — Collocations'ta
+   gizlemek o pratiği kaybettirir. Ortak anahtarda saklanır ama başka sayfada
+   ne uygulanır ne sayılır ne silinir. */
+const REVIEW_FLT = window.LAB_SECTION==='vocabulary';
+let selNoReview=false;                          // true: Review aşamasındaki kelimeler listeden çıkar
 try{
   const f=JSON.parse(localStorage.getItem(FILTER_KEY))||{};
   if(Array.isArray(f.g)) selGroups=f.g.slice();
@@ -202,11 +208,14 @@ try{
   if(Array.isArray(f.v)) selSaved=f.v.slice();
   if(typeof f.a==='number' && f.a>=ABOVE_MIN && f.a<=ABOVE_MAX) selAbove=f.a;
   if(typeof f.b==='number' && f.b>=BELOW_MIN && f.b<=BELOW_MAX) selBelow=f.b;
+  selNoReview = f.r===true;
 }catch(e){}
 if(typeof WORD_GROUPS!=='undefined') selGroups=selGroups.filter(id=>WORD_GROUPS.some(g=>g.id===id));   // geçersiz grupları at
-function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow,a:selAbove})); }catch(e){} }
-function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow,selAbove]); }   // torba/önbellek kimliği
-function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; selAbove=null; saveFilter(); }
+function saveFilter(){ try{ localStorage.setItem(FILTER_KEY, JSON.stringify({g:selGroups,s:selStatus,v:selSaved,b:selBelow,a:selAbove,r:selNoReview})); }catch(e){} }
+function filterSig(){ return JSON.stringify([selGroups,selStatus,selSaved,selBelow,selAbove,REVIEW_FLT&&selNoReview]); }   // torba/önbellek kimliği
+function clearFilter(){ selGroups=[]; selStatus=[]; selSaved=[]; selBelow=null; selAbove=null; if(REVIEW_FLT) selNoReview=false; saveFilter(); }
+/* Review'da olmak = akışta review aşamasında olmak (review.html'in listesiyle aynı kaynak) */
+function isInReview(en){ return typeof NSJourney!=='undefined' && NSJourney.inReview(en); }
 
 function matchesGroup(w){ return selGroups.length===0 || selGroups.indexOf(w.grp)>=0; }
 /* 'kaydedilenler' fasetinin her satırı 3 durumlu: boş (kısıt yok) · dahil (yalnızca o) · hariç (o olmayanlar) */
@@ -219,6 +228,7 @@ function matchesFilter(w){
   if(!matchesGroup(w)) return false;
   if(!matchesSaved('learned', isHidden(w.en))) return false;
   if(!matchesSaved('flagged', isFlagged(w.en))) return false;
+  if(REVIEW_FLT && selNoReview && isInReview(w.en)) return false;
   if(selStatus.length && selStatus.indexOf(statusOf(w.en))<0) return false;
   if(selBelow!==null && getScore(w.en)>=selBelow) return false;
   if(selAbove!==null && getScore(w.en)<=selAbove) return false;
@@ -236,16 +246,16 @@ const FLT_TXT = {
         resetAsk:' kelimenin skor geçmişi silinsin mi? Bu işlem geri alınamaz.', status:'Skor durumu',
         weak:'Zayıf', shaky:'Sağlam değil', known:'Biliyorum', below:'Skoru şunun altında', above:'Skoru şunun üstünde', aboveGroup:'Skor alt sınırı', belowGroup:'Skor üst sınırı',
         dec:'Azalt', inc:'Artır', belowOff:'Skor sınırını kaldır', aboveOff:'Skor alt sınırını kaldır', saved:'Kaydedilenler',
-        flagged:'Cümlede çalışacaklarım', learned:'Öğrendiklerim', include:'Dahil et', exclude:'Hariç tut', match:' kelime eşleşiyor' },
+        flagged:'Cümlede çalışacaklarım', learned:'Öğrendiklerim', noReview:'Review\'dakileri gizle', include:'Dahil et', exclude:'Hariç tut', match:' kelime eşleşiyor' },
   en: { filter:'Filter', panel:'Filter', clear:'Clear', groups:'Groups', group:'Group ', reset:'Reset practice score for the selected groups',
         resetAsk:' words will lose their practice score. This cannot be undone. Continue?', status:'Practice score',
         weak:'Weak', shaky:'Shaky', known:'Known', below:'Score below', above:'Score above', aboveGroup:'Score minimum', belowGroup:'Score limit',
         dec:'Decrease', inc:'Increase', belowOff:'Remove score limit', aboveOff:'Remove score minimum', saved:'Marked',
-        flagged:'In Sentences', learned:'Learned', include:'Include', exclude:'Exclude', match:' words match' }
+        flagged:'In Sentences', learned:'Learned', noReview:'Hide words in Review', include:'Include', exclude:'Exclude', match:' words match' }
 };
 function _fltArr(kind){ return kind==='g'?selGroups : kind==='s'?selStatus : selSaved; }
 function _fltChip(kind,val,label){
-  const on=_fltArr(kind).indexOf(val)>=0;
+  const on = kind==='r' ? selNoReview : _fltArr(kind).indexOf(val)>=0;   // 'r': tek açık/kapalı (Review'dakileri gizle)
   return '<button type="button" class="flt-chip'+(on?' on':'')+'" data-k="'+kind+'" data-v="'+val+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button>';
 }
 /* 'kaydedilenler' satırı: etiket + dahil et/hariç tut ikon toggle çifti (3 durum: nötr · dahil · hariç) */
@@ -282,12 +292,12 @@ function mountFilter(host, onChange, sections, count, lang){
   function shownCount(){
     return (has('groups')?selGroups.length:0) +
       (has('status')?selStatus.length+((selBelow===null?0:1)+(selAbove===null?0:1)):0) +
-      (has('saved')?selSaved.length:0);
+      (has('saved')?selSaved.length+(REVIEW_FLT&&selNoReview?1:0):0);
   }
   function clearShown(){
     if(has('groups')) selGroups=[];
     if(has('status')){ selStatus=[]; selBelow=null; selAbove=null; }
-    if(has('saved')) selSaved=[];
+    if(has('saved')){ selSaved=[]; if(REVIEW_FLT) selNoReview=false; }
     saveFilter();
   }
   host.innerHTML =
@@ -320,7 +330,9 @@ function mountFilter(host, onChange, sections, count, lang){
     }
     if(sections.indexOf('saved')>=0){
       h+='<div class="flt-sec"><div class="flt-lbl">'+T.saved+'</div><div class="flt-tri-list">'+
-        _fltTriRow('flagged',T.flagged,T)+_fltTriRow('learned',T.learned,T)+'</div></div>';
+        _fltTriRow('flagged',T.flagged,T)+_fltTriRow('learned',T.learned,T)+'</div>'+
+        (REVIEW_FLT ? '<div class="flt-chips">'+_fltChip('r','review',T.noReview+' <i>'+WORDS.filter(w=>isInReview(w.en)).length+'</i>')+'</div>' : '')+
+      '</div>';
     }
     h+='<div class="flt-foot" id="fltFoot"></div>';
     panel.innerHTML=h;
@@ -368,6 +380,7 @@ function mountFilter(host, onChange, sections, count, lang){
     }
     const chip=e.target.closest('.flt-chip'); if(!chip) return;
     const k=chip.getAttribute('data-k'), raw=chip.getAttribute('data-v');
+    if(k==='r'){ selNoReview=!selNoReview; apply(); return; }
     const v = (k==='g' && raw!=='' && !isNaN(+raw)) ? +raw : raw;   // grup id sayıysa sayıya çevir
     const arr=_fltArr(k), i=arr.indexOf(v);
     if(i>=0) arr.splice(i,1); else arr.push(v);
