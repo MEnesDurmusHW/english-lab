@@ -172,10 +172,12 @@
     return 'miss';
   }
 
-  /* ---- 3. review: cümle ---- */
+  /* ---- 3. review: cümle ----
+     Döner: işaretten önceki kayıt (geri almak için sentenceUndo'ya verilir). */
   function sentenceDone(en, date) {
     var j = copy(DATA[en]);
-    if (j.s !== 'review') return;
+    if (j.s !== 'review') return null;
+    var prev = copy(j);
     var d = date || today();
     var wasDue = j.sent.due <= d;      // geriye tarihli işarette o günün Review'u da düzelsin
     j.sent.step = (j.sent.step || 0) + 1;
@@ -183,6 +185,16 @@
     j.sent.due = addDays(d, iv(SENT_IV, j.pri, j.sent.step));
     put(en, j);
     if (window.NSDay) window.NSDay.sentencePractised(en, d, wasDue);
+    return prev;
+  }
+
+  /* Bugünkü cümle işaretini geri al: kayıt işaretten önceki hâline döner,
+     bugünün günlük kaydından (rs) da düşer. */
+  function sentenceUndo(en, prev) {
+    var j = DATA[en];
+    if (!j || j.s !== 'review' || !prev) return;
+    put(en, copy(prev));
+    if (window.NSDay) window.NSDay.sentenceUnpractised(en);
   }
 
   /* Öncelik değişince sonraki tarihler son tekrar gününe yeni aralık
@@ -240,7 +252,7 @@
     get: get, stageOf: stageOf, inReview: inReview, daysCount: daysCount,
     recordPractice: recordPractice, learn: learn, unlearn: unlearn,
     promote: promote, demote: demote,
-    rateCard: rateCard, sentenceDone: sentenceDone, setPriority: setPriority,
+    rateCard: rateCard, sentenceDone: sentenceDone, sentenceUndo: sentenceUndo, setPriority: setPriority,
     reviewWords: reviewWords, sentenceWords: sentenceWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
     upcoming: upcoming
   };

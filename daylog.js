@@ -273,6 +273,10 @@
       if (wasDue && last && last[1] > 0) e.rv = [last[0], last[1] - 1, last[2] + 1];
     });
   }
+  /* Bugünkü işaret geri alındı (Review > Undo): bu cihazın bugünkü girdisinden düşer. */
+  function sentenceUnpractised(en) {
+    edit(null, function (e) { setDel(e, 'rs', en); });
+  }
 
   /* ---- Review / Sentences'ta bekleyen iş ----
      Review sayfası data.js'ten çıkmış kelimeleri göstermiyor; aynı süzgeç
@@ -572,7 +576,7 @@
   window.NSDay = {
     KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
     today: today, addDays: addDays, r1: r1,
-    answer: answer, stage: stage, sentencePractised: sentencePractised, noteReview: noteReview,
+    answer: answer, stage: stage, sentencePractised: sentencePractised, sentenceUnpractised: sentenceUnpractised, noteReview: noteReview,
     countWords: countWords, saveWriting: saveWriting, deleteWriting: deleteWriting, writings: writings, articleDone: articleDone,
     day: day, active: active, firstDay: firstDay,
     score: score, streak: streak, scoreHTML: scoreHTML

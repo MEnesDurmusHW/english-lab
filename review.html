@@ -79,18 +79,20 @@
   .rv-btn svg{width:14px;height:14px}
   .rv-row-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-  /* cümle listesi: işaretlenebilir */
-  .rv-checks{display:flex;flex-direction:column;gap:2px;max-height:240px;overflow-y:auto;margin:0 -6px;padding:0 6px}
-  .rv-check{display:flex;align-items:baseline;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer;font-size:.9rem}
-  .rv-check:hover{background:var(--accent-soft)}
-  .rv-check input{accent-color:var(--accent);margin:0;transform:translateY(1px)}
-  .rv-check b{font-weight:600;color:var(--text)}
-  .rv-check span{color:var(--text-muted);font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-  .rv-done-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .rv-done-row label{font-size:.8rem;color:var(--text-muted)}
-  .rv-date{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:7px 10px;font-family:var(--sans);font-size:.88rem;color:var(--text)}
-  .rv-date:focus{outline:none;border-color:var(--accent)}
-  .rv-msg{font-size:.84rem;color:var(--ok);margin:0}
+  /* cümle listesi: küçük parti, her satırın kendi Done düğmesi */
+  .rv-sents{display:flex;flex-direction:column;gap:2px;margin:0 -6px}
+  .rv-sent{display:flex;align-items:center;gap:10px;padding:4px 6px;border-radius:10px;font-size:.9rem;min-width:0}
+  .rv-sent-t{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:10px}
+  .rv-sent-t b{font-weight:600;color:var(--text);flex:0 0 auto;max-width:60%;overflow-wrap:anywhere}
+  .rv-sent-t span{color:var(--text-muted);font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .rv-tick{appearance:none;cursor:pointer;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 13px;border-radius:999px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.82rem;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:.15s}
+  .rv-tick svg{width:13px;height:13px}
+  .rv-tick:hover{border-color:var(--accent);color:var(--accent)}
+  .rv-tick:active{background:var(--accent-soft)}
+  .rv-more{appearance:none;cursor:pointer;align-self:flex-start;min-height:34px;padding:0 6px;background:none;border:0;color:var(--text-muted);font-family:var(--sans);font-weight:600;font-size:.84rem;touch-action:manipulation;text-decoration:underline;text-underline-offset:3px}
+  .rv-more:hover{color:var(--accent)}
+  .rv-msg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.84rem;color:var(--ok);margin:0}
+  .rv-undo{appearance:none;cursor:pointer;min-height:32px;padding:0 10px;background:none;border:0;color:var(--accent);font-family:var(--sans);font-weight:700;font-size:.84rem;touch-action:manipulation;text-decoration:underline;text-underline-offset:3px}
 
   /* ---- önümüzdeki 7 gün ---- */
   .rv-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
@@ -208,19 +210,15 @@
       <h2 id="sentTitle">Sentence practice</h2>
       <div class="rv-big"><b id="sentN">0</b><span>words due</span></div>
       <p class="sub" id="sentSub"></p>
-      <div class="rv-checks" id="sentList"></div>
       <div class="rv-row-acts" id="sentActs">
         <button class="rv-btn" type="button" id="copyBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           <span id="copyLbl">Copy for chat</span>
         </button>
       </div>
-      <div class="rv-done-row" id="doneRow">
-        <label for="doneDate">Practised on</label>
-        <input class="rv-date" type="date" id="doneDate">
-        <button class="rv-cta" type="button" id="doneBtn">Mark done</button>
-      </div>
-      <p class="rv-msg" id="doneMsg" hidden></p>
+      <div class="rv-sents" id="sentList"></div>
+      <button class="rv-more" type="button" id="moreBtn" hidden></button>
+      <p class="rv-msg" id="doneMsg" role="status" hidden><span id="doneTxt"></span><button class="rv-undo" type="button" id="undoBtn">Undo</button></p>
     </section>
   </div>
 
@@ -317,45 +315,66 @@ function renderCards(){
 }
 
 /* ---------- bugün: cümle ---------- */
-let sentPicked = {};
+/* Bütün yığın değil, küçük bir parti: en öncelikli SENT_BATCH kelime.
+   İşaretlenen satır listeden çıkar, sıradaki kelime yerine gelir.
+   İşaret hep bugüne yazılır; son işaret kısa bir süre geri alınabilir. */
+const SENT_BATCH = 5, UNDO_MS = 6000;
+let sentShown = SENT_BATCH, lastDone = null, undoTimer = 0;
+function sentBatch(){ return words(J.sentencesDue()).slice(0, sentShown); }
 function renderSent(){
   const due = words(J.sentencesDue());
   $('sentN').textContent = due.length;
   const has = due.length > 0;
   $('sentList').hidden = !has;
   $('sentActs').hidden = !has;
-  $('doneRow').hidden = !has;
   if (!has) {
+    $('moreBtn').hidden = true;
     const all = words(J.reviewWords());
     const next = all.map(en => J.get(en).sent.due).sort()[0];
-    $('sentSub').textContent = all.length ? 'Nothing due. Next: ' + rel(next) + '.' : 'No words in Review yet.';
+    const doneToday = window.NSDay ? Object.keys(NSDay.day(J.today()).rs).filter(en => BY_EN[en] && J.inReview(en)).length : 0;
+    $('sentSub').textContent = !all.length ? 'No words in Review yet.'
+      : (doneToday ? 'All done for today. Next: ' : 'Nothing due. Next: ') + rel(next) + '.';
     return;
   }
-  $('sentSub').textContent = 'Copy the list, write sentences in chat, then mark the ones you practised.';
-  due.forEach(en => { if (!(en in sentPicked)) sentPicked[en] = true; });
-  $('sentList').innerHTML = due.map(en => {
+  $('sentSub').textContent = 'Copy the words, write sentences in chat, then tap Done on each.';
+  $('sentList').innerHTML = due.slice(0, sentShown).map(en => {
     const w = BY_EN[en];
-    return '<label class="rv-check"><input type="checkbox" data-en="' + esc(en) + '"' + (sentPicked[en] ? ' checked' : '') + '>' +
-      '<b>' + esc(en) + '</b><span>' + esc(w.tr) + '</span></label>';
+    return '<div class="rv-sent"><span class="rv-sent-t"><b>' + esc(en) + '</b><span>' + esc(w.tr) + '</span></span>' +
+      '<button class="rv-tick" type="button" data-en="' + esc(en) + '" aria-label="Mark ‘' + esc(en) + '’ practised">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Done</button></div>';
   }).join('');
-  const t = J.today();
-  $('doneDate').max = t;
-  if (!$('doneDate').value) $('doneDate').value = t;
-  syncDoneBtn();
+  const rest = due.length - sentShown;
+  $('moreBtn').hidden = rest <= 0;
+  if (rest > 0) $('moreBtn').textContent = 'Show ' + Math.min(SENT_BATCH, rest) + ' more';
 }
-function pickedDue(){ return words(J.sentencesDue()).filter(en => sentPicked[en]); }
-function syncDoneBtn(){
-  const n = pickedDue().length;
-  $('doneBtn').disabled = !n;
-  $('doneBtn').textContent = n ? 'Mark ' + n + ' done' : 'Mark done';
-}
-$('sentList').addEventListener('change', e => {
-  const cb = e.target.closest('input[type="checkbox"]'); if (!cb) return;
-  sentPicked[cb.dataset.en] = cb.checked;
-  syncDoneBtn();
+$('moreBtn').addEventListener('click', () => { sentShown += SENT_BATCH; renderSent(); });
+$('sentList').addEventListener('click', e => {
+  const b = e.target.closest('.rv-tick'); if (!b) return;
+  const en = b.dataset.en;
+  const idx = [].indexOf.call($('sentList').querySelectorAll('.rv-tick'), b);
+  const prev = J.sentenceDone(en);
+  if (!prev) return;
+  if (window.successFX) { try { window.successFX(); } catch (err) {} }
+  lastDone = { en: en, prev: prev, day: J.today() };
+  $('doneTxt').textContent = '“' + en + '” practised.';
+  $('doneMsg').hidden = false;
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(hideUndo, UNDO_MS);
+  render();
+  // klavyede odak kaybolmasın: yerine gelen satırın düğmesi, yoksa Undo
+  const ticks = $('sentList').querySelectorAll('.rv-tick');
+  (ticks[Math.min(idx, ticks.length - 1)] || $('undoBtn')).focus({ preventScroll: true });
+});
+function hideUndo(){ lastDone = null; $('doneMsg').hidden = true; clearTimeout(undoTimer); }
+$('undoBtn').addEventListener('click', () => {
+  const u = lastDone;
+  hideUndo();
+  if (!u || u.day !== J.today()) return;   // gece yarısı geçtiyse bugünün kaydı başka gün
+  J.sentenceUndo(u.en, u.prev);
+  render();
 });
 $('copyBtn').addEventListener('click', () => {
-  const list = pickedDue();
+  const list = sentBatch();
   if (!list.length) return;
   const txt = 'Sentence practice. For each word, give me a short situation and let me write a sentence; then correct it.\n\n' +
     list.map(en => '- ' + en + ' (' + BY_EN[en].tr + ')').join('\n');
@@ -363,18 +382,6 @@ $('copyBtn').addEventListener('click', () => {
     $('copyLbl').textContent = 'Copied';
     setTimeout(() => { $('copyLbl').textContent = 'Copy for chat'; }, 1600);
   });
-});
-$('doneBtn').addEventListener('click', () => {
-  const list = pickedDue();
-  if (!list.length) return;
-  let d = $('doneDate').value || J.today();
-  if (d > J.today()) d = J.today();
-  list.forEach(en => { J.sentenceDone(en, d); delete sentPicked[en]; });
-  const m = $('doneMsg');
-  m.textContent = list.length + (list.length === 1 ? ' word' : ' words') + ' marked as practised on ' + shortDate(d) + '.';
-  m.hidden = false;
-  setTimeout(() => { m.hidden = true; }, 3200);
-  render();
 });
 function copyText(text, cb){
   if (navigator.clipboard && navigator.clipboard.writeText) {
