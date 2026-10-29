@@ -60,11 +60,15 @@ Vocabulary'de her kelimenin yanında akış rozeti durur (*Day 1/2*, *Sentences*
 Öncelik (Low / Medium / High) tekrar aralığını belirler. Aralıklar gün cinsinden,
 basamak basamak ilerler; son basamakta sabit kalır.
 
-| Öncelik | Kart tekrarı               | Cümle tekrarı                 |
-|---------|----------------------------|-------------------------------|
-| High    | 1 · 3 · 7 · 14 · 30 · 60   | 3 · 7 · 14 · 30 · 60 · 120    |
-| Medium  | 2 · 5 · 12 · 25 · 50 · 100 | 7 · 14 · 30 · 60 · 120 · 240  |
-| Low     | 4 · 10 · 25 · 60 · 120 · 240 | 14 · 30 · 60 · 120 · 240 · 365 |
+| Öncelik | Kart tekrarı           | Cümle tekrarı                 |
+|---------|------------------------|-------------------------------|
+| High    | 1 · 4 · 12 · 30 · 70   | 2 · 5 · 10 · 20 · 40 · 80     |
+| Medium  | 2 · 7 · 18 · 45 · 100  | 4 · 9 · 20 · 40 · 80 · 160    |
+| Low     | 4 · 12 · 30 · 75 · 160 | 9 · 20 · 40 · 80 · 160 · 300  |
+
+Kaynak: journey-core.js (CARD_IV, SENT_IV). Kart hedefi: %85–90 doğru;
+%80'in altında aralıklar kısaltılır, %95'in üstünde uzatılır
+(progress.html > Review card accuracy).
 
 - **Kart:** bildin → bir basamak ileri. Bilemedin → basamak 0, ertesi gün tekrar.
   Üst üste 2 kez bilemezsen geri düşme işler.

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Speaking — NS's English Lab</title>
+<meta name="description" content="Step 7 of the flow: use your Review words aloud in a voice conversation with an AI chat, and measure your speaking once a month.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Lab">
+<meta name="application-name" content="English Lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NS's English Lab">
+<meta property="og:locale" content="en">
+<meta property="og:title" content="Speaking">
+<meta property="og:description" content="Your words, said aloud.">
+<meta property="og:url" content="https://menesdurmushw.github.io/english-lab/speaking.html">
+<meta property="og:image" content="https://menesdurmushw.github.io/english-lab/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NS's English Lab">
+<meta name="twitter:card" content="summary_large_image">
+<script src="theme.js"></script>
+<script src="store.js"></script>
+<script src="daylog.js"></script>
+<script src="journey-core.js"></script>
+<script src="pwa.js" defer></script>
+<script src="share.js" defer></script>
+<script src="success-fx.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<script src="sync.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  .sp-head h1{font-family:var(--display,var(--sans));font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1}
+  .sp-head p{margin:10px 0 0;color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:62ch}
+
+  .sp-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;margin-top:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .sp-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .sp-box h2{margin:0;font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+  .sp-meta{font-family:var(--mono,monospace);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+  .sp-sub{margin:0;font-size:.88rem;color:var(--text-dim);line-height:1.55}
+
+  /* kelime listesi: iki sütun, dar ekranda tek */
+  .sp-words{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px}
+  @media (max-width:560px){ .sp-words{grid-template-columns:1fr} }
+  .sp-word{display:flex;align-items:baseline;gap:10px;padding:5px 0;border-top:1px solid var(--border);min-width:0;font-size:.92rem}
+  .sp-word b{font-weight:600;color:var(--text);flex:0 0 auto;max-width:55%;overflow-wrap:anywhere}
+  .sp-word span{color:var(--text-muted);font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .sp-empty{margin:0;font-size:.88rem;color:var(--text-muted);line-height:1.55;border:1px dashed var(--border);border-radius:12px;padding:16px;text-align:center}
+  .sp-empty a{color:var(--accent);font-weight:600}
+
+  .sp-more summary{cursor:pointer;font-size:.86rem;font-weight:600;color:var(--text-dim);padding:2px 0}
+  .sp-more summary:hover{color:var(--accent)}
+  .sp-more .sp-words{margin-top:8px}
+
+  .sp-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .sp-cta{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--accent);border:1px solid var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.9rem;padding:10px 18px;border-radius:999px;transition:transform .18s,opacity .18s}
+  [data-theme="dark"] .sp-cta{color:#0B0E14}
+  .sp-cta:hover:not(:disabled){transform:translateY(-1px)}
+  .sp-cta:disabled{opacity:.4;cursor:not-allowed}
+  .sp-btn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--surface-2,var(--bg));border:1px solid var(--border);color:var(--text-dim);font-family:var(--sans);font-weight:600;font-size:.86rem;padding:9px 15px;border-radius:999px;transition:.15s}
+  .sp-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .sp-btn:disabled{opacity:.4;cursor:not-allowed}
+  .sp-cta svg,.sp-btn svg{width:14px;height:14px}
+
+  /* Done: Articles'taki "Çalıştım" düğmesiyle aynı davranış */
+  .sp-done{appearance:none;cursor:pointer;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:.86rem;font-weight:600;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:999px;padding:8px 16px;transition:.15s}
+  .sp-done:hover{background:var(--accent-soft)}
+  .sp-done[aria-pressed="true"]{color:var(--ok);border-color:var(--ok)}
+  .sp-done[aria-pressed="true"]:hover{background:transparent}
+  .sp-done small{font-weight:500;opacity:.85}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<script>window.LAB_SECTION='speaking';</script>
+<script src="appbar.js"></script>
+
+<div class="wrap sp">
+  <header class="sp-head">
+    <h1>Speaking</h1>
+    <p>Copy the prompt, paste it into a new chat, switch to voice.</p>
+  </header>
+
+  <section class="sp-box" aria-labelledby="dailyTitle">
+    <div class="sp-top"><h2 id="dailyTitle">Daily conversation</h2><span class="sp-meta">About 10 min</span></div>
+    <p class="sp-sub">Ten Review words: the newest, the ones due soon and a few High-priority ones.</p>
+    <div id="dailyList"></div>
+    <div class="sp-acts">
+      <button class="sp-cta" type="button" id="dailyCopy" data-copy="daily">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy prompt</span>
+      </button>
+      <button class="sp-btn" type="button" id="dailyNew" data-new="daily">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        New set
+      </button>
+    </div>
+    <span id="dailyDone"></span>
+  </section>
+
+  <section class="sp-box" aria-labelledby="monthTitle">
+    <div class="sp-top"><h2 id="monthTitle">Monthly check</h2><span class="sp-meta">About 25 min · once a month</span></div>
+    <p class="sp-sub">A 3-minute talk about your week, a 2-minute argument for a work decision, then a timed test on Review words. Save the AI's summary in your notes and paste it under the prompt next month to compare.</p>
+    <details class="sp-more" id="monthMore">
+      <summary id="monthSum">Test words</summary>
+      <div id="monthList"></div>
+    </details>
+    <div class="sp-acts">
+      <button class="sp-cta" type="button" id="monthCopy" data-copy="month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy prompt</span>
+      </button>
+      <button class="sp-btn" type="button" id="monthNew" data-new="month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        New set
+      </button>
+    </div>
+    <span id="monthDone"></span>
+  </section>
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ============================================================
+   Speaking — akışın 7. adımı
+   Sayfa bir şey ölçmez: Review kelimelerinden bir liste seçer ve
+   sesli sohbet için hazır bir prompt kopyalar. Sohbet AI sohbetinde
+   olur; dönünce Done işaretlenir (NSDay.speakingDone: sp / spm,
+   günde birer kez, Articles'taki Çalıştım düğmesi gibi geri alınır).
+   Kelime seçimi gün + "New set" sayacıyla tohumlanır: aynı gün sayfa
+   yeniden açılınca aynı liste gelir (kopyalayıp dönen kullanıcı için).
+   ============================================================ */
+'use strict';
+
+const $ = id => document.getElementById(id);
+const J = window.NSJourney;
+const BY_EN = {};
+WORDS.forEach(w => { BY_EN[w.en] = w; });
+
+const DAILY_N = 10, DAILY_HIGH = 3, MONTH_N = 30;
+const KIND = { daily: 'sp', month: 'spm' };   // NSDay girdisindeki alan
+const shuffles = { daily: 0, month: 0 };
+const sets = { daily: [], month: [] };
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function inData(list){ return list.filter(en => BY_EN[en]); }   // data.js'ten çıkmış kelime kullanılmaz
+
+/* ---------- tohumlu rastgele ---------- */
+function rng(seed){
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return function(){
+    h = (h + 0x6D2B79F5) | 0;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffle(a, rnd){
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const x = a[i]; a[i] = a[j]; a[j] = x; }
+  return a;
+}
+function seed(mode){ return mode + ':' + J.today() + ':' + shuffles[mode]; }
+
+/* ---------- kelime seçimi ----------
+   Günlük: önce birkaç High kelime, kalanı "taze" adaylardan — basamağı
+   düşük (Review'a yeni girmiş ya da yeni kaçırılmış) ve tarihi yakın
+   olanların ilk 2xN'inden rastgele. Review küçükse Sentences kelimeleri. */
+function freshness(a, b){
+  const A = J.get(a), B = J.get(b);
+  const s = (A.card.step + A.sent.step) - (B.card.step + B.sent.step);
+  if (s) return s;
+  const da = A.card.due < A.sent.due ? A.card.due : A.sent.due;
+  const db = B.card.due < B.sent.due ? B.card.due : B.sent.due;
+  return da < db ? -1 : da > db ? 1 : a.localeCompare(b);
+}
+function pickDaily(){
+  const rnd = rng(seed('daily'));
+  const rv = inData(J.reviewWords());
+  const fresh = rv.slice().sort(freshness);
+  const out = [], add = en => { if (out.length < DAILY_N && out.indexOf(en) < 0) out.push(en); };
+  shuffle(rv.filter(en => J.get(en).pri === 'high'), rnd).slice(0, DAILY_HIGH).forEach(add);
+  shuffle(fresh.slice(0, DAILY_N * 2), rnd).forEach(add);
+  fresh.forEach(add);
+  shuffle(inData(J.sentenceWords()), rnd).forEach(add);
+  return out;
+}
+/* Aylık: bütün Review'dan rastgele; yetmezse Sentences kelimeleri. */
+function pickMonth(){
+  const rnd = rng(seed('month'));
+  const out = shuffle(inData(J.reviewWords()), rnd).slice(0, MONTH_N);
+  shuffle(inData(J.sentenceWords()), rnd).forEach(en => { if (out.length < MONTH_N) out.push(en); });
+  return out;
+}
+
+/* ---------- prompt ---------- */
+/* Kelime satırı: en (Türkçesi): en güçlü 1–2 collocation (data.js coll) */
+function wordLine(en){
+  const w = BY_EN[en];
+  const coll = String(w.coll || '').split('·').map(s => s.trim()).filter(Boolean).slice(0, 2);
+  return '- ' + en + ' (' + w.tr + ')' + (coll.length ? ': ' + coll.join('; ') : '');
+}
+const ABOUT = 'About me: Turkish native speaker, around B1–B2+. My goal is fluent, precise spoken English: specific words instead of "joker" words';
+
+function dailyPrompt(list){
+  return [
+    'Let\'s have a voice conversation in English for about 10 minutes. You are my speaking partner.',
+    '',
+    ABOUT + ' like happy, very, good, nice, get, thing, bad.',
+    '',
+    'Today\'s target words (Turkish meaning, then strong collocations; capitals mark the fixed partner word):',
+    list.map(wordLine).join('\n'),
+    '',
+    'How to run it:',
+    '1. Keep your turns short: 1–3 sentences, usually ending with a question. I should do most of the talking.',
+    '2. Steer the topics (daily life, work, feelings, opinions) so each target word gets a natural chance to come up. Don\'t read the list out or tell me which word you are aiming for.',
+    '3. Every few minutes, run a quick upgrade drill: say a plain sentence with a joker word ("The meeting was very bad.") and ask me to upgrade it with a target word. Give me about 5 seconds; if I\'m stuck, tell me the word and let me say the whole sentence again.',
+    '4. Correct only errors that matter: a wrong word, a wrong meaning, or grammar that confuses. Do it after my turn, in one line ("Better: …"), then carry on. Let small slips go.',
+    '5. Silently keep track of the target words I use correctly and the joker words I keep using.',
+    '',
+    'When I say "finish", stop and give a short report:',
+    '- Target words I used correctly.',
+    '- Target words I missed or misused, each with one natural example sentence.',
+    '- Joker words I overused: for each, 2–3 precise alternatives, each with one strong collocation (for example, happy → relieved: "relieved to hear"; thrilled: "absolutely thrilled"; grateful: "deeply grateful for"). These are candidates for my next word set.',
+    '- My 3 most important corrections: what I said → a better version.',
+    '',
+    'Start now: greet me in one sentence and ask your first question.'
+  ].join('\n');
+}
+
+function monthPrompt(list){
+  const n = list.length;
+  return [
+    'You are my English speaking examiner for a monthly check, done by voice. It takes about 25 minutes. Be friendly, keep to the timing and don\'t help me during Parts 1 and 2.',
+    '',
+    ABOUT + ' (happy, very, good, nice, get, thing, bad, big, really, a lot, stuff).',
+    '',
+    'My target words (Turkish meaning, then strong collocations; capitals mark the fixed partner word):',
+    list.map(wordLine).join('\n'),
+    '',
+    'Part 1 · Describe your week (3 minutes)',
+    'Ask me to describe my week. Don\'t interrupt; if I stop for long, just say "Go on." Tell me when about 3 minutes have passed.',
+    '',
+    'Part 2 · Argue for a work decision (2 minutes)',
+    'Give me a realistic decision at work (for example: moving a deadline, hiring someone, switching to a new tool) and ask me to argue for one side. Don\'t interrupt. Stop me after about 2 minutes.',
+    '',
+    'Right after Part 2, score Parts 1 and 2 together:',
+    '- Target words: how many different target words I used naturally, and which ones.',
+    '- Joker words: the total and the rate per minute (5 minutes of speaking), with the ones I used most.',
+    '- Errors: how many important errors, and the 3 most important with a better version.',
+    '- Fluency: one line on pauses, restarts and fillers.',
+    'If I give you last month\'s result, compare every number with it and say what improved and what didn\'t.',
+    '',
+    'Part 3 · Precision test (' + n + ' items, timed)',
+    'One item per target word, in random order. Each item is either:',
+    'a) a short Turkish sentence that I say in English using the target word, or',
+    'b) a plain English sentence with a joker word that I upgrade with the target word.',
+    'Never say which word you expect. I have about 6 seconds to start answering. React in a few words ("Right." / "Close: …" / "Answer: …") and go straight to the next item. At the end, give my score out of ' + n + ' and list the words I missed.',
+    '',
+    'Final summary (compact; I will save it in my notes):',
+    '- Date, the Part 1–2 numbers (target words, joker words per minute, errors) and the Part 3 score.',
+    '- Words to review again: missed in Part 3 or misused.',
+    '- New target clusters: for each joker word you heard from me most, 3–4 precise alternatives, each with its 1–2 strongest collocations (for example, happy → relieved: relieved to hear, a huge relief; thrilled: absolutely thrilled; content: perfectly content; grateful: deeply grateful for).',
+    '',
+    'Begin: explain the three parts in two sentences, then start Part 1.',
+    '',
+    'Last month\'s result (pasted below if I have one):'
+  ].join('\n');
+}
+
+/* ---------- gösterim ---------- */
+function listHTML(list){
+  if (!list.length) return '<p class="sp-empty">No words in Review yet. Mark words <b>Learned</b> in <a href="sentences.html">Sentences</a> and they show up here.</p>';
+  return '<div class="sp-words">' + list.map(en =>
+    '<div class="sp-word"><b>' + esc(en) + '</b><span>' + esc(BY_EN[en].tr) + '</span></div>').join('') + '</div>';
+}
+function doneOn(mode){ return !!NSDay.day(NSDay.today())[KIND[mode]]; }
+function doneBtn(mode){
+  const on = doneOn(mode), pts = NSDay.POINTS[KIND[mode]];
+  return '<button type="button" class="sp-done" data-done="' + mode + '" aria-pressed="' + on + '">' +
+    (on ? '✓ Done today <small>+' + pts + ' points · undo</small>' : 'Done <small>· +' + pts + ' points</small>') + '</button>';
+}
+function renderDone(){
+  $('dailyDone').innerHTML = doneBtn('daily');
+  $('monthDone').innerHTML = doneBtn('month');
+}
+function render(){
+  sets.daily = pickDaily();
+  sets.month = pickMonth();
+  $('dailyList').innerHTML = listHTML(sets.daily);
+  $('monthList').innerHTML = listHTML(sets.month);
+  $('monthSum').textContent = sets.month.length ? 'The ' + sets.month.length + ' test words' : 'Test words';
+  ['daily', 'month'].forEach(m => {
+    const has = sets[m].length > 0;
+    $(m + 'Copy').disabled = !has;
+    $(m + 'New').disabled = !has;
+  });
+  renderDone();
+}
+
+/* ---------- kopyalama ---------- */
+function copyText(text, cb){
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(cb, () => fallbackCopy(text, cb));
+  } else fallbackCopy(text, cb);
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+document.querySelector('.sp').addEventListener('click', e => {
+  const c = e.target.closest('[data-copy]');
+  if (c) {
+    const m = c.dataset.copy, list = sets[m];
+    if (!list.length) return;
+    const lbl = c.querySelector('span');
+    copyText(m === 'daily' ? dailyPrompt(list) : monthPrompt(list), () => {
+      lbl.textContent = 'Copied';
+      setTimeout(() => { lbl.textContent = 'Copy prompt'; }, 1600);
+    });
+    return;
+  }
+  const n = e.target.closest('[data-new]');
+  if (n) { shuffles[n.dataset.new]++; render(); return; }
+  const d = e.target.closest('[data-done]');
+  if (d) {
+    const m = d.dataset.done, on = d.getAttribute('aria-pressed') !== 'true';
+    NSDay.speakingDone(KIND[m], on);
+    renderDone();
+    $(m + 'Done').firstChild.focus({ preventScroll: true });   // klavyede odak kaybolmasın
+    if (on && window.successFX) { try { window.successFX(); } catch (err) {} }
+  }
+});
+
+/* Başka sekme ya da bulut değiştirdiyse: aynı tohumla yeniden seç (Review
+   değişmediyse liste aynı kalır), Done düğmeleri güncellensin. */
+window.addEventListener('ns-state-changed', render);
+
+render();
+</script>
+</body>
+</html>

@@ -9,6 +9,9 @@
       └────────────(Learned: kısa yol, Low)───────────────►
      review ──(kartta üst üste 2 kez bilemedi)──► sentence
 
+   Review kart aralıkları (CARD_IV) %85–90 doğru hedefine göre ayarlanır;
+   %80'in altı aralıkların fazla uzun olduğunu gösterir (progress.html).
+
    Depo (NSStore, girdi bazlı birleşir):
      ns-flow { "<en>": { s, c, d, pri, card:{step,due,last,miss}, sent:{step,due,last} } }
        s     'new' | 'sentence' | 'review'
@@ -30,15 +33,26 @@
   var NEED_DAYS = 2;        // sentence aşamasına geçmek için farklı gün sayısı
   var LAPSE_LIMIT = 2;      // review kartında üst üste bilememe -> geri düşme
 
-  /* Basamaklı aralıklar (gün). Son basamakta sabit kalır. */
+  /* Basamaklı aralıklar (gün). Son basamakta sabit kalır; basamak sayısı
+     serbest (iv() son basamağa sabitler, eski kayıtlardaki büyük step de). */
   /* 2026-10-26: Sentences zorunluluğu 20'den 5'e indi; kelime başına
      daha çok tekrar için kartlar ~2 kat, cümleler ~1.5 kat sıklaştı.
-     Planlanmış tarihler değişmez, yeni aralık sonraki cevapla başlar. */
+     2026-10-29: Review kartlarında başarı %98'di (14 günde 260 doğru /
+     5 yanlış) — fazla kolay. HEDEF: Review kartlarında %85–90 doğru.
+     %80'in altına düşerse aralıklar kısaltılır, %95'i geçerse uzatılır;
+     progress.html'deki "Review card accuracy" kartı bunu son 30 günden
+     gösterir. Kart aralıkları uzadı (Medium temel; High ~0.7x, Low ~2x).
+     Her iki değişiklikte de planlanmış tarihler değişmez, yeni aralık
+     sonraki cevapla başlar. */
   var CARD_IV = {
-    high: [1, 2, 4, 8, 16, 35],
-    med:  [1, 3, 6, 12, 25, 50],
-    low:  [2, 5, 12, 25, 50, 100]
+    high: [1, 4, 12, 30, 70],
+    med:  [2, 7, 18, 45, 100],
+    low:  [4, 12, 30, 75, 160]
   };
+  /* CARD_IV'nin son değiştiği günün ertesi: progress.html başarı oranını
+     bu günden itibaren sayar (eski aralıklarla verilen cevaplar karışmasın).
+     CARD_IV her değiştiğinde bu da güncellenmeli. */
+  var CARD_IV_FROM = '2026-10-30';
   var SENT_IV = {
     high: [2, 5, 10, 20, 40, 80],
     med:  [4, 9, 20, 40, 80, 160],
@@ -57,7 +71,7 @@
 
   function iv(table, pri, step) {
     var arr = table[pri] || table.med;
-    return arr[Math.min(step, arr.length - 1)];
+    return arr[Math.max(0, Math.min(step || 0, arr.length - 1))];
   }
 
   /* ---- okuma ---- */
@@ -246,7 +260,7 @@
 
   window.NSJourney = {
     KEY: KEY, NEED_DAYS: NEED_DAYS, LAPSE_LIMIT: LAPSE_LIMIT,
-    PRI_LABEL: PRI_LABEL, CARD_IV: CARD_IV, SENT_IV: SENT_IV,
+    PRI_LABEL: PRI_LABEL, CARD_IV: CARD_IV, CARD_IV_FROM: CARD_IV_FROM, SENT_IV: SENT_IV,
     data: DATA,
     today: today, addDays: addDays, daysBetween: daysBetween,
     get: get, stageOf: stageOf, inReview: inReview, daysCount: daysCount,

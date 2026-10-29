@@ -38,6 +38,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lab.css">
 <script data-goatcounter="https://nsdurmus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  /* Review kartı başarı oranı */
+  .acc-card{margin-top:22px;border:1px solid var(--border);border-left:4px solid var(--acc-c,var(--border));border-radius:var(--radius);padding:16px 18px;background:var(--surface);box-shadow:var(--shadow-sm)}
+  .acc-card[data-st="ok"]{--acc-c:var(--ok)}
+  .acc-card[data-st="near"],.acc-card[data-st="easy"]{--acc-c:var(--mid)}
+  .acc-card[data-st="low"]{--acc-c:var(--bad)}
+  .acc-h{font-family:var(--display);font-size:1rem;font-weight:700;color:var(--text);margin:0 0 12px}
+  .acc-nums{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .acc-num{font-family:var(--display);font-weight:700;font-size:1.6rem;line-height:1;color:var(--text);letter-spacing:-.02em}
+  .acc-cap{font-size:.8rem;color:var(--text-dim);margin-top:5px}
+  .acc-status{font-size:.9rem;font-weight:600;color:var(--acc-c,var(--text));margin:14px 0 0}
+  .acc-card[data-st="none"] .acc-status{color:var(--text-dim)}
+  .acc-rule{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:4px 0 0}
+  .acc-ask{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--surface-2);font-size:.82rem;line-height:1.6;color:var(--text-dim);overflow-wrap:anywhere}
+  .acc-ask .btn{margin-top:10px;padding:8px 16px;font-size:.84rem}
+</style>
 </head>
 <body>
 <div class="grain"></div>
@@ -62,6 +78,7 @@
 
   <div id="view-overview" role="tabpanel">
     <div class="stats-wrap" id="statsWrap"></div>
+    <div class="stats-wrap" id="cardAcc"></div>
   </div>
 
   <div id="view-known" role="tabpanel" hidden>
@@ -93,6 +110,76 @@ function renderStats(){
   const rb=document.getElementById('statsReset');
   if(rb) rb.addEventListener('click', ()=>{ if(confirm('Yalnızca skorlar (bilme durumu) sıfırlanacak. Yazdığın cümleler ve “öğrendim” işaretlediğin kelimeler korunur. Emin misin?')){ SCORES={}; saveScores(); renderStats(); } });
 }
+
+/* ============ Review kartı başarı oranı ============
+   Hedef %85–90 doğru (journey-core.js CARD_IV). Oran %80'in altına
+   düşer ya da %95'i geçerse, aralıkları ayarlatmak için hazır istek
+   metni gösterilir. Günlük kayıttan (NSDay rc) okunur, gruptan bağımsız.
+   Yalnızca şimdiki aralıklarla verilen cevaplar sayılır (CARD_IV_FROM). */
+const accEl=document.getElementById('cardAcc');
+const ACC_MIN=40;   // bundan az cevapla karar verilmez
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function cardTally(days){
+  let hit=0, miss=0;
+  if(!window.NSDay) return {hit, miss, n:0, since:null};
+  const t=NSDay.today(), first=NSDay.firstDay();
+  const from=(window.NSJourney && NSJourney.CARD_IV_FROM) || '';
+  const start=NSDay.addDays(t,-(days-1));
+  for(let i=0;i<days;i++){
+    const d=NSDay.addDays(t,-i);
+    if((first && d<first) || d<from) break;
+    const rc=NSDay.day(d).rc;
+    hit+=rc[0]; miss+=rc[1];
+  }
+  return {hit, miss, n:hit+miss, since: from>start ? from : null};
+}
+function sinceText(d){ const p=d.split('-'); return 'Since '+MONTHS[+p[1]-1]+' '+(+p[2]); }
+function ivText(){
+  const iv=window.NSJourney && NSJourney.CARD_IV;
+  if(!iv) return '';
+  return ' Current CARD_IV (days): '+['high','med','low'].map(p=>NSJourney.PRI_LABEL[p]+' '+iv[p].join(', ')).join(' · ')+'.';
+}
+function renderCardAcc(){
+  if(!accEl) return;
+  const m=cardTally(30), w=cardTally(7);
+  const pct=r=>r.n ? Math.round(r.hit/r.n*100) : 0;
+  const p=pct(m);
+  let st, label;
+  if(m.n<ACC_MIN){ st='none'; label='Not enough answers yet ('+m.n+' of '+ACC_MIN+').'; }
+  else if(p<80){ st='low'; label='Too hard: the gaps are too long.'; }
+  else if(p>95){ st='easy'; label='Too easy: the gaps can be longer.'; }
+  else if(p>=85 && p<=90){ st='ok'; label='On target.'; }
+  else { st='near'; label='Close to target. No change needed.'; }
+  const num=(r,cap)=>'<div><div class="acc-num">'+(r.n ? pct(r)+'%' : '–')+'</div><div class="acc-cap">'+(r.since ? sinceText(r.since) : cap)+' · '+(r.n ? r.hit+' / '+r.n+' correct' : 'no answers')+'</div></div>';
+  let ask='';
+  if(st==='low' || st==='easy'){
+    ask='English Lab: Review card accuracy is '+p+'% '+(m.since ? 'since '+m.since : 'over the last 30 days')+' ('+m.hit+'/'+m.n+'). Target is 85–90%. Please '+
+      (st==='low' ? 'shorten' : 'lengthen')+' the Review card intervals in journey-core.js (CARD_IV) by about 20%, set CARD_IV_FROM to the next day, and tell me the new values.'+ivText();
+  }
+  accEl.innerHTML='<div class="acc-card" data-st="'+st+'">'+
+    '<h3 class="acc-h">Review card accuracy</h3>'+
+    '<div class="acc-nums">'+num(m,'Last 30 days')+num(w,'Last 7 days')+'</div>'+
+    '<p class="acc-status">'+label+'</p>'+
+    '<p class="acc-rule">Target: 85–90% correct. Below 80% means the gaps are too long.</p>'+
+    (ask ? '<div class="acc-ask"><div id="accMsg"></div><button class="btn" id="accCopy" type="button">Copy request for Claude</button></div>' : '')+
+  '</div>';
+  if(!ask) return;
+  document.getElementById('accMsg').textContent=ask;
+  const b=document.getElementById('accCopy');
+  b.addEventListener('click', ()=>copyText(ask, ()=>{ b.textContent='Copied'; setTimeout(()=>{ b.textContent='Copy request for Claude'; }, 1600); }));
+}
+function copyText(text, cb){
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(cb, ()=>fallbackCopy(text, cb));
+  else fallbackCopy(text, cb);
+}
+function fallbackCopy(text, cb){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){}
+  document.body.removeChild(ta);
+}
+renderCardAcc();
 
 /* ============ list view (known) ============
    Cümle listesi ve Learned kelimeler artık kendi sayfalarında:
@@ -155,6 +242,7 @@ selectTab(startTab);
    salt okunur istatistik, olduğu gibi yeniden çizilebilir. */
 window.addEventListener('ns-state-changed', function(){
   (P_RENDER[currentPTab]||renderStats)();
+  renderCardAcc();
 });
 </script>
 </body>

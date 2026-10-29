@@ -22,6 +22,7 @@
        fall:{en:1}                Review'da üst üste 2 kez bilinemeyip geri düşenler
        rs:{en:1}                  Review'da cümle pratiği işaretlenenler
        ar:{başlık:kelime}         Articles'ta çalışıldı işaretlenen makaleler
+       sp:1  spm:1                Speaking: günlük sesli sohbet · aylık ölçüm yapıldı (günde birer kez)
        rv:[kart,cümle,ms]         o an Review'da bekleyen iş (son görülen durum)
        sq:[kalan,ms]              o an Sentences aşamasında bekleyen kelime sayısı (son görülen durum)
        t:saniye  at:ms            yaklaşık aktif süre · son olayın zamanı
@@ -33,7 +34,8 @@
 
    Yazılan metinler (Shades > Write) ayrı depoda, metin başına bir girdi:
      ns-write { "<ms>~<cihaz>": { d:'YYYY-MM-DD', at:ms, p:görev, text, n:kelime } }
-   Articles'ta çalışıldı işaretlenen makaleler ns-day girdisinde (ar).
+   Articles'ta çalışıldı işaretlenen makaleler ns-day girdisinde (ar),
+   Speaking'de yapıldı işaretleri de öyle (sp, spm).
    Puanı d gününe yazılır: kelime başına POINTS.wr. Silinen metnin puanı
    da gider. Metin kendi girdisinde durduğu için hangi cihazda yazıldığı
    önemsizdir; her cihaz silebilir.
@@ -107,7 +109,9 @@
     rs: 2,         // Review cümle pratiği
     n: 0.5,        // Shades senaryo sorusu doğru (yanlış: 0)
     wr: 1,         // Shades > Write: kaydedilen metindeki her kelime
-    ar: 1          // Articles: çalışıldı işaretlenen makalenin her kelimesi
+    ar: 1,         // Articles: çalışıldı işaretlenen makalenin her kelimesi
+    sp: 15,        // Speaking: günlük sesli sohbet yapıldı (günde bir kez)
+    spm: 30        // Speaking: aylık ölçüm yapıldı (günde bir kez)
   };
   var WKEY = 'ns-write';
   var WDATA = {};
@@ -245,6 +249,22 @@
     if (ids.length) STORE.touch(ids).commit();
   }
 
+  /* ---- Speaking: sohbet / aylık ölçüm yapıldı ----
+     kind 'sp' (günlük sohbet) ya da 'spm' (aylık ölçüm) bugünün girdisine
+     1 olarak yazılır; her biri günde bir kez sayılır (cihazlar arasında da:
+     okurken birleşir). on=false bugünkü işareti geri alır. */
+  function speakingDone(kind, on) {
+    if (kind !== 'sp' && kind !== 'spm') return;
+    if (on) { edit(null, function (e) { e[kind] = 1; }); return; }
+    // geri alma: başka cihazda işaretlenmişse onun bugünkü girdisinden de
+    STORE.refresh();
+    var pre = today() + '~', ids = [];
+    Object.keys(DATA).forEach(function (id) {
+      if (id.indexOf(pre) === 0 && DATA[id][kind]) { delete DATA[id][kind]; ids.push(id); }
+    });
+    if (ids.length) STORE.touch(ids).commit();
+  }
+
   function setHas(e, k, en) { return !!(e[k] && Object.prototype.hasOwnProperty.call(e[k], en)); }
   function setAdd(e, k, en, v) { (e[k] || (e[k] = {}))[en] = v == null ? 1 : v; }
   function setDel(e, k, en) { if (e[k]) { delete e[k][en]; if (!Object.keys(e[k]).length) delete e[k]; } }
@@ -336,7 +356,7 @@
 
   /* ---- okuma: bir günün bütün cihazlardaki girdileri toplanır ---- */
   function day(date) {
-    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], n: [0, 0], bp: 0, vp: 0, np: 0, bx: {}, vx: {}, nx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null, sq: null, wr: 0, wrN: 0, ar: {}, arW: 0 };
+    var out = { b1: [0, 0], v: [0, 0], vq: [0, 0], rc: [0, 0], n: [0, 0], bp: 0, vp: 0, np: 0, bx: {}, vx: {}, nx: {}, toS: {}, out: {}, learn: {}, fall: {}, rs: {}, t: 0, rv: null, sq: null, wr: 0, wrN: 0, ar: {}, arW: 0, sp: 0, spm: 0 };
     var pre = date + '~';
     Object.keys(DATA).forEach(function (id) {
       if (id.indexOf(pre) !== 0) return;
@@ -348,6 +368,8 @@
       out.np += e.np || 0;
       ['bx', 'vx', 'nx'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = (out[k][en] || 0) + e[k][en]; }); });
       ['toS', 'out', 'learn', 'fall', 'rs', 'ar'].forEach(function (k) { if (e[k]) Object.keys(e[k]).forEach(function (en) { out[k][en] = e[k][en]; }); });
+      if (e.sp) out.sp = 1;     // günde bir kez: cihazlardan biri yeter
+      if (e.spm) out.spm = 1;
       out.t += e.t || 0;
       if (e.rv && (!out.rv || e.rv[2] > out.rv[2])) out.rv = e.rv;   // en son görülen durum
       if (e.sq && (!out.sq || e.sq[1] > out.sq[1])) out.sq = e.sq;
@@ -360,7 +382,7 @@
     return out;
   }
   function active(d) {
-    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.vq[0] + d.vq[1] + d.rc[0] + d.rc[1] + d.n[0] + d.n[1] + d.wrN > 0 ||
+    return d.b1[0] + d.b1[1] + d.v[0] + d.v[1] + d.vq[0] + d.vq[1] + d.rc[0] + d.rc[1] + d.n[0] + d.n[1] + d.wrN + d.sp + d.spm > 0 ||
       ['toS', 'out', 'learn', 'fall', 'rs', 'ar'].some(function (k) { return size(d[k]) > 0; });
   }
   function firstDay() {
@@ -393,10 +415,12 @@
       rs: size(d.rs) * POINTS.rs,
       n: d.np * POINTS.n,
       wr: d.wr * POINTS.wr,
-      ar: d.arW * POINTS.ar
+      ar: d.arW * POINTS.ar,
+      sp: d.sp * POINTS.sp,
+      spm: d.spm * POINTS.spm
     };
-    /* flash = Default bölmesine düşen pratik: flashcard'lar + Shades + Articles */
-    var flash = parts.b1 + parts.v + parts.toS + parts.n + parts.wr + parts.ar;
+    /* flash = Default bölmesine düşen pratik: flashcard'lar + Shades + Articles + Speaking */
+    var flash = parts.b1 + parts.v + parts.toS + parts.n + parts.wr + parts.ar + parts.sp + parts.spm;
     var sent = parts.learn;
     var review = parts.rc + parts.rs;
 
@@ -577,7 +601,7 @@
     KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
     today: today, addDays: addDays, r1: r1,
     answer: answer, stage: stage, sentencePractised: sentencePractised, sentenceUnpractised: sentenceUnpractised, noteReview: noteReview,
-    countWords: countWords, saveWriting: saveWriting, deleteWriting: deleteWriting, writings: writings, articleDone: articleDone,
+    countWords: countWords, saveWriting: saveWriting, deleteWriting: deleteWriting, writings: writings, articleDone: articleDone, speakingDone: speakingDone,
     day: day, active: active, firstDay: firstDay,
     score: score, streak: streak, scoreHTML: scoreHTML
   };
