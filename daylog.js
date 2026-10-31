@@ -45,7 +45,7 @@
    + Sentences'a taşınan kelimelerin puanı.
    Review bölmesi o günün Review işi kadar (yapılan + kalan; kaçırılan
    kartların kaybı düşülür), Sentences bölmesi yalnızca zorunlu kısım
-   (SENT_GOAL kelime + taşınan). Default kalanı alır: flashcard'lar, zorunlunun
+   (günün payı kadar kelime + taşınan). Default kalanı alır: flashcard'lar, zorunlunun
    üstündeki cümleler ve Review kaybı orada kapanır.
    Gün başarılı = toplam >= hedef, Review bitmiş ve Sentences zorunluluğu
    karşılanmış.
@@ -67,8 +67,10 @@
    en sonuncusuyla değerlendirilir. Hiç açılmayan günler için ilk açılışta
    o günlerde bekleyen iş geriye dönük yazılır (backfill).
 
-   Sentences zorunluluğu: o gün Sentences'ta (ilerletilenler + kalanlar)
-   SENT_GOAL'den fazla kelime varsa en az SENT_GOAL + taşınan kelime
+   Sentences zorunluluğu: günün payı sentGoal(gün) — WEEKLY_FROM'dan itibaren
+   haftalık hedef WEEKLY_WORDS haftaya yayılır (15: Pzt–Cmt 2, Paz 3);
+   öncesi SENT_GOAL / SENT_GOAL_OLD. O gün Sentences'ta (ilerletilenler +
+   kalanlar) günün payından fazla kelime varsa en az pay + taşınan kelime
    kadarı (havuzdan fazla değil) Review'a ilerletilmeli. sq kaydı olmayan
    eski günler bu şarta takılmaz.
 
@@ -79,10 +81,12 @@
      Borç birikmez-katlanmaz: her gün yalnızca kendi açığının yarısını
      ekler; hedefi aşan puan borçtan düşer. En çok DEBT_CAP.
      Sentences zorunluluğu da aynı tarzda, kelime cinsinden taşınır:
-     SENT_GOAL'e göre eksik kalan kelimelerin yarısı (yukarı yuvarlanır)
-     ertesi günün zorunluluğuna eklenir, SENT_GOAL'ü aşan ilerletmeler
-     taşınandan düşer. En çok SENT_CARRY_CAP. Zorunluluğu olmayan gün
-     (havuz SENT_GOAL'den küçük ya da eşit) taşınanı sıfırlar; sq kaydı
+     günün payına göre eksik kalan kelimelerin yarısı (yukarı yuvarlanır)
+     ertesi günün zorunluluğuna eklenir, payı aşan ilerletmeler
+     taşınandan düşer. En çok SENT_CARRY_CAP (bir haftalık hedef). Kural
+     değişince taşınan haftalık karşılık oranında ölçeklenir (sentWeek);
+     2/3'lü günler arasında değişmez. Zorunluluğu olmayan gün
+     (havuz günün payından küçük ya da eşit) taşınanı sıfırlar; sq kaydı
      olmayan gün ona dokunmaz. Puan hedefi bundan etkilenmez: Sentences
      bölmesi büyür, Default o kadar küçülür.
 
@@ -99,19 +103,32 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
-  var SENT_GOAL = 5;         // Sentences'ta bundan fazla kelime birikmişse günde en az bu kadarı Review'a ilerletilir
+  var WEEKLY_WORDS = 15;     // haftalık öğrenme hedefi: haftada bu kadar yeni kelime Sentences'tan Review'a geçer
+  var WEEKLY_FROM = '2026-10-31';      // Sentences zorunluluğu bu günden itibaren WEEKLY_WORDS'ten türer (sentGoal)
+  var SENT_GOAL = 5;         // SENT_GOAL_FROM..WEEKLY_FROM arası günlük zorunluluk; geçmiş günler öyle kalır
   var SENT_GOAL_FROM = '2026-10-26';   // 5 bu günden itibaren; öncesi 20 ile oynandı, geçmiş günler öyle kalır
   var SENT_GOAL_OLD = 20;
   var PER_WORD = 2;          // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
   var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
-  var SENT_CARRY_CAP = 4 * SENT_GOAL;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
+  var SENT_CARRY_CAP = WEEKLY_WORDS;   // Sentences zorunluluğuna taşınabilecek en çok kelime: bir haftalık hedef (WEEKLY_FROM'dan önce 4 x günlük)
   var REVIEW_CAP = 80;       // Review günde en çok bu kadar puanlık iş ister; fazlası ertesi güne kalır
   var REVIEW_CAP_SENT = 60;  // bunun cümlelere ayrılan payı (kalan REVIEW_CAP - bu kadarı kartlara); kullanılmayan pay öbürüne geçer
   var REVIEW_CAP_FROM = '2026-10-31';  // tavan bu günden itibaren; öncesi tavansız oynandı, geçmiş günler öyle kalır
-  function sentGoal(date) { return date < SENT_GOAL_FROM ? SENT_GOAL_OLD : SENT_GOAL; }
-  function sentCap(date) { return 4 * sentGoal(date); }
+  /* Günün Sentences zorunluluğu. WEEKLY_FROM'dan itibaren WEEKLY_WORDS haftaya
+     yayılır, hafta toplamı tam WEEKLY_WORDS: haftanın i. günü (Pzt 0 … Paz 6)
+     floor((i+1)·W/7) - floor(i·W/7) alır; 15 için 2,2,2,2,2,2,3. */
+  function sentGoal(date) {
+    if (date < SENT_GOAL_FROM) return SENT_GOAL_OLD;
+    if (date < WEEKLY_FROM) return SENT_GOAL;
+    var i = (parse(date).getDay() + 6) % 7;
+    return Math.floor((i + 1) * WEEKLY_WORDS / 7) - Math.floor(i * WEEKLY_WORDS / 7);
+  }
+  /* Haftalık karşılığı (günlük x 7): taşınan yalnızca bu değişince ölçeklenir,
+     2/3'lü günler arasında oynamaz. Tam sayı ki oran yuvarlama hatası vermesin. */
+  function sentWeek(date) { return date < WEEKLY_FROM ? 7 * sentGoal(date) : WEEKLY_WORDS; }
+  function sentCap(date) { return date < WEEKLY_FROM ? 4 * sentGoal(date) : SENT_CARRY_CAP; }
   function reviewCap(date) { return date < REVIEW_CAP_FROM ? Infinity : REVIEW_CAP; }
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
@@ -505,8 +522,9 @@
      Her gün: Review dışı hedef = GOAL - o günün Review işi. Açığın yarısı
      ertesi güne eklenir; hedefi aşan Review dışı puan önce borçtan düşer.
      Aynı döngüde Sentences'a taşınan kelime de tutulur (sent): o günün
-     SENT_GOAL'e göre eksiğinin yarısı (yukarı yuvarlanır) eklenir, fazlası
-     düşülür; zorunluluk yoksa sıfırlanır, sq kaydı yoksa olduğu gibi kalır.
+     günlük zorunluluğa (sentGoal) göre eksiğinin yarısı (yukarı yuvarlanır)
+     eklenir, fazlası düşülür; zorunluluk yoksa sıfırlanır, sq kaydı yoksa
+     olduğu gibi kalır.
      Sonuç ns-day ve ns-write değişmedikçe önbellekte. */
   var debtCache = { raw: null, t: null, map: null, sent: null };
   function carries() {
@@ -519,8 +537,8 @@
     var d = first > DEBT_START ? first : DEBT_START;
     for (var i = 0; d <= t && i < 3650; d = addDays(d, 1), i++) {
       map[d] = r1(debt);
-      // 20'li günlerden kalan taşınan 5'li güne aynı oranda küçülerek geçer
-      if (i && sentGoal(d) !== sentGoal(addDays(d, -1))) carry = Math.ceil(carry * sentGoal(d) / sentGoal(addDays(d, -1)));
+      // kural değişince (20 -> 5 -> haftalık) taşınan haftalık karşılık oranında küçülerek geçer
+      if (i && sentWeek(d) !== sentWeek(addDays(d, -1))) carry = Math.ceil(carry * sentWeek(d) / sentWeek(addDays(d, -1)));
       sent[d] = carry;
       if (d === t) break;
       var b = base(d, carry);
@@ -562,6 +580,19 @@
     b.defSlot = defSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
     b.success = total >= b.target && b.reviewDone === true && b.sentOk;
     return b;
+  }
+
+  /* Haftalık hedefe ilerleme: haftanın (Pzt–Paz) başından date'e kadar
+     cümlesi yazılıp Review'a geçen kelime. Hafta WEEKLY_FROM'dan önce
+     başlıyorsa null (o hafta haftalık hedef yoktu). */
+  function weekSent(date) {
+    var mon = addDays(date, -((parse(date).getDay() + 6) % 7)), n = 0;
+    if (mon < WEEKLY_FROM) return null;
+    for (var d = mon; d <= date; d = addDays(d, 1)) {
+      var l = day(d).learn;
+      Object.keys(l).forEach(function (en) { if (l[en] !== 'new') n++; });
+    }
+    return { done: n, goal: WEEKLY_WORDS };
   }
 
   /* Seri: bugünden geriye başarılı günler. Bugün henüz başarılı değilse
@@ -650,7 +681,8 @@
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, WEEKLY_WORDS: WEEKLY_WORDS, WEEKLY_FROM: WEEKLY_FROM, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
+    sentGoal: sentGoal, sentCap: sentCap, weekSent: weekSent,
     REVIEW_CAP: REVIEW_CAP, REVIEW_CAP_SENT: REVIEW_CAP_SENT, REVIEW_CAP_FROM: REVIEW_CAP_FROM,
     today: today, addDays: addDays, r1: r1,
     reviewSplit: reviewSplit, reviewUsed: reviewUsed, reviewPlan: reviewPlan,

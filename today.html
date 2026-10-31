@@ -270,6 +270,7 @@ function render(){
     ['r', 'Review cards missed', d.rc[1], P.rcMiss],
     ['r', 'Review sentences practised', size(d.rs), P.rs]
   ];
+  const wk = D.weekSent(date);   // haftalık hedefe ilerleme (Pzt'den bu güne)
   $('breakdown').innerHTML = rows.map(r => {
     const pts = D.r1(r[2] * r[3]);
     return '<tr' + (pts ? '' : ' class="zero"') + '><td><i class="sw ' + r[0] + '"></i>' + r[1] + '</td>' +
@@ -277,14 +278,17 @@ function render(){
   }).join('') +
     (s.debt ? '<tr><td><i class="sw"></i>Carried over from missed days</td><td></td><td>+' + s.debt + '</td></tr>' : '') +
     (s.sentCarry ? '<tr><td><i class="sw"></i>Sentences carried over</td><td>' + s.sentCarry + ' × ' + P.learn + '</td><td>+' + D.r1(s.sentCarry * P.learn) + '</td></tr>' : '') +
+    (wk ? '<tr><td><i class="sw"></i>Sentences words this week</td><td>' + wk.done + ' of ' + wk.goal + '</td><td></td></tr>' : '') +
     '<tr><td colspan="3" class="td-capnote">A word\'s correct answers earn points at most ' + D.PER_WORD + ' times a day (in Shades, each question). ' +
       'In Vocabulary only flashcards earn points; quiz, fill-in and the list buttons don\'t. ' +
       'A text saved in Shades earns ' + P.wr + ' point per word and counts toward Default. ' +
       'An article marked as studied earns ' + P.ar + ' point per Vocabulary word in it, once per article a day, also toward Default. ' +
       'A speaking conversation marked as done earns ' + P.sp + ' and the monthly speaking check ' + P.spm + ', each once a day, also toward Default. ' +
       'Reaching Sentences and marking Learned straight from Vocabulary earn nothing. ' +
-      'The Sentences part of the bar holds only the required words (' + D.SENT_GOAL + ', plus any carried over); sentences beyond that count toward Default. ' +
-      'Half of the required words left short carry over to the next day (up to ' + D.SENT_CARRY_CAP + '); words moved beyond ' + D.SENT_GOAL + ' pay that back. ' +
+      'The Sentences part of the bar holds only the required words (' +
+        (date < D.WEEKLY_FROM ? D.sentGoal(date) + ' a day at the time' : D.sentGoal(date) + ' on this day, from the weekly target of ' + D.WEEKLY_WORDS + ' spread over the week') +
+        ', plus any carried over); sentences beyond that count toward Default. ' +
+      'Half of the required words left short carry over to the next day (up to ' + D.sentCap(date) + '); words moved beyond the day\'s share pay that back. ' +
       'Carried-over words also raise the day\'s target by their points, so they never squeeze Default. ' +
       'Review asks for at most ' + D.REVIEW_CAP + ' points a day: up to ' + D.REVIEW_CAP_SENT + ' for sentences and ' + (D.REVIEW_CAP - D.REVIEW_CAP_SENT) + ' for cards, either side using what the other leaves; the rest waits for the next day, oldest first. ' +
       'A missed Review card costs 1.5 (the point it would have earned plus the penalty); that amount moves from Review to Default, so Review always fills once it is done. ' +
