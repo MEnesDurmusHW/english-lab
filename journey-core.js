@@ -245,16 +245,36 @@
     var t = on || today();
     return reviewWords().filter(function (en) { return DATA[en].sent.due <= t; }).sort(byPriorityThenDate('sent'));
   }
-  /* Önümüzdeki n günün kart yükü: [{date, cards, sents}] — bugün hariç. */
-  function upcoming(n) {
-    var t = today(), out = [];
-    for (var i = 1; i <= n; i++) out.push({ date: addDays(t, i), cards: 0, sents: 0 });
-    reviewWords().forEach(function (en) {
+  /* Önümüzdeki n günde Review'un isteyeceği, günlük tavanla (daylog.js
+     REVIEW_CAP, NSDay.reviewSplit): her gün pay kartlar ve cümleler arasında
+     bölünür, sıra cardsDue / sentencesDue ile aynı; paya sığmayan ertesi güne kalır.
+     Varsayım: bugünün payı yapılır ve her cevap doğru — yapılan kelime bir
+     sonraki basamağın aralığıyla yeniden planlanır (pencereye geri düşebilir).
+     keep: sayılacak kelimeler (Review sayfası data.js'tekileri sayar).
+     Döner: [{date, cards, sents, waitC, waitS}] — bugün hariç. */
+  function forecast(n, keep) {
+    var D = window.NSDay, t = today(), out = [];
+    var split = D ? D.reviewSplit : function (c, s) { return [c, s]; };
+    var used = D ? D.reviewUsed(t) : null;   // [kart, cümle] puanı, yalnızca bugün
+    var sim = reviewWords().filter(function (en) { return !keep || keep(en); }).map(function (en) {
       var j = DATA[en];
-      var dc = daysBetween(t, j.card.due), ds = daysBetween(t, j.sent.due);
-      if (dc >= 1 && dc <= n) out[dc - 1].cards++;
-      if (ds >= 1 && ds <= n) out[ds - 1].sents++;
+      return { pri: j.pri, card: { step: j.card.step || 0, due: j.card.due }, sent: { step: j.sent.step || 0, due: j.sent.due } };
     });
+    function due(field, d) {
+      return sim.filter(function (w) { return w[field].due <= d; }).sort(function (a, b) {
+        return PRI_ORDER[a.pri] - PRI_ORDER[b.pri] || (a[field].due < b[field].due ? -1 : a[field].due > b[field].due ? 1 : 0);
+      });
+    }
+    function done(list, field, table, d) {
+      list.forEach(function (w) { w[field].step++; w[field].due = addDays(d, iv(table, w.pri, w[field].step)); });
+    }
+    for (var i = 0; i <= n; i++) {
+      var d = addDays(t, i), dc = due('card', d), ds = due('sent', d);
+      var q = split(dc.length, ds.length, i ? null : used, d);
+      if (i) out.push({ date: d, cards: q[0], sents: q[1], waitC: dc.length - q[0], waitS: ds.length - q[1] });
+      done(dc.slice(0, q[0]), 'card', CARD_IV, d);
+      done(ds.slice(0, q[1]), 'sent', SENT_IV, d);
+    }
     return out;
   }
 
@@ -268,6 +288,6 @@
     promote: promote, demote: demote,
     rateCard: rateCard, sentenceDone: sentenceDone, sentenceUndo: sentenceUndo, setPriority: setPriority,
     reviewWords: reviewWords, sentenceWords: sentenceWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
-    upcoming: upcoming
+    forecast: forecast
   };
 })();

@@ -50,6 +50,18 @@
    Gün başarılı = toplam >= hedef, Review bitmiş ve Sentences zorunluluğu
    karşılanmış.
 
+   Review tavanı (REVIEW_CAP_FROM'dan itibaren): Review günde en çok
+   REVIEW_CAP puanlık iş ister, kartlar ve cümleler arasında eşit
+   bölünmüş (cümlelere REVIEW_CAP_SENT); bir tarafın kullanmadığı pay
+   öbürüne geçer. İkisi de mevcut sırayla (öncelik, en eski tarih).
+   O gün Review'da harcanan (her kart cevabı POINTS.rc, her cümle
+   POINTS.rs) kendi yarısından düşülür, kalan pay bekleyenlerden doldurulur;
+   böylece iş bittikçe yenisi çekilmez, pay cihazlar ve yenilemeler
+   arasında aynı kalır. Sığmayan iş bekler, ertesi gün daha eski olduğu
+   için önce gelir. "Review bitti" = günün payı bitti. Fazlası
+   (Keep going) puan verir ama zorunlu değil. rv anlık görüntüsü yine
+   bütün bekleyen işi tutar; pay okurken hesaplanır (geçmiş günler de).
+
    Review'un bitip bitmediği geçmiş gün için bilinemez; bu yüzden Review
    durumu değiştikçe rv anlık görüntüsü o güne yazılır, geçmiş gün onun
    en sonuncusuyla değerlendirilir. Hiç açılmayan günler için ilk açılışta
@@ -95,8 +107,12 @@
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
   var SENT_CARRY_CAP = 4 * SENT_GOAL;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
+  var REVIEW_CAP = 80;       // Review günde en çok bu kadar puanlık iş ister; fazlası ertesi güne kalır
+  var REVIEW_CAP_SENT = 40;  // bunun cümlelere ayrılan yarısı (kalan REVIEW_CAP - bu kadarı kartlara); kullanılmayan pay öbürüne geçer
+  var REVIEW_CAP_FROM = '2026-10-31';  // tavan bu günden itibaren; öncesi tavansız oynandı, geçmiş günler öyle kalır
   function sentGoal(date) { return date < SENT_GOAL_FROM ? SENT_GOAL_OLD : SENT_GOAL; }
   function sentCap(date) { return 4 * sentGoal(date); }
+  function reviewCap(date) { return date < REVIEW_CAP_FROM ? Infinity : REVIEW_CAP; }
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
     v: 0.5,        // Vocabulary flashcard doğru
@@ -318,6 +334,38 @@
     return J.sentenceWords().filter(isKnown).length;
   }
 
+  /* ---- Review tavanı: günün payı ----
+     c, s: bekleyen kart / cümle; used: o gün Review'da harcanan puan,
+     [kart, cümle]. Tavan ikiye bölünür: kartlara REVIEW_CAP - REVIEW_CAP_SENT,
+     cümlelere REVIEW_CAP_SENT. Harcanan önce kendi yarısından düşer, taşanı
+     öbür yarıdan; bir tarafın kullanmadığı pay öbürüne geçer (10 kart +
+     99 cümle -> 10 + 35; 93 kart + 0 cümle -> 80 kart). Böylece hiçbiri
+     öbürünü dışarıda bırakmaz. Döner: [kart, cümle]. Tavandan önceki
+     günlerde hepsi. */
+  function reviewSplit(c, s, used, date) {
+    var cap = reviewCap(date);
+    if (cap === Infinity) return [c, s];
+    var uc = used ? used[0] : 0, us = used ? used[1] : 0;
+    var halfS = Math.min(REVIEW_CAP_SENT, cap), halfC = cap - halfS;
+    var roomC = Math.max(0, halfC - uc - Math.max(0, us - halfS));
+    var roomS = Math.max(0, halfS - us - Math.max(0, uc - halfC));
+    var spareC = roomC - Math.min(c, Math.floor(roomC / POINTS.rc)) * POINTS.rc;   // kartların kullanmadığı
+    var spareS = roomS - Math.min(s, Math.floor(roomS / POINTS.rs)) * POINTS.rs;   // cümlelerin kullanmadığı
+    return [Math.min(c, Math.floor((roomC + spareS) / POINTS.rc)),
+            Math.min(s, Math.floor((roomS + spareC) / POINTS.rs))];
+  }
+  /* Harcanan: [her kart cevabı (doğru ya da yanlış), her işaretli cümle] puan olarak. */
+  function usedOf(d) { return [(d.rc[0] + d.rc[1]) * POINTS.rc, size(d.rs) * POINTS.rs]; }
+  function reviewUsed(date) { return usedOf(day(date || today())); }
+  /* Bugünün Review'u: pay (cards, sents), bekleyen bütün iş (dueC, dueS)
+     ve paya sığmayan (waitC, waitS). NSJourney / WORDS yoksa null. */
+  function reviewPlan() {
+    var live = liveReview();
+    if (!live) return null;
+    var t = today(), used = reviewUsed(t), q = reviewSplit(live[0], live[1], used, t);
+    return { cap: reviewCap(t), used: used, cards: q[0], sents: q[1], dueC: live[0], dueS: live[1], waitC: live[0] - q[0], waitS: live[1] - q[1] };
+  }
+
   /* Hiç açılmayan günler: o günlerde ne beklediği, ilk açılışta bugünkü
      takvimden çıkarılır — arada iş yapılmadığı için tarihler değişmedi.
      Zaman damgası 0: o gün başka bir cihazda gerçekten görülen durum
@@ -394,7 +442,7 @@
 
   /* ---- puan: borçsuz temel hesap ----
      reviewRaw: o günün Review bölmesi — bütün Review işi puan olarak
-       (yapılan + kalan, hepsi doğru bilinse alınacak puan), eksi
+       (yapılan + günün payından kalan, hepsi doğru bilinse alınacak puan), eksi
        kaçırılan kartların kaybı. Kayıp (doğru puanı + ceza) Default
        bölmesine geçer; böylece Review bitince bölmesi hep dolar.
      sentRaw: Sentences bölmesi — yalnızca zorunlu kısım (sentNeed x puan).
@@ -424,7 +472,11 @@
     var sent = parts.learn;
     var review = parts.rc + parts.rs;
 
-    var left = (date === today() && liveReview()) || (d.rv ? [d.rv[0], d.rv[1]] : null);
+    /* pending: bekleyen bütün iş; left: günün payından kalan (tavana göre);
+       wait: paya sığmayan, sonraki günlere kalan */
+    var pending = (date === today() && liveReview()) || (d.rv ? [d.rv[0], d.rv[1]] : null);
+    var left = pending ? reviewSplit(pending[0], pending[1], usedOf(d), date) : null;
+    var wait = pending ? [pending[0] - left[0], pending[1] - left[1]] : null;
     var reviewDone = left ? left[0] + left[1] === 0 : null;
     var reviewLoss = d.rc[1] * (POINTS.rc - POINTS.rcMiss);
     var reviewRaw = (d.rc[0] + d.rc[1] + (left ? left[0] : 0)) * POINTS.rc +
@@ -442,7 +494,7 @@
       date: date, day: d, parts: parts,
       flash: flash, sent: sent, review: review,
       def: flash + sentExtra, sentIn: sentIn, sentExtra: sentExtra,
-      left: left, reviewDone: reviewDone, reviewRaw: reviewRaw, reviewLoss: reviewLoss,
+      left: left, wait: wait, reviewDone: reviewDone, reviewRaw: reviewRaw, reviewLoss: reviewLoss,
       sentAdv: adv, sentShortcut: shortcut, sentNeed: sentNeed, sentPool: sentPool, sentOk: adv >= sentNeed, sentRaw: sentRaw,
       sentGoal: goal,
       sentCarry: sentNeed > goal ? sentNeed - goal : 0   // zorunluluğa fiilen eklenen taşınan kelime
@@ -599,7 +651,9 @@
 
   window.NSDay = {
     KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, SENT_GOAL: SENT_GOAL, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
+    REVIEW_CAP: REVIEW_CAP, REVIEW_CAP_SENT: REVIEW_CAP_SENT, REVIEW_CAP_FROM: REVIEW_CAP_FROM,
     today: today, addDays: addDays, r1: r1,
+    reviewSplit: reviewSplit, reviewUsed: reviewUsed, reviewPlan: reviewPlan,
     answer: answer, stage: stage, sentencePractised: sentencePractised, sentenceUnpractised: sentenceUnpractised, noteReview: noteReview,
     countWords: countWords, saveWriting: saveWriting, deleteWriting: deleteWriting, writings: writings, articleDone: articleDone, speakingDone: speakingDone,
     day: day, active: active, firstDay: firstDay,

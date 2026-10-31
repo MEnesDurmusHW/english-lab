@@ -94,14 +94,19 @@
   .rv-msg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.84rem;color:var(--ok);margin:0}
   .rv-undo{appearance:none;cursor:pointer;min-height:32px;padding:0 10px;background:none;border:0;color:var(--accent);font-family:var(--sans);font-weight:700;font-size:.84rem;touch-action:manipulation;text-decoration:underline;text-underline-offset:3px}
 
-  /* ---- önümüzdeki 7 gün ---- */
-  .rv-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-  .rv-day{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;min-width:0}
-  .rv-day .dn{font-family:var(--mono,monospace);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
-  .rv-day .dc{display:block;font-family:var(--mono,monospace);font-size:1.15rem;font-weight:700;color:var(--text);margin-top:4px}
-  .rv-day .ds{display:block;font-size:.68rem;color:var(--text-muted);margin-top:2px;min-height:1em}
-  .rv-day.zero .dc{color:var(--text-muted);opacity:.5}
-  @media (max-width:520px){ .rv-week{gap:4px} .rv-day{padding:8px 2px} .rv-day .dc{font-size:1rem} }
+  .rv-wait{margin:-6px 0 0;font-size:.84rem;font-weight:600;color:var(--text-dim)}
+
+  /* ---- önümüzdeki günler: tavanlı tahmin, gün başına bir satır ---- */
+  .rv-fc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:4px 14px}
+  .rv-fc-row{display:grid;grid-template-columns:5.5rem 1fr auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--border);font-size:.88rem;font-variant-numeric:tabular-nums}
+  .rv-fc-row:first-child{border-top:0}
+  .rv-fc-row .dn{font-weight:600;color:var(--text)}
+  .rv-fc-row .dq{color:var(--text-dim);min-width:0}
+  .rv-fc-row .dq b{font-family:var(--mono,monospace);font-weight:700;color:var(--text)}
+  .rv-fc-row .dw{font-size:.8rem;color:var(--text-muted);text-align:right}
+  .rv-fc-row.zero .dq{color:var(--text-muted)}
+  .rv-fc-note{margin:8px 2px 0;font-size:.8rem;color:var(--text-muted);line-height:1.5}
+  @media (max-width:420px){ .rv-fc-row{grid-template-columns:4.6rem 1fr;row-gap:2px} .rv-fc-row .dw{grid-column:2;text-align:left} }
 
   /* ---- liste ---- */
   .rv-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
@@ -196,20 +201,24 @@
   <div class="rv-today">
     <section class="rv-box" aria-labelledby="cardsTitle">
       <h2 id="cardsTitle">Flashcards</h2>
-      <div class="rv-big"><b id="cardsN">0</b><span id="cardsLbl">cards due</span></div>
+      <div class="rv-big"><b id="cardsN">0</b><span id="cardsLbl">cards for today</span></div>
+      <p class="rv-wait" id="cardsWait" hidden></p>
       <p class="sub" id="cardsSub"></p>
       <div class="rv-row-acts">
         <button class="rv-cta" type="button" id="startBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Start
         </button>
+        <button class="rv-btn" type="button" id="cardsMore" hidden>Keep going</button>
       </div>
     </section>
 
     <section class="rv-box" aria-labelledby="sentTitle">
       <h2 id="sentTitle">Sentence practice</h2>
-      <div class="rv-big"><b id="sentN">0</b><span>words due</span></div>
+      <div class="rv-big"><b id="sentN">0</b><span id="sentLbl">for today</span></div>
+      <p class="rv-wait" id="sentWait" hidden></p>
       <p class="sub" id="sentSub"></p>
+      <div class="rv-row-acts" id="sentMoreRow" hidden><button class="rv-btn" type="button" id="sentMore">Keep going</button></div>
       <div class="rv-row-acts" id="sentActs">
         <button class="rv-btn" type="button" id="copyBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -222,8 +231,9 @@
     </section>
   </div>
 
-  <h2 class="rv-sec-title">Next 7 days</h2>
-  <div class="rv-week" id="week"></div>
+  <h2 class="rv-sec-title">Coming days</h2>
+  <div class="rv-fc" id="week"></div>
+  <p class="rv-fc-note" id="weekNote"></p>
 
   <h2 class="rv-sec-title">All words <span id="allN"></span></h2>
   <div class="rv-tools">
@@ -297,17 +307,36 @@ function shortDate(s){
   return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
 }
 
+/* ---------- bugünün payı ----------
+   Review günde en çok NSDay.REVIEW_CAP puan ister (daylog.js), kartlar ve
+   cümleler arasında eşit bölünmüş; sıra cardsDue / sentencesDue ile aynı. Pay,
+   bugün harcanan düşülerek hesaplanır: iş bittikçe yenisi çekilmez.
+   Pay bitince Keep going paya sığmayanları da açar (puan verir, zorunlu değil). */
+let extraC = false, extraS = false, extraDay = J.today();
+function plan(){
+  if (extraDay !== J.today()) { extraC = extraS = false; extraDay = J.today(); }   // gece yarısı: yeni günün payı
+  return NSDay.reviewPlan() || { cap: NSDay.REVIEW_CAP, cards: 0, sents: 0, waitC: 0, waitS: 0 };
+}
+function cardList(p){ const due = words(J.cardsDue()); return extraC ? due : due.slice(0, p.cards); }
+function sentList(p){ const due = words(J.sentencesDue()); return extraS ? due : due.slice(0, p.sents); }
+function showWait(id, n){ $(id).hidden = !n; $(id).textContent = n ? n + ' more waiting' : ''; }
+
 /* ---------- bugün: kartlar ---------- */
 function renderCards(){
-  const due = words(J.cardsDue());
+  const p = plan(), due = cardList(p);
   $('cardsN').textContent = due.length;
-  $('cardsLbl').textContent = due.length === 1 ? 'card due' : 'cards due';
+  $('cardsLbl').textContent = extraC ? (due.length === 1 ? 'card due' : 'cards due') : (due.length === 1 ? 'card for today' : 'cards for today');
+  showWait('cardsWait', extraC ? 0 : p.waitC);
   $('startBtn').disabled = !due.length;
+  $('cardsMore').hidden = extraC || due.length > 0 || !p.waitC;
   const all = words(J.reviewWords());
   if (!all.length) { $('cardsSub').textContent = 'No words in Review yet.'; return; }
-  if (due.length) {
+  if (due.length && extraC) $('cardsSub').textContent = 'Extra: beyond today’s ' + p.cap + ' points.';
+  else if (due.length) {
     const hi = due.filter(en => J.get(en).pri === 'high').length;
     $('cardsSub').textContent = hi ? hi + ' of them high priority. Those come first.' : 'High-priority words come first.';
+  } else if (p.waitC) {
+    $('cardsSub').textContent = 'Done for today.';
   } else {
     const next = all.map(en => J.get(en).card.due).sort()[0];
     $('cardsSub').textContent = 'All caught up. Next cards: ' + rel(next) + '.';
@@ -320,15 +349,19 @@ function renderCards(){
    İşaret hep bugüne yazılır; son işaret kısa bir süre geri alınabilir. */
 const SENT_BATCH = 5, UNDO_MS = 6000;
 let sentShown = SENT_BATCH, lastDone = null, undoTimer = 0;
-function sentBatch(){ return words(J.sentencesDue()).slice(0, sentShown); }
+function sentBatch(){ return sentList(plan()).slice(0, sentShown); }
 function renderSent(){
-  const due = words(J.sentencesDue());
+  const p = plan(), due = sentList(p);
   $('sentN').textContent = due.length;
+  $('sentLbl').textContent = extraS ? (due.length === 1 ? 'word due' : 'words due') : 'for today';
+  showWait('sentWait', extraS ? 0 : p.waitS);
   const has = due.length > 0;
   $('sentList').hidden = !has;
   $('sentActs').hidden = !has;
+  $('sentMoreRow').hidden = extraS || has || !p.waitS;
   if (!has) {
     $('moreBtn').hidden = true;
+    if (p.waitS) { $('sentSub').textContent = 'Done for today.'; return; }   // bekleyen var ama bugünün payı bitti
     const all = words(J.reviewWords());
     const next = all.map(en => J.get(en).sent.due).sort()[0];
     const doneToday = window.NSDay ? Object.keys(NSDay.day(J.today()).rs).filter(en => BY_EN[en] && J.inReview(en)).length : 0;
@@ -336,7 +369,7 @@ function renderSent(){
       : (doneToday ? 'All done for today. Next: ' : 'Nothing due. Next: ') + rel(next) + '.';
     return;
   }
-  $('sentSub').textContent = 'Copy the words, write sentences in chat, then tap Done on each.';
+  $('sentSub').textContent = (extraS ? 'Extra: beyond today’s ' + p.cap + ' points. ' : '') + 'Copy the words, write sentences in chat, then tap Done on each.';
   $('sentList').innerHTML = due.slice(0, sentShown).map(en => {
     const w = BY_EN[en];
     return '<div class="rv-sent"><span class="rv-sent-t"><b>' + esc(en) + '</b><span>' + esc(w.tr) + '</span></span>' +
@@ -348,6 +381,8 @@ function renderSent(){
   if (rest > 0) $('moreBtn').textContent = 'Show ' + Math.min(SENT_BATCH, rest) + ' more';
 }
 $('moreBtn').addEventListener('click', () => { sentShown += SENT_BATCH; renderSent(); });
+$('cardsMore').addEventListener('click', () => { extraC = true; render(); $('startBtn').focus(); });
+$('sentMore').addEventListener('click', () => { extraS = true; render(); });
 $('sentList').addEventListener('click', e => {
   const b = e.target.closest('.rv-tick'); if (!b) return;
   const en = b.dataset.en;
@@ -396,16 +431,23 @@ function fallbackCopy(text, cb){
   document.body.removeChild(ta);
 }
 
-/* ---------- önümüzdeki 7 gün ---------- */
+/* ---------- önümüzdeki 7 gün: tavanlı tahmin (J.forecast) ----------
+   Her gün Review'un isteyeceği; tavana sığmayan "waiting" olarak ertesi güne kalır. */
+function plural(n, one){ return '<b>' + n + '</b> ' + one + (n === 1 ? '' : 's'); }
 function renderWeek(){
-  $('week').innerHTML = J.upcoming(7).map(d => {
+  $('week').innerHTML = J.forecast(7, en => BY_EN[en]).map((d, i) => {
     const p = d.date.split('-');
-    const day = new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' });
-    return '<div class="rv-day' + (d.cards ? '' : ' zero') + '" title="' + shortDate(d.date) + '">' +
+    const day = i ? new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' }) : 'Tomorrow';
+    const bits = [];
+    if (d.sents) bits.push(plural(d.sents, 'sentence'));
+    if (d.cards) bits.push(plural(d.cards, 'card'));
+    const wait = d.waitC + d.waitS;
+    return '<div class="rv-fc-row' + (bits.length ? '' : ' zero') + '" title="' + shortDate(d.date) + '">' +
       '<span class="dn">' + day + '</span>' +
-      '<span class="dc">' + d.cards + '</span>' +
-      '<span class="ds">' + (d.sents ? d.sents + ' sent.' : '') + '</span></div>';
+      '<span class="dq">' + (bits.join(' · ') || 'Nothing due') + '</span>' +
+      '<span class="dw">' + (wait ? '+' + wait + ' waiting' : '') + '</span></div>';
   }).join('');
+  $('weekNote').textContent = 'At most ' + NSDay.REVIEW_CAP + ' points a day, if each day’s share gets done.';
 }
 
 /* ---------- tüm kelimeler ---------- */
@@ -469,7 +511,7 @@ function mask(html, en){
 }
 
 function openStudy(){
-  const due = words(J.cardsDue());
+  const due = cardList(plan());
   if (!due.length) return;
   ses = { items: due, i: 0, hit: 0, back: [] };
   sv.hidden = false;
