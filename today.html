@@ -286,7 +286,7 @@ function render(){
       'The Sentences part of the bar holds only the required words (' + D.SENT_GOAL + ', plus any carried over); sentences beyond that count toward Default. ' +
       'Half of the required words left short carry over to the next day (up to ' + D.SENT_CARRY_CAP + '); words moved beyond ' + D.SENT_GOAL + ' pay that back. ' +
       'Carried-over words also raise the day\'s target by their points, so they never squeeze Default. ' +
-      'Review asks for at most ' + D.REVIEW_CAP + ' points a day, split evenly between cards and sentences; the rest waits for the next day, oldest first. ' +
+      'Review asks for at most ' + D.REVIEW_CAP + ' points a day: up to ' + D.REVIEW_CAP_SENT + ' for sentences and ' + (D.REVIEW_CAP - D.REVIEW_CAP_SENT) + ' for cards, either side using what the other leaves; the rest waits for the next day, oldest first. ' +
       'A missed Review card costs 1.5 (the point it would have earned plus the penalty); that amount moves from Review to Default, so Review always fills once it is done. ' +
       'A short day adds half of its missing Flashcards + Sentences points to the next day (up to ' + D.DEBT_CAP + ' in total); unfinished Review simply stays due.</td></tr>';
 

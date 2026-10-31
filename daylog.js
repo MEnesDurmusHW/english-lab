@@ -51,8 +51,8 @@
    karşılanmış.
 
    Review tavanı (REVIEW_CAP_FROM'dan itibaren): Review günde en çok
-   REVIEW_CAP puanlık iş ister, kartlar ve cümleler arasında eşit
-   bölünmüş (cümlelere REVIEW_CAP_SENT); bir tarafın kullanmadığı pay
+   REVIEW_CAP puanlık iş ister, kartlar ve cümleler arasında
+   bölünmüş (cümlelere REVIEW_CAP_SENT, kartlara kalanı); bir tarafın kullanmadığı pay
    öbürüne geçer. İkisi de mevcut sırayla (öncelik, en eski tarih).
    O gün Review'da harcanan (her kart cevabı POINTS.rc, her cümle
    POINTS.rs) kendi yarısından düşülür, kalan pay bekleyenlerden doldurulur;
@@ -108,7 +108,7 @@
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
   var SENT_CARRY_CAP = 4 * SENT_GOAL;   // Sentences zorunluluğuna taşınabilecek en çok kelime (DEBT_CAP / GOAL gibi 4 x SENT_GOAL)
   var REVIEW_CAP = 80;       // Review günde en çok bu kadar puanlık iş ister; fazlası ertesi güne kalır
-  var REVIEW_CAP_SENT = 40;  // bunun cümlelere ayrılan yarısı (kalan REVIEW_CAP - bu kadarı kartlara); kullanılmayan pay öbürüne geçer
+  var REVIEW_CAP_SENT = 60;  // bunun cümlelere ayrılan payı (kalan REVIEW_CAP - bu kadarı kartlara); kullanılmayan pay öbürüne geçer
   var REVIEW_CAP_FROM = '2026-10-31';  // tavan bu günden itibaren; öncesi tavansız oynandı, geçmiş günler öyle kalır
   function sentGoal(date) { return date < SENT_GOAL_FROM ? SENT_GOAL_OLD : SENT_GOAL; }
   function sentCap(date) { return 4 * sentGoal(date); }
@@ -337,9 +337,9 @@
   /* ---- Review tavanı: günün payı ----
      c, s: bekleyen kart / cümle; used: o gün Review'da harcanan puan,
      [kart, cümle]. Tavan ikiye bölünür: kartlara REVIEW_CAP - REVIEW_CAP_SENT,
-     cümlelere REVIEW_CAP_SENT. Harcanan önce kendi yarısından düşer, taşanı
-     öbür yarıdan; bir tarafın kullanmadığı pay öbürüne geçer (10 kart +
-     99 cümle -> 10 + 35; 93 kart + 0 cümle -> 80 kart). Böylece hiçbiri
+     cümlelere REVIEW_CAP_SENT. Harcanan önce kendi payından düşer, taşanı
+     öbür paydan; bir tarafın kullanmadığı pay öbürüne geçer (60/20 ile:
+     10 kart + 99 cümle -> 10 + 35; 93 kart + 0 cümle -> 80 kart). Böylece hiçbiri
      öbürünü dışarıda bırakmaz. Döner: [kart, cümle]. Tavandan önceki
      günlerde hepsi. */
   function reviewSplit(c, s, used, date) {
