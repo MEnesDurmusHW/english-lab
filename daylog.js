@@ -67,8 +67,9 @@
    en sonuncusuyla değerlendirilir. Hiç açılmayan günler için ilk açılışta
    o günlerde bekleyen iş geriye dönük yazılır (backfill).
 
-   Sentences zorunluluğu: günün payı sentGoal(gün) — WEEKLY_FROM'dan itibaren
-   haftalık hedef WEEKLY_WORDS haftaya yayılır (15: Pzt–Cmt 2, Paz 3);
+   Sentences zorunluluğu: günün payı sentGoal(gün) — FLEX_FROM'dan itibaren
+   çalışma günü başına WEEKLY_WORDS / WEEK_DAYS (3); WEEKLY_FROM..FLEX_FROM
+   arası WEEKLY_WORDS_OLD haftaya yayılırdı (15: Pzt–Cmt 2, Paz 3);
    öncesi SENT_GOAL / SENT_GOAL_OLD. O gün Sentences'ta (ilerletilenler +
    kalanlar) günün payından fazla kelime varsa en az pay + taşınan kelime
    kadarı (havuzdan fazla değil) Review'a ilerletilmeli. sq kaydı olmayan
@@ -83,14 +84,25 @@
      Sentences zorunluluğu da aynı tarzda, kelime cinsinden taşınır:
      günün payına göre eksik kalan kelimelerin yarısı (yukarı yuvarlanır)
      ertesi günün zorunluluğuna eklenir, payı aşan ilerletmeler
-     taşınandan düşer. En çok SENT_CARRY_CAP (bir haftalık hedef). Kural
+     taşınandan düşer. En çok sentCap (bir haftalık hedef). Kural
      değişince taşınan haftalık karşılık oranında ölçeklenir (sentWeek);
      2/3'lü günler arasında değişmez. Zorunluluğu olmayan gün
      (havuz günün payından küçük ya da eşit) taşınanı sıfırlar; sq kaydı
      olmayan gün ona dokunmaz. Puan hedefi bundan etkilenmez: Sentences
      bölmesi büyür, Default o kadar küçülür.
 
-   Seri: başarılı günler; arada en çok STREAK_GRACE gün kaçırılabilir.
+   Haftada WEEK_DAYS gün (FLEX_FROM'dan itibaren): hafta Pzt–Paz, WEEK_DAYS
+   başarılı günle tamamlanır; hangi günler olduğu serbest. Başarısız her
+   gün (hiç çalışılmamış ya da yarım kalmış) haftanın REST_DAYS dinlenme
+   hakkından birini harcar ve hiçbir şey taşımaz. Hak bitince (haftanın
+   REST_DAYS+1. başarısız günü ve sonrası) gün "kaçırıldı" sayılır: yukarıdaki
+   borç ve Sentences taşıma kuralları yalnızca bu günlere işler. Hafta
+   tamamlandıktan sonraki günler "extra": puan toplar, hedefi yoktur.
+   Sentences zorunluluğu çalışma günü başına WEEKLY_WORDS / WEEK_DAYS.
+   Borç ve taşınan FLEX_FROM'da sıfırlanır.
+
+   Seri: art arda tamamlanan haftalar; içinde bulunulan hafta yalnızca
+   tamamlandıysa sayılır, tamamlanmadıysa seriyi bozmaz.
 
    store.js'ten SONRA, journey-core.js / lab-core.js / b1-core.js'ten
    ÖNCE, defer'siz yüklenmeli.
@@ -103,32 +115,39 @@
   var STORE = NSStore.map(KEY, DATA);
 
   var GOAL = 100;
-  var WEEKLY_WORDS = 15;     // haftalık öğrenme hedefi: haftada bu kadar yeni kelime Sentences'tan Review'a geçer
-  var WEEKLY_FROM = '2026-10-31';      // Sentences zorunluluğu bu günden itibaren WEEKLY_WORDS'ten türer (sentGoal)
+  var FLEX_FROM = '2026-11-09';        // haftada WEEK_DAYS gün modeli bu Pazartesi'den itibaren; öncesi her gün hedefliydi, geçmiş günler öyle kalır
+  var WEEK_DAYS = 4;         // haftayı tamamlamak için gereken başarılı gün
+  var REST_DAYS = 7 - WEEK_DAYS;   // haftalık dinlenme hakkı: bu kadar başarısız gün hiçbir şey taşımaz
+  var WEEKLY_WORDS = 12;     // haftalık öğrenme hedefi (FLEX_FROM'dan itibaren): haftada bu kadar yeni kelime Sentences'tan Review'a geçer
+  var WEEKLY_WORDS_OLD = 15; // WEEKLY_FROM..FLEX_FROM arası haftalık hedef, haftanın 7 gününe yayılırdı
+  var WEEKLY_FROM = '2026-10-31';      // Sentences zorunluluğu bu günden itibaren haftalık hedeften türer (sentGoal)
   var SENT_GOAL = 5;         // SENT_GOAL_FROM..WEEKLY_FROM arası günlük zorunluluk; geçmiş günler öyle kalır
   var SENT_GOAL_FROM = '2026-10-26';   // 5 bu günden itibaren; öncesi 20 ile oynandı, geçmiş günler öyle kalır
   var SENT_GOAL_OLD = 20;
   var PER_WORD = 2;          // aynı kelimenin doğrusu günde en çok bu kadar kez puan verir
-  var STREAK_GRACE = 4;      // seri bozulmadan arka arkaya kaçırılabilecek gün
   var DEBT_START = '2026-10-17';   // borç bu puan kurallarıyla başlar; öncesi eski kurallarla oynandı
   var DEBT_CAP = 400;        // birikebilecek en yüksek borç
-  var SENT_CARRY_CAP = WEEKLY_WORDS;   // Sentences zorunluluğuna taşınabilecek en çok kelime: bir haftalık hedef (WEEKLY_FROM'dan önce 4 x günlük)
   var REVIEW_CAP = 80;       // Review günde en çok bu kadar puanlık iş ister; fazlası ertesi güne kalır
   var REVIEW_CAP_SENT = 60;  // bunun cümlelere ayrılan payı (kalan REVIEW_CAP - bu kadarı kartlara); kullanılmayan pay öbürüne geçer
   var REVIEW_CAP_FROM = '2026-10-31';  // tavan bu günden itibaren; öncesi tavansız oynandı, geçmiş günler öyle kalır
-  /* Günün Sentences zorunluluğu. WEEKLY_FROM'dan itibaren WEEKLY_WORDS haftaya
-     yayılır, hafta toplamı tam WEEKLY_WORDS: haftanın i. günü (Pzt 0 … Paz 6)
-     floor((i+1)·W/7) - floor(i·W/7) alır; 15 için 2,2,2,2,2,2,3. */
+  /* Günün Sentences zorunluluğu. FLEX_FROM'dan itibaren çalışma günü başına
+     WEEKLY_WORDS / WEEK_DAYS (12 / 4 = 3): haftanın WEEK_DAYS başarılı günü
+     haftalık hedefi kendiliğinden tutturur. WEEKLY_FROM..FLEX_FROM arası
+     WEEKLY_WORDS_OLD haftaya yayılırdı: haftanın i. günü (Pzt 0 … Paz 6)
+     floor((i+1)·W/7) - floor(i·W/7); 15 için 2,2,2,2,2,2,3. */
   function sentGoal(date) {
     if (date < SENT_GOAL_FROM) return SENT_GOAL_OLD;
     if (date < WEEKLY_FROM) return SENT_GOAL;
+    if (date >= FLEX_FROM) return Math.ceil(WEEKLY_WORDS / WEEK_DAYS);
     var i = (parse(date).getDay() + 6) % 7;
-    return Math.floor((i + 1) * WEEKLY_WORDS / 7) - Math.floor(i * WEEKLY_WORDS / 7);
+    return Math.floor((i + 1) * WEEKLY_WORDS_OLD / 7) - Math.floor(i * WEEKLY_WORDS_OLD / 7);
   }
-  /* Haftalık karşılığı (günlük x 7): taşınan yalnızca bu değişince ölçeklenir,
+  /* Haftalık karşılığı: taşınan yalnızca bu değişince ölçeklenir,
      2/3'lü günler arasında oynamaz. Tam sayı ki oran yuvarlama hatası vermesin. */
-  function sentWeek(date) { return date < WEEKLY_FROM ? 7 * sentGoal(date) : WEEKLY_WORDS; }
-  function sentCap(date) { return date < WEEKLY_FROM ? 4 * sentGoal(date) : SENT_CARRY_CAP; }
+  function sentWeek(date) { return date < WEEKLY_FROM ? 7 * sentGoal(date) : date < FLEX_FROM ? WEEKLY_WORDS_OLD : WEEKLY_WORDS; }
+  /* Sentences zorunluluğuna taşınabilecek en çok kelime: bir haftalık hedef (WEEKLY_FROM'dan önce 4 x günlük) */
+  function sentCap(date) { return date < WEEKLY_FROM ? 4 * sentGoal(date) : sentWeek(date); }
+  function monday(date) { return addDays(date, -((parse(date).getDay() + 6) % 7)); }
   function reviewCap(date) { return date < REVIEW_CAP_FROM ? Infinity : REVIEW_CAP; }
   var POINTS = {
     b1: 0.5,       // B1 Recall doğru (yanlış: 0)
@@ -525,39 +544,63 @@
      günlük zorunluluğa (sentGoal) göre eksiğinin yarısı (yukarı yuvarlanır)
      eklenir, fazlası düşülür; zorunluluk yoksa sıfırlanır, sq kaydı yoksa
      olduğu gibi kalır.
+     FLEX_FROM'dan itibaren ikisi de yalnızca kaçırılan günde eklenir
+     (haftanın dinlenme hakkı bitmişken başarısız gün); hedefi aşan puan /
+     payı aşan ilerletme her gün öder. FLEX_FROM'da ikisi de sıfırlanır.
+     Aynı döngü geçmiş günlerin başarısını (ok) ve durumunu (stat) tutar.
      Sonuç ns-day ve ns-write değişmedikçe önbellekte. */
-  var debtCache = { raw: null, t: null, map: null, sent: null };
+  var debtCache = { raw: null, t: null, map: null, sent: null, ok: null, stat: null };
   function carries() {
     var raw = null;
     try { raw = localStorage.getItem(KEY) + '|' + localStorage.getItem(WKEY); } catch (e) {}
     var t = today();
     if (debtCache.map && debtCache.raw === raw && debtCache.t === t) return debtCache;
-    var map = {}, sent = {}, debt = 0, carry = 0, first = firstDay();
-    if (!first) { debtCache = { raw: raw, t: t, map: map, sent: sent }; return debtCache; }   // hiç kayıt yok: borç da yok
+    var map = {}, sent = {}, ok = {}, stat = {}, debt = 0, carry = 0, first = firstDay(), wk = null;
+    if (!first) { debtCache = { raw: raw, t: t, map: map, sent: sent, ok: ok, stat: stat }; return debtCache; }   // hiç kayıt yok: borç da yok
     var d = first > DEBT_START ? first : DEBT_START;
+    if (first > FLEX_FROM && d > monday(first)) d = monday(first);   // ilk haftanın kayıtsız günleri de dinlenme hakkı harcar
     for (var i = 0; d <= t && i < 3650; d = addDays(d, 1), i++) {
+      if (d === FLEX_FROM) { debt = 0; carry = 0; }   // haftada WEEK_DAYS gün kuralları sıfırdan başlar
       map[d] = r1(debt);
-      // kural değişince (20 -> 5 -> haftalık) taşınan haftalık karşılık oranında küçülerek geçer
+      // kural değişince (20 -> 5 -> haftalık 15 -> 12) taşınan haftalık karşılık oranında küçülerek geçer
       if (i && sentWeek(d) !== sentWeek(addDays(d, -1))) carry = Math.ceil(carry * sentWeek(d) / sentWeek(addDays(d, -1)));
       sent[d] = carry;
       if (d === t) break;
       var b = base(d, carry);
+      var success = judge(b, debt).success, penalize = true;
+      ok[d] = success;
+      if (d >= FLEX_FROM) {
+        var mon = monday(d);
+        if (!wk || wk.mon !== mon) wk = { mon: mon, succ: 0, fail: 0 };
+        var extra = wk.succ >= WEEK_DAYS;   // hafta zaten tamam
+        if (success) wk.succ++; else wk.fail++;
+        penalize = !success && wk.fail > REST_DAYS;
+        stat[d] = extra ? 'extra' : success ? 'success' : penalize ? 'missed' : 'rest';
+      }
       var nonReview = Math.max(0, GOAL - Math.min(GOAL, b.reviewRaw));
       var earned = b.flash + b.sent;
-      var shortBy = Math.max(0, nonReview - earned);
+      var shortBy = penalize ? Math.max(0, nonReview - earned) : 0;
       var surplus = Math.max(0, earned - nonReview);
       debt = Math.min(DEBT_CAP, Math.max(0, debt - surplus) + shortBy / 2);
       if (b.sentPool == null) continue;                      // havuz bilinmiyor: taşınan değişmez
       if (b.sentPool <= b.sentGoal) { carry = 0; continue; }  // zorunluluk yok: sıfırlanır
-      var sShort = Math.max(0, b.sentGoal - b.sentAdv);
+      var sShort = penalize ? Math.max(0, b.sentGoal - b.sentAdv) : 0;
       var sSurplus = Math.max(0, b.sentAdv - b.sentGoal);
       carry = Math.min(sentCap(d), Math.max(0, carry - sSurplus) + Math.ceil(sShort / 2));
     }
-    debtCache = { raw: raw, t: t, map: map, sent: sent };
+    debtCache = { raw: raw, t: t, map: map, sent: sent, ok: ok, stat: stat };
     return debtCache;
   }
   function debtMap() { return carries().map; }
   function sentMap() { return carries().sent; }
+
+  /* Hedef ve başarı: score() ve borç döngüsü aynı hesabı kullanır. */
+  function judge(b, debt) {
+    var carried = r1(debt + b.sentCarry * POINTS.learn);   // GOAL'ün üstüne binen toplam
+    var target = r1(GOAL + carried);
+    var total = r1(b.flash + b.sent + b.review);
+    return { carried: carried, target: target, total: total, success: total >= target && b.reviewDone === true && b.sentOk };
+  }
 
   /* ---- puan: günün tamamı ----
      Hedef = GOAL + borç + Sentences'a taşınan kelimelerin puanı (taşınan
@@ -565,45 +608,81 @@
      Default'un payını yemesin.
      Bölme payları hedefe sığdırılır: önce Review, sonra
      Sentences (zorunlu kısım), kalanı Default — flashcard'lar, zorunlunun
-     üstündeki cümleler ve Review'da kaçırılanların kaybı oradan kapanır. */
+     üstündeki cümleler ve Review'da kaçırılanların kaybı oradan kapanır.
+     FLEX_FROM'dan itibaren status: 'success' | 'extra' | 'rest' | 'missed'
+     (geçmiş gün) ya da 'open' (bugün, henüz başarılı değil); week: o haftanın
+     o güne kadarki durumu. Öncesinde ikisi de null. */
   function score(date) {
     var b = base(date, date >= DEBT_START ? (sentMap()[date] || 0) : 0);
     var debt = date >= DEBT_START ? (debtMap()[date] || 0) : 0;
-    var carried = r1(debt + b.sentCarry * POINTS.learn);   // GOAL'ün üstüne binen toplam
-    var target = GOAL + carried;
+    var j = judge(b, debt);
+    var target = j.target;
     var reviewSlot = r1(Math.max(0, Math.min(target, b.reviewRaw)));
     var sentSlot = r1(Math.min(target - reviewSlot, b.sentRaw));
     var defSlot = r1(target - reviewSlot - sentSlot);
-    var total = r1(b.flash + b.sent + b.review);
     ['flash', 'sent', 'review', 'def', 'sentIn', 'sentExtra', 'reviewLoss'].forEach(function (k) { b[k] = r1(b[k]); });
-    b.debt = debt; b.carried = carried; b.target = r1(target); b.total = total;
+    b.debt = debt; b.carried = j.carried; b.target = target; b.total = j.total;
     b.defSlot = defSlot; b.sentSlot = sentSlot; b.reviewSlot = reviewSlot;
-    b.success = total >= b.target && b.reviewDone === true && b.sentOk;
+    b.success = j.success;
+    b.week = date >= FLEX_FROM ? week(date, b.success) : null;
+    b.status = !b.week ? null
+      : date !== today() ? (carries().stat[date] || null)
+      : b.week.succ - (b.success ? 1 : 0) >= WEEK_DAYS ? 'extra' : b.success ? 'success' : 'open';
     return b;
+  }
+
+  /* Bir günün başarısı: geçmiş gün borç döngüsünden, bugün canlı. */
+  function isOk(date, todayOk) {
+    if (date === today()) return todayOk != null ? todayOk : score(date).success;
+    var ok = carries().ok;
+    return date in ok ? ok[date] : score(date).success;   // DEBT_START'tan önceki günler döngüde yok
+  }
+
+  /* Haftanın (Pzt–Paz) date'e kadarki durumu. Bugünse başarısızlığı henüz
+     sayılmaz (gün bitmedi). succ: başarılı gün, fail: dinlenme hakkı harcayan
+     gün, restLeft: kalan dinlenme hakkı, done: hafta tamam, lost: kalan
+     günler WEEK_DAYS'e yetmiyor. */
+  function week(date, todayOk) {
+    var mon = monday(date), t = today(), succ = 0, fail = 0, first = firstDay();
+    for (var d = mon; d <= date; d = addDays(d, 1)) {
+      var ok = first && d >= first ? isOk(d, d === t ? todayOk : null) : false;
+      if (ok) succ++; else if (d !== t) fail++;
+    }
+    var open = date === t && !todayOk ? 1 : 0;           // bugün henüz başarılı olabilir
+    var rest = 6 - ((parse(date).getDay() + 6) % 7);     // haftada date'ten sonra kalan gün
+    return { mon: mon, succ: succ, fail: fail, restLeft: Math.max(0, REST_DAYS - fail),
+             done: succ >= WEEK_DAYS, lost: succ + open + rest < WEEK_DAYS };
   }
 
   /* Haftalık hedefe ilerleme: haftanın (Pzt–Paz) başından date'e kadar
      cümlesi yazılıp Review'a geçen kelime. Hafta WEEKLY_FROM'dan önce
      başlıyorsa null (o hafta haftalık hedef yoktu). */
   function weekSent(date) {
-    var mon = addDays(date, -((parse(date).getDay() + 6) % 7)), n = 0;
+    var mon = monday(date), n = 0;
     if (mon < WEEKLY_FROM) return null;
     for (var d = mon; d <= date; d = addDays(d, 1)) {
       var l = day(d).learn;
       Object.keys(l).forEach(function (en) { if (l[en] !== 'new') n++; });
     }
-    return { done: n, goal: WEEKLY_WORDS };
+    return { done: n, goal: mon < FLEX_FROM ? WEEKLY_WORDS_OLD : WEEKLY_WORDS };
   }
 
-  /* Seri: bugünden geriye başarılı günler. Bugün henüz başarılı değilse
-     kaçırılmış sayılmaz. Arka arkaya STREAK_GRACE günden fazla kaçırınca biter. */
+  /* Seri: art arda tamamlanan haftalar (WEEK_DAYS başarılı gün). İçinde
+     bulunulan hafta tamamlandıysa sayılır, yoksa seriyi bozmaz. FLEX_FROM'dan
+     önceki haftalar da aynı ölçüyle (o günlerin kendi kurallarıyla başarılı
+     gün sayısı) değerlendirilir. */
   function streak() {
-    var t = today(), first = firstDay(), n = 0, miss = 0;
+    var t = today(), first = firstDay(), n = 0;
     if (!first) return 0;
-    var d = score(t).success ? t : addDays(t, -1);
-    for (var i = 0; d >= first && i < 3650; d = addDays(d, -1), i++) {
-      if (score(d).success) { n++; miss = 0; }
-      else if (++miss > STREAK_GRACE) break;
+    var mon = monday(t);
+    if (week(t).done) n++;
+    for (var i = 0; i < 520; i++) {
+      mon = addDays(mon, -7);
+      if (addDays(mon, 6) < first) break;
+      var succ = 0;
+      for (var k = 0; k < 7; k++) { var d = addDays(mon, k); if (d >= first && isOk(d)) succ++; }
+      if (succ < WEEK_DAYS) break;
+      n++;
     }
     return n;
   }
@@ -624,9 +703,22 @@
     var miss = [];
     if (s.reviewDone === false) miss.push('Review');
     if (!s.sentOk) miss.push('Sentences');
-    var badge = s.success ? 'Success'
+    var badge = s.status === 'extra' ? (s.success ? 'Extra day · success' : 'Extra day')
+      : s.status === 'rest' ? 'Rest day'
+      : s.status === 'missed' ? 'Missed'
+      : s.success ? 'Success'
       : s.total >= s.target && miss.length ? miss.join(' + ') + ' left'
       : r1(s.target - s.total) + ' to go';
+
+    /* Haftalık durum (FLEX_FROM'dan itibaren) */
+    var wk = '';
+    if (s.week) {
+      var w = s.week, warn = !w.done && (w.lost || !w.restLeft);
+      wk = '<div class="dscore-week' + (warn ? ' warn' : '') + '">' + (isToday ? 'This week' : 'Week so far') + ': <b>' + Math.min(w.succ, WEEK_DAYS) + '</b> of ' + WEEK_DAYS + ' days' +
+        (w.done ? ' · complete' + (w.succ > WEEK_DAYS ? ', ' + plural(w.succ - WEEK_DAYS, 'extra day') : '')
+          : w.lost ? ' · can no longer reach ' + WEEK_DAYS
+          : ' · ' + (w.restLeft ? plural(w.restLeft, 'rest day') + ' left' : 'no rest days left')) + '</div>';
+    }
 
     var rw = Math.max(MIN_W, s.reviewSlot / s.target * 100);
     var sw = Math.max(MIN_W, s.sentSlot / s.target * 100);
@@ -676,13 +768,14 @@
           (sentCarry ? '<span class="dscore-debt">' + sentCarry + '</span>' : '') + '</a>' +
         '<a class="dscore-go" href="review.html" title="Open Review"><i class="sw r"></i><u>Review</u> ' + (s.reviewSlot ? s.review + ' / ' + s.reviewSlot + ' · ' : '') +
           '<b class="dscore-rv ' + rvCls + '">' + rv + '</b></a>' +
-      '</div>' +
+      '</div>' + wk +
     '</div>';
   }
 
   window.NSDay = {
-    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, WEEKLY_WORDS: WEEKLY_WORDS, WEEKLY_FROM: WEEKLY_FROM, STREAK_GRACE: STREAK_GRACE, DEBT_CAP: DEBT_CAP, SENT_CARRY_CAP: SENT_CARRY_CAP,
-    sentGoal: sentGoal, sentCap: sentCap, weekSent: weekSent,
+    KEY: KEY, GOAL: GOAL, POINTS: POINTS, PER_WORD: PER_WORD, WEEKLY_WORDS: WEEKLY_WORDS, WEEKLY_WORDS_OLD: WEEKLY_WORDS_OLD, WEEKLY_FROM: WEEKLY_FROM, DEBT_CAP: DEBT_CAP,
+    FLEX_FROM: FLEX_FROM, WEEK_DAYS: WEEK_DAYS, REST_DAYS: REST_DAYS,
+    sentGoal: sentGoal, sentCap: sentCap, weekSent: weekSent, week: week,
     REVIEW_CAP: REVIEW_CAP, REVIEW_CAP_SENT: REVIEW_CAP_SENT, REVIEW_CAP_FROM: REVIEW_CAP_FROM,
     today: today, addDays: addDays, r1: r1,
     reviewSplit: reviewSplit, reviewUsed: reviewUsed, reviewPlan: reviewPlan,

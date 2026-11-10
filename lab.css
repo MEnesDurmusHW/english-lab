@@ -874,4 +874,7 @@ a.dscore-hit:active .dscore-seg{opacity:.75}
 .dscore-rv.ok{color:var(--ok)}
 .dscore-rv.todo{color:var(--pts-r)}
 .dscore-rv.unk{color:var(--text-muted);font-weight:500}
+.dscore-week{font-size:.8rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.dscore-week b{color:var(--text)}
+.dscore-week.warn{color:var(--pts-r)}
 

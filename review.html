@@ -98,15 +98,16 @@
 
   /* ---- önümüzdeki günler: tavanlı tahmin, gün başına bir satır ---- */
   .rv-fc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:4px 14px}
-  .rv-fc-row{display:grid;grid-template-columns:5.5rem 1fr auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--border);font-size:.88rem;font-variant-numeric:tabular-nums}
+  .rv-fc-row{display:grid;grid-template-columns:6.5rem 1fr auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--border);font-size:.88rem;font-variant-numeric:tabular-nums}
   .rv-fc-row:first-child{border-top:0}
   .rv-fc-row .dn{font-weight:600;color:var(--text)}
   .rv-fc-row .dq{color:var(--text-dim);min-width:0}
   .rv-fc-row .dq b{font-family:var(--mono,monospace);font-weight:700;color:var(--text)}
   .rv-fc-row .dw{font-size:.8rem;color:var(--text-muted);text-align:right}
   .rv-fc-row.zero .dq{color:var(--text-muted)}
+  .rv-fc-row.over .dw{color:var(--pts-r);font-weight:600}
   .rv-fc-note{margin:8px 2px 0;font-size:.8rem;color:var(--text-muted);line-height:1.5}
-  @media (max-width:420px){ .rv-fc-row{grid-template-columns:4.6rem 1fr;row-gap:2px} .rv-fc-row .dw{grid-column:2;text-align:left} }
+  @media (max-width:420px){ .rv-fc-row{grid-template-columns:5.8rem 1fr;row-gap:2px} .rv-fc-row .dw{grid-column:2;text-align:left} }
 
   /* ---- liste ---- */
   .rv-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
@@ -231,7 +232,7 @@
     </section>
   </div>
 
-  <h2 class="rv-sec-title">Coming days</h2>
+  <h2 class="rv-sec-title">Coming weeks</h2>
   <div class="rv-fc" id="week"></div>
   <p class="rv-fc-note" id="weekNote"></p>
 
@@ -431,23 +432,23 @@ function fallbackCopy(text, cb){
   document.body.removeChild(ta);
 }
 
-/* ---------- önümüzdeki 7 gün: tavanlı tahmin (J.forecast) ----------
-   Her gün Review'un isteyeceği; tavana sığmayan "waiting" olarak ertesi güne kalır. */
+/* ---------- önümüzdeki 4 hafta: haftalık yük (J.weekLoad) ----------
+   Haftanın işi WEEK_DAYS çalışma gününe bölünür; günlük tavanı aşarsa
+   iş birikir, satır uyarı rengine döner. */
 function plural(n, one){ return '<b>' + n + '</b> ' + one + (n === 1 ? '' : 's'); }
 function renderWeek(){
-  $('week').innerHTML = J.forecast(7, en => BY_EN[en]).map((d, i) => {
-    const p = d.date.split('-');
-    const day = i ? new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('en-GB', { weekday:'short' }) : 'Tomorrow';
+  const cap = NSDay.REVIEW_CAP, days = NSDay.WEEK_DAYS;
+  $('week').innerHTML = J.weekLoad(4, en => BY_EN[en]).map((w, i) => {
     const bits = [];
-    if (d.sents) bits.push(plural(d.sents, 'sentence'));
-    if (d.cards) bits.push(plural(d.cards, 'card'));
-    const wait = d.waitC + d.waitS;
-    return '<div class="rv-fc-row' + (bits.length ? '' : ' zero') + '" title="' + shortDate(d.date) + '">' +
-      '<span class="dn">' + day + '</span>' +
+    if (w.sents) bits.push(plural(w.sents, 'sentence'));
+    if (w.cards) bits.push(plural(w.cards, 'card'));
+    const per = Math.ceil(w.points / days), over = per > cap;
+    return '<div class="rv-fc-row' + (bits.length ? '' : ' zero') + (over ? ' over' : '') + '" title="' + shortDate(w.from) + ' – ' + shortDate(w.to) + '">' +
+      '<span class="dn">' + (i ? 'Days ' + (i * 7 + 1) + '–' + (i * 7 + 7) : 'Next 7 days') + '</span>' +
       '<span class="dq">' + (bits.join(' · ') || 'Nothing due') + '</span>' +
-      '<span class="dw">' + (wait ? '+' + wait + ' waiting' : '') + '</span></div>';
+      '<span class="dw">' + (w.points ? '~' + per + ' points a study day' + (over ? ', over ' + cap : '') : '') + '</span></div>';
   }).join('');
-  $('weekNote').textContent = 'At most ' + NSDay.REVIEW_CAP + ' points a day, if each day’s share gets done.';
+  $('weekNote').textContent = 'A week’s Review spread over ' + days + ' study days. Review asks for at most ' + cap + ' points a day; above that, work piles up.';
 }
 
 /* ---------- tüm kelimeler ---------- */

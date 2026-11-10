@@ -245,17 +245,18 @@
     var t = on || today();
     return reviewWords().filter(function (en) { return DATA[en].sent.due <= t; }).sort(byPriorityThenDate('sent'));
   }
-  /* Önümüzdeki n günde Review'un isteyeceği, günlük tavanla (daylog.js
-     REVIEW_CAP, NSDay.reviewSplit): her gün pay kartlar ve cümleler arasında
-     bölünür, sıra cardsDue / sentencesDue ile aynı; paya sığmayan ertesi güne kalır.
-     Varsayım: bugünün payı yapılır ve her cevap doğru — yapılan kelime bir
-     sonraki basamağın aralığıyla yeniden planlanır (pencereye geri düşebilir).
+  /* Önümüzdeki n haftada (yarından başlayan 7'şer günlük pencereler) Review'un
+     isteyeceği iş, tavansız: her iş geldiği gün yapılır ve her cevap doğru —
+     yapılan kelime bir sonraki basamağın aralığıyla yeniden planlanır
+     (pencereye geri düşebilir). Bugünün payının (NSDay.reviewSplit) yapıldığı
+     varsayılır; paya sığmayan bekleyen iş ilk pencereye düşer.
+     Haftada NSDay.WEEK_DAYS gün çalışılınca çalışma günü başına düşen yük
+     points / WEEK_DAYS; günlük tavanı (REVIEW_CAP) aşarsa iş birikir.
      keep: sayılacak kelimeler (Review sayfası data.js'tekileri sayar).
-     Döner: [{date, cards, sents, waitC, waitS}] — bugün hariç. */
-  function forecast(n, keep) {
+     Döner: [{from, to, cards, sents, points}]. */
+  function weekLoad(n, keep) {
     var D = window.NSDay, t = today(), out = [];
-    var split = D ? D.reviewSplit : function (c, s) { return [c, s]; };
-    var used = D ? D.reviewUsed(t) : null;   // [kart, cümle] puanı, yalnızca bugün
+    var P = D ? D.POINTS : { rc: 1, rs: 2 };
     var sim = reviewWords().filter(function (en) { return !keep || keep(en); }).map(function (en) {
       var j = DATA[en];
       return { pri: j.pri, card: { step: j.card.step || 0, due: j.card.due }, sent: { step: j.sent.step || 0, due: j.sent.due } };
@@ -268,12 +269,19 @@
     function done(list, field, table, d) {
       list.forEach(function (w) { w[field].step++; w[field].due = addDays(d, iv(table, w.pri, w[field].step)); });
     }
-    for (var i = 0; i <= n; i++) {
-      var d = addDays(t, i), dc = due('card', d), ds = due('sent', d);
-      var q = split(dc.length, ds.length, i ? null : used, d);
-      if (i) out.push({ date: d, cards: q[0], sents: q[1], waitC: dc.length - q[0], waitS: ds.length - q[1] });
-      done(dc.slice(0, q[0]), 'card', CARD_IV, d);
-      done(ds.slice(0, q[1]), 'sent', SENT_IV, d);
+    var dc = due('card', t), ds = due('sent', t);
+    var q = D ? D.reviewSplit(dc.length, ds.length, D.reviewUsed(t), t) : [dc.length, ds.length];
+    done(dc.slice(0, q[0]), 'card', CARD_IV, t);
+    done(ds.slice(0, q[1]), 'sent', SENT_IV, t);
+    for (var w = 0; w < n; w++) {
+      var c = 0, s = 0;
+      for (var i = 1; i <= 7; i++) {
+        var d = addDays(t, w * 7 + i), a = due('card', d), b = due('sent', d);
+        c += a.length; s += b.length;
+        done(a, 'card', CARD_IV, d);
+        done(b, 'sent', SENT_IV, d);
+      }
+      out.push({ from: addDays(t, w * 7 + 1), to: addDays(t, w * 7 + 7), cards: c, sents: s, points: c * P.rc + s * P.rs });
     }
     return out;
   }
@@ -288,6 +296,6 @@
     promote: promote, demote: demote,
     rateCard: rateCard, sentenceDone: sentenceDone, sentenceUndo: sentenceUndo, setPriority: setPriority,
     reviewWords: reviewWords, sentenceWords: sentenceWords, cardsDue: cardsDue, sentencesDue: sentencesDue,
-    forecast: forecast
+    weekLoad: weekLoad
   };
 })();
